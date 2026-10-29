@@ -6,7 +6,7 @@
 
 > How to generate videos with OpenRouter models
 
-OpenRouter supports video generation from text prompts (and optional reference images) via a dedicated asynchronous API. You can find the supported models, their capabilities, and pricing by filtering our [model list by video output](../models.md?output_modalities=video).
+OpenRouter supports video generation from text prompts (and optional reference images) via a dedicated asynchronous API. You can find the supported models, their capabilities, and pricing by filtering our [model list by video output](../models.md).
 
 <video controls loop playsInline preload="metadata">
   <source src="https://model-assets.openrouter.ai/model-examples/minimax/hailuo-3/docs-hero/original-0.mp4?v=1" type="video/mp4" />
