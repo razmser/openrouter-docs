@@ -16,7 +16,7 @@ Beta
 
 The `openrouter:fusion` server tool gives any model access to multi-model deliberation. When your model decides a prompt benefits from multiple perspectives, it invokes this tool. A panel of models answers in parallel, an analyst compares their responses, and the structured analysis comes back to your model for the final answer.
 
-This is the same pipeline behind the [`openrouter/fusion` model alias](https://openrouter.ai/docs/guides/routing/routers/fusion-router). Using the server tool directly gives you the most control. You can choose your own outer model, combine it with other tools, and configure the panel and analyst independently.
+This is the same pipeline behind the [`openrouter/fusion` model alias](../../routing/routers/fusion-router.md). Using the server tool directly gives you the most control. You can choose your own outer model, combine it with other tools, and configure the panel and analyst independently.
 
 ## Quick start
 
@@ -136,7 +136,7 @@ Inner fusion calls carry an `x-openrouter-fusion-depth` header. Panel and analys
 
 ## Related
 
-* [Fusion Router (`openrouter/fusion`)](https://openrouter.ai/docs/guides/routing/routers/fusion-router)
+* [Fusion Router (`openrouter/fusion`)](../../routing/routers/fusion-router.md)
 * [Web Search server tool](web-search.md)
 * [Web Fetch server tool](web-fetch.md)
 * [`/labs/fusion`](https://openrouter.ai/fusion/): interactive playground

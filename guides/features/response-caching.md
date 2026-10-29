@@ -126,10 +126,10 @@ If two identical requests arrive simultaneously before the first response is wri
 
 | Endpoint | API Format |
 | - | - |
-| [`/api/v1/chat/completions`](https://openrouter.ai/docs/api/api-reference/chat/create-a-chat-completion) | OpenAI Chat Completions |
-| [`/api/v1/responses`](https://openrouter.ai/docs/api/api-reference/responses/create-a-response) | OpenAI Responses |
-| [`/api/v1/messages`](https://openrouter.ai/docs/api/api-reference/anthropic-messages/create-a-message) | Anthropic Messages |
-| [`/api/v1/embeddings`](https://openrouter.ai/docs/api/api-reference/embeddings/submit-an-embedding-request) | OpenAI Embeddings |
+| [`/api/v1/chat/completions`](../../api/api-reference/chat/create-a-chat-completion.md) | OpenAI Chat Completions |
+| [`/api/v1/responses`](../../api/api-reference/responses/create-a-response.md) | OpenAI Responses |
+| [`/api/v1/messages`](../../api/api-reference/anthropic-messages/create-a-message.md) | Anthropic Messages |
+| [`/api/v1/embeddings`](../../api/api-reference/embeddings/submit-an-embedding-request.md) | OpenAI Embeddings |
 
 Cache keys include an endpoint type discriminator, so requests to different endpoints with identical bodies will not collide.
 

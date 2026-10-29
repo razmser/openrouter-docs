@@ -22,8 +22,8 @@ Append `:floor` to any model ID:
 
 `:floor` does two things:
 
-1. **Sorts all eligible endpoints by price**, the same effect as setting [`provider.sort` to `"price"`](https://openrouter.ai/docs/guides/routing/provider-selection#provider-sorting).
-2. **Admits flex service tier endpoints** into the eligible pool. Unlike the [`service_tier: "flex"` parameter](https://openrouter.ai/docs/guides/features/service-tiers), which tries flex endpoints first and only falls back to endpoints priced at or below a flex endpoint on both input and output, `:floor` gives flex endpoints no preference: they simply compete on price with the whole pool. Since flex pricing is discounted, flex endpoints tend to sort first, with regular endpoints as the next-cheapest fallback if a flex endpoint is unavailable.
+1. **Sorts all eligible endpoints by price**, the same effect as setting [`provider.sort` to `"price"`](../provider-selection.md#provider-sorting).
+2. **Admits flex service tier endpoints** into the eligible pool. Unlike the [`service_tier: "flex"` parameter](../../features/service-tiers.md), which tries flex endpoints first and only falls back to endpoints priced at or below a flex endpoint on both input and output, `:floor` gives flex endpoints no preference: they simply compete on price with the whole pool. Since flex pricing is discounted, flex endpoints tend to sort first, with regular endpoints as the next-cheapest fallback if a flex endpoint is unavailable.
 
 Billing follows the tier the provider actually serves: a request served on the flex tier is billed at the flex rate, and if the provider serves it on the default tier instead, you're billed the default rate. See [Service Tiers](../../features/service-tiers.md) for the full comparison of tier-selection options.
 

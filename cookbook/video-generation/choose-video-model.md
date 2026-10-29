@@ -88,7 +88,7 @@ Actual output from the model-list call:
 ]
 ```
 
-Each model includes the values you need for routing decisions. Use the [List video generation models API reference](../../api/api-reference/video-generation/list-all-video-generation-models.md) as the source of truth for the endpoint response and model metadata fields. If your app uses the TypeScript SDK, see the generated [`listVideosModels` SDK reference](https://openrouter.ai/docs/client-sdks/typescript/sdks/videogeneration/README#listvideosmodels) for the SDK method shape.
+Each model includes the values you need for routing decisions. Use the [List video generation models API reference](../../api/api-reference/video-generation/list-all-video-generation-models.md) as the source of truth for the endpoint response and model metadata fields. If your app uses the TypeScript SDK, see the generated [`listVideosModels` SDK reference](../../client-sdks/typescript/sdks/videogeneration/README.md#listvideosmodels) for the SDK method shape.
 
 ## Step 2: Filter by the job you want to run
 

@@ -229,7 +229,7 @@ The `[DONE]` sentinel is intentionally cheap: any model can produce it, and a pl
 
 ## 5. Add voice input
 
-Drive the same agent loop from a voice memo, phone call, or push-to-talk app. OpenRouter exposes a dedicated [`/api/v1/audio/transcriptions`](https://openrouter.ai/docs/guides/overview/multimodal/stt) endpoint with a single STT model parameter. Hand the transcript to `callModel` exactly like a text prompt.
+Drive the same agent loop from a voice memo, phone call, or push-to-talk app. OpenRouter exposes a dedicated [`/api/v1/audio/transcriptions`](../../guides/overview/multimodal/stt.md) endpoint with a single STT model parameter. Hand the transcript to `callModel` exactly like a text prompt.
 
 ```typescript lines theme={null}
 import { OpenRouter as SDK } from '@openrouter/sdk';
@@ -258,7 +258,7 @@ For a streaming microphone, capture audio chunks on the client, send them to you
 
 ## 6. Speak the response back (optional)
 
-For voice-out, pipe the agent's reply through [`/api/v1/audio/speech`](https://openrouter.ai/docs/guides/overview/multimodal/tts) and write the resulting bytes to a file or stream them to the caller.
+For voice-out, pipe the agent's reply through [`/api/v1/audio/speech`](../../guides/overview/multimodal/tts.md) and write the resulting bytes to a file or stream them to the caller.
 
 ```typescript lines theme={null}
 import { writeFile } from 'node:fs/promises';

@@ -54,7 +54,7 @@ The Web Search plugin (`plugins: [{ "id": "web" }]`) is deprecated. Use the `ope
 
 ### Tools API
 
-The tools catalog is available programmatically. [`GET /api/v1/tools`](https://openrouter.ai/docs/api/api-reference/tools/list-server-tools) lists every server tool. [`GET /api/v1/tools/{name}`](https://openrouter.ai/docs/api/api-reference/tools/get-a-server-tool) returns one tool, by canonical name or any accepted alias, with the list of models that run it natively.
+The tools catalog is available programmatically. [`GET /api/v1/tools`](../../api/api-reference/tools/list-server-tools.md) lists every server tool. [`GET /api/v1/tools/{name}`](../../api/api-reference/tools/get-a-server-tool.md) returns one tool, by canonical name or any accepted alias, with the list of models that run it natively.
 
 ## How Server Tools Work
 
@@ -120,7 +120,7 @@ Each server tool has an execution path, an In-Region Routing (IRR) availability,
 | Search Models | OpenRouter in-process | Yes | Yes | Yes | Queries the OpenRouter model catalog. |
 | Files | OpenRouter Files API storage | Yes | No | No | ZDR enforcement does not apply to stored files. |
 
-The [`GET /api/v1/tools`](https://openrouter.ai/docs/api/api-reference/tools/list-server-tools) response lists each tool's engines with `executed_by` and `data_regions`.
+The [`GET /api/v1/tools`](../../api/api-reference/tools/list-server-tools.md) response lists each tool's engines with `executed_by` and `data_regions`.
 
 ### ZDR enforcement
 

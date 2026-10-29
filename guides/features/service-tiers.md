@@ -134,7 +134,7 @@ Non-default tier endpoints (`flex`, `priority`, `ultrafast`) are only considered
 
 #### 1. The `:nitro` and `:floor` model variants
 
-* [`:nitro`](https://openrouter.ai/docs/guides/routing/model-variants/nitro) makes priority endpoints eligible. [`:floor`](https://openrouter.ai/docs/guides/routing/model-variants/floor) makes flex endpoints eligible.
+* [`:nitro`](../routing/model-variants/nitro.md) makes priority endpoints eligible. [`:floor`](../routing/model-variants/floor.md) makes flex endpoints eligible.
 * Unlike the `service_tier` parameter, tier endpoints get no special treatment. The whole pool is sorted by the variant's metric (throughput for `:nitro`, price for `:floor`), so a tier endpoint is used only when it wins that sort.
 * Setting `provider.order` replaces sorting with your explicit ordering, which disables the variant's tier admission. Name a tier endpoint slug in the order list to include it.
 * An explicit `service_tier: "default"` also disables the variant's tier admission, so you can use `:nitro`/`:floor` purely for their sorting while pinning the standard tier.
@@ -146,7 +146,7 @@ Non-default tier endpoints (`flex`, `priority`, `ultrafast`) are only considered
 * **`ultrafast`**: works like `priority` with one more group in front: ultrafast endpoints, then priority endpoints, then default endpoints. See [Ultrafast](#ultrafast).
 * **`flex`**: flex endpoints are tried first, sorted by price. Fallback is bounded by price: the request only falls back to endpoints whose input and output prices are both at or below a flex endpoint's, so you never pay more than the flex rate you asked for, whatever your input/output mix. Where the flex endpoint is the cheapest option for its model, as with a single provider's flex tier, nothing qualifies and a flex capacity error surfaces, the same as when you call that provider directly.
 * If the pool contains no flex endpoints at all (for example, the model has no flex-capable provider), the request routes normally at standard rates.
-* Combine with [`allow_fallbacks: false`](https://openrouter.ai/docs/guides/routing/provider-selection#disabling-fallbacks) to route only to the top endpoint of that tier.
+* Combine with [`allow_fallbacks: false`](../routing/provider-selection.md#disabling-fallbacks) to route only to the top endpoint of that tier.
 
 #### 3. Tier endpoint slugs in `provider.order` or `provider.only`
 

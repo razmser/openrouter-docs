@@ -14,7 +14,7 @@ Beta
 >
 > The Files API is in beta. The API and behavior may change.
 
-The Files API stores files in your workspace. You can upload a file once and use it in many requests. A sandbox container can load workspace files with the [`file_ids` setting](https://openrouter.ai/docs/guides/features/containers#attach-workspace-files).
+The Files API stores files in your workspace. You can upload a file once and use it in many requests. A sandbox container can load workspace files with the [`file_ids` setting](containers.md#attach-workspace-files).
 
 > [!NOTE]
 >

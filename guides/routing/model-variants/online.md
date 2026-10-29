@@ -10,7 +10,7 @@
 >
 > **Deprecated**
 >
-> The `:online` variant is deprecated. Use the [`openrouter:web_search` server tool](https://openrouter.ai/docs/guides/features/server-tools/web-search) instead, which gives the model control over when and how often to search.
+> The `:online` variant is deprecated. Use the [`openrouter:web_search` server tool](../../features/server-tools/web-search.md) instead, which gives the model control over when and how often to search.
 >
 > If your application already provides the `web_search` tool (e.g. OpenAI's built-in web search tool type), OpenRouter automatically recognizes it and hoists it to the `openrouter:web_search` server tool. This means you can safely remove the `:online` suffix from any model slug. As long as your application exposes the `web_search` tool, web search still works as a server tool with any model on OpenRouter.
 

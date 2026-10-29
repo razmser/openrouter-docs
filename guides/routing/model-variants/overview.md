@@ -37,7 +37,7 @@ A routing variant is accepted on every model ID and is never an entry in the mod
 | `:nitro` | Active | Sorts providers by throughput and admits [priority service tier](../../features/service-tiers.md) endpoints. A request served by a priority endpoint is billed at that endpoint's priority rate. See [Nitro](nitro.md). |
 | `:floor` | Active | Sorts providers by price and admits [flex service tier](../../features/service-tiers.md) endpoints. A request served by a flex endpoint is billed at that endpoint's flex rate. See [Floor](floor.md). |
 | `:exacto` | Active | Sorts providers by quality signals tuned for tool-calling reliability. See [Exacto](exacto.md). |
-| `:online` | Deprecated | Attaches web search results to the prompt. Use the [`openrouter:web_search` server tool](https://openrouter.ai/docs/guides/features/server-tools/web-search) instead. See [Online](online.md). |
+| `:online` | Deprecated | Attaches web search results to the prompt. Use the [`openrouter:web_search` server tool](../../features/server-tools/web-search.md) instead. See [Online](online.md). |
 
 Because `:nitro` and `:floor` can select a service tier endpoint, the price actually charged for a request can differ from the base entry's `pricing`. The response reports the tier that served the request, as described in [Service Tiers](../../features/service-tiers.md).
 

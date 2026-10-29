@@ -128,7 +128,7 @@ curl https://openrouter.ai/api/v1/analytics/query \
   }'
 ```
 
-Each row in `data.data` has a `generation_id`, a `department` key with that generation's tag, and the requested metrics. Use the `generation_id` with [`GET /api/v1/generation`](https://openrouter.ai/docs/api/api-reference/generations/get-request-&-usage-metadata-for-a-generation) to fetch the rest of the generation's metadata.
+Each row in `data.data` has a `generation_id`, a `department` key with that generation's tag, and the requested metrics. Use the `generation_id` with [`GET /api/v1/generation`](../../api/api-reference/generations/get-request-&-usage-metadata-for-a-generation.md) to fetch the rest of the generation's metadata.
 
 ### Break down usage by tag
 

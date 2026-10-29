@@ -307,7 +307,7 @@ Inner fusion calls carry an `x-openrouter-fusion-depth` header. Panel and analys
 
 ## Related
 
-* [`openrouter:fusion` server tool](https://openrouter.ai/docs/guides/features/server-tools/fusion)
+* [`openrouter:fusion` server tool](../../features/server-tools/fusion.md)
 * [Auto Router](auto-router.md)
 * [Pareto Router](pareto-router.md)
 * [`/labs/fusion`](https://openrouter.ai/fusion/): interactive playground

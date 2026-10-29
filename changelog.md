@@ -13,101 +13,101 @@ Entries on this page are generated automatically from [OpenAPI specification](ap
 ## Breaking changes
 
 * `UpdatePrivateEndpointRequest`: required `upstream_model_id` property removedNo action needed
-  * Used by [`PATCH /private-endpoints/{id}`](https://openrouter.ai/docs/api/api-reference/private-endpoints/update-a-private-endpoint)
+  * Used by [`PATCH /private-endpoints/{id}`](api/api-reference/private-endpoints/update-a-private-endpoint.md)
   * **Migration: no action.** `PATCH /private-endpoints/{id}` is now a merge patch over every field an owner controls (`pricing`, `declared_parameters`, `settings`, and the draft-only upstream fields), so no single field is required and only the keys you send change. A request that still sends `upstream_model_id` is accepted on a draft endpoint; on an active endpoint it returns 409 `already_active`, as before. `PUT /private-endpoints/{id}/pricing` and `PUT /private-endpoints/{id}/parameters` keep working as deprecated aliases of this route.
 
 ## New endpoints
 
-* [`GET /private-providers`](https://openrouter.ai/docs/api/api-reference/private-providers/list-private-providers): List private providers
-* [`POST /private-providers`](https://openrouter.ai/docs/api/api-reference/private-providers/create-a-private-provider): Create a private provider
-* [`GET /private-providers/{slug}`](https://openrouter.ai/docs/api/api-reference/private-providers/get-a-private-provider): Get a private provider
-* [`PATCH /private-providers/{slug}`](https://openrouter.ai/docs/api/api-reference/private-providers/update-a-private-provider): Update a private provider
-* [`DELETE /private-providers/{slug}`](https://openrouter.ai/docs/api/api-reference/private-providers/delete-a-private-provider): Delete a private provider
+* [`GET /private-providers`](api/api-reference/private-providers/list-private-providers.md): List private providers
+* [`POST /private-providers`](api/api-reference/private-providers/create-a-private-provider.md): Create a private provider
+* [`GET /private-providers/{slug}`](api/api-reference/private-providers/get-a-private-provider.md): Get a private provider
+* [`PATCH /private-providers/{slug}`](api/api-reference/private-providers/update-a-private-provider.md): Update a private provider
+* [`DELETE /private-providers/{slug}`](api/api-reference/private-providers/delete-a-private-provider.md): Delete a private provider
 
 ## Modified endpoints
 
-* [`PATCH /private-endpoints/{id}`](https://openrouter.ai/docs/api/api-reference/private-endpoints/update-a-private-endpoint): description updated
-* [`PUT /private-endpoints/{id}/parameters`](https://openrouter.ai/docs/api/api-reference/private-endpoints/set-private-endpoint-supported-parameters-deprecated): deprecated property\_added; description updated
-* [`PUT /private-endpoints/{id}/pricing`](https://openrouter.ai/docs/api/api-reference/private-endpoints/set-private-endpoint-pricing-deprecated): deprecated property\_added; description updated
+* [`PATCH /private-endpoints/{id}`](api/api-reference/private-endpoints/update-a-private-endpoint.md): description updated
+* [`PUT /private-endpoints/{id}/parameters`](api/api-reference/private-endpoints/set-private-endpoint-supported-parameters-deprecated.md): deprecated property\_added; description updated
+* [`PUT /private-endpoints/{id}/pricing`](api/api-reference/private-endpoints/set-private-endpoint-pricing-deprecated.md): deprecated property\_added; description updated
 
 ## New schemas
 
 * `CreatePrivateProviderRequest`
-  * Used by [`POST /private-providers`](https://openrouter.ai/docs/api/api-reference/private-providers/create-a-private-provider)
+  * Used by [`POST /private-providers`](api/api-reference/private-providers/create-a-private-provider.md)
 * `PrivateEndpointQuantization`
 
   **5 endpoints using this schema**
 
-  * [`GET /private-endpoints/{id}`](https://openrouter.ai/docs/api/api-reference/private-endpoints/get-a-private-endpoint)
-  * [`PATCH /private-endpoints/{id}`](https://openrouter.ai/docs/api/api-reference/private-endpoints/update-a-private-endpoint)
-  * [`POST /private-endpoints`](https://openrouter.ai/docs/api/api-reference/private-endpoints/create-a-private-endpoint)
-  * [`PUT /private-endpoints/{id}/parameters`](https://openrouter.ai/docs/api/api-reference/private-endpoints/set-private-endpoint-supported-parameters-deprecated)
-  * [`PUT /private-endpoints/{id}/pricing`](https://openrouter.ai/docs/api/api-reference/private-endpoints/set-private-endpoint-pricing-deprecated)
+  * [`GET /private-endpoints/{id}`](api/api-reference/private-endpoints/get-a-private-endpoint.md)
+  * [`PATCH /private-endpoints/{id}`](api/api-reference/private-endpoints/update-a-private-endpoint.md)
+  * [`POST /private-endpoints`](api/api-reference/private-endpoints/create-a-private-endpoint.md)
+  * [`PUT /private-endpoints/{id}/parameters`](api/api-reference/private-endpoints/set-private-endpoint-supported-parameters-deprecated.md)
+  * [`PUT /private-endpoints/{id}/pricing`](api/api-reference/private-endpoints/set-private-endpoint-pricing-deprecated.md)
 * `PrivateEndpointReasoningReturnMechanism`
 
   **5 endpoints using this schema**
 
-  * [`GET /private-endpoints/{id}`](https://openrouter.ai/docs/api/api-reference/private-endpoints/get-a-private-endpoint)
-  * [`PATCH /private-endpoints/{id}`](https://openrouter.ai/docs/api/api-reference/private-endpoints/update-a-private-endpoint)
-  * [`POST /private-endpoints`](https://openrouter.ai/docs/api/api-reference/private-endpoints/create-a-private-endpoint)
-  * [`PUT /private-endpoints/{id}/parameters`](https://openrouter.ai/docs/api/api-reference/private-endpoints/set-private-endpoint-supported-parameters-deprecated)
-  * [`PUT /private-endpoints/{id}/pricing`](https://openrouter.ai/docs/api/api-reference/private-endpoints/set-private-endpoint-pricing-deprecated)
+  * [`GET /private-endpoints/{id}`](api/api-reference/private-endpoints/get-a-private-endpoint.md)
+  * [`PATCH /private-endpoints/{id}`](api/api-reference/private-endpoints/update-a-private-endpoint.md)
+  * [`POST /private-endpoints`](api/api-reference/private-endpoints/create-a-private-endpoint.md)
+  * [`PUT /private-endpoints/{id}/parameters`](api/api-reference/private-endpoints/set-private-endpoint-supported-parameters-deprecated.md)
+  * [`PUT /private-endpoints/{id}/pricing`](api/api-reference/private-endpoints/set-private-endpoint-pricing-deprecated.md)
 * `PrivateEndpointSettings`
 
   **4 endpoints using this schema**
 
-  * [`GET /private-endpoints/{id}`](https://openrouter.ai/docs/api/api-reference/private-endpoints/get-a-private-endpoint)
-  * [`PATCH /private-endpoints/{id}`](https://openrouter.ai/docs/api/api-reference/private-endpoints/update-a-private-endpoint)
-  * [`PUT /private-endpoints/{id}/parameters`](https://openrouter.ai/docs/api/api-reference/private-endpoints/set-private-endpoint-supported-parameters-deprecated)
-  * [`PUT /private-endpoints/{id}/pricing`](https://openrouter.ai/docs/api/api-reference/private-endpoints/set-private-endpoint-pricing-deprecated)
+  * [`GET /private-endpoints/{id}`](api/api-reference/private-endpoints/get-a-private-endpoint.md)
+  * [`PATCH /private-endpoints/{id}`](api/api-reference/private-endpoints/update-a-private-endpoint.md)
+  * [`PUT /private-endpoints/{id}/parameters`](api/api-reference/private-endpoints/set-private-endpoint-supported-parameters-deprecated.md)
+  * [`PUT /private-endpoints/{id}/pricing`](api/api-reference/private-endpoints/set-private-endpoint-pricing-deprecated.md)
 * `PrivateProvider`
 
   **4 endpoints using this schema**
 
-  * [`GET /private-providers`](https://openrouter.ai/docs/api/api-reference/private-providers/list-private-providers)
-  * [`GET /private-providers/{slug}`](https://openrouter.ai/docs/api/api-reference/private-providers/get-a-private-provider)
-  * [`PATCH /private-providers/{slug}`](https://openrouter.ai/docs/api/api-reference/private-providers/update-a-private-provider)
-  * [`POST /private-providers`](https://openrouter.ai/docs/api/api-reference/private-providers/create-a-private-provider)
+  * [`GET /private-providers`](api/api-reference/private-providers/list-private-providers.md)
+  * [`GET /private-providers/{slug}`](api/api-reference/private-providers/get-a-private-provider.md)
+  * [`PATCH /private-providers/{slug}`](api/api-reference/private-providers/update-a-private-provider.md)
+  * [`POST /private-providers`](api/api-reference/private-providers/create-a-private-provider.md)
 * `PrivateProviderDataPolicy`
-  * Used by [`POST /private-providers`](https://openrouter.ai/docs/api/api-reference/private-providers/create-a-private-provider)
+  * Used by [`POST /private-providers`](api/api-reference/private-providers/create-a-private-provider.md)
 * `UpdatePrivateEndpointSettingsRequest`
-  * Used by [`PATCH /private-endpoints/{id}`](https://openrouter.ai/docs/api/api-reference/private-endpoints/update-a-private-endpoint), [`POST /private-endpoints`](https://openrouter.ai/docs/api/api-reference/private-endpoints/create-a-private-endpoint)
+  * Used by [`PATCH /private-endpoints/{id}`](api/api-reference/private-endpoints/update-a-private-endpoint.md), [`POST /private-endpoints`](api/api-reference/private-endpoints/create-a-private-endpoint.md)
 * `UpdatePrivateProviderRequest`
-  * Used by [`PATCH /private-providers/{slug}`](https://openrouter.ai/docs/api/api-reference/private-providers/update-a-private-provider)
+  * Used by [`PATCH /private-providers/{slug}`](api/api-reference/private-providers/update-a-private-provider.md)
 
 ## Modified schemas
 
 * `CreatePrivateEndpointRequest`: new property `settings`
-  * Used by [`POST /private-endpoints`](https://openrouter.ai/docs/api/api-reference/private-endpoints/create-a-private-endpoint)
+  * Used by [`POST /private-endpoints`](api/api-reference/private-endpoints/create-a-private-endpoint.md)
 * `PrivateEndpoint`: example modified; new property `settings` (always present)
 
   **4 endpoints using this schema**
 
-  * [`GET /private-endpoints/{id}`](https://openrouter.ai/docs/api/api-reference/private-endpoints/get-a-private-endpoint)
-  * [`PATCH /private-endpoints/{id}`](https://openrouter.ai/docs/api/api-reference/private-endpoints/update-a-private-endpoint)
-  * [`PUT /private-endpoints/{id}/parameters`](https://openrouter.ai/docs/api/api-reference/private-endpoints/set-private-endpoint-supported-parameters-deprecated)
-  * [`PUT /private-endpoints/{id}/pricing`](https://openrouter.ai/docs/api/api-reference/private-endpoints/set-private-endpoint-pricing-deprecated)
+  * [`GET /private-endpoints/{id}`](api/api-reference/private-endpoints/get-a-private-endpoint.md)
+  * [`PATCH /private-endpoints/{id}`](api/api-reference/private-endpoints/update-a-private-endpoint.md)
+  * [`PUT /private-endpoints/{id}/parameters`](api/api-reference/private-endpoints/set-private-endpoint-supported-parameters-deprecated.md)
+  * [`PUT /private-endpoints/{id}/pricing`](api/api-reference/private-endpoints/set-private-endpoint-pricing-deprecated.md)
 * `UpdatePrivateEndpointRequest`:
   * description updated
   * example property\_added
   * new property `declared_parameters`
   * new property `pricing`
   * new property `settings`
-  * Used by [`PATCH /private-endpoints/{id}`](https://openrouter.ai/docs/api/api-reference/private-endpoints/update-a-private-endpoint)
+  * Used by [`PATCH /private-endpoints/{id}`](api/api-reference/private-endpoints/update-a-private-endpoint.md)
 * `CreatePrivateProviderRequest`: minLength property\_added; maxLength property\_added; pattern property\_added
-  * Used by [`POST /private-providers`](https://openrouter.ai/docs/api/api-reference/private-providers/create-a-private-provider)
+  * Used by [`POST /private-providers`](api/api-reference/private-providers/create-a-private-provider.md)
 * `PrivateProvider`: minLength property\_added; property `prompt_retention_days` updated; description updated
 
   **4 endpoints using this schema**
 
-  * [`GET /private-providers`](https://openrouter.ai/docs/api/api-reference/private-providers/list-private-providers)
-  * [`GET /private-providers/{slug}`](https://openrouter.ai/docs/api/api-reference/private-providers/get-a-private-provider)
-  * [`PATCH /private-providers/{slug}`](https://openrouter.ai/docs/api/api-reference/private-providers/update-a-private-provider)
-  * [`POST /private-providers`](https://openrouter.ai/docs/api/api-reference/private-providers/create-a-private-provider)
+  * [`GET /private-providers`](api/api-reference/private-providers/list-private-providers.md)
+  * [`GET /private-providers/{slug}`](api/api-reference/private-providers/get-a-private-provider.md)
+  * [`PATCH /private-providers/{slug}`](api/api-reference/private-providers/update-a-private-provider.md)
+  * [`POST /private-providers`](api/api-reference/private-providers/create-a-private-provider.md)
 * `PrivateProviderDataPolicy`: maximum property\_added; minimum property\_added
-  * Used by [`POST /private-providers`](https://openrouter.ai/docs/api/api-reference/private-providers/create-a-private-provider)
+  * Used by [`POST /private-providers`](api/api-reference/private-providers/create-a-private-provider.md)
 * `UpdatePrivateProviderRequest`: minLength property\_added; property `prompt_retention_days` updated; maxLength property\_added
-  * Used by [`PATCH /private-providers/{slug}`](https://openrouter.ai/docs/api/api-reference/private-providers/update-a-private-provider)
+  * Used by [`PATCH /private-providers/{slug}`](api/api-reference/private-providers/update-a-private-provider.md)
 
 **October 28, 2026**
 
@@ -120,137 +120,137 @@ Entries on this page are generated automatically from [OpenAPI specification](ap
 
   **4 endpoints using this schema**
 
-  * [`GET /observability/destinations`](https://openrouter.ai/docs/api/api-reference/observability/list-observability-destinations)
-  * [`GET /observability/destinations/{id}`](https://openrouter.ai/docs/api/api-reference/observability/get-an-observability-destination)
-  * [`PATCH /observability/destinations/{id}`](https://openrouter.ai/docs/api/api-reference/observability/update-an-observability-destination)
-  * [`POST /observability/destinations`](https://openrouter.ai/docs/api/api-reference/observability/create-an-observability-destination)
+  * [`GET /observability/destinations`](api/api-reference/observability/list-observability-destinations.md)
+  * [`GET /observability/destinations/{id}`](api/api-reference/observability/get-an-observability-destination.md)
+  * [`PATCH /observability/destinations/{id}`](api/api-reference/observability/update-an-observability-destination.md)
+  * [`POST /observability/destinations`](api/api-reference/observability/create-an-observability-destination.md)
 * `ChatDeveloperMessage.configuration_update`: additionalProperties `false` object removedNo action needed
-  * Used by [`POST /chat/completions`](https://openrouter.ai/docs/api/api-reference/chat/create-a-chat-completion), [`POST /presets/{slug}/chat/completions`](https://openrouter.ai/docs/api/api-reference/presets/create-a-preset-from-a-chat-completions-request-body)
+  * Used by [`POST /chat/completions`](api/api-reference/chat/create-a-chat-completion.md), [`POST /presets/{slug}/chat/completions`](api/api-reference/presets/create-a-preset-from-a-chat-completions-request-body.md)
   * **Migration: no action.** `configuration_update` on `ChatDeveloperMessage` is now a reference to the named `ConfigurationUpdate` schema instead of an inline object. The accepted value is unchanged: omit it, send `null`, or send an object with `reasoning`. Only generated SDK type names move; raw HTTP requests are unaffected.
 * `ChatDeveloperMessage.configuration_update`: properties `reasoning` object removedNo action needed
-  * Used by [`POST /chat/completions`](https://openrouter.ai/docs/api/api-reference/chat/create-a-chat-completion), [`POST /presets/{slug}/chat/completions`](https://openrouter.ai/docs/api/api-reference/presets/create-a-preset-from-a-chat-completions-request-body)
+  * Used by [`POST /chat/completions`](api/api-reference/chat/create-a-chat-completion.md), [`POST /presets/{slug}/chat/completions`](api/api-reference/presets/create-a-preset-from-a-chat-completions-request-body.md)
   * **Migration: no action.** `configuration_update` on `ChatDeveloperMessage` is now a reference to the named `ConfigurationUpdate` schema instead of an inline object. The accepted value is unchanged: omit it, send `null`, or send an object with `reasoning`. Only generated SDK type names move; raw HTTP requests are unaffected.
 * `ChatDeveloperMessage.configuration_update`: required `reasoning` property removedNo action needed
-  * Used by [`POST /chat/completions`](https://openrouter.ai/docs/api/api-reference/chat/create-a-chat-completion), [`POST /presets/{slug}/chat/completions`](https://openrouter.ai/docs/api/api-reference/presets/create-a-preset-from-a-chat-completions-request-body)
+  * Used by [`POST /chat/completions`](api/api-reference/chat/create-a-chat-completion.md), [`POST /presets/{slug}/chat/completions`](api/api-reference/presets/create-a-preset-from-a-chat-completions-request-body.md)
   * **Migration: no action.** `configuration_update` on `ChatDeveloperMessage` is now a reference to the named `ConfigurationUpdate` schema instead of an inline object. The accepted value is unchanged: omit it, send `null`, or send an object with `reasoning`. Only generated SDK type names move; raw HTTP requests are unaffected.
 * `ChatSystemMessage.configuration_update`: additionalProperties `false` object removedNo action needed
-  * Used by [`POST /chat/completions`](https://openrouter.ai/docs/api/api-reference/chat/create-a-chat-completion), [`POST /presets/{slug}/chat/completions`](https://openrouter.ai/docs/api/api-reference/presets/create-a-preset-from-a-chat-completions-request-body)
+  * Used by [`POST /chat/completions`](api/api-reference/chat/create-a-chat-completion.md), [`POST /presets/{slug}/chat/completions`](api/api-reference/presets/create-a-preset-from-a-chat-completions-request-body.md)
   * **Migration: no action.** `configuration_update` on `ChatSystemMessage` is now a reference to the named `ConfigurationUpdate` schema instead of an inline object. The accepted value is unchanged: omit it, send `null`, or send an object with `reasoning`. Only generated SDK type names move; raw HTTP requests are unaffected.
 * `ChatSystemMessage.configuration_update`: properties `reasoning` object removedNo action needed
-  * Used by [`POST /chat/completions`](https://openrouter.ai/docs/api/api-reference/chat/create-a-chat-completion), [`POST /presets/{slug}/chat/completions`](https://openrouter.ai/docs/api/api-reference/presets/create-a-preset-from-a-chat-completions-request-body)
+  * Used by [`POST /chat/completions`](api/api-reference/chat/create-a-chat-completion.md), [`POST /presets/{slug}/chat/completions`](api/api-reference/presets/create-a-preset-from-a-chat-completions-request-body.md)
   * **Migration: no action.** `configuration_update` on `ChatSystemMessage` is now a reference to the named `ConfigurationUpdate` schema instead of an inline object. The accepted value is unchanged: omit it, send `null`, or send an object with `reasoning`. Only generated SDK type names move; raw HTTP requests are unaffected.
 * `ChatSystemMessage.configuration_update`: required `reasoning` property removedNo action needed
-  * Used by [`POST /chat/completions`](https://openrouter.ai/docs/api/api-reference/chat/create-a-chat-completion), [`POST /presets/{slug}/chat/completions`](https://openrouter.ai/docs/api/api-reference/presets/create-a-preset-from-a-chat-completions-request-body)
+  * Used by [`POST /chat/completions`](api/api-reference/chat/create-a-chat-completion.md), [`POST /presets/{slug}/chat/completions`](api/api-reference/presets/create-a-preset-from-a-chat-completions-request-body.md)
   * **Migration: no action.** `configuration_update` on `ChatSystemMessage` is now a reference to the named `ConfigurationUpdate` schema instead of an inline object. The accepted value is unchanged: omit it, send `null`, or send an object with `reasoning`. Only generated SDK type names move; raw HTTP requests are unaffected.
 
 ## Modified endpoints
 
-* [`POST /private-endpoints`](https://openrouter.ai/docs/api/api-reference/private-endpoints/create-a-private-endpoint): now returns 400 `parameters_invalid` when `declared_parameters` includes `tool_choice` without `tools`, matching `PUT /private-endpoints/{id}/parameters`; the create response does not echo `declared_parameters` or `tested_parameters`, read them back from `GET /private-endpoints/{id}`
-* [`POST /keys`](https://openrouter.ai/docs/api/api-reference/api-keys/create-a-new-api-key): request schema updated
-* [`PATCH /keys/{hash}`](https://openrouter.ai/docs/api/api-reference/api-keys/update-an-api-key): request schema updated
-* [`GET /vault/interns/{internId}/connections`](https://openrouter.ai/docs/api/api-reference/vault/list-the-connections-an-intern-can-use):
+* [`POST /private-endpoints`](api/api-reference/private-endpoints/create-a-private-endpoint.md): now returns 400 `parameters_invalid` when `declared_parameters` includes `tool_choice` without `tools`, matching `PUT /private-endpoints/{id}/parameters`; the create response does not echo `declared_parameters` or `tested_parameters`, read them back from `GET /private-endpoints/{id}`
+* [`POST /keys`](api/api-reference/api-keys/create-a-new-api-key.md): request schema updated
+* [`PATCH /keys/{hash}`](api/api-reference/api-keys/update-an-api-key.md): request schema updated
+* [`GET /vault/interns/{internId}/connections`](api/api-reference/vault/list-the-connections-an-intern-can-use.md):
   * description updated
   * response schema updated
   * response now always includes `routing`
   * response now always includes `routing_text`
-* [`GET /byok`](https://openrouter.ai/docs/api/api-reference/byok/list-byok-provider-credentials): parameter `provider` updated
+* [`GET /byok`](api/api-reference/byok/list-byok-provider-credentials.md): parameter `provider` updated
 
 ## New response codes
 
-* [`GET /models`](https://openrouter.ai/docs/api/api-reference/models/list-all-models-and-their-properties): now returns `401`
-* [`GET /models`](https://openrouter.ai/docs/api/api-reference/models/list-all-models-and-their-properties): now returns `404`
-* [`GET /models`](https://openrouter.ai/docs/api/api-reference/models/list-all-models-and-their-properties): now returns `408`
-* [`GET /models`](https://openrouter.ai/docs/api/api-reference/models/list-all-models-and-their-properties): now returns `409`
-* [`GET /models`](https://openrouter.ai/docs/api/api-reference/models/list-all-models-and-their-properties): now returns `429`
-* [`GET /models/user`](https://openrouter.ai/docs/api/api-reference/models/list-models-filtered-by-user-provider-preferences-privacy-settings-and-guardrails): now returns `408`
-* [`GET /models/user`](https://openrouter.ai/docs/api/api-reference/models/list-models-filtered-by-user-provider-preferences-privacy-settings-and-guardrails): now returns `409`
-* [`GET /models/user`](https://openrouter.ai/docs/api/api-reference/models/list-models-filtered-by-user-provider-preferences-privacy-settings-and-guardrails): now returns `429`
+* [`GET /models`](api/api-reference/models/list-all-models-and-their-properties.md): now returns `401`
+* [`GET /models`](api/api-reference/models/list-all-models-and-their-properties.md): now returns `404`
+* [`GET /models`](api/api-reference/models/list-all-models-and-their-properties.md): now returns `408`
+* [`GET /models`](api/api-reference/models/list-all-models-and-their-properties.md): now returns `409`
+* [`GET /models`](api/api-reference/models/list-all-models-and-their-properties.md): now returns `429`
+* [`GET /models/user`](api/api-reference/models/list-models-filtered-by-user-provider-preferences-privacy-settings-and-guardrails.md): now returns `408`
+* [`GET /models/user`](api/api-reference/models/list-models-filtered-by-user-provider-preferences-privacy-settings-and-guardrails.md): now returns `409`
+* [`GET /models/user`](api/api-reference/models/list-models-filtered-by-user-provider-preferences-privacy-settings-and-guardrails.md): now returns `429`
 
 ## New schemas
 
 * `ConfigurationUpdate`
-  * Used by [`POST /chat/completions`](https://openrouter.ai/docs/api/api-reference/chat/create-a-chat-completion), [`POST /presets/{slug}/chat/completions`](https://openrouter.ai/docs/api/api-reference/presets/create-a-preset-from-a-chat-completions-request-body)
+  * Used by [`POST /chat/completions`](api/api-reference/chat/create-a-chat-completion.md), [`POST /presets/{slug}/chat/completions`](api/api-reference/presets/create-a-preset-from-a-chat-completions-request-body.md)
 * `VaultRoutingTable`
-  * Used by [`GET /vault/interns/{internId}/connections`](https://openrouter.ai/docs/api/api-reference/vault/list-the-connections-an-intern-can-use)
+  * Used by [`GET /vault/interns/{internId}/connections`](api/api-reference/vault/list-the-connections-an-intern-can-use.md)
 
 ## Modified schemas
 
 * `ChatDeveloperMessage`: new union variant added; type property\_removed
-  * Used by [`POST /chat/completions`](https://openrouter.ai/docs/api/api-reference/chat/create-a-chat-completion), [`POST /presets/{slug}/chat/completions`](https://openrouter.ai/docs/api/api-reference/presets/create-a-preset-from-a-chat-completions-request-body)
+  * Used by [`POST /chat/completions`](api/api-reference/chat/create-a-chat-completion.md), [`POST /presets/{slug}/chat/completions`](api/api-reference/presets/create-a-preset-from-a-chat-completions-request-body.md)
 * `ChatSystemMessage`: new union variant added; type property\_removed
-  * Used by [`POST /chat/completions`](https://openrouter.ai/docs/api/api-reference/chat/create-a-chat-completion), [`POST /presets/{slug}/chat/completions`](https://openrouter.ai/docs/api/api-reference/presets/create-a-preset-from-a-chat-completions-request-body)
+  * Used by [`POST /chat/completions`](api/api-reference/chat/create-a-chat-completion.md), [`POST /presets/{slug}/chat/completions`](api/api-reference/presets/create-a-preset-from-a-chat-completions-request-body.md)
 * `WebSearchStatus`: enum property\_added
 
   **4 endpoints using this schema**
 
-  * [`GET /batches/{id}`](https://openrouter.ai/docs/api/api-reference/batch/get-a-batch)
-  * [`POST /batches`](https://openrouter.ai/docs/api/api-reference/batch/create-a-batch)
-  * [`POST /presets/{slug}/responses`](https://openrouter.ai/docs/api/api-reference/presets/create-a-preset-from-a-responses-request-body)
-  * [`POST /responses`](https://openrouter.ai/docs/api/api-reference/responses/create-a-response)
+  * [`GET /batches/{id}`](api/api-reference/batch/get-a-batch.md)
+  * [`POST /batches`](api/api-reference/batch/create-a-batch.md)
+  * [`POST /presets/{slug}/responses`](api/api-reference/presets/create-a-preset-from-a-responses-request-body.md)
+  * [`POST /responses`](api/api-reference/responses/create-a-response.md)
 * `BYOKProviderSlug`: enum property\_added
 
   **4 endpoints using this schema**
 
-  * [`GET /byok`](https://openrouter.ai/docs/api/api-reference/byok/list-byok-provider-credentials)
-  * [`GET /byok/{id}`](https://openrouter.ai/docs/api/api-reference/byok/get-a-byok-provider-credential)
-  * [`PATCH /byok/{id}`](https://openrouter.ai/docs/api/api-reference/byok/update-a-byok-provider-credential)
-  * [`POST /byok`](https://openrouter.ai/docs/api/api-reference/byok/create-a-byok-provider-credential)
+  * [`GET /byok`](api/api-reference/byok/list-byok-provider-credentials.md)
+  * [`GET /byok/{id}`](api/api-reference/byok/get-a-byok-provider-credential.md)
+  * [`PATCH /byok/{id}`](api/api-reference/byok/update-a-byok-provider-credential.md)
+  * [`POST /byok`](api/api-reference/byok/create-a-byok-provider-credential.md)
 * `MessagesStartEvent`: property `provider` updated
-  * Used by [`POST /messages`](https://openrouter.ai/docs/api/api-reference/anthropic-messages/create-a-message)
+  * Used by [`POST /messages`](api/api-reference/anthropic-messages/create-a-message.md)
 * `ProviderName`: enum property\_added
 
   **14 endpoints using this schema**
 
-  * [`GET /endpoints/zdr`](https://openrouter.ai/docs/api/api-reference/endpoints/preview-the-impact-of-zdr-on-the-available-endpoints)
-  * [`GET /models/{author}/{slug}/endpoints`](https://openrouter.ai/docs/api/api-reference/endpoints/list-all-endpoints-for-a-model)
-  * [`POST /api/alpha/decisions`](https://openrouter.ai/docs/api/api-reference/alphadecisions/submit-a-decisions-request)
-  * [`POST /batches`](https://openrouter.ai/docs/api/api-reference/batch/create-a-batch)
-  * [`POST /chat/completions`](https://openrouter.ai/docs/api/api-reference/chat/create-a-chat-completion)
-  * [`POST /embeddings`](https://openrouter.ai/docs/api/api-reference/embeddings/submit-an-embedding-request)
-  * [`POST /images`](https://openrouter.ai/docs/api/api-reference/images/generate-an-image)
-  * [`POST /messages`](https://openrouter.ai/docs/api/api-reference/anthropic-messages/create-a-message)
-  * [`POST /presets/{slug}/chat/completions`](https://openrouter.ai/docs/api/api-reference/presets/create-a-preset-from-a-chat-completions-request-body)
-  * [`POST /presets/{slug}/messages`](https://openrouter.ai/docs/api/api-reference/presets/create-a-preset-from-a-messages-request-body)
-  * [`POST /presets/{slug}/responses`](https://openrouter.ai/docs/api/api-reference/presets/create-a-preset-from-a-responses-request-body)
-  * [`POST /rerank`](https://openrouter.ai/docs/api/api-reference/rerank/submit-a-rerank-request)
-  * [`POST /responses`](https://openrouter.ai/docs/api/api-reference/responses/create-a-response)
-  * [`POST /systemone`](https://openrouter.ai/docs/api/api-reference/systemone/submit-a-system-one-request)
+  * [`GET /endpoints/zdr`](api/api-reference/endpoints/preview-the-impact-of-zdr-on-the-available-endpoints.md)
+  * [`GET /models/{author}/{slug}/endpoints`](api/api-reference/endpoints/list-all-endpoints-for-a-model.md)
+  * [`POST /api/alpha/decisions`](api/api-reference/alphadecisions/submit-a-decisions-request.md)
+  * [`POST /batches`](api/api-reference/batch/create-a-batch.md)
+  * [`POST /chat/completions`](api/api-reference/chat/create-a-chat-completion.md)
+  * [`POST /embeddings`](api/api-reference/embeddings/submit-an-embedding-request.md)
+  * [`POST /images`](api/api-reference/images/generate-an-image.md)
+  * [`POST /messages`](api/api-reference/anthropic-messages/create-a-message.md)
+  * [`POST /presets/{slug}/chat/completions`](api/api-reference/presets/create-a-preset-from-a-chat-completions-request-body.md)
+  * [`POST /presets/{slug}/messages`](api/api-reference/presets/create-a-preset-from-a-messages-request-body.md)
+  * [`POST /presets/{slug}/responses`](api/api-reference/presets/create-a-preset-from-a-responses-request-body.md)
+  * [`POST /rerank`](api/api-reference/rerank/submit-a-rerank-request.md)
+  * [`POST /responses`](api/api-reference/responses/create-a-response.md)
+  * [`POST /systemone`](api/api-reference/systemone/submit-a-system-one-request.md)
 * `ProviderOptions`: new property `particle-ai`
 
   **14 endpoints using this schema**
 
-  * [`POST /api/alpha/decisions`](https://openrouter.ai/docs/api/api-reference/alphadecisions/submit-a-decisions-request)
-  * [`POST /audio/speech`](https://openrouter.ai/docs/api/api-reference/tts/create-speech)
-  * [`POST /audio/transcriptions`](https://openrouter.ai/docs/api/api-reference/stt/create-transcription)
-  * [`POST /chat/completions`](https://openrouter.ai/docs/api/api-reference/chat/create-a-chat-completion)
-  * [`POST /embeddings`](https://openrouter.ai/docs/api/api-reference/embeddings/submit-an-embedding-request)
-  * [`POST /images`](https://openrouter.ai/docs/api/api-reference/images/generate-an-image)
-  * [`POST /messages`](https://openrouter.ai/docs/api/api-reference/anthropic-messages/create-a-message)
-  * [`POST /presets/{slug}/chat/completions`](https://openrouter.ai/docs/api/api-reference/presets/create-a-preset-from-a-chat-completions-request-body)
-  * [`POST /presets/{slug}/messages`](https://openrouter.ai/docs/api/api-reference/presets/create-a-preset-from-a-messages-request-body)
-  * [`POST /presets/{slug}/responses`](https://openrouter.ai/docs/api/api-reference/presets/create-a-preset-from-a-responses-request-body)
-  * [`POST /rerank`](https://openrouter.ai/docs/api/api-reference/rerank/submit-a-rerank-request)
-  * [`POST /responses`](https://openrouter.ai/docs/api/api-reference/responses/create-a-response)
-  * [`POST /systemone`](https://openrouter.ai/docs/api/api-reference/systemone/submit-a-system-one-request)
-  * [`POST /videos`](https://openrouter.ai/docs/api/api-reference/video-generation/submit-a-video-generation-request)
+  * [`POST /api/alpha/decisions`](api/api-reference/alphadecisions/submit-a-decisions-request.md)
+  * [`POST /audio/speech`](api/api-reference/tts/create-speech.md)
+  * [`POST /audio/transcriptions`](api/api-reference/stt/create-transcription.md)
+  * [`POST /chat/completions`](api/api-reference/chat/create-a-chat-completion.md)
+  * [`POST /embeddings`](api/api-reference/embeddings/submit-an-embedding-request.md)
+  * [`POST /images`](api/api-reference/images/generate-an-image.md)
+  * [`POST /messages`](api/api-reference/anthropic-messages/create-a-message.md)
+  * [`POST /presets/{slug}/chat/completions`](api/api-reference/presets/create-a-preset-from-a-chat-completions-request-body.md)
+  * [`POST /presets/{slug}/messages`](api/api-reference/presets/create-a-preset-from-a-messages-request-body.md)
+  * [`POST /presets/{slug}/responses`](api/api-reference/presets/create-a-preset-from-a-responses-request-body.md)
+  * [`POST /rerank`](api/api-reference/rerank/submit-a-rerank-request.md)
+  * [`POST /responses`](api/api-reference/responses/create-a-response.md)
+  * [`POST /systemone`](api/api-reference/systemone/submit-a-system-one-request.md)
+  * [`POST /videos`](api/api-reference/video-generation/submit-a-video-generation-request.md)
 * `ProviderResponse`: enum property\_added
-  * Used by [`GET /generation`](https://openrouter.ai/docs/api/api-reference/generations/get-request-&-usage-metadata-for-a-generation)
+  * Used by [`GET /generation`](api/api-reference/generations/get-request-&-usage-metadata-for-a-generation.md)
 * `CreateGuardrailRequest`: new property `enforce_first_party_harness_models`
-  * Used by [`POST /guardrails`](https://openrouter.ai/docs/api/api-reference/guardrails/create-a-guardrail)
+  * Used by [`POST /guardrails`](api/api-reference/guardrails/create-a-guardrail.md)
 * `Guardrail`: new property `enforce_first_party_harness_models`
 
   **4 endpoints using this schema**
 
-  * [`GET /guardrails`](https://openrouter.ai/docs/api/api-reference/guardrails/list-guardrails)
-  * [`GET /guardrails/{id}`](https://openrouter.ai/docs/api/api-reference/guardrails/get-a-guardrail)
-  * [`PATCH /guardrails/{id}`](https://openrouter.ai/docs/api/api-reference/guardrails/update-a-guardrail)
-  * [`POST /guardrails`](https://openrouter.ai/docs/api/api-reference/guardrails/create-a-guardrail)
+  * [`GET /guardrails`](api/api-reference/guardrails/list-guardrails.md)
+  * [`GET /guardrails/{id}`](api/api-reference/guardrails/get-a-guardrail.md)
+  * [`PATCH /guardrails/{id}`](api/api-reference/guardrails/update-a-guardrail.md)
+  * [`POST /guardrails`](api/api-reference/guardrails/create-a-guardrail.md)
 * `OrganizationSettings`: description updated
-  * Used by [`GET /organization/settings`](https://openrouter.ai/docs/api/api-reference/organization/get-organization-settings), [`PATCH /organization/settings`](https://openrouter.ai/docs/api/api-reference/organization/update-organization-settings)
+  * Used by [`GET /organization/settings`](api/api-reference/organization/get-organization-settings.md), [`PATCH /organization/settings`](api/api-reference/organization/update-organization-settings.md)
 * `UpdateGuardrailRequest`: new property `enforce_first_party_harness_models`
-  * Used by [`PATCH /guardrails/{id}`](https://openrouter.ai/docs/api/api-reference/guardrails/update-a-guardrail)
+  * Used by [`PATCH /guardrails/{id}`](api/api-reference/guardrails/update-a-guardrail.md)
 * `UpdateOrganizationSettingsRequest`: description updated
-  * Used by [`PATCH /organization/settings`](https://openrouter.ai/docs/api/api-reference/organization/update-organization-settings)
+  * Used by [`PATCH /organization/settings`](api/api-reference/organization/update-organization-settings.md)
 
 **October 27, 2026**
 
@@ -263,20 +263,20 @@ Entries on this page are generated automatically from [OpenAPI specification](ap
 
   **4 endpoints using this schema**
 
-  * [`GET /observability/destinations`](https://openrouter.ai/docs/api/api-reference/observability/list-observability-destinations)
-  * [`GET /observability/destinations/{id}`](https://openrouter.ai/docs/api/api-reference/observability/get-an-observability-destination)
-  * [`PATCH /observability/destinations/{id}`](https://openrouter.ai/docs/api/api-reference/observability/update-an-observability-destination)
-  * [`POST /observability/destinations`](https://openrouter.ai/docs/api/api-reference/observability/create-an-observability-destination)
+  * [`GET /observability/destinations`](api/api-reference/observability/list-observability-destinations.md)
+  * [`GET /observability/destinations/{id}`](api/api-reference/observability/get-an-observability-destination.md)
+  * [`PATCH /observability/destinations/{id}`](api/api-reference/observability/update-an-observability-destination.md)
+  * [`POST /observability/destinations`](api/api-reference/observability/create-an-observability-destination.md)
 * `ObservabilityS3Destination.config`: required `secretAccessKey` property removedNo action needed
 
   * Same change as above: required only when `authMode` is `access_keys` (the default).
 
   **4 endpoints using this schema**
 
-  * [`GET /observability/destinations`](https://openrouter.ai/docs/api/api-reference/observability/list-observability-destinations)
-  * [`GET /observability/destinations/{id}`](https://openrouter.ai/docs/api/api-reference/observability/get-an-observability-destination)
-  * [`PATCH /observability/destinations/{id}`](https://openrouter.ai/docs/api/api-reference/observability/update-an-observability-destination)
-  * [`POST /observability/destinations`](https://openrouter.ai/docs/api/api-reference/observability/create-an-observability-destination)
+  * [`GET /observability/destinations`](api/api-reference/observability/list-observability-destinations.md)
+  * [`GET /observability/destinations/{id}`](api/api-reference/observability/get-an-observability-destination.md)
+  * [`PATCH /observability/destinations/{id}`](api/api-reference/observability/update-an-observability-destination.md)
+  * [`POST /observability/destinations`](api/api-reference/observability/create-an-observability-destination.md)
 
 ## New endpoints
 
@@ -284,31 +284,31 @@ Entries on this page are generated automatically from [OpenAPI specification](ap
 
 ## Modified endpoints
 
-* [`POST /private-endpoints`](https://openrouter.ai/docs/api/api-reference/private-endpoints/create-a-private-endpoint): description updated
+* [`POST /private-endpoints`](api/api-reference/private-endpoints/create-a-private-endpoint.md): description updated
 
 ## New response codes
 
-* [`GET /endpoints/zdr`](https://openrouter.ai/docs/api/api-reference/endpoints/preview-the-impact-of-zdr-on-the-available-endpoints): now returns `503`
-* [`POST /generation/feedback`](https://openrouter.ai/docs/api/api-reference/generations/submit-feedback-for-a-generation): now returns `403`
-* [`POST /generation/feedback`](https://openrouter.ai/docs/api/api-reference/generations/submit-feedback-for-a-generation): now returns `503`
-* [`GET /models`](https://openrouter.ai/docs/api/api-reference/models/list-all-models-and-their-properties): now returns `503`
-* [`GET /models/user`](https://openrouter.ai/docs/api/api-reference/models/list-models-filtered-by-user-provider-preferences-privacy-settings-and-guardrails): now returns `503`
-* [`GET /models/{author}/{slug}/endpoints`](https://openrouter.ai/docs/api/api-reference/endpoints/list-all-endpoints-for-a-model): now returns `503`
-* [`GET /presets`](https://openrouter.ai/docs/api/api-reference/presets/list-presets): now returns `503`
-* [`GET /presets/{slug}`](https://openrouter.ai/docs/api/api-reference/presets/get-a-preset): now returns `503`
-* [`GET /presets/{slug}/versions`](https://openrouter.ai/docs/api/api-reference/presets/list-versions-of-a-preset): now returns `503`
-* [`GET /presets/{slug}/versions/{version}`](https://openrouter.ai/docs/api/api-reference/presets/get-a-specific-version-of-a-preset): now returns `503`
+* [`GET /endpoints/zdr`](api/api-reference/endpoints/preview-the-impact-of-zdr-on-the-available-endpoints.md): now returns `503`
+* [`POST /generation/feedback`](api/api-reference/generations/submit-feedback-for-a-generation.md): now returns `403`
+* [`POST /generation/feedback`](api/api-reference/generations/submit-feedback-for-a-generation.md): now returns `503`
+* [`GET /models`](api/api-reference/models/list-all-models-and-their-properties.md): now returns `503`
+* [`GET /models/user`](api/api-reference/models/list-models-filtered-by-user-provider-preferences-privacy-settings-and-guardrails.md): now returns `503`
+* [`GET /models/{author}/{slug}/endpoints`](api/api-reference/endpoints/list-all-endpoints-for-a-model.md): now returns `503`
+* [`GET /presets`](api/api-reference/presets/list-presets.md): now returns `503`
+* [`GET /presets/{slug}`](api/api-reference/presets/get-a-preset.md): now returns `503`
+* [`GET /presets/{slug}/versions`](api/api-reference/presets/list-versions-of-a-preset.md): now returns `503`
+* [`GET /presets/{slug}/versions/{version}`](api/api-reference/presets/get-a-specific-version-of-a-preset.md): now returns `503`
 
 ## New schemas
 
 * `PrivateEndpointDeclaredParameter`
-  * Used by [`POST /private-endpoints`](https://openrouter.ai/docs/api/api-reference/private-endpoints/create-a-private-endpoint), [`PUT /private-endpoints/{id}/parameters`](https://openrouter.ai/docs/api/api-reference/private-endpoints/set-private-endpoint-supported-parameters)
+  * Used by [`POST /private-endpoints`](api/api-reference/private-endpoints/create-a-private-endpoint.md), [`PUT /private-endpoints/{id}/parameters`](https://openrouter.ai/docs/api/api-reference/private-endpoints/set-private-endpoint-supported-parameters)
 * `PrivateEndpointParameterCheck`
-  * Used by [`POST /private-endpoints`](https://openrouter.ai/docs/api/api-reference/private-endpoints/create-a-private-endpoint), [`POST /private-endpoints/{id}/validate`](https://openrouter.ai/docs/api/api-reference/private-endpoints/validate-a-draft-private-endpoint)
+  * Used by [`POST /private-endpoints`](api/api-reference/private-endpoints/create-a-private-endpoint.md), [`POST /private-endpoints/{id}/validate`](api/api-reference/private-endpoints/validate-a-draft-private-endpoint.md)
 * `UpdatePrivateEndpointParametersRequest`
   * Used by [`PUT /private-endpoints/{id}/parameters`](https://openrouter.ai/docs/api/api-reference/private-endpoints/set-private-endpoint-supported-parameters)
 * `DecisionsImageAsset`
-  * Used by [`POST /api/alpha/decisions`](https://openrouter.ai/docs/api/api-reference/alphadecisions/submit-a-decisions-request), [`POST /systemone`](https://openrouter.ai/docs/api/api-reference/systemone/submit-a-system-one-request)
+  * Used by [`POST /api/alpha/decisions`](api/api-reference/alphadecisions/submit-a-decisions-request.md), [`POST /systemone`](api/api-reference/systemone/submit-a-system-one-request.md)
 
 ## Modified schemas
 
@@ -322,12 +322,12 @@ Entries on this page are generated automatically from [OpenAPI specification](ap
 
   **4 endpoints using this schema**
 
-  * [`GET /observability/destinations`](https://openrouter.ai/docs/api/api-reference/observability/list-observability-destinations)
-  * [`GET /observability/destinations/{id}`](https://openrouter.ai/docs/api/api-reference/observability/get-an-observability-destination)
-  * [`PATCH /observability/destinations/{id}`](https://openrouter.ai/docs/api/api-reference/observability/update-an-observability-destination)
-  * [`POST /observability/destinations`](https://openrouter.ai/docs/api/api-reference/observability/create-an-observability-destination)
+  * [`GET /observability/destinations`](api/api-reference/observability/list-observability-destinations.md)
+  * [`GET /observability/destinations/{id}`](api/api-reference/observability/get-an-observability-destination.md)
+  * [`PATCH /observability/destinations/{id}`](api/api-reference/observability/update-an-observability-destination.md)
+  * [`POST /observability/destinations`](api/api-reference/observability/create-an-observability-destination.md)
 * `CreatePrivateEndpointRequest`: new property `declared_parameters`; new property `max_completion_tokens`
-  * Used by [`POST /private-endpoints`](https://openrouter.ai/docs/api/api-reference/private-endpoints/create-a-private-endpoint)
+  * Used by [`POST /private-endpoints`](api/api-reference/private-endpoints/create-a-private-endpoint.md)
 * `PrivateEndpoint`:
 
   * example modified
@@ -337,70 +337,70 @@ Entries on this page are generated automatically from [OpenAPI specification](ap
 
   **4 endpoints using this schema**
 
-  * [`GET /private-endpoints/{id}`](https://openrouter.ai/docs/api/api-reference/private-endpoints/get-a-private-endpoint)
+  * [`GET /private-endpoints/{id}`](api/api-reference/private-endpoints/get-a-private-endpoint.md)
   * [`PATCH /private-endpoints/{id}`](https://openrouter.ai/docs/api/api-reference/private-endpoints/update-a-draft-private-endpoint)
   * [`PUT /private-endpoints/{id}/parameters`](https://openrouter.ai/docs/api/api-reference/private-endpoints/set-private-endpoint-supported-parameters)
   * [`PUT /private-endpoints/{id}/pricing`](https://openrouter.ai/docs/api/api-reference/private-endpoints/set-private-endpoint-pricing)
 * `PrivateEndpointValidation`: new property `parameters`
-  * Used by [`POST /private-endpoints/{id}/validate`](https://openrouter.ai/docs/api/api-reference/private-endpoints/validate-a-draft-private-endpoint)
+  * Used by [`POST /private-endpoints/{id}/validate`](api/api-reference/private-endpoints/validate-a-draft-private-endpoint.md)
 * `PrivateEndpointValidationNullable`: new property `parameters`
-  * Used by [`POST /private-endpoints`](https://openrouter.ai/docs/api/api-reference/private-endpoints/create-a-private-endpoint)
+  * Used by [`POST /private-endpoints`](api/api-reference/private-endpoints/create-a-private-endpoint.md)
 * `DecisionsRequest`: new property `assets`
-  * Used by [`POST /api/alpha/decisions`](https://openrouter.ai/docs/api/api-reference/alphadecisions/submit-a-decisions-request), [`POST /systemone`](https://openrouter.ai/docs/api/api-reference/systemone/submit-a-system-one-request)
+  * Used by [`POST /api/alpha/decisions`](api/api-reference/alphadecisions/submit-a-decisions-request.md), [`POST /systemone`](api/api-reference/systemone/submit-a-system-one-request.md)
 * `MessagesStartEvent`: property `provider` updated
-  * Used by [`POST /messages`](https://openrouter.ai/docs/api/api-reference/anthropic-messages/create-a-message)
+  * Used by [`POST /messages`](api/api-reference/anthropic-messages/create-a-message.md)
 * `ProviderName`: enum property\_added
 
   **14 endpoints using this schema**
 
-  * [`GET /endpoints/zdr`](https://openrouter.ai/docs/api/api-reference/endpoints/preview-the-impact-of-zdr-on-the-available-endpoints)
-  * [`GET /models/{author}/{slug}/endpoints`](https://openrouter.ai/docs/api/api-reference/endpoints/list-all-endpoints-for-a-model)
-  * [`POST /api/alpha/decisions`](https://openrouter.ai/docs/api/api-reference/alphadecisions/submit-a-decisions-request)
-  * [`POST /batches`](https://openrouter.ai/docs/api/api-reference/batch/create-a-batch)
-  * [`POST /chat/completions`](https://openrouter.ai/docs/api/api-reference/chat/create-a-chat-completion)
-  * [`POST /embeddings`](https://openrouter.ai/docs/api/api-reference/embeddings/submit-an-embedding-request)
-  * [`POST /images`](https://openrouter.ai/docs/api/api-reference/images/generate-an-image)
-  * [`POST /messages`](https://openrouter.ai/docs/api/api-reference/anthropic-messages/create-a-message)
-  * [`POST /presets/{slug}/chat/completions`](https://openrouter.ai/docs/api/api-reference/presets/create-a-preset-from-a-chat-completions-request-body)
-  * [`POST /presets/{slug}/messages`](https://openrouter.ai/docs/api/api-reference/presets/create-a-preset-from-a-messages-request-body)
-  * [`POST /presets/{slug}/responses`](https://openrouter.ai/docs/api/api-reference/presets/create-a-preset-from-a-responses-request-body)
-  * [`POST /rerank`](https://openrouter.ai/docs/api/api-reference/rerank/submit-a-rerank-request)
-  * [`POST /responses`](https://openrouter.ai/docs/api/api-reference/responses/create-a-response)
-  * [`POST /systemone`](https://openrouter.ai/docs/api/api-reference/systemone/submit-a-system-one-request)
+  * [`GET /endpoints/zdr`](api/api-reference/endpoints/preview-the-impact-of-zdr-on-the-available-endpoints.md)
+  * [`GET /models/{author}/{slug}/endpoints`](api/api-reference/endpoints/list-all-endpoints-for-a-model.md)
+  * [`POST /api/alpha/decisions`](api/api-reference/alphadecisions/submit-a-decisions-request.md)
+  * [`POST /batches`](api/api-reference/batch/create-a-batch.md)
+  * [`POST /chat/completions`](api/api-reference/chat/create-a-chat-completion.md)
+  * [`POST /embeddings`](api/api-reference/embeddings/submit-an-embedding-request.md)
+  * [`POST /images`](api/api-reference/images/generate-an-image.md)
+  * [`POST /messages`](api/api-reference/anthropic-messages/create-a-message.md)
+  * [`POST /presets/{slug}/chat/completions`](api/api-reference/presets/create-a-preset-from-a-chat-completions-request-body.md)
+  * [`POST /presets/{slug}/messages`](api/api-reference/presets/create-a-preset-from-a-messages-request-body.md)
+  * [`POST /presets/{slug}/responses`](api/api-reference/presets/create-a-preset-from-a-responses-request-body.md)
+  * [`POST /rerank`](api/api-reference/rerank/submit-a-rerank-request.md)
+  * [`POST /responses`](api/api-reference/responses/create-a-response.md)
+  * [`POST /systemone`](api/api-reference/systemone/submit-a-system-one-request.md)
 * `ProviderOptions`: new property `primalabs`
 
   **14 endpoints using this schema**
 
-  * [`POST /api/alpha/decisions`](https://openrouter.ai/docs/api/api-reference/alphadecisions/submit-a-decisions-request)
-  * [`POST /audio/speech`](https://openrouter.ai/docs/api/api-reference/tts/create-speech)
-  * [`POST /audio/transcriptions`](https://openrouter.ai/docs/api/api-reference/stt/create-transcription)
-  * [`POST /chat/completions`](https://openrouter.ai/docs/api/api-reference/chat/create-a-chat-completion)
-  * [`POST /embeddings`](https://openrouter.ai/docs/api/api-reference/embeddings/submit-an-embedding-request)
-  * [`POST /images`](https://openrouter.ai/docs/api/api-reference/images/generate-an-image)
-  * [`POST /messages`](https://openrouter.ai/docs/api/api-reference/anthropic-messages/create-a-message)
-  * [`POST /presets/{slug}/chat/completions`](https://openrouter.ai/docs/api/api-reference/presets/create-a-preset-from-a-chat-completions-request-body)
-  * [`POST /presets/{slug}/messages`](https://openrouter.ai/docs/api/api-reference/presets/create-a-preset-from-a-messages-request-body)
-  * [`POST /presets/{slug}/responses`](https://openrouter.ai/docs/api/api-reference/presets/create-a-preset-from-a-responses-request-body)
-  * [`POST /rerank`](https://openrouter.ai/docs/api/api-reference/rerank/submit-a-rerank-request)
-  * [`POST /responses`](https://openrouter.ai/docs/api/api-reference/responses/create-a-response)
-  * [`POST /systemone`](https://openrouter.ai/docs/api/api-reference/systemone/submit-a-system-one-request)
-  * [`POST /videos`](https://openrouter.ai/docs/api/api-reference/video-generation/submit-a-video-generation-request)
+  * [`POST /api/alpha/decisions`](api/api-reference/alphadecisions/submit-a-decisions-request.md)
+  * [`POST /audio/speech`](api/api-reference/tts/create-speech.md)
+  * [`POST /audio/transcriptions`](api/api-reference/stt/create-transcription.md)
+  * [`POST /chat/completions`](api/api-reference/chat/create-a-chat-completion.md)
+  * [`POST /embeddings`](api/api-reference/embeddings/submit-an-embedding-request.md)
+  * [`POST /images`](api/api-reference/images/generate-an-image.md)
+  * [`POST /messages`](api/api-reference/anthropic-messages/create-a-message.md)
+  * [`POST /presets/{slug}/chat/completions`](api/api-reference/presets/create-a-preset-from-a-chat-completions-request-body.md)
+  * [`POST /presets/{slug}/messages`](api/api-reference/presets/create-a-preset-from-a-messages-request-body.md)
+  * [`POST /presets/{slug}/responses`](api/api-reference/presets/create-a-preset-from-a-responses-request-body.md)
+  * [`POST /rerank`](api/api-reference/rerank/submit-a-rerank-request.md)
+  * [`POST /responses`](api/api-reference/responses/create-a-response.md)
+  * [`POST /systemone`](api/api-reference/systemone/submit-a-system-one-request.md)
+  * [`POST /videos`](api/api-reference/video-generation/submit-a-video-generation-request.md)
 * `ProviderResponse`: enum property\_added
-  * Used by [`GET /generation`](https://openrouter.ai/docs/api/api-reference/generations/get-request-&-usage-metadata-for-a-generation)
+  * Used by [`GET /generation`](api/api-reference/generations/get-request-&-usage-metadata-for-a-generation.md)
 
 **October 26, 2026**
 
 ## New schemas
 
 * `AnthropicToolUnion`
-  * Used by [`POST /messages`](https://openrouter.ai/docs/api/api-reference/anthropic-messages/create-a-message), [`POST /presets/{slug}/messages`](https://openrouter.ai/docs/api/api-reference/presets/create-a-preset-from-a-messages-request-body)
+  * Used by [`POST /messages`](api/api-reference/anthropic-messages/create-a-message.md), [`POST /presets/{slug}/messages`](api/api-reference/presets/create-a-preset-from-a-messages-request-body.md)
 
 ## Modified schemas
 
 * `VideoModel`: enum property\_added
-  * Used by [`GET /videos/models`](https://openrouter.ai/docs/api/api-reference/video-generation/list-all-video-generation-models)
+  * Used by [`GET /videos/models`](api/api-reference/video-generation/list-all-video-generation-models.md)
 * `MessagesToolAdditionBlock`: description updated; new union variant added
-  * Used by [`POST /messages`](https://openrouter.ai/docs/api/api-reference/anthropic-messages/create-a-message), [`POST /presets/{slug}/messages`](https://openrouter.ai/docs/api/api-reference/presets/create-a-preset-from-a-messages-request-body)
+  * Used by [`POST /messages`](api/api-reference/anthropic-messages/create-a-message.md), [`POST /presets/{slug}/messages`](api/api-reference/presets/create-a-preset-from-a-messages-request-body.md)
 
 **October 23, 2026**
 
@@ -463,28 +463,28 @@ Entries on this page are generated automatically from [OpenAPI specification](ap
 
 ## Modified endpoints
 
-* [`POST /analytics/query`](https://openrouter.ai/docs/api/api-reference/analytics/query-analytics-data): response schema updated
+* [`POST /analytics/query`](api/api-reference/analytics/query-analytics-data.md): response schema updated
 
 ## New response codes
 
-* [`GET /generation`](https://openrouter.ai/docs/api/api-reference/generations/get-request-&-usage-metadata-for-a-generation): now returns `403`
+* [`GET /generation`](api/api-reference/generations/get-request-&-usage-metadata-for-a-generation.md): now returns `403`
 
 ## Modified schemas
 
 * `ChatStreamChunk`: property `metadata` updated
-  * Used by [`POST /chat/completions`](https://openrouter.ai/docs/api/api-reference/chat/create-a-chat-completion)
+  * Used by [`POST /chat/completions`](api/api-reference/chat/create-a-chat-completion.md)
 * `MessagesRequest`: title property\_added
-  * Used by [`POST /messages`](https://openrouter.ai/docs/api/api-reference/anthropic-messages/create-a-message), [`POST /presets/{slug}/messages`](https://openrouter.ai/docs/api/api-reference/presets/create-a-preset-from-a-messages-request-body)
+  * Used by [`POST /messages`](api/api-reference/anthropic-messages/create-a-message.md), [`POST /presets/{slug}/messages`](api/api-reference/presets/create-a-preset-from-a-messages-request-body.md)
 * `ObservabilityWebhookDestination`: property `method` updated
 
   **4 endpoints using this schema**
 
-  * [`GET /observability/destinations`](https://openrouter.ai/docs/api/api-reference/observability/list-observability-destinations)
-  * [`GET /observability/destinations/{id}`](https://openrouter.ai/docs/api/api-reference/observability/get-an-observability-destination)
-  * [`PATCH /observability/destinations/{id}`](https://openrouter.ai/docs/api/api-reference/observability/update-an-observability-destination)
-  * [`POST /observability/destinations`](https://openrouter.ai/docs/api/api-reference/observability/create-an-observability-destination)
+  * [`GET /observability/destinations`](api/api-reference/observability/list-observability-destinations.md)
+  * [`GET /observability/destinations/{id}`](api/api-reference/observability/get-an-observability-destination.md)
+  * [`PATCH /observability/destinations/{id}`](api/api-reference/observability/update-an-observability-destination.md)
+  * [`POST /observability/destinations`](api/api-reference/observability/create-an-observability-destination.md)
 * `OpenResponsesErrorField`: title property\_added
-  * Used by [`GET /batches/{id}`](https://openrouter.ai/docs/api/api-reference/batch/get-a-batch), [`POST /batches`](https://openrouter.ai/docs/api/api-reference/batch/create-a-batch), [`POST /responses`](https://openrouter.ai/docs/api/api-reference/responses/create-a-response)
+  * Used by [`GET /batches/{id}`](api/api-reference/batch/get-a-batch.md), [`POST /batches`](api/api-reference/batch/create-a-batch.md), [`POST /responses`](api/api-reference/responses/create-a-response.md)
 
 **October 22, 2026**
 
@@ -506,27 +506,27 @@ Entries on this page are generated automatically from [OpenAPI specification](ap
 
 ## New response codes
 
-* [`GET /byok`](https://openrouter.ai/docs/api/api-reference/byok/list-byok-provider-credentials): now returns `403`
-* [`DELETE /byok/{id}`](https://openrouter.ai/docs/api/api-reference/byok/delete-a-byok-provider-credential): now returns `403`
-* [`GET /byok/{id}`](https://openrouter.ai/docs/api/api-reference/byok/get-a-byok-provider-credential): now returns `403`
-* [`GET /observability/destinations`](https://openrouter.ai/docs/api/api-reference/observability/list-observability-destinations): now returns `403`
-* [`DELETE /observability/destinations/{id}`](https://openrouter.ai/docs/api/api-reference/observability/delete-an-observability-destination): now returns `403`
-* [`GET /observability/destinations/{id}`](https://openrouter.ai/docs/api/api-reference/observability/get-an-observability-destination): now returns `403`
-* [`GET /scim/group-mappings`](https://openrouter.ai/docs/api/api-reference/scim/list-scim-group-mappings): now returns `403`
-* [`POST /scim/group-mappings`](https://openrouter.ai/docs/api/api-reference/scim/create-a-scim-group-mapping): now returns `403`
-* [`DELETE /scim/group-mappings/{id}`](https://openrouter.ai/docs/api/api-reference/scim/delete-a-scim-group-mapping): now returns `403`
-* [`GET /scim/group-mappings/{id}`](https://openrouter.ai/docs/api/api-reference/scim/get-a-scim-group-mapping): now returns `403`
-* [`PATCH /scim/group-mappings/{id}`](https://openrouter.ai/docs/api/api-reference/scim/update-a-scim-group-mapping): now returns `403`
-* [`GET /scim/groups`](https://openrouter.ai/docs/api/api-reference/scim/list-scim-groups): now returns `403`
-* [`POST /scim/sync-jobs`](https://openrouter.ai/docs/api/api-reference/scim/start-a-scim-directory-sync): now returns `403`
-* [`GET /scim/sync-jobs/{id}`](https://openrouter.ai/docs/api/api-reference/scim/get-scim-directory-sync-status): now returns `403`
-* [`POST /generation/feedback`](https://openrouter.ai/docs/api/api-reference/generations/submit-feedback-for-a-generation): now returns `409`
-* [`GET /external-users`](https://openrouter.ai/docs/api/api-reference/external-users/list-registered-external-users): now returns `403`
-* [`GET /external-users/{user}`](https://openrouter.ai/docs/api/api-reference/external-users/get-a-registered-external-user): now returns `403`
-* [`GET /presets`](https://openrouter.ai/docs/api/api-reference/presets/list-presets): now returns `403`
-* [`GET /presets/{slug}`](https://openrouter.ai/docs/api/api-reference/presets/get-a-preset): now returns `403`
-* [`GET /presets/{slug}/versions`](https://openrouter.ai/docs/api/api-reference/presets/list-versions-of-a-preset): now returns `403`
-* [`GET /presets/{slug}/versions/{version}`](https://openrouter.ai/docs/api/api-reference/presets/get-a-specific-version-of-a-preset): now returns `403`
+* [`GET /byok`](api/api-reference/byok/list-byok-provider-credentials.md): now returns `403`
+* [`DELETE /byok/{id}`](api/api-reference/byok/delete-a-byok-provider-credential.md): now returns `403`
+* [`GET /byok/{id}`](api/api-reference/byok/get-a-byok-provider-credential.md): now returns `403`
+* [`GET /observability/destinations`](api/api-reference/observability/list-observability-destinations.md): now returns `403`
+* [`DELETE /observability/destinations/{id}`](api/api-reference/observability/delete-an-observability-destination.md): now returns `403`
+* [`GET /observability/destinations/{id}`](api/api-reference/observability/get-an-observability-destination.md): now returns `403`
+* [`GET /scim/group-mappings`](api/api-reference/scim/list-scim-group-mappings.md): now returns `403`
+* [`POST /scim/group-mappings`](api/api-reference/scim/create-a-scim-group-mapping.md): now returns `403`
+* [`DELETE /scim/group-mappings/{id}`](api/api-reference/scim/delete-a-scim-group-mapping.md): now returns `403`
+* [`GET /scim/group-mappings/{id}`](api/api-reference/scim/get-a-scim-group-mapping.md): now returns `403`
+* [`PATCH /scim/group-mappings/{id}`](api/api-reference/scim/update-a-scim-group-mapping.md): now returns `403`
+* [`GET /scim/groups`](api/api-reference/scim/list-scim-groups.md): now returns `403`
+* [`POST /scim/sync-jobs`](api/api-reference/scim/start-a-scim-directory-sync.md): now returns `403`
+* [`GET /scim/sync-jobs/{id}`](api/api-reference/scim/get-scim-directory-sync-status.md): now returns `403`
+* [`POST /generation/feedback`](api/api-reference/generations/submit-feedback-for-a-generation.md): now returns `409`
+* [`GET /external-users`](api/api-reference/external-users/list-registered-external-users.md): now returns `403`
+* [`GET /external-users/{user}`](api/api-reference/external-users/get-a-registered-external-user.md): now returns `403`
+* [`GET /presets`](api/api-reference/presets/list-presets.md): now returns `403`
+* [`GET /presets/{slug}`](api/api-reference/presets/get-a-preset.md): now returns `403`
+* [`GET /presets/{slug}/versions`](api/api-reference/presets/list-versions-of-a-preset.md): now returns `403`
+* [`GET /presets/{slug}/versions/{version}`](api/api-reference/presets/get-a-specific-version-of-a-preset.md): now returns `403`
 
 ## Modified schemas
 
@@ -534,9 +534,9 @@ Entries on this page are generated automatically from [OpenAPI specification](ap
 
   **4 endpoints using this schema**
 
-  * [`GET /private-endpoints/{id}`](https://openrouter.ai/docs/api/api-reference/private-endpoints/get-a-private-endpoint)
+  * [`GET /private-endpoints/{id}`](api/api-reference/private-endpoints/get-a-private-endpoint.md)
   * [`PATCH /private-endpoints/{id}`](https://openrouter.ai/docs/api/api-reference/private-endpoints/update-a-draft-private-endpoint)
-  * [`POST /private-endpoints`](https://openrouter.ai/docs/api/api-reference/private-endpoints/create-a-private-endpoint)
+  * [`POST /private-endpoints`](api/api-reference/private-endpoints/create-a-private-endpoint.md)
   * [`PUT /private-endpoints/{id}/pricing`](https://openrouter.ai/docs/api/api-reference/private-endpoints/set-private-endpoint-pricing)
 
 **October 21, 2026**
@@ -554,33 +554,33 @@ Entries on this page are generated automatically from [OpenAPI specification](ap
 * `UpdateEndUserRequest`: schema object removedAction required
   * Renamed to `UpdateExternalUserRequest`; the shape is unchanged, so HTTP callers need no change. The Python SDK (`openrouter` 1.3.70 and later) and TypeScript SDK (`@openrouter/sdk` 1.5.0 and later) replace the `UpdateEndUserRequest` model with `UpdateExternalUserRequest`.
 * `/end-users`: endpoint object removedAction required
-  * Requests to `/end-users` continue to work and are forwarded to [`/external-users`](https://openrouter.ai/docs/api/api-reference/external-users/list-registered-external-users), so HTTP callers need no change. In the Python SDK (`openrouter` 1.3.70 and later), switch `client.end_users` to `client.external_users`; the old namespace was removed. In the TypeScript SDK (`@openrouter/sdk` 1.5.0 and later), use `externalUsers` for new code; `endUsers` remains available as a compatibility alias. Method names (`list`, `create`, `get`, `update`, `delete`) are unchanged.
+  * Requests to `/end-users` continue to work and are forwarded to [`/external-users`](api/api-reference/external-users/list-registered-external-users.md), so HTTP callers need no change. In the Python SDK (`openrouter` 1.3.70 and later), switch `client.end_users` to `client.external_users`; the old namespace was removed. In the TypeScript SDK (`@openrouter/sdk` 1.5.0 and later), use `externalUsers` for new code; `endUsers` remains available as a compatibility alias. Method names (`list`, `create`, `get`, `update`, `delete`) are unchanged.
 * `/end-users/{user}`: endpoint object removedAction required
-  * Requests to `/end-users/{user}` continue to work and are forwarded to [`/external-users/{user}`](https://openrouter.ai/docs/api/api-reference/external-users/get-a-registered-external-user), so HTTP callers need no change. Python SDK users switch to `external_users`; TypeScript SDK users can migrate to `externalUsers` while `endUsers` remains available as a compatibility alias, as described on the `/end-users` entry above.
+  * Requests to `/end-users/{user}` continue to work and are forwarded to [`/external-users/{user}`](api/api-reference/external-users/get-a-registered-external-user.md), so HTTP callers need no change. Python SDK users switch to `external_users`; TypeScript SDK users can migrate to `externalUsers` while `endUsers` remains available as a compatibility alias, as described on the `/end-users` entry above.
 * `GET /interns/{internId}/icon`: content `image/jpeg` object removedNo action needed
   * The response is now declared as `image/*`. The bytes served and their `Content-Type` headers are unchanged.
 * `GET /interns/{internId}/icon`: content `image/png` object removedNo action needed
   * The response is now declared as `image/*`. The bytes served and their `Content-Type` headers are unchanged.
 * \$.tags: End Users object removedNo action needed
   * Documentation tag renamed to External Users. No API change.
-* [`POST /messages`](https://openrouter.ai/docs/api/api-reference/anthropic-messages/create-a-message): x-speakeasy-sse-sentinel `[DONE]` object removedAction required
+* [`POST /messages`](api/api-reference/anthropic-messages/create-a-message.md): x-speakeasy-sse-sentinel `[DONE]` object removedAction required
   * Streams now end at the `message_stop` event and no longer send a trailing `data: [DONE]` frame, matching the Anthropic Messages protocol. Clients that detected the end of a `/messages` stream by waiting for `[DONE]` must terminate on `message_stop` on success, and on the `error` event or stream closure on failure. Anthropic's official SDKs already expect this.
 * `BulkAssignMembersRequest`: `member_user_ids` now accepts at most 500 itemsAction required
   * Requests with more than 500 member user IDs now return `400`; previously they were accepted. Split larger lists into batches of 500 or fewer, matching the existing limit on the key assignment endpoints.
-  * Used by [`POST /guardrails/{id}/assignments/members`](https://openrouter.ai/docs/api/api-reference/guardrails/bulk-assign-members-to-a-guardrail)
+  * Used by [`POST /guardrails/{id}/assignments/members`](api/api-reference/guardrails/bulk-assign-members-to-a-guardrail.md)
 * `BulkUnassignMembersRequest`: `member_user_ids` now accepts at most 500 itemsAction required
   * Requests with more than 500 member user IDs now return `400`; previously they were accepted. Split larger lists into batches of 500 or fewer, matching the existing limit on the key assignment endpoints.
-  * Used by [`POST /guardrails/{id}/assignments/members/remove`](https://openrouter.ai/docs/api/api-reference/guardrails/bulk-unassign-members-from-a-guardrail)
+  * Used by [`POST /guardrails/{id}/assignments/members/remove`](api/api-reference/guardrails/bulk-unassign-members-from-a-guardrail.md)
 * `InternDaemonAccess`: required `viewer` property addedAction required
   * Used by `GET /interns/{internId}/daemon`, `GET /interns/{internId}/daemon-access`
 
 ## New endpoints
 
-* [`GET /external-users`](https://openrouter.ai/docs/api/api-reference/external-users/list-registered-external-users): List registered external users
-* [`POST /external-users`](https://openrouter.ai/docs/api/api-reference/external-users/register-an-external-user): Register an external user
-* [`GET /external-users/{user}`](https://openrouter.ai/docs/api/api-reference/external-users/get-a-registered-external-user): Get a registered external user
-* [`PATCH /external-users/{user}`](https://openrouter.ai/docs/api/api-reference/external-users/update-a-registered-external-user): Update a registered external user
-* [`DELETE /external-users/{user}`](https://openrouter.ai/docs/api/api-reference/external-users/deactivate-a-registered-external-user): Deactivate a registered external user
+* [`GET /external-users`](api/api-reference/external-users/list-registered-external-users.md): List registered external users
+* [`POST /external-users`](api/api-reference/external-users/register-an-external-user.md): Register an external user
+* [`GET /external-users/{user}`](api/api-reference/external-users/get-a-registered-external-user.md): Get a registered external user
+* [`PATCH /external-users/{user}`](api/api-reference/external-users/update-a-registered-external-user.md): Update a registered external user
+* [`DELETE /external-users/{user}`](api/api-reference/external-users/deactivate-a-registered-external-user.md): Deactivate a registered external user
 * `GET /interns/{internId}/connections`: List an intern's connections
 
 ## Modified endpoints
@@ -590,52 +590,52 @@ Entries on this page are generated automatically from [OpenAPI specification](ap
 * `POST /interns`: response schema updated
 * `GET /interns/{internId}`: response schema updated
 * `PATCH /interns/{internId}`: response schema updated
-* [`GET /byok`](https://openrouter.ai/docs/api/api-reference/byok/list-byok-provider-credentials): parameter `provider` updated
+* [`GET /byok`](api/api-reference/byok/list-byok-provider-credentials.md): parameter `provider` updated
 * [`PUT /private-endpoints/{id}/pricing`](https://openrouter.ai/docs/api/api-reference/private-endpoints/set-private-endpoint-pricing): description updated
-* [`POST /guardrails`](https://openrouter.ai/docs/api/api-reference/guardrails/create-a-guardrail): description updated
-* [`PATCH /guardrails/{id}`](https://openrouter.ai/docs/api/api-reference/guardrails/update-a-guardrail): description updated
-* [`POST /guardrails/{id}/assignments/keys`](https://openrouter.ai/docs/api/api-reference/guardrails/bulk-assign-keys-to-a-guardrail): description updated
+* [`POST /guardrails`](api/api-reference/guardrails/create-a-guardrail.md): description updated
+* [`PATCH /guardrails/{id}`](api/api-reference/guardrails/update-a-guardrail.md): description updated
+* [`POST /guardrails/{id}/assignments/keys`](api/api-reference/guardrails/bulk-assign-keys-to-a-guardrail.md): description updated
 
 ## New response codes
 
-* [`GET /guardrails`](https://openrouter.ai/docs/api/api-reference/guardrails/list-guardrails): now returns `403`
-* [`GET /guardrails/assignments/keys`](https://openrouter.ai/docs/api/api-reference/guardrails/list-all-key-assignments): now returns `403`
-* [`GET /guardrails/assignments/members`](https://openrouter.ai/docs/api/api-reference/guardrails/list-all-member-assignments): now returns `403`
-* [`DELETE /guardrails/{id}`](https://openrouter.ai/docs/api/api-reference/guardrails/delete-a-guardrail): now returns `403`
-* [`GET /guardrails/{id}`](https://openrouter.ai/docs/api/api-reference/guardrails/get-a-guardrail): now returns `403`
-* [`GET /guardrails/{id}/assignments/keys`](https://openrouter.ai/docs/api/api-reference/guardrails/list-key-assignments-for-a-guardrail): now returns `403`
-* [`POST /guardrails/{id}/assignments/keys/remove`](https://openrouter.ai/docs/api/api-reference/guardrails/bulk-unassign-keys-from-a-guardrail): now returns `403`
-* [`GET /guardrails/{id}/assignments/members`](https://openrouter.ai/docs/api/api-reference/guardrails/list-member-assignments-for-a-guardrail): now returns `403`
-* [`POST /guardrails/{id}/assignments/members`](https://openrouter.ai/docs/api/api-reference/guardrails/bulk-assign-members-to-a-guardrail): now returns `403`
-* [`POST /guardrails/{id}/assignments/members/remove`](https://openrouter.ai/docs/api/api-reference/guardrails/bulk-unassign-members-from-a-guardrail): now returns `403`
-* [`GET /organization/members`](https://openrouter.ai/docs/api/api-reference/organization/list-organization-members): now returns `403`
-* [`GET /organization/settings`](https://openrouter.ai/docs/api/api-reference/organization/get-organization-settings): now returns `403`
-* [`PATCH /organization/settings`](https://openrouter.ai/docs/api/api-reference/organization/update-organization-settings): now returns `403`
-* [`GET /workspaces`](https://openrouter.ai/docs/api/api-reference/workspaces/list-workspaces): now returns `403`
-* [`GET /workspaces/{id}`](https://openrouter.ai/docs/api/api-reference/workspaces/get-a-workspace): now returns `403`
-* [`GET /workspaces/{workspace_ref}/budgets`](https://openrouter.ai/docs/api/api-reference/workspaces/list-workspace-budgets): now returns `403`
-* [`DELETE /workspaces/{workspace_ref}/budgets/{interval}`](https://openrouter.ai/docs/api/api-reference/workspaces/delete-a-workspace-budget): now returns `403`
-* [`GET /workspaces/{workspace_ref}/budgets/{interval}`](https://openrouter.ai/docs/api/api-reference/workspaces/get-a-workspace-budget): now returns `403`
-* [`PUT /workspaces/{workspace_ref}/budgets/{interval}`](https://openrouter.ai/docs/api/api-reference/workspaces/create-or-update-a-workspace-budget): now returns `403`
+* [`GET /guardrails`](api/api-reference/guardrails/list-guardrails.md): now returns `403`
+* [`GET /guardrails/assignments/keys`](api/api-reference/guardrails/list-all-key-assignments.md): now returns `403`
+* [`GET /guardrails/assignments/members`](api/api-reference/guardrails/list-all-member-assignments.md): now returns `403`
+* [`DELETE /guardrails/{id}`](api/api-reference/guardrails/delete-a-guardrail.md): now returns `403`
+* [`GET /guardrails/{id}`](api/api-reference/guardrails/get-a-guardrail.md): now returns `403`
+* [`GET /guardrails/{id}/assignments/keys`](api/api-reference/guardrails/list-key-assignments-for-a-guardrail.md): now returns `403`
+* [`POST /guardrails/{id}/assignments/keys/remove`](api/api-reference/guardrails/bulk-unassign-keys-from-a-guardrail.md): now returns `403`
+* [`GET /guardrails/{id}/assignments/members`](api/api-reference/guardrails/list-member-assignments-for-a-guardrail.md): now returns `403`
+* [`POST /guardrails/{id}/assignments/members`](api/api-reference/guardrails/bulk-assign-members-to-a-guardrail.md): now returns `403`
+* [`POST /guardrails/{id}/assignments/members/remove`](api/api-reference/guardrails/bulk-unassign-members-from-a-guardrail.md): now returns `403`
+* [`GET /organization/members`](api/api-reference/organization/list-organization-members.md): now returns `403`
+* [`GET /organization/settings`](api/api-reference/organization/get-organization-settings.md): now returns `403`
+* [`PATCH /organization/settings`](api/api-reference/organization/update-organization-settings.md): now returns `403`
+* [`GET /workspaces`](api/api-reference/workspaces/list-workspaces.md): now returns `403`
+* [`GET /workspaces/{id}`](api/api-reference/workspaces/get-a-workspace.md): now returns `403`
+* [`GET /workspaces/{workspace_ref}/budgets`](api/api-reference/workspaces/list-workspace-budgets.md): now returns `403`
+* [`DELETE /workspaces/{workspace_ref}/budgets/{interval}`](api/api-reference/workspaces/delete-a-workspace-budget.md): now returns `403`
+* [`GET /workspaces/{workspace_ref}/budgets/{interval}`](api/api-reference/workspaces/get-a-workspace-budget.md): now returns `403`
+* [`PUT /workspaces/{workspace_ref}/budgets/{interval}`](api/api-reference/workspaces/create-or-update-a-workspace-budget.md): now returns `403`
 
 ## New schemas
 
 * `CreateExternalUserRequest`
-  * Used by [`POST /external-users`](https://openrouter.ai/docs/api/api-reference/external-users/register-an-external-user)
+  * Used by [`POST /external-users`](api/api-reference/external-users/register-an-external-user.md)
 * `ExternalUser`
 
   **4 endpoints using this schema**
 
-  * [`GET /external-users`](https://openrouter.ai/docs/api/api-reference/external-users/list-registered-external-users)
-  * [`GET /external-users/{user}`](https://openrouter.ai/docs/api/api-reference/external-users/get-a-registered-external-user)
-  * [`PATCH /external-users/{user}`](https://openrouter.ai/docs/api/api-reference/external-users/update-a-registered-external-user)
-  * [`POST /external-users`](https://openrouter.ai/docs/api/api-reference/external-users/register-an-external-user)
+  * [`GET /external-users`](api/api-reference/external-users/list-registered-external-users.md)
+  * [`GET /external-users/{user}`](api/api-reference/external-users/get-a-registered-external-user.md)
+  * [`PATCH /external-users/{user}`](api/api-reference/external-users/update-a-registered-external-user.md)
+  * [`POST /external-users`](api/api-reference/external-users/register-an-external-user.md)
 * `ExternalUserResponse`
-  * Used by [`GET /external-users/{user}`](https://openrouter.ai/docs/api/api-reference/external-users/get-a-registered-external-user), [`PATCH /external-users/{user}`](https://openrouter.ai/docs/api/api-reference/external-users/update-a-registered-external-user), [`POST /external-users`](https://openrouter.ai/docs/api/api-reference/external-users/register-an-external-user)
+  * Used by [`GET /external-users/{user}`](api/api-reference/external-users/get-a-registered-external-user.md), [`PATCH /external-users/{user}`](api/api-reference/external-users/update-a-registered-external-user.md), [`POST /external-users`](api/api-reference/external-users/register-an-external-user.md)
 * `ListExternalUsersResponse`
-  * Used by [`GET /external-users`](https://openrouter.ai/docs/api/api-reference/external-users/list-registered-external-users)
+  * Used by [`GET /external-users`](api/api-reference/external-users/list-registered-external-users.md)
 * `UpdateExternalUserRequest`
-  * Used by [`PATCH /external-users/{user}`](https://openrouter.ai/docs/api/api-reference/external-users/update-a-registered-external-user)
+  * Used by [`PATCH /external-users/{user}`](api/api-reference/external-users/update-a-registered-external-user.md)
 * `InternConnection`
   * Used by `GET /interns/{internId}/connections`
 * `InternConnectionList`
@@ -657,43 +657,43 @@ Entries on this page are generated automatically from [OpenAPI specification](ap
 
   **6 endpoints using this schema**
 
-  * [`GET /batches/{id}`](https://openrouter.ai/docs/api/api-reference/batch/get-a-batch)
-  * [`POST /batches`](https://openrouter.ai/docs/api/api-reference/batch/create-a-batch)
-  * [`POST /chat/completions`](https://openrouter.ai/docs/api/api-reference/chat/create-a-chat-completion)
-  * [`POST /presets/{slug}/chat/completions`](https://openrouter.ai/docs/api/api-reference/presets/create-a-preset-from-a-chat-completions-request-body)
-  * [`POST /presets/{slug}/responses`](https://openrouter.ai/docs/api/api-reference/presets/create-a-preset-from-a-responses-request-body)
-  * [`POST /responses`](https://openrouter.ai/docs/api/api-reference/responses/create-a-response)
+  * [`GET /batches/{id}`](api/api-reference/batch/get-a-batch.md)
+  * [`POST /batches`](api/api-reference/batch/create-a-batch.md)
+  * [`POST /chat/completions`](api/api-reference/chat/create-a-chat-completion.md)
+  * [`POST /presets/{slug}/chat/completions`](api/api-reference/presets/create-a-preset-from-a-chat-completions-request-body.md)
+  * [`POST /presets/{slug}/responses`](api/api-reference/presets/create-a-preset-from-a-responses-request-body.md)
+  * [`POST /responses`](api/api-reference/responses/create-a-response.md)
 * `PromptCacheOptions`: description updated
 
   **6 endpoints using this schema**
 
-  * [`GET /batches/{id}`](https://openrouter.ai/docs/api/api-reference/batch/get-a-batch)
-  * [`POST /batches`](https://openrouter.ai/docs/api/api-reference/batch/create-a-batch)
-  * [`POST /chat/completions`](https://openrouter.ai/docs/api/api-reference/chat/create-a-chat-completion)
-  * [`POST /presets/{slug}/chat/completions`](https://openrouter.ai/docs/api/api-reference/presets/create-a-preset-from-a-chat-completions-request-body)
-  * [`POST /presets/{slug}/responses`](https://openrouter.ai/docs/api/api-reference/presets/create-a-preset-from-a-responses-request-body)
-  * [`POST /responses`](https://openrouter.ai/docs/api/api-reference/responses/create-a-response)
+  * [`GET /batches/{id}`](api/api-reference/batch/get-a-batch.md)
+  * [`POST /batches`](api/api-reference/batch/create-a-batch.md)
+  * [`POST /chat/completions`](api/api-reference/chat/create-a-chat-completion.md)
+  * [`POST /presets/{slug}/chat/completions`](api/api-reference/presets/create-a-preset-from-a-chat-completions-request-body.md)
+  * [`POST /presets/{slug}/responses`](api/api-reference/presets/create-a-preset-from-a-responses-request-body.md)
+  * [`POST /responses`](api/api-reference/responses/create-a-response.md)
 * `BYOKProviderSlug`: enum property\_added
 
   * Added enum value `recursive`.
 
   **4 endpoints using this schema**
 
-  * [`GET /byok`](https://openrouter.ai/docs/api/api-reference/byok/list-byok-provider-credentials)
-  * [`GET /byok/{id}`](https://openrouter.ai/docs/api/api-reference/byok/get-a-byok-provider-credential)
-  * [`PATCH /byok/{id}`](https://openrouter.ai/docs/api/api-reference/byok/update-a-byok-provider-credential)
-  * [`POST /byok`](https://openrouter.ai/docs/api/api-reference/byok/create-a-byok-provider-credential)
+  * [`GET /byok`](api/api-reference/byok/list-byok-provider-credentials.md)
+  * [`GET /byok/{id}`](api/api-reference/byok/get-a-byok-provider-credential.md)
+  * [`PATCH /byok/{id}`](api/api-reference/byok/update-a-byok-provider-credential.md)
+  * [`POST /byok`](api/api-reference/byok/create-a-byok-provider-credential.md)
 * `MessagesStartEvent`: property `provider` updated
-  * Used by [`POST /messages`](https://openrouter.ai/docs/api/api-reference/anthropic-messages/create-a-message)
+  * Used by [`POST /messages`](api/api-reference/anthropic-messages/create-a-message.md)
 * `PrivateEndpoint`: example modified
-  * Used by [`GET /private-endpoints/{id}`](https://openrouter.ai/docs/api/api-reference/private-endpoints/get-a-private-endpoint), [`PATCH /private-endpoints/{id}`](https://openrouter.ai/docs/api/api-reference/private-endpoints/update-a-draft-private-endpoint), [`PUT /private-endpoints/{id}/pricing`](https://openrouter.ai/docs/api/api-reference/private-endpoints/set-private-endpoint-pricing)
+  * Used by [`GET /private-endpoints/{id}`](api/api-reference/private-endpoints/get-a-private-endpoint.md), [`PATCH /private-endpoints/{id}`](https://openrouter.ai/docs/api/api-reference/private-endpoints/update-a-draft-private-endpoint), [`PUT /private-endpoints/{id}/pricing`](https://openrouter.ai/docs/api/api-reference/private-endpoints/set-private-endpoint-pricing)
 * `PrivateEndpointPricing`: example modified; new property `cache_read`; new property `cache_write`
 
   **4 endpoints using this schema**
 
-  * [`GET /private-endpoints/{id}`](https://openrouter.ai/docs/api/api-reference/private-endpoints/get-a-private-endpoint)
+  * [`GET /private-endpoints/{id}`](api/api-reference/private-endpoints/get-a-private-endpoint.md)
   * [`PATCH /private-endpoints/{id}`](https://openrouter.ai/docs/api/api-reference/private-endpoints/update-a-draft-private-endpoint)
-  * [`POST /private-endpoints`](https://openrouter.ai/docs/api/api-reference/private-endpoints/create-a-private-endpoint)
+  * [`POST /private-endpoints`](api/api-reference/private-endpoints/create-a-private-endpoint.md)
   * [`PUT /private-endpoints/{id}/pricing`](https://openrouter.ai/docs/api/api-reference/private-endpoints/set-private-endpoint-pricing)
 * `ProviderName`: enum property\_added
 
@@ -701,41 +701,41 @@ Entries on this page are generated automatically from [OpenAPI specification](ap
 
   **14 endpoints using this schema**
 
-  * [`GET /endpoints/zdr`](https://openrouter.ai/docs/api/api-reference/endpoints/preview-the-impact-of-zdr-on-the-available-endpoints)
-  * [`GET /models/{author}/{slug}/endpoints`](https://openrouter.ai/docs/api/api-reference/endpoints/list-all-endpoints-for-a-model)
-  * [`POST /api/alpha/decisions`](https://openrouter.ai/docs/api/api-reference/alphadecisions/submit-a-decisions-request)
-  * [`POST /batches`](https://openrouter.ai/docs/api/api-reference/batch/create-a-batch)
-  * [`POST /chat/completions`](https://openrouter.ai/docs/api/api-reference/chat/create-a-chat-completion)
-  * [`POST /embeddings`](https://openrouter.ai/docs/api/api-reference/embeddings/submit-an-embedding-request)
-  * [`POST /images`](https://openrouter.ai/docs/api/api-reference/images/generate-an-image)
-  * [`POST /messages`](https://openrouter.ai/docs/api/api-reference/anthropic-messages/create-a-message)
-  * [`POST /presets/{slug}/chat/completions`](https://openrouter.ai/docs/api/api-reference/presets/create-a-preset-from-a-chat-completions-request-body)
-  * [`POST /presets/{slug}/messages`](https://openrouter.ai/docs/api/api-reference/presets/create-a-preset-from-a-messages-request-body)
-  * [`POST /presets/{slug}/responses`](https://openrouter.ai/docs/api/api-reference/presets/create-a-preset-from-a-responses-request-body)
-  * [`POST /rerank`](https://openrouter.ai/docs/api/api-reference/rerank/submit-a-rerank-request)
-  * [`POST /responses`](https://openrouter.ai/docs/api/api-reference/responses/create-a-response)
-  * [`POST /systemone`](https://openrouter.ai/docs/api/api-reference/systemone/submit-a-system-one-request)
+  * [`GET /endpoints/zdr`](api/api-reference/endpoints/preview-the-impact-of-zdr-on-the-available-endpoints.md)
+  * [`GET /models/{author}/{slug}/endpoints`](api/api-reference/endpoints/list-all-endpoints-for-a-model.md)
+  * [`POST /api/alpha/decisions`](api/api-reference/alphadecisions/submit-a-decisions-request.md)
+  * [`POST /batches`](api/api-reference/batch/create-a-batch.md)
+  * [`POST /chat/completions`](api/api-reference/chat/create-a-chat-completion.md)
+  * [`POST /embeddings`](api/api-reference/embeddings/submit-an-embedding-request.md)
+  * [`POST /images`](api/api-reference/images/generate-an-image.md)
+  * [`POST /messages`](api/api-reference/anthropic-messages/create-a-message.md)
+  * [`POST /presets/{slug}/chat/completions`](api/api-reference/presets/create-a-preset-from-a-chat-completions-request-body.md)
+  * [`POST /presets/{slug}/messages`](api/api-reference/presets/create-a-preset-from-a-messages-request-body.md)
+  * [`POST /presets/{slug}/responses`](api/api-reference/presets/create-a-preset-from-a-responses-request-body.md)
+  * [`POST /rerank`](api/api-reference/rerank/submit-a-rerank-request.md)
+  * [`POST /responses`](api/api-reference/responses/create-a-response.md)
+  * [`POST /systemone`](api/api-reference/systemone/submit-a-system-one-request.md)
 * `ProviderOptions`: new property `recursive`
 
   **14 endpoints using this schema**
 
-  * [`POST /api/alpha/decisions`](https://openrouter.ai/docs/api/api-reference/alphadecisions/submit-a-decisions-request)
-  * [`POST /audio/speech`](https://openrouter.ai/docs/api/api-reference/tts/create-speech)
-  * [`POST /audio/transcriptions`](https://openrouter.ai/docs/api/api-reference/stt/create-transcription)
-  * [`POST /chat/completions`](https://openrouter.ai/docs/api/api-reference/chat/create-a-chat-completion)
-  * [`POST /embeddings`](https://openrouter.ai/docs/api/api-reference/embeddings/submit-an-embedding-request)
-  * [`POST /images`](https://openrouter.ai/docs/api/api-reference/images/generate-an-image)
-  * [`POST /messages`](https://openrouter.ai/docs/api/api-reference/anthropic-messages/create-a-message)
-  * [`POST /presets/{slug}/chat/completions`](https://openrouter.ai/docs/api/api-reference/presets/create-a-preset-from-a-chat-completions-request-body)
-  * [`POST /presets/{slug}/messages`](https://openrouter.ai/docs/api/api-reference/presets/create-a-preset-from-a-messages-request-body)
-  * [`POST /presets/{slug}/responses`](https://openrouter.ai/docs/api/api-reference/presets/create-a-preset-from-a-responses-request-body)
-  * [`POST /rerank`](https://openrouter.ai/docs/api/api-reference/rerank/submit-a-rerank-request)
-  * [`POST /responses`](https://openrouter.ai/docs/api/api-reference/responses/create-a-response)
-  * [`POST /systemone`](https://openrouter.ai/docs/api/api-reference/systemone/submit-a-system-one-request)
-  * [`POST /videos`](https://openrouter.ai/docs/api/api-reference/video-generation/submit-a-video-generation-request)
+  * [`POST /api/alpha/decisions`](api/api-reference/alphadecisions/submit-a-decisions-request.md)
+  * [`POST /audio/speech`](api/api-reference/tts/create-speech.md)
+  * [`POST /audio/transcriptions`](api/api-reference/stt/create-transcription.md)
+  * [`POST /chat/completions`](api/api-reference/chat/create-a-chat-completion.md)
+  * [`POST /embeddings`](api/api-reference/embeddings/submit-an-embedding-request.md)
+  * [`POST /images`](api/api-reference/images/generate-an-image.md)
+  * [`POST /messages`](api/api-reference/anthropic-messages/create-a-message.md)
+  * [`POST /presets/{slug}/chat/completions`](api/api-reference/presets/create-a-preset-from-a-chat-completions-request-body.md)
+  * [`POST /presets/{slug}/messages`](api/api-reference/presets/create-a-preset-from-a-messages-request-body.md)
+  * [`POST /presets/{slug}/responses`](api/api-reference/presets/create-a-preset-from-a-responses-request-body.md)
+  * [`POST /rerank`](api/api-reference/rerank/submit-a-rerank-request.md)
+  * [`POST /responses`](api/api-reference/responses/create-a-response.md)
+  * [`POST /systemone`](api/api-reference/systemone/submit-a-system-one-request.md)
+  * [`POST /videos`](api/api-reference/video-generation/submit-a-video-generation-request.md)
 * `ProviderResponse`: enum property\_added
   * Added `Recursive` to the `provider_name` enum.
-  * Used by [`GET /generation`](https://openrouter.ai/docs/api/api-reference/generations/get-request-&-usage-metadata-for-a-generation)
+  * Used by [`GET /generation`](api/api-reference/generations/get-request-&-usage-metadata-for-a-generation.md)
 * `InternDaemonAccess`: description updated; example modified; new property `viewer`
   * Used by `GET /interns/{internId}/daemon`, `GET /interns/{internId}/daemon-access`
 
@@ -743,7 +743,7 @@ Entries on this page are generated automatically from [OpenAPI specification](ap
 
 ## Modified endpoints
 
-* [`GET /byok`](https://openrouter.ai/docs/api/api-reference/byok/list-byok-provider-credentials): parameter `provider` updated
+* [`GET /byok`](api/api-reference/byok/list-byok-provider-credentials.md): parameter `provider` updated
 
 ## Modified schemas
 
@@ -753,53 +753,53 @@ Entries on this page are generated automatically from [OpenAPI specification](ap
 
   **4 endpoints using this schema**
 
-  * [`GET /byok`](https://openrouter.ai/docs/api/api-reference/byok/list-byok-provider-credentials)
-  * [`GET /byok/{id}`](https://openrouter.ai/docs/api/api-reference/byok/get-a-byok-provider-credential)
-  * [`PATCH /byok/{id}`](https://openrouter.ai/docs/api/api-reference/byok/update-a-byok-provider-credential)
-  * [`POST /byok`](https://openrouter.ai/docs/api/api-reference/byok/create-a-byok-provider-credential)
+  * [`GET /byok`](api/api-reference/byok/list-byok-provider-credentials.md)
+  * [`GET /byok/{id}`](api/api-reference/byok/get-a-byok-provider-credential.md)
+  * [`PATCH /byok/{id}`](api/api-reference/byok/update-a-byok-provider-credential.md)
+  * [`POST /byok`](api/api-reference/byok/create-a-byok-provider-credential.md)
 * `MessagesStartEvent`: property `provider` updated
-  * Used by [`POST /messages`](https://openrouter.ai/docs/api/api-reference/anthropic-messages/create-a-message)
+  * Used by [`POST /messages`](api/api-reference/anthropic-messages/create-a-message.md)
 * `ProviderName`: enum property\_added
 
   * Added enum value `ParetoAlpha`.
 
   **14 endpoints using this schema**
 
-  * [`GET /endpoints/zdr`](https://openrouter.ai/docs/api/api-reference/endpoints/preview-the-impact-of-zdr-on-the-available-endpoints)
-  * [`GET /models/{author}/{slug}/endpoints`](https://openrouter.ai/docs/api/api-reference/endpoints/list-all-endpoints-for-a-model)
-  * [`POST /api/alpha/decisions`](https://openrouter.ai/docs/api/api-reference/alphadecisions/submit-a-decisions-request)
-  * [`POST /batches`](https://openrouter.ai/docs/api/api-reference/batch/create-a-batch)
-  * [`POST /chat/completions`](https://openrouter.ai/docs/api/api-reference/chat/create-a-chat-completion)
-  * [`POST /embeddings`](https://openrouter.ai/docs/api/api-reference/embeddings/submit-an-embedding-request)
-  * [`POST /images`](https://openrouter.ai/docs/api/api-reference/images/generate-an-image)
-  * [`POST /messages`](https://openrouter.ai/docs/api/api-reference/anthropic-messages/create-a-message)
-  * [`POST /presets/{slug}/chat/completions`](https://openrouter.ai/docs/api/api-reference/presets/create-a-preset-from-a-chat-completions-request-body)
-  * [`POST /presets/{slug}/messages`](https://openrouter.ai/docs/api/api-reference/presets/create-a-preset-from-a-messages-request-body)
-  * [`POST /presets/{slug}/responses`](https://openrouter.ai/docs/api/api-reference/presets/create-a-preset-from-a-responses-request-body)
-  * [`POST /rerank`](https://openrouter.ai/docs/api/api-reference/rerank/submit-a-rerank-request)
-  * [`POST /responses`](https://openrouter.ai/docs/api/api-reference/responses/create-a-response)
-  * [`POST /systemone`](https://openrouter.ai/docs/api/api-reference/systemone/submit-a-system-one-request)
+  * [`GET /endpoints/zdr`](api/api-reference/endpoints/preview-the-impact-of-zdr-on-the-available-endpoints.md)
+  * [`GET /models/{author}/{slug}/endpoints`](api/api-reference/endpoints/list-all-endpoints-for-a-model.md)
+  * [`POST /api/alpha/decisions`](api/api-reference/alphadecisions/submit-a-decisions-request.md)
+  * [`POST /batches`](api/api-reference/batch/create-a-batch.md)
+  * [`POST /chat/completions`](api/api-reference/chat/create-a-chat-completion.md)
+  * [`POST /embeddings`](api/api-reference/embeddings/submit-an-embedding-request.md)
+  * [`POST /images`](api/api-reference/images/generate-an-image.md)
+  * [`POST /messages`](api/api-reference/anthropic-messages/create-a-message.md)
+  * [`POST /presets/{slug}/chat/completions`](api/api-reference/presets/create-a-preset-from-a-chat-completions-request-body.md)
+  * [`POST /presets/{slug}/messages`](api/api-reference/presets/create-a-preset-from-a-messages-request-body.md)
+  * [`POST /presets/{slug}/responses`](api/api-reference/presets/create-a-preset-from-a-responses-request-body.md)
+  * [`POST /rerank`](api/api-reference/rerank/submit-a-rerank-request.md)
+  * [`POST /responses`](api/api-reference/responses/create-a-response.md)
+  * [`POST /systemone`](api/api-reference/systemone/submit-a-system-one-request.md)
 * `ProviderOptions`: new property `pareto-alpha`
 
   **14 endpoints using this schema**
 
-  * [`POST /api/alpha/decisions`](https://openrouter.ai/docs/api/api-reference/alphadecisions/submit-a-decisions-request)
-  * [`POST /audio/speech`](https://openrouter.ai/docs/api/api-reference/tts/create-speech)
-  * [`POST /audio/transcriptions`](https://openrouter.ai/docs/api/api-reference/stt/create-transcription)
-  * [`POST /chat/completions`](https://openrouter.ai/docs/api/api-reference/chat/create-a-chat-completion)
-  * [`POST /embeddings`](https://openrouter.ai/docs/api/api-reference/embeddings/submit-an-embedding-request)
-  * [`POST /images`](https://openrouter.ai/docs/api/api-reference/images/generate-an-image)
-  * [`POST /messages`](https://openrouter.ai/docs/api/api-reference/anthropic-messages/create-a-message)
-  * [`POST /presets/{slug}/chat/completions`](https://openrouter.ai/docs/api/api-reference/presets/create-a-preset-from-a-chat-completions-request-body)
-  * [`POST /presets/{slug}/messages`](https://openrouter.ai/docs/api/api-reference/presets/create-a-preset-from-a-messages-request-body)
-  * [`POST /presets/{slug}/responses`](https://openrouter.ai/docs/api/api-reference/presets/create-a-preset-from-a-responses-request-body)
-  * [`POST /rerank`](https://openrouter.ai/docs/api/api-reference/rerank/submit-a-rerank-request)
-  * [`POST /responses`](https://openrouter.ai/docs/api/api-reference/responses/create-a-response)
-  * [`POST /systemone`](https://openrouter.ai/docs/api/api-reference/systemone/submit-a-system-one-request)
-  * [`POST /videos`](https://openrouter.ai/docs/api/api-reference/video-generation/submit-a-video-generation-request)
+  * [`POST /api/alpha/decisions`](api/api-reference/alphadecisions/submit-a-decisions-request.md)
+  * [`POST /audio/speech`](api/api-reference/tts/create-speech.md)
+  * [`POST /audio/transcriptions`](api/api-reference/stt/create-transcription.md)
+  * [`POST /chat/completions`](api/api-reference/chat/create-a-chat-completion.md)
+  * [`POST /embeddings`](api/api-reference/embeddings/submit-an-embedding-request.md)
+  * [`POST /images`](api/api-reference/images/generate-an-image.md)
+  * [`POST /messages`](api/api-reference/anthropic-messages/create-a-message.md)
+  * [`POST /presets/{slug}/chat/completions`](api/api-reference/presets/create-a-preset-from-a-chat-completions-request-body.md)
+  * [`POST /presets/{slug}/messages`](api/api-reference/presets/create-a-preset-from-a-messages-request-body.md)
+  * [`POST /presets/{slug}/responses`](api/api-reference/presets/create-a-preset-from-a-responses-request-body.md)
+  * [`POST /rerank`](api/api-reference/rerank/submit-a-rerank-request.md)
+  * [`POST /responses`](api/api-reference/responses/create-a-response.md)
+  * [`POST /systemone`](api/api-reference/systemone/submit-a-system-one-request.md)
+  * [`POST /videos`](api/api-reference/video-generation/submit-a-video-generation-request.md)
 * `ProviderResponse`: enum property\_added
   * Added `ParetoAlpha` to the `provider_name` enum.
-  * Used by [`GET /generation`](https://openrouter.ai/docs/api/api-reference/generations/get-request-&-usage-metadata-for-a-generation)
+  * Used by [`GET /generation`](api/api-reference/generations/get-request-&-usage-metadata-for-a-generation.md)
 
 **October 19, 2026**
 
@@ -830,20 +830,20 @@ Entries on this page are generated automatically from [OpenAPI specification](ap
 
   **4 endpoints using this schema**
 
-  * [`GET /byok`](https://openrouter.ai/docs/api/api-reference/byok/list-byok-provider-credentials)
-  * [`GET /byok/{id}`](https://openrouter.ai/docs/api/api-reference/byok/get-a-byok-provider-credential)
-  * [`PATCH /byok/{id}`](https://openrouter.ai/docs/api/api-reference/byok/update-a-byok-provider-credential)
-  * [`POST /byok`](https://openrouter.ai/docs/api/api-reference/byok/create-a-byok-provider-credential)
+  * [`GET /byok`](api/api-reference/byok/list-byok-provider-credentials.md)
+  * [`GET /byok/{id}`](api/api-reference/byok/get-a-byok-provider-credential.md)
+  * [`PATCH /byok/{id}`](api/api-reference/byok/update-a-byok-provider-credential.md)
+  * [`POST /byok`](api/api-reference/byok/create-a-byok-provider-credential.md)
 * `CreateBYOKKeyRequest`: description updated
-  * Used by [`POST /byok`](https://openrouter.ai/docs/api/api-reference/byok/create-a-byok-provider-credential)
+  * Used by [`POST /byok`](api/api-reference/byok/create-a-byok-provider-credential.md)
 * `UpdateBYOKKeyRequest`: description updated
-  * Used by [`PATCH /byok/{id}`](https://openrouter.ai/docs/api/api-reference/byok/update-a-byok-provider-credential)
+  * Used by [`PATCH /byok/{id}`](api/api-reference/byok/update-a-byok-provider-credential.md)
 
 **October 18, 2026**
 
 ## New endpoints
 
-* [`GET /vault/interns/{internId}/connections`](https://openrouter.ai/docs/api/api-reference/vault/list-the-connections-an-intern-can-use): List the connections an intern can use
+* [`GET /vault/interns/{internId}/connections`](api/api-reference/vault/list-the-connections-an-intern-can-use.md): List the connections an intern can use
 
 ## Modified endpoints
 
@@ -861,7 +861,7 @@ Entries on this page are generated automatically from [OpenAPI specification](ap
 ## Modified schemas
 
 * `BatchSubmitBody`: new property `callback_url`
-  * Used by [`POST /batches`](https://openrouter.ai/docs/api/api-reference/batch/create-a-batch)
+  * Used by [`POST /batches`](api/api-reference/batch/create-a-batch.md)
 
 **October 16, 2026**
 
@@ -869,53 +869,53 @@ Entries on this page are generated automatically from [OpenAPI specification](ap
 
 * `BatchListItem`: required `expires_at` property addedNo action needed
   * No action required for existing consumers. New response-only field.
-  * Used by [`GET /batches`](https://openrouter.ai/docs/api/api-reference/batch/list-batches)
+  * Used by [`GET /batches`](api/api-reference/batch/list-batches.md)
 * `BatchListItem`: required `provider` property addedNo action needed
   * No action required for existing consumers. New response-only field.
-  * Used by [`GET /batches`](https://openrouter.ai/docs/api/api-reference/batch/list-batches)
+  * Used by [`GET /batches`](api/api-reference/batch/list-batches.md)
 * `BatchObject`: required `expires_at` property addedNo action needed
   * No action required for existing consumers. New response-only field.
-  * Used by [`GET /batches/{id}`](https://openrouter.ai/docs/api/api-reference/batch/get-a-batch), [`POST /batches`](https://openrouter.ai/docs/api/api-reference/batch/create-a-batch)
+  * Used by [`GET /batches/{id}`](api/api-reference/batch/get-a-batch.md), [`POST /batches`](api/api-reference/batch/create-a-batch.md)
 * `BatchObject`: required `provider` property addedNo action needed
   * No action required for existing consumers. New response-only field.
-  * Used by [`GET /batches/{id}`](https://openrouter.ai/docs/api/api-reference/batch/get-a-batch), [`POST /batches`](https://openrouter.ai/docs/api/api-reference/batch/create-a-batch)
+  * Used by [`GET /batches/{id}`](api/api-reference/batch/get-a-batch.md), [`POST /batches`](api/api-reference/batch/create-a-batch.md)
 * `BatchPaymentRequiredResponse`: required `expires_at` property addedNo action needed
   * No action required for existing consumers. New response-only field.
-  * Used by [`GET /batches/{id}`](https://openrouter.ai/docs/api/api-reference/batch/get-a-batch)
+  * Used by [`GET /batches/{id}`](api/api-reference/batch/get-a-batch.md)
 * `BatchPaymentRequiredResponse`: required `provider` property addedNo action needed
   * No action required for existing consumers. New response-only field.
-  * Used by [`GET /batches/{id}`](https://openrouter.ai/docs/api/api-reference/batch/get-a-batch)
+  * Used by [`GET /batches/{id}`](api/api-reference/batch/get-a-batch.md)
 
 ## Modified schemas
 
 * `BatchListItem`: new property `expires_at`; new property `provider`
-  * Used by [`GET /batches`](https://openrouter.ai/docs/api/api-reference/batch/list-batches)
+  * Used by [`GET /batches`](api/api-reference/batch/list-batches.md)
 * `BatchObject`: new property `expires_at`; new property `provider`
-  * Used by [`GET /batches/{id}`](https://openrouter.ai/docs/api/api-reference/batch/get-a-batch), [`POST /batches`](https://openrouter.ai/docs/api/api-reference/batch/create-a-batch)
+  * Used by [`GET /batches/{id}`](api/api-reference/batch/get-a-batch.md), [`POST /batches`](api/api-reference/batch/create-a-batch.md)
 * `BatchPaymentRequiredResponse`: new property `expires_at`; new property `provider`
-  * Used by [`GET /batches/{id}`](https://openrouter.ai/docs/api/api-reference/batch/get-a-batch)
+  * Used by [`GET /batches/{id}`](api/api-reference/batch/get-a-batch.md)
 * `WebFetchEngineEnum`: description updated
 
   **6 endpoints using this schema**
 
-  * [`POST /chat/completions`](https://openrouter.ai/docs/api/api-reference/chat/create-a-chat-completion)
-  * [`POST /messages`](https://openrouter.ai/docs/api/api-reference/anthropic-messages/create-a-message)
-  * [`POST /presets/{slug}/chat/completions`](https://openrouter.ai/docs/api/api-reference/presets/create-a-preset-from-a-chat-completions-request-body)
-  * [`POST /presets/{slug}/messages`](https://openrouter.ai/docs/api/api-reference/presets/create-a-preset-from-a-messages-request-body)
-  * [`POST /presets/{slug}/responses`](https://openrouter.ai/docs/api/api-reference/presets/create-a-preset-from-a-responses-request-body)
-  * [`POST /responses`](https://openrouter.ai/docs/api/api-reference/responses/create-a-response)
+  * [`POST /chat/completions`](api/api-reference/chat/create-a-chat-completion.md)
+  * [`POST /messages`](api/api-reference/anthropic-messages/create-a-message.md)
+  * [`POST /presets/{slug}/chat/completions`](api/api-reference/presets/create-a-preset-from-a-chat-completions-request-body.md)
+  * [`POST /presets/{slug}/messages`](api/api-reference/presets/create-a-preset-from-a-messages-request-body.md)
+  * [`POST /presets/{slug}/responses`](api/api-reference/presets/create-a-preset-from-a-responses-request-body.md)
+  * [`POST /responses`](api/api-reference/responses/create-a-response.md)
 * `WebSearchEngineEnum`: description updated
 
   **8 endpoints using this schema**
 
-  * [`GET /batches/{id}`](https://openrouter.ai/docs/api/api-reference/batch/get-a-batch)
-  * [`POST /batches`](https://openrouter.ai/docs/api/api-reference/batch/create-a-batch)
-  * [`POST /chat/completions`](https://openrouter.ai/docs/api/api-reference/chat/create-a-chat-completion)
-  * [`POST /messages`](https://openrouter.ai/docs/api/api-reference/anthropic-messages/create-a-message)
-  * [`POST /presets/{slug}/chat/completions`](https://openrouter.ai/docs/api/api-reference/presets/create-a-preset-from-a-chat-completions-request-body)
-  * [`POST /presets/{slug}/messages`](https://openrouter.ai/docs/api/api-reference/presets/create-a-preset-from-a-messages-request-body)
-  * [`POST /presets/{slug}/responses`](https://openrouter.ai/docs/api/api-reference/presets/create-a-preset-from-a-responses-request-body)
-  * [`POST /responses`](https://openrouter.ai/docs/api/api-reference/responses/create-a-response)
+  * [`GET /batches/{id}`](api/api-reference/batch/get-a-batch.md)
+  * [`POST /batches`](api/api-reference/batch/create-a-batch.md)
+  * [`POST /chat/completions`](api/api-reference/chat/create-a-chat-completion.md)
+  * [`POST /messages`](api/api-reference/anthropic-messages/create-a-message.md)
+  * [`POST /presets/{slug}/chat/completions`](api/api-reference/presets/create-a-preset-from-a-chat-completions-request-body.md)
+  * [`POST /presets/{slug}/messages`](api/api-reference/presets/create-a-preset-from-a-messages-request-body.md)
+  * [`POST /presets/{slug}/responses`](api/api-reference/presets/create-a-preset-from-a-responses-request-body.md)
+  * [`POST /responses`](api/api-reference/responses/create-a-response.md)
 
 **October 15, 2026**
 
@@ -923,41 +923,41 @@ Entries on this page are generated automatically from [OpenAPI specification](ap
 
 * `PublicEndpoint`: required `service_tier` property addedNo action needed
   * No action required for existing consumers. New response-only field.
-  * Used by [`GET /endpoints/zdr`](https://openrouter.ai/docs/api/api-reference/endpoints/preview-the-impact-of-zdr-on-the-available-endpoints), [`GET /models/{author}/{slug}/endpoints`](https://openrouter.ai/docs/api/api-reference/endpoints/list-all-endpoints-for-a-model)
+  * Used by [`GET /endpoints/zdr`](api/api-reference/endpoints/preview-the-impact-of-zdr-on-the-available-endpoints.md), [`GET /models/{author}/{slug}/endpoints`](api/api-reference/endpoints/list-all-endpoints-for-a-model.md)
 
 ## Modified endpoints
 
-* [`POST /vault/interns/{internId}/secrets/copy`](https://openrouter.ai/docs/api/api-reference/vault/copy-workspace-secrets-to-an-intern): description updated
-* [`PUT /vault/interns/{internId}/secrets/{name}`](https://openrouter.ai/docs/api/api-reference/vault/store-an-intern-secret): description updated; response schema updated
-* [`GET /models/user`](https://openrouter.ai/docs/api/api-reference/models/list-models-filtered-by-user-provider-preferences-privacy-settings-and-guardrails): new parameter `sort`
+* [`POST /vault/interns/{internId}/secrets/copy`](api/api-reference/vault/copy-workspace-secrets-to-an-intern.md): description updated
+* [`PUT /vault/interns/{internId}/secrets/{name}`](api/api-reference/vault/store-an-intern-secret.md): description updated; response schema updated
+* [`GET /models/user`](api/api-reference/models/list-models-filtered-by-user-provider-preferences-privacy-settings-and-guardrails.md): new parameter `sort`
 
 ## New response codes
 
-* [`GET /keys`](https://openrouter.ai/docs/api/api-reference/api-keys/list-api-keys): now returns `404`
-* [`DELETE /vault/interns/{internId}/secrets/{name}`](https://openrouter.ai/docs/api/api-reference/vault/delete-an-intern-secret): now returns `409`
-* [`DELETE /vault/secrets/{name}`](https://openrouter.ai/docs/api/api-reference/vault/delete-a-workspace-secret): now returns `409`
-* [`PUT /vault/secrets/{name}`](https://openrouter.ai/docs/api/api-reference/vault/store-a-workspace-secret): now returns `409`
+* [`GET /keys`](api/api-reference/api-keys/list-api-keys.md): now returns `404`
+* [`DELETE /vault/interns/{internId}/secrets/{name}`](api/api-reference/vault/delete-an-intern-secret.md): now returns `409`
+* [`DELETE /vault/secrets/{name}`](api/api-reference/vault/delete-a-workspace-secret.md): now returns `409`
+* [`PUT /vault/secrets/{name}`](api/api-reference/vault/store-a-workspace-secret.md): now returns `409`
 
 ## New schemas
 
 * `PublicServiceTier`
-  * Used by [`GET /endpoints/zdr`](https://openrouter.ai/docs/api/api-reference/endpoints/preview-the-impact-of-zdr-on-the-available-endpoints), [`GET /models/{author}/{slug}/endpoints`](https://openrouter.ai/docs/api/api-reference/endpoints/list-all-endpoints-for-a-model)
+  * Used by [`GET /endpoints/zdr`](api/api-reference/endpoints/preview-the-impact-of-zdr-on-the-available-endpoints.md), [`GET /models/{author}/{slug}/endpoints`](api/api-reference/endpoints/list-all-endpoints-for-a-model.md)
 
 ## Modified schemas
 
 * `ResponsesRequest`: new property `stop`
-  * Used by [`POST /presets/{slug}/responses`](https://openrouter.ai/docs/api/api-reference/presets/create-a-preset-from-a-responses-request-body), [`POST /responses`](https://openrouter.ai/docs/api/api-reference/responses/create-a-response)
+  * Used by [`POST /presets/{slug}/responses`](api/api-reference/presets/create-a-preset-from-a-responses-request-body.md), [`POST /responses`](api/api-reference/responses/create-a-response.md)
 * `PublicEndpoint`: example modified; new property `service_tier`
-  * Used by [`GET /endpoints/zdr`](https://openrouter.ai/docs/api/api-reference/endpoints/preview-the-impact-of-zdr-on-the-available-endpoints), [`GET /models/{author}/{slug}/endpoints`](https://openrouter.ai/docs/api/api-reference/endpoints/list-all-endpoints-for-a-model)
+  * Used by [`GET /endpoints/zdr`](api/api-reference/endpoints/preview-the-impact-of-zdr-on-the-available-endpoints.md), [`GET /models/{author}/{slug}/endpoints`](api/api-reference/endpoints/list-all-endpoints-for-a-model.md)
 * `TokenExchangeRequest`: description updated; enum property\_added
   * Added `management` to the `scope` enum.
-  * Used by [`POST /oauth/token`](https://openrouter.ai/docs/api/api-reference/oauth/exchange-a-workload-identity-token)
+  * Used by [`POST /oauth/token`](api/api-reference/oauth/exchange-a-workload-identity-token.md)
 * `TokenExchangeResponse`: description updated
-  * Used by [`POST /oauth/token`](https://openrouter.ai/docs/api/api-reference/oauth/exchange-a-workload-identity-token)
+  * Used by [`POST /oauth/token`](api/api-reference/oauth/exchange-a-workload-identity-token.md)
 * `SpeechInputReferenceImage`: description updated
-  * Used by [`POST /audio/speech`](https://openrouter.ai/docs/api/api-reference/tts/create-speech)
+  * Used by [`POST /audio/speech`](api/api-reference/tts/create-speech.md)
 * `SpeechRequest`: description updated
-  * Used by [`POST /audio/speech`](https://openrouter.ai/docs/api/api-reference/tts/create-speech)
+  * Used by [`POST /audio/speech`](api/api-reference/tts/create-speech.md)
 
 **October 14, 2026**
 
@@ -969,42 +969,42 @@ Entries on this page are generated automatically from [OpenAPI specification](ap
 
   **4 endpoints using this schema**
 
-  * [`GET /batches/{id}`](https://openrouter.ai/docs/api/api-reference/batch/get-a-batch)
-  * [`POST /batches`](https://openrouter.ai/docs/api/api-reference/batch/create-a-batch)
-  * [`POST /chat/completions`](https://openrouter.ai/docs/api/api-reference/chat/create-a-chat-completion)
-  * [`POST /responses`](https://openrouter.ai/docs/api/api-reference/responses/create-a-response)
+  * [`GET /batches/{id}`](api/api-reference/batch/get-a-batch.md)
+  * [`POST /batches`](api/api-reference/batch/create-a-batch.md)
+  * [`POST /chat/completions`](api/api-reference/chat/create-a-chat-completion.md)
+  * [`POST /responses`](api/api-reference/responses/create-a-response.md)
 * `AlignmentRuleRecord`: type `number` modifiedAction required
 
   * `probability` is now `number | null`: it is `null` when `applicable` is `false`. Clients that parse `probability` as a non-null number must handle `null`.
 
   **4 endpoints using this schema**
 
-  * [`GET /batches/{id}`](https://openrouter.ai/docs/api/api-reference/batch/get-a-batch)
-  * [`POST /batches`](https://openrouter.ai/docs/api/api-reference/batch/create-a-batch)
-  * [`POST /chat/completions`](https://openrouter.ai/docs/api/api-reference/chat/create-a-chat-completion)
-  * [`POST /responses`](https://openrouter.ai/docs/api/api-reference/responses/create-a-response)
+  * [`GET /batches/{id}`](api/api-reference/batch/get-a-batch.md)
+  * [`POST /batches`](api/api-reference/batch/create-a-batch.md)
+  * [`POST /chat/completions`](api/api-reference/chat/create-a-chat-completion.md)
+  * [`POST /responses`](api/api-reference/responses/create-a-response.md)
 * `PublicEndpoint`: required `supports_diarization` property addedNo action needed
   * No action required for existing consumers. New response-only field.
-  * Used by [`GET /endpoints/zdr`](https://openrouter.ai/docs/api/api-reference/endpoints/preview-the-impact-of-zdr-on-the-available-endpoints), [`GET /models/{author}/{slug}/endpoints`](https://openrouter.ai/docs/api/api-reference/endpoints/list-all-endpoints-for-a-model)
+  * Used by [`GET /endpoints/zdr`](api/api-reference/endpoints/preview-the-impact-of-zdr-on-the-available-endpoints.md), [`GET /models/{author}/{slug}/endpoints`](api/api-reference/endpoints/list-all-endpoints-for-a-model.md)
 
 ## Modified endpoints
 
-* [`GET /endpoints/zdr`](https://openrouter.ai/docs/api/api-reference/endpoints/preview-the-impact-of-zdr-on-the-available-endpoints): description updated
-* [`POST /chat/completions`](https://openrouter.ai/docs/api/api-reference/chat/create-a-chat-completion): response schema updated; description updated
-* [`GET /endpoints/zdr`](https://openrouter.ai/docs/api/api-reference/endpoints/preview-the-impact-of-zdr-on-the-available-endpoints): response schema updated
-* [`GET /models/{author}/{slug}/endpoints`](https://openrouter.ai/docs/api/api-reference/endpoints/list-all-endpoints-for-a-model): response schema updated
+* [`GET /endpoints/zdr`](api/api-reference/endpoints/preview-the-impact-of-zdr-on-the-available-endpoints.md): description updated
+* [`POST /chat/completions`](api/api-reference/chat/create-a-chat-completion.md): response schema updated; description updated
+* [`GET /endpoints/zdr`](api/api-reference/endpoints/preview-the-impact-of-zdr-on-the-available-endpoints.md): response schema updated
+* [`GET /models/{author}/{slug}/endpoints`](api/api-reference/endpoints/list-all-endpoints-for-a-model.md): response schema updated
 
 ## New response codes
 
-* [`POST /containers/{container_id}/files/{file_id}/promote`](https://openrouter.ai/docs/api/api-reference/containers/promote-a-container-file-into-workspace-documents): now returns `499`
-* [`POST /embeddings`](https://openrouter.ai/docs/api/api-reference/embeddings/submit-an-embedding-request): now returns `499`
-* [`POST /files`](https://openrouter.ai/docs/api/api-reference/files/upload-a-file): now returns `499`
-* [`POST /videos`](https://openrouter.ai/docs/api/api-reference/video-generation/submit-a-video-generation-request): now returns `499`
-* [`POST /videos`](https://openrouter.ai/docs/api/api-reference/video-generation/submit-a-video-generation-request): now returns `503`
-* [`GET /guardrails/assignments/keys`](https://openrouter.ai/docs/api/api-reference/guardrails/list-all-key-assignments): now returns `400`
-* [`GET /guardrails/assignments/keys`](https://openrouter.ai/docs/api/api-reference/guardrails/list-all-key-assignments): now returns `404`
-* [`GET /guardrails/assignments/members`](https://openrouter.ai/docs/api/api-reference/guardrails/list-all-member-assignments): now returns `400`
-* [`GET /guardrails/assignments/members`](https://openrouter.ai/docs/api/api-reference/guardrails/list-all-member-assignments): now returns `404`
+* [`POST /containers/{container_id}/files/{file_id}/promote`](api/api-reference/containers/promote-a-container-file-into-workspace-documents.md): now returns `499`
+* [`POST /embeddings`](api/api-reference/embeddings/submit-an-embedding-request.md): now returns `499`
+* [`POST /files`](api/api-reference/files/upload-a-file.md): now returns `499`
+* [`POST /videos`](api/api-reference/video-generation/submit-a-video-generation-request.md): now returns `499`
+* [`POST /videos`](api/api-reference/video-generation/submit-a-video-generation-request.md): now returns `503`
+* [`GET /guardrails/assignments/keys`](api/api-reference/guardrails/list-all-key-assignments.md): now returns `400`
+* [`GET /guardrails/assignments/keys`](api/api-reference/guardrails/list-all-key-assignments.md): now returns `404`
+* [`GET /guardrails/assignments/members`](api/api-reference/guardrails/list-all-member-assignments.md): now returns `400`
+* [`GET /guardrails/assignments/members`](api/api-reference/guardrails/list-all-member-assignments.md): now returns `404`
 
 ## New schemas
 
@@ -1012,90 +1012,90 @@ Entries on this page are generated automatically from [OpenAPI specification](ap
 
   **6 endpoints using this schema**
 
-  * [`POST /chat/completions`](https://openrouter.ai/docs/api/api-reference/chat/create-a-chat-completion)
-  * [`POST /messages`](https://openrouter.ai/docs/api/api-reference/anthropic-messages/create-a-message)
-  * [`POST /presets/{slug}/chat/completions`](https://openrouter.ai/docs/api/api-reference/presets/create-a-preset-from-a-chat-completions-request-body)
-  * [`POST /presets/{slug}/messages`](https://openrouter.ai/docs/api/api-reference/presets/create-a-preset-from-a-messages-request-body)
-  * [`POST /presets/{slug}/responses`](https://openrouter.ai/docs/api/api-reference/presets/create-a-preset-from-a-responses-request-body)
-  * [`POST /responses`](https://openrouter.ai/docs/api/api-reference/responses/create-a-response)
+  * [`POST /chat/completions`](api/api-reference/chat/create-a-chat-completion.md)
+  * [`POST /messages`](api/api-reference/anthropic-messages/create-a-message.md)
+  * [`POST /presets/{slug}/chat/completions`](api/api-reference/presets/create-a-preset-from-a-chat-completions-request-body.md)
+  * [`POST /presets/{slug}/messages`](api/api-reference/presets/create-a-preset-from-a-messages-request-body.md)
+  * [`POST /presets/{slug}/responses`](api/api-reference/presets/create-a-preset-from-a-responses-request-body.md)
+  * [`POST /responses`](api/api-reference/responses/create-a-response.md)
 * `ClientClosedRequestResponse`
 
   **4 endpoints using this schema**
 
-  * [`POST /containers/{container_id}/files/{file_id}/promote`](https://openrouter.ai/docs/api/api-reference/containers/promote-a-container-file-into-workspace-documents)
-  * [`POST /embeddings`](https://openrouter.ai/docs/api/api-reference/embeddings/submit-an-embedding-request)
-  * [`POST /files`](https://openrouter.ai/docs/api/api-reference/files/upload-a-file)
-  * [`POST /videos`](https://openrouter.ai/docs/api/api-reference/video-generation/submit-a-video-generation-request)
+  * [`POST /containers/{container_id}/files/{file_id}/promote`](api/api-reference/containers/promote-a-container-file-into-workspace-documents.md)
+  * [`POST /embeddings`](api/api-reference/embeddings/submit-an-embedding-request.md)
+  * [`POST /files`](api/api-reference/files/upload-a-file.md)
+  * [`POST /videos`](api/api-reference/video-generation/submit-a-video-generation-request.md)
 * `ClientClosedRequestResponseErrorData`
 
   **4 endpoints using this schema**
 
-  * [`POST /containers/{container_id}/files/{file_id}/promote`](https://openrouter.ai/docs/api/api-reference/containers/promote-a-container-file-into-workspace-documents)
-  * [`POST /embeddings`](https://openrouter.ai/docs/api/api-reference/embeddings/submit-an-embedding-request)
-  * [`POST /files`](https://openrouter.ai/docs/api/api-reference/files/upload-a-file)
-  * [`POST /videos`](https://openrouter.ai/docs/api/api-reference/video-generation/submit-a-video-generation-request)
+  * [`POST /containers/{container_id}/files/{file_id}/promote`](api/api-reference/containers/promote-a-container-file-into-workspace-documents.md)
+  * [`POST /embeddings`](api/api-reference/embeddings/submit-an-embedding-request.md)
+  * [`POST /files`](api/api-reference/files/upload-a-file.md)
+  * [`POST /videos`](api/api-reference/video-generation/submit-a-video-generation-request.md)
 * `ArmorAutoMode`
 
   **6 endpoints using this schema**
 
-  * [`POST /chat/completions`](https://openrouter.ai/docs/api/api-reference/chat/create-a-chat-completion)
-  * [`POST /messages`](https://openrouter.ai/docs/api/api-reference/anthropic-messages/create-a-message)
-  * [`POST /presets/{slug}/chat/completions`](https://openrouter.ai/docs/api/api-reference/presets/create-a-preset-from-a-chat-completions-request-body)
-  * [`POST /presets/{slug}/messages`](https://openrouter.ai/docs/api/api-reference/presets/create-a-preset-from-a-messages-request-body)
-  * [`POST /presets/{slug}/responses`](https://openrouter.ai/docs/api/api-reference/presets/create-a-preset-from-a-responses-request-body)
-  * [`POST /responses`](https://openrouter.ai/docs/api/api-reference/responses/create-a-response)
+  * [`POST /chat/completions`](api/api-reference/chat/create-a-chat-completion.md)
+  * [`POST /messages`](api/api-reference/anthropic-messages/create-a-message.md)
+  * [`POST /presets/{slug}/chat/completions`](api/api-reference/presets/create-a-preset-from-a-chat-completions-request-body.md)
+  * [`POST /presets/{slug}/messages`](api/api-reference/presets/create-a-preset-from-a-messages-request-body.md)
+  * [`POST /presets/{slug}/responses`](api/api-reference/presets/create-a-preset-from-a-responses-request-body.md)
+  * [`POST /responses`](api/api-reference/responses/create-a-response.md)
 * `ArmorContext`
 
   **6 endpoints using this schema**
 
-  * [`POST /chat/completions`](https://openrouter.ai/docs/api/api-reference/chat/create-a-chat-completion)
-  * [`POST /messages`](https://openrouter.ai/docs/api/api-reference/anthropic-messages/create-a-message)
-  * [`POST /presets/{slug}/chat/completions`](https://openrouter.ai/docs/api/api-reference/presets/create-a-preset-from-a-chat-completions-request-body)
-  * [`POST /presets/{slug}/messages`](https://openrouter.ai/docs/api/api-reference/presets/create-a-preset-from-a-messages-request-body)
-  * [`POST /presets/{slug}/responses`](https://openrouter.ai/docs/api/api-reference/presets/create-a-preset-from-a-responses-request-body)
-  * [`POST /responses`](https://openrouter.ai/docs/api/api-reference/responses/create-a-response)
+  * [`POST /chat/completions`](api/api-reference/chat/create-a-chat-completion.md)
+  * [`POST /messages`](api/api-reference/anthropic-messages/create-a-message.md)
+  * [`POST /presets/{slug}/chat/completions`](api/api-reference/presets/create-a-preset-from-a-chat-completions-request-body.md)
+  * [`POST /presets/{slug}/messages`](api/api-reference/presets/create-a-preset-from-a-messages-request-body.md)
+  * [`POST /presets/{slug}/responses`](api/api-reference/presets/create-a-preset-from-a-responses-request-body.md)
+  * [`POST /responses`](api/api-reference/responses/create-a-response.md)
 * `ArmorEnvironmentEntry`
 
   **6 endpoints using this schema**
 
-  * [`POST /chat/completions`](https://openrouter.ai/docs/api/api-reference/chat/create-a-chat-completion)
-  * [`POST /messages`](https://openrouter.ai/docs/api/api-reference/anthropic-messages/create-a-message)
-  * [`POST /presets/{slug}/chat/completions`](https://openrouter.ai/docs/api/api-reference/presets/create-a-preset-from-a-chat-completions-request-body)
-  * [`POST /presets/{slug}/messages`](https://openrouter.ai/docs/api/api-reference/presets/create-a-preset-from-a-messages-request-body)
-  * [`POST /presets/{slug}/responses`](https://openrouter.ai/docs/api/api-reference/presets/create-a-preset-from-a-responses-request-body)
-  * [`POST /responses`](https://openrouter.ai/docs/api/api-reference/responses/create-a-response)
+  * [`POST /chat/completions`](api/api-reference/chat/create-a-chat-completion.md)
+  * [`POST /messages`](api/api-reference/anthropic-messages/create-a-message.md)
+  * [`POST /presets/{slug}/chat/completions`](api/api-reference/presets/create-a-preset-from-a-chat-completions-request-body.md)
+  * [`POST /presets/{slug}/messages`](api/api-reference/presets/create-a-preset-from-a-messages-request-body.md)
+  * [`POST /presets/{slug}/responses`](api/api-reference/presets/create-a-preset-from-a-responses-request-body.md)
+  * [`POST /responses`](api/api-reference/responses/create-a-response.md)
 * `ArmorPlugin`
 
   **6 endpoints using this schema**
 
-  * [`POST /chat/completions`](https://openrouter.ai/docs/api/api-reference/chat/create-a-chat-completion)
-  * [`POST /messages`](https://openrouter.ai/docs/api/api-reference/anthropic-messages/create-a-message)
-  * [`POST /presets/{slug}/chat/completions`](https://openrouter.ai/docs/api/api-reference/presets/create-a-preset-from-a-chat-completions-request-body)
-  * [`POST /presets/{slug}/messages`](https://openrouter.ai/docs/api/api-reference/presets/create-a-preset-from-a-messages-request-body)
-  * [`POST /presets/{slug}/responses`](https://openrouter.ai/docs/api/api-reference/presets/create-a-preset-from-a-responses-request-body)
-  * [`POST /responses`](https://openrouter.ai/docs/api/api-reference/responses/create-a-response)
+  * [`POST /chat/completions`](api/api-reference/chat/create-a-chat-completion.md)
+  * [`POST /messages`](api/api-reference/anthropic-messages/create-a-message.md)
+  * [`POST /presets/{slug}/chat/completions`](api/api-reference/presets/create-a-preset-from-a-chat-completions-request-body.md)
+  * [`POST /presets/{slug}/messages`](api/api-reference/presets/create-a-preset-from-a-messages-request-body.md)
+  * [`POST /presets/{slug}/responses`](api/api-reference/presets/create-a-preset-from-a-responses-request-body.md)
+  * [`POST /responses`](api/api-reference/responses/create-a-response.md)
 * `ArmorRule`
 
   **6 endpoints using this schema**
 
-  * [`POST /chat/completions`](https://openrouter.ai/docs/api/api-reference/chat/create-a-chat-completion)
-  * [`POST /messages`](https://openrouter.ai/docs/api/api-reference/anthropic-messages/create-a-message)
-  * [`POST /presets/{slug}/chat/completions`](https://openrouter.ai/docs/api/api-reference/presets/create-a-preset-from-a-chat-completions-request-body)
-  * [`POST /presets/{slug}/messages`](https://openrouter.ai/docs/api/api-reference/presets/create-a-preset-from-a-messages-request-body)
-  * [`POST /presets/{slug}/responses`](https://openrouter.ai/docs/api/api-reference/presets/create-a-preset-from-a-responses-request-body)
-  * [`POST /responses`](https://openrouter.ai/docs/api/api-reference/responses/create-a-response)
+  * [`POST /chat/completions`](api/api-reference/chat/create-a-chat-completion.md)
+  * [`POST /messages`](api/api-reference/anthropic-messages/create-a-message.md)
+  * [`POST /presets/{slug}/chat/completions`](api/api-reference/presets/create-a-preset-from-a-chat-completions-request-body.md)
+  * [`POST /presets/{slug}/messages`](api/api-reference/presets/create-a-preset-from-a-messages-request-body.md)
+  * [`POST /presets/{slug}/responses`](api/api-reference/presets/create-a-preset-from-a-responses-request-body.md)
+  * [`POST /responses`](api/api-reference/responses/create-a-response.md)
 * `ArmorSafeguardResult`
 
   **4 endpoints using this schema**
 
-  * [`GET /batches/{id}`](https://openrouter.ai/docs/api/api-reference/batch/get-a-batch)
-  * [`POST /batches`](https://openrouter.ai/docs/api/api-reference/batch/create-a-batch)
-  * [`POST /chat/completions`](https://openrouter.ai/docs/api/api-reference/chat/create-a-chat-completion)
-  * [`POST /responses`](https://openrouter.ai/docs/api/api-reference/responses/create-a-response)
+  * [`GET /batches/{id}`](api/api-reference/batch/get-a-batch.md)
+  * [`POST /batches`](api/api-reference/batch/create-a-batch.md)
+  * [`POST /chat/completions`](api/api-reference/chat/create-a-chat-completion.md)
+  * [`POST /responses`](api/api-reference/responses/create-a-response.md)
 * `DecisionsBoxAnswer`
-  * Used by [`POST /api/alpha/decisions`](https://openrouter.ai/docs/api/api-reference/alphadecisions/submit-a-decisions-request), [`POST /systemone`](https://openrouter.ai/docs/api/api-reference/systemone/submit-a-system-one-request)
+  * Used by [`POST /api/alpha/decisions`](api/api-reference/alphadecisions/submit-a-decisions-request.md), [`POST /systemone`](api/api-reference/systemone/submit-a-system-one-request.md)
 * `DecisionsBoxQuestion`
-  * Used by [`POST /api/alpha/decisions`](https://openrouter.ai/docs/api/api-reference/alphadecisions/submit-a-decisions-request), [`POST /systemone`](https://openrouter.ai/docs/api/api-reference/systemone/submit-a-system-one-request)
+  * Used by [`POST /api/alpha/decisions`](api/api-reference/alphadecisions/submit-a-decisions-request.md), [`POST /systemone`](api/api-reference/systemone/submit-a-system-one-request.md)
 
 ## Modified schemas
 
@@ -1103,60 +1103,60 @@ Entries on this page are generated automatically from [OpenAPI specification](ap
 
   **4 endpoints using this schema**
 
-  * [`GET /batches/{id}`](https://openrouter.ai/docs/api/api-reference/batch/get-a-batch)
-  * [`POST /batches`](https://openrouter.ai/docs/api/api-reference/batch/create-a-batch)
-  * [`POST /chat/completions`](https://openrouter.ai/docs/api/api-reference/chat/create-a-chat-completion)
-  * [`POST /responses`](https://openrouter.ai/docs/api/api-reference/responses/create-a-response)
+  * [`GET /batches/{id}`](api/api-reference/batch/get-a-batch.md)
+  * [`POST /batches`](api/api-reference/batch/create-a-batch.md)
+  * [`POST /chat/completions`](api/api-reference/chat/create-a-chat-completion.md)
+  * [`POST /responses`](api/api-reference/responses/create-a-response.md)
 * `AlignmentPlugin`: example modified; description updated; \$ref modified
 
   **6 endpoints using this schema**
 
-  * [`POST /chat/completions`](https://openrouter.ai/docs/api/api-reference/chat/create-a-chat-completion)
-  * [`POST /messages`](https://openrouter.ai/docs/api/api-reference/anthropic-messages/create-a-message)
-  * [`POST /presets/{slug}/chat/completions`](https://openrouter.ai/docs/api/api-reference/presets/create-a-preset-from-a-chat-completions-request-body)
-  * [`POST /presets/{slug}/messages`](https://openrouter.ai/docs/api/api-reference/presets/create-a-preset-from-a-messages-request-body)
-  * [`POST /presets/{slug}/responses`](https://openrouter.ai/docs/api/api-reference/presets/create-a-preset-from-a-responses-request-body)
-  * [`POST /responses`](https://openrouter.ai/docs/api/api-reference/responses/create-a-response)
+  * [`POST /chat/completions`](api/api-reference/chat/create-a-chat-completion.md)
+  * [`POST /messages`](api/api-reference/anthropic-messages/create-a-message.md)
+  * [`POST /presets/{slug}/chat/completions`](api/api-reference/presets/create-a-preset-from-a-chat-completions-request-body.md)
+  * [`POST /presets/{slug}/messages`](api/api-reference/presets/create-a-preset-from-a-messages-request-body.md)
+  * [`POST /presets/{slug}/responses`](api/api-reference/presets/create-a-preset-from-a-responses-request-body.md)
+  * [`POST /responses`](api/api-reference/responses/create-a-response.md)
 * `AlignmentRuleRecord`: new property `applicable`; description updated
 
   **4 endpoints using this schema**
 
-  * [`GET /batches/{id}`](https://openrouter.ai/docs/api/api-reference/batch/get-a-batch)
-  * [`POST /batches`](https://openrouter.ai/docs/api/api-reference/batch/create-a-batch)
-  * [`POST /chat/completions`](https://openrouter.ai/docs/api/api-reference/chat/create-a-chat-completion)
-  * [`POST /responses`](https://openrouter.ai/docs/api/api-reference/responses/create-a-response)
+  * [`GET /batches/{id}`](api/api-reference/batch/get-a-batch.md)
+  * [`POST /batches`](api/api-reference/batch/create-a-batch.md)
+  * [`POST /chat/completions`](api/api-reference/chat/create-a-chat-completion.md)
+  * [`POST /responses`](api/api-reference/responses/create-a-response.md)
 * `ChatResult`: new property `alignment`
-  * Used by [`POST /chat/completions`](https://openrouter.ai/docs/api/api-reference/chat/create-a-chat-completion)
+  * Used by [`POST /chat/completions`](api/api-reference/chat/create-a-chat-completion.md)
 * `ChatStreamChunk`: new property `alignment`
-  * Used by [`POST /chat/completions`](https://openrouter.ai/docs/api/api-reference/chat/create-a-chat-completion)
+  * Used by [`POST /chat/completions`](api/api-reference/chat/create-a-chat-completion.md)
 * `OpenResponsesErrorField`: enum property\_added
   * Added `permission_denied` to the `code` enum.
-  * Used by [`GET /batches/{id}`](https://openrouter.ai/docs/api/api-reference/batch/get-a-batch), [`POST /batches`](https://openrouter.ai/docs/api/api-reference/batch/create-a-batch), [`POST /responses`](https://openrouter.ai/docs/api/api-reference/responses/create-a-response)
+  * Used by [`GET /batches/{id}`](api/api-reference/batch/get-a-batch.md), [`POST /batches`](api/api-reference/batch/create-a-batch.md), [`POST /responses`](api/api-reference/responses/create-a-response.md)
 * `OpenResponsesErrorMetadata`: example modified
-  * Used by [`GET /batches/{id}`](https://openrouter.ai/docs/api/api-reference/batch/get-a-batch), [`POST /batches`](https://openrouter.ai/docs/api/api-reference/batch/create-a-batch), [`POST /responses`](https://openrouter.ai/docs/api/api-reference/responses/create-a-response)
+  * Used by [`GET /batches/{id}`](api/api-reference/batch/get-a-batch.md), [`POST /batches`](api/api-reference/batch/create-a-batch.md), [`POST /responses`](api/api-reference/responses/create-a-response.md)
 * `ResponsesErrorField`: enum property\_added
   * Added `permission_denied` to the `code` enum.
-  * Used by [`GET /batches/{id}`](https://openrouter.ai/docs/api/api-reference/batch/get-a-batch), [`POST /batches`](https://openrouter.ai/docs/api/api-reference/batch/create-a-batch), [`POST /responses`](https://openrouter.ai/docs/api/api-reference/responses/create-a-response)
+  * Used by [`GET /batches/{id}`](api/api-reference/batch/get-a-batch.md), [`POST /batches`](api/api-reference/batch/create-a-batch.md), [`POST /responses`](api/api-reference/responses/create-a-response.md)
 * `ChatRequest`: new union variant added
-  * Used by [`POST /chat/completions`](https://openrouter.ai/docs/api/api-reference/chat/create-a-chat-completion), [`POST /presets/{slug}/chat/completions`](https://openrouter.ai/docs/api/api-reference/presets/create-a-preset-from-a-chat-completions-request-body)
+  * Used by [`POST /chat/completions`](api/api-reference/chat/create-a-chat-completion.md), [`POST /presets/{slug}/chat/completions`](api/api-reference/presets/create-a-preset-from-a-chat-completions-request-body.md)
 * `ChatResult`: new property `safeguard_results`
-  * Used by [`POST /chat/completions`](https://openrouter.ai/docs/api/api-reference/chat/create-a-chat-completion)
+  * Used by [`POST /chat/completions`](api/api-reference/chat/create-a-chat-completion.md)
 * `ChatStreamChunk`: new property `safeguard_results`
-  * Used by [`POST /chat/completions`](https://openrouter.ai/docs/api/api-reference/chat/create-a-chat-completion)
+  * Used by [`POST /chat/completions`](api/api-reference/chat/create-a-chat-completion.md)
 * `MessagesRequest`: new union variant added
-  * Used by [`POST /messages`](https://openrouter.ai/docs/api/api-reference/anthropic-messages/create-a-message), [`POST /presets/{slug}/messages`](https://openrouter.ai/docs/api/api-reference/presets/create-a-preset-from-a-messages-request-body)
+  * Used by [`POST /messages`](api/api-reference/anthropic-messages/create-a-message.md), [`POST /presets/{slug}/messages`](api/api-reference/presets/create-a-preset-from-a-messages-request-body.md)
 * `ResponsesRequest`: new union variant added
-  * Used by [`POST /presets/{slug}/responses`](https://openrouter.ai/docs/api/api-reference/presets/create-a-preset-from-a-responses-request-body), [`POST /responses`](https://openrouter.ai/docs/api/api-reference/responses/create-a-response)
+  * Used by [`POST /presets/{slug}/responses`](api/api-reference/presets/create-a-preset-from-a-responses-request-body.md), [`POST /responses`](api/api-reference/responses/create-a-response.md)
 * `VideoGenerationResponse`: new property `urls`; description updated
-  * Used by [`GET /videos/{jobId}`](https://openrouter.ai/docs/api/api-reference/video-generation/poll-video-generation-status), [`POST /videos`](https://openrouter.ai/docs/api/api-reference/video-generation/submit-a-video-generation-request)
+  * Used by [`GET /videos/{jobId}`](api/api-reference/video-generation/poll-video-generation-status.md), [`POST /videos`](api/api-reference/video-generation/submit-a-video-generation-request.md)
 * `ListEndpointsResponse`: example modified
-  * Used by [`GET /models/{author}/{slug}/endpoints`](https://openrouter.ai/docs/api/api-reference/endpoints/list-all-endpoints-for-a-model)
+  * Used by [`GET /models/{author}/{slug}/endpoints`](api/api-reference/endpoints/list-all-endpoints-for-a-model.md)
 * `PublicEndpoint`: example modified; new property `supports_diarization`
-  * Used by [`GET /endpoints/zdr`](https://openrouter.ai/docs/api/api-reference/endpoints/preview-the-impact-of-zdr-on-the-available-endpoints), [`GET /models/{author}/{slug}/endpoints`](https://openrouter.ai/docs/api/api-reference/endpoints/list-all-endpoints-for-a-model)
+  * Used by [`GET /endpoints/zdr`](api/api-reference/endpoints/preview-the-impact-of-zdr-on-the-available-endpoints.md), [`GET /models/{author}/{slug}/endpoints`](api/api-reference/endpoints/list-all-endpoints-for-a-model.md)
 * `DecisionsRequest`: description updated; new union variant added
-  * Used by [`POST /api/alpha/decisions`](https://openrouter.ai/docs/api/api-reference/alphadecisions/submit-a-decisions-request), [`POST /systemone`](https://openrouter.ai/docs/api/api-reference/systemone/submit-a-system-one-request)
+  * Used by [`POST /api/alpha/decisions`](api/api-reference/alphadecisions/submit-a-decisions-request.md), [`POST /systemone`](api/api-reference/systemone/submit-a-system-one-request.md)
 * `DecisionsResponse`: description updated; new union variant added
-  * Used by [`POST /api/alpha/decisions`](https://openrouter.ai/docs/api/api-reference/alphadecisions/submit-a-decisions-request), [`POST /systemone`](https://openrouter.ai/docs/api/api-reference/systemone/submit-a-system-one-request)
+  * Used by [`POST /api/alpha/decisions`](api/api-reference/alphadecisions/submit-a-decisions-request.md), [`POST /systemone`](api/api-reference/systemone/submit-a-system-one-request.md)
 
 **October 13, 2026**
 
@@ -1168,179 +1168,179 @@ Entries on this page are generated automatically from [OpenAPI specification](ap
 
   **4 endpoints using this schema**
 
-  * [`GET /observability/destinations`](https://openrouter.ai/docs/api/api-reference/observability/list-observability-destinations)
-  * [`GET /observability/destinations/{id}`](https://openrouter.ai/docs/api/api-reference/observability/get-an-observability-destination)
-  * [`PATCH /observability/destinations/{id}`](https://openrouter.ai/docs/api/api-reference/observability/update-an-observability-destination)
-  * [`POST /observability/destinations`](https://openrouter.ai/docs/api/api-reference/observability/create-an-observability-destination)
+  * [`GET /observability/destinations`](api/api-reference/observability/list-observability-destinations.md)
+  * [`GET /observability/destinations/{id}`](api/api-reference/observability/get-an-observability-destination.md)
+  * [`PATCH /observability/destinations/{id}`](api/api-reference/observability/update-an-observability-destination.md)
+  * [`POST /observability/destinations`](api/api-reference/observability/create-an-observability-destination.md)
 * `ObservabilityBraintrustDestination`: required `broadcast_generation_cost_allocation` property addedNo action needed
 
   * No action required for existing consumers. New required response field; the corresponding field remains optional on create and update requests.
 
   **4 endpoints using this schema**
 
-  * [`GET /observability/destinations`](https://openrouter.ai/docs/api/api-reference/observability/list-observability-destinations)
-  * [`GET /observability/destinations/{id}`](https://openrouter.ai/docs/api/api-reference/observability/get-an-observability-destination)
-  * [`PATCH /observability/destinations/{id}`](https://openrouter.ai/docs/api/api-reference/observability/update-an-observability-destination)
-  * [`POST /observability/destinations`](https://openrouter.ai/docs/api/api-reference/observability/create-an-observability-destination)
+  * [`GET /observability/destinations`](api/api-reference/observability/list-observability-destinations.md)
+  * [`GET /observability/destinations/{id}`](api/api-reference/observability/get-an-observability-destination.md)
+  * [`PATCH /observability/destinations/{id}`](api/api-reference/observability/update-an-observability-destination.md)
+  * [`POST /observability/destinations`](api/api-reference/observability/create-an-observability-destination.md)
 * `ObservabilityClickhouseDestination`: required `broadcast_generation_cost_allocation` property addedNo action needed
 
   * No action required for existing consumers. New required response field; the corresponding field remains optional on create and update requests.
 
   **4 endpoints using this schema**
 
-  * [`GET /observability/destinations`](https://openrouter.ai/docs/api/api-reference/observability/list-observability-destinations)
-  * [`GET /observability/destinations/{id}`](https://openrouter.ai/docs/api/api-reference/observability/get-an-observability-destination)
-  * [`PATCH /observability/destinations/{id}`](https://openrouter.ai/docs/api/api-reference/observability/update-an-observability-destination)
-  * [`POST /observability/destinations`](https://openrouter.ai/docs/api/api-reference/observability/create-an-observability-destination)
+  * [`GET /observability/destinations`](api/api-reference/observability/list-observability-destinations.md)
+  * [`GET /observability/destinations/{id}`](api/api-reference/observability/get-an-observability-destination.md)
+  * [`PATCH /observability/destinations/{id}`](api/api-reference/observability/update-an-observability-destination.md)
+  * [`POST /observability/destinations`](api/api-reference/observability/create-an-observability-destination.md)
 * `ObservabilityDatadogDestination`: required `broadcast_generation_cost_allocation` property addedNo action needed
 
   * No action required for existing consumers. New required response field; the corresponding field remains optional on create and update requests.
 
   **4 endpoints using this schema**
 
-  * [`GET /observability/destinations`](https://openrouter.ai/docs/api/api-reference/observability/list-observability-destinations)
-  * [`GET /observability/destinations/{id}`](https://openrouter.ai/docs/api/api-reference/observability/get-an-observability-destination)
-  * [`PATCH /observability/destinations/{id}`](https://openrouter.ai/docs/api/api-reference/observability/update-an-observability-destination)
-  * [`POST /observability/destinations`](https://openrouter.ai/docs/api/api-reference/observability/create-an-observability-destination)
+  * [`GET /observability/destinations`](api/api-reference/observability/list-observability-destinations.md)
+  * [`GET /observability/destinations/{id}`](api/api-reference/observability/get-an-observability-destination.md)
+  * [`PATCH /observability/destinations/{id}`](api/api-reference/observability/update-an-observability-destination.md)
+  * [`POST /observability/destinations`](api/api-reference/observability/create-an-observability-destination.md)
 * `ObservabilityGrafanaDestination`: required `broadcast_generation_cost_allocation` property addedNo action needed
 
   * No action required for existing consumers. New required response field; the corresponding field remains optional on create and update requests.
 
   **4 endpoints using this schema**
 
-  * [`GET /observability/destinations`](https://openrouter.ai/docs/api/api-reference/observability/list-observability-destinations)
-  * [`GET /observability/destinations/{id}`](https://openrouter.ai/docs/api/api-reference/observability/get-an-observability-destination)
-  * [`PATCH /observability/destinations/{id}`](https://openrouter.ai/docs/api/api-reference/observability/update-an-observability-destination)
-  * [`POST /observability/destinations`](https://openrouter.ai/docs/api/api-reference/observability/create-an-observability-destination)
+  * [`GET /observability/destinations`](api/api-reference/observability/list-observability-destinations.md)
+  * [`GET /observability/destinations/{id}`](api/api-reference/observability/get-an-observability-destination.md)
+  * [`PATCH /observability/destinations/{id}`](api/api-reference/observability/update-an-observability-destination.md)
+  * [`POST /observability/destinations`](api/api-reference/observability/create-an-observability-destination.md)
 * `ObservabilityLangfuseDestination`: required `broadcast_generation_cost_allocation` property addedNo action needed
 
   * No action required for existing consumers. New required response field; the corresponding field remains optional on create and update requests.
 
   **4 endpoints using this schema**
 
-  * [`GET /observability/destinations`](https://openrouter.ai/docs/api/api-reference/observability/list-observability-destinations)
-  * [`GET /observability/destinations/{id}`](https://openrouter.ai/docs/api/api-reference/observability/get-an-observability-destination)
-  * [`PATCH /observability/destinations/{id}`](https://openrouter.ai/docs/api/api-reference/observability/update-an-observability-destination)
-  * [`POST /observability/destinations`](https://openrouter.ai/docs/api/api-reference/observability/create-an-observability-destination)
+  * [`GET /observability/destinations`](api/api-reference/observability/list-observability-destinations.md)
+  * [`GET /observability/destinations/{id}`](api/api-reference/observability/get-an-observability-destination.md)
+  * [`PATCH /observability/destinations/{id}`](api/api-reference/observability/update-an-observability-destination.md)
+  * [`POST /observability/destinations`](api/api-reference/observability/create-an-observability-destination.md)
 * `ObservabilityLangsmithDestination`: required `broadcast_generation_cost_allocation` property addedNo action needed
 
   * No action required for existing consumers. New required response field; the corresponding field remains optional on create and update requests.
 
   **4 endpoints using this schema**
 
-  * [`GET /observability/destinations`](https://openrouter.ai/docs/api/api-reference/observability/list-observability-destinations)
-  * [`GET /observability/destinations/{id}`](https://openrouter.ai/docs/api/api-reference/observability/get-an-observability-destination)
-  * [`PATCH /observability/destinations/{id}`](https://openrouter.ai/docs/api/api-reference/observability/update-an-observability-destination)
-  * [`POST /observability/destinations`](https://openrouter.ai/docs/api/api-reference/observability/create-an-observability-destination)
+  * [`GET /observability/destinations`](api/api-reference/observability/list-observability-destinations.md)
+  * [`GET /observability/destinations/{id}`](api/api-reference/observability/get-an-observability-destination.md)
+  * [`PATCH /observability/destinations/{id}`](api/api-reference/observability/update-an-observability-destination.md)
+  * [`POST /observability/destinations`](api/api-reference/observability/create-an-observability-destination.md)
 * `ObservabilityNewrelicDestination`: required `broadcast_generation_cost_allocation` property addedNo action needed
 
   * No action required for existing consumers. New required response field; the corresponding field remains optional on create and update requests.
 
   **4 endpoints using this schema**
 
-  * [`GET /observability/destinations`](https://openrouter.ai/docs/api/api-reference/observability/list-observability-destinations)
-  * [`GET /observability/destinations/{id}`](https://openrouter.ai/docs/api/api-reference/observability/get-an-observability-destination)
-  * [`PATCH /observability/destinations/{id}`](https://openrouter.ai/docs/api/api-reference/observability/update-an-observability-destination)
-  * [`POST /observability/destinations`](https://openrouter.ai/docs/api/api-reference/observability/create-an-observability-destination)
+  * [`GET /observability/destinations`](api/api-reference/observability/list-observability-destinations.md)
+  * [`GET /observability/destinations/{id}`](api/api-reference/observability/get-an-observability-destination.md)
+  * [`PATCH /observability/destinations/{id}`](api/api-reference/observability/update-an-observability-destination.md)
+  * [`POST /observability/destinations`](api/api-reference/observability/create-an-observability-destination.md)
 * `ObservabilityOpikDestination`: required `broadcast_generation_cost_allocation` property addedNo action needed
 
   * No action required for existing consumers. New required response field; the corresponding field remains optional on create and update requests.
 
   **4 endpoints using this schema**
 
-  * [`GET /observability/destinations`](https://openrouter.ai/docs/api/api-reference/observability/list-observability-destinations)
-  * [`GET /observability/destinations/{id}`](https://openrouter.ai/docs/api/api-reference/observability/get-an-observability-destination)
-  * [`PATCH /observability/destinations/{id}`](https://openrouter.ai/docs/api/api-reference/observability/update-an-observability-destination)
-  * [`POST /observability/destinations`](https://openrouter.ai/docs/api/api-reference/observability/create-an-observability-destination)
+  * [`GET /observability/destinations`](api/api-reference/observability/list-observability-destinations.md)
+  * [`GET /observability/destinations/{id}`](api/api-reference/observability/get-an-observability-destination.md)
+  * [`PATCH /observability/destinations/{id}`](api/api-reference/observability/update-an-observability-destination.md)
+  * [`POST /observability/destinations`](api/api-reference/observability/create-an-observability-destination.md)
 * `ObservabilityOtelCollectorDestination`: required `broadcast_generation_cost_allocation` property addedNo action needed
 
   * No action required for existing consumers. New required response field; the corresponding field remains optional on create and update requests.
 
   **4 endpoints using this schema**
 
-  * [`GET /observability/destinations`](https://openrouter.ai/docs/api/api-reference/observability/list-observability-destinations)
-  * [`GET /observability/destinations/{id}`](https://openrouter.ai/docs/api/api-reference/observability/get-an-observability-destination)
-  * [`PATCH /observability/destinations/{id}`](https://openrouter.ai/docs/api/api-reference/observability/update-an-observability-destination)
-  * [`POST /observability/destinations`](https://openrouter.ai/docs/api/api-reference/observability/create-an-observability-destination)
+  * [`GET /observability/destinations`](api/api-reference/observability/list-observability-destinations.md)
+  * [`GET /observability/destinations/{id}`](api/api-reference/observability/get-an-observability-destination.md)
+  * [`PATCH /observability/destinations/{id}`](api/api-reference/observability/update-an-observability-destination.md)
+  * [`POST /observability/destinations`](api/api-reference/observability/create-an-observability-destination.md)
 * `ObservabilityPosthogDestination`: required `broadcast_generation_cost_allocation` property addedNo action needed
 
   * No action required for existing consumers. New required response field; the corresponding field remains optional on create and update requests.
 
   **4 endpoints using this schema**
 
-  * [`GET /observability/destinations`](https://openrouter.ai/docs/api/api-reference/observability/list-observability-destinations)
-  * [`GET /observability/destinations/{id}`](https://openrouter.ai/docs/api/api-reference/observability/get-an-observability-destination)
-  * [`PATCH /observability/destinations/{id}`](https://openrouter.ai/docs/api/api-reference/observability/update-an-observability-destination)
-  * [`POST /observability/destinations`](https://openrouter.ai/docs/api/api-reference/observability/create-an-observability-destination)
+  * [`GET /observability/destinations`](api/api-reference/observability/list-observability-destinations.md)
+  * [`GET /observability/destinations/{id}`](api/api-reference/observability/get-an-observability-destination.md)
+  * [`PATCH /observability/destinations/{id}`](api/api-reference/observability/update-an-observability-destination.md)
+  * [`POST /observability/destinations`](api/api-reference/observability/create-an-observability-destination.md)
 * `ObservabilityRampDestination`: required `broadcast_generation_cost_allocation` property addedNo action needed
 
   * No action required for existing consumers. New required response field; the corresponding field remains optional on create and update requests.
 
   **4 endpoints using this schema**
 
-  * [`GET /observability/destinations`](https://openrouter.ai/docs/api/api-reference/observability/list-observability-destinations)
-  * [`GET /observability/destinations/{id}`](https://openrouter.ai/docs/api/api-reference/observability/get-an-observability-destination)
-  * [`PATCH /observability/destinations/{id}`](https://openrouter.ai/docs/api/api-reference/observability/update-an-observability-destination)
-  * [`POST /observability/destinations`](https://openrouter.ai/docs/api/api-reference/observability/create-an-observability-destination)
+  * [`GET /observability/destinations`](api/api-reference/observability/list-observability-destinations.md)
+  * [`GET /observability/destinations/{id}`](api/api-reference/observability/get-an-observability-destination.md)
+  * [`PATCH /observability/destinations/{id}`](api/api-reference/observability/update-an-observability-destination.md)
+  * [`POST /observability/destinations`](api/api-reference/observability/create-an-observability-destination.md)
 * `ObservabilityS3Destination`: required `broadcast_generation_cost_allocation` property addedNo action needed
 
   * No action required for existing consumers. New required response field; the corresponding field remains optional on create and update requests.
 
   **4 endpoints using this schema**
 
-  * [`GET /observability/destinations`](https://openrouter.ai/docs/api/api-reference/observability/list-observability-destinations)
-  * [`GET /observability/destinations/{id}`](https://openrouter.ai/docs/api/api-reference/observability/get-an-observability-destination)
-  * [`PATCH /observability/destinations/{id}`](https://openrouter.ai/docs/api/api-reference/observability/update-an-observability-destination)
-  * [`POST /observability/destinations`](https://openrouter.ai/docs/api/api-reference/observability/create-an-observability-destination)
+  * [`GET /observability/destinations`](api/api-reference/observability/list-observability-destinations.md)
+  * [`GET /observability/destinations/{id}`](api/api-reference/observability/get-an-observability-destination.md)
+  * [`PATCH /observability/destinations/{id}`](api/api-reference/observability/update-an-observability-destination.md)
+  * [`POST /observability/destinations`](api/api-reference/observability/create-an-observability-destination.md)
 * `ObservabilitySentryDestination`: required `broadcast_generation_cost_allocation` property addedNo action needed
 
   * No action required for existing consumers. New required response field; the corresponding field remains optional on create and update requests.
 
   **4 endpoints using this schema**
 
-  * [`GET /observability/destinations`](https://openrouter.ai/docs/api/api-reference/observability/list-observability-destinations)
-  * [`GET /observability/destinations/{id}`](https://openrouter.ai/docs/api/api-reference/observability/get-an-observability-destination)
-  * [`PATCH /observability/destinations/{id}`](https://openrouter.ai/docs/api/api-reference/observability/update-an-observability-destination)
-  * [`POST /observability/destinations`](https://openrouter.ai/docs/api/api-reference/observability/create-an-observability-destination)
+  * [`GET /observability/destinations`](api/api-reference/observability/list-observability-destinations.md)
+  * [`GET /observability/destinations/{id}`](api/api-reference/observability/get-an-observability-destination.md)
+  * [`PATCH /observability/destinations/{id}`](api/api-reference/observability/update-an-observability-destination.md)
+  * [`POST /observability/destinations`](api/api-reference/observability/create-an-observability-destination.md)
 * `ObservabilitySnowflakeDestination`: required `broadcast_generation_cost_allocation` property addedNo action needed
 
   * No action required for existing consumers. New required response field; the corresponding field remains optional on create and update requests.
 
   **4 endpoints using this schema**
 
-  * [`GET /observability/destinations`](https://openrouter.ai/docs/api/api-reference/observability/list-observability-destinations)
-  * [`GET /observability/destinations/{id}`](https://openrouter.ai/docs/api/api-reference/observability/get-an-observability-destination)
-  * [`PATCH /observability/destinations/{id}`](https://openrouter.ai/docs/api/api-reference/observability/update-an-observability-destination)
-  * [`POST /observability/destinations`](https://openrouter.ai/docs/api/api-reference/observability/create-an-observability-destination)
+  * [`GET /observability/destinations`](api/api-reference/observability/list-observability-destinations.md)
+  * [`GET /observability/destinations/{id}`](api/api-reference/observability/get-an-observability-destination.md)
+  * [`PATCH /observability/destinations/{id}`](api/api-reference/observability/update-an-observability-destination.md)
+  * [`POST /observability/destinations`](api/api-reference/observability/create-an-observability-destination.md)
 * `ObservabilityWeaveDestination`: required `broadcast_generation_cost_allocation` property addedNo action needed
 
   * No action required for existing consumers. New required response field; the corresponding field remains optional on create and update requests.
 
   **4 endpoints using this schema**
 
-  * [`GET /observability/destinations`](https://openrouter.ai/docs/api/api-reference/observability/list-observability-destinations)
-  * [`GET /observability/destinations/{id}`](https://openrouter.ai/docs/api/api-reference/observability/get-an-observability-destination)
-  * [`PATCH /observability/destinations/{id}`](https://openrouter.ai/docs/api/api-reference/observability/update-an-observability-destination)
-  * [`POST /observability/destinations`](https://openrouter.ai/docs/api/api-reference/observability/create-an-observability-destination)
+  * [`GET /observability/destinations`](api/api-reference/observability/list-observability-destinations.md)
+  * [`GET /observability/destinations/{id}`](api/api-reference/observability/get-an-observability-destination.md)
+  * [`PATCH /observability/destinations/{id}`](api/api-reference/observability/update-an-observability-destination.md)
+  * [`POST /observability/destinations`](api/api-reference/observability/create-an-observability-destination.md)
 * `ObservabilityWebhookDestination`: required `broadcast_generation_cost_allocation` property addedNo action needed
 
   * No action required for existing consumers. New required response field; the corresponding field remains optional on create and update requests.
 
   **4 endpoints using this schema**
 
-  * [`GET /observability/destinations`](https://openrouter.ai/docs/api/api-reference/observability/list-observability-destinations)
-  * [`GET /observability/destinations/{id}`](https://openrouter.ai/docs/api/api-reference/observability/get-an-observability-destination)
-  * [`PATCH /observability/destinations/{id}`](https://openrouter.ai/docs/api/api-reference/observability/update-an-observability-destination)
-  * [`POST /observability/destinations`](https://openrouter.ai/docs/api/api-reference/observability/create-an-observability-destination)
-* [`GET /observability/destinations`](https://openrouter.ai/docs/api/api-reference/observability/list-observability-destinations): required `broadcast_generation_cost_allocation` property addedNo action needed
+  * [`GET /observability/destinations`](api/api-reference/observability/list-observability-destinations.md)
+  * [`GET /observability/destinations/{id}`](api/api-reference/observability/get-an-observability-destination.md)
+  * [`PATCH /observability/destinations/{id}`](api/api-reference/observability/update-an-observability-destination.md)
+  * [`POST /observability/destinations`](api/api-reference/observability/create-an-observability-destination.md)
+* [`GET /observability/destinations`](api/api-reference/observability/list-observability-destinations.md): required `broadcast_generation_cost_allocation` property addedNo action needed
   * No action required for existing consumers. New required response field; the corresponding field remains optional on create and update requests.
 
 ## Modified endpoints
 
-* [`GET /observability/destinations`](https://openrouter.ai/docs/api/api-reference/observability/list-observability-destinations): response schema updated
-* [`POST /observability/destinations`](https://openrouter.ai/docs/api/api-reference/observability/create-an-observability-destination): response schema updated
-* [`GET /observability/destinations/{id}`](https://openrouter.ai/docs/api/api-reference/observability/get-an-observability-destination): response schema updated
-* [`PATCH /observability/destinations/{id}`](https://openrouter.ai/docs/api/api-reference/observability/update-an-observability-destination): response schema updated
+* [`GET /observability/destinations`](api/api-reference/observability/list-observability-destinations.md): response schema updated
+* [`POST /observability/destinations`](api/api-reference/observability/create-an-observability-destination.md): response schema updated
+* [`GET /observability/destinations/{id}`](api/api-reference/observability/get-an-observability-destination.md): response schema updated
+* [`PATCH /observability/destinations/{id}`](api/api-reference/observability/update-an-observability-destination.md): response schema updated
 
 ## New schemas
 
@@ -1348,218 +1348,218 @@ Entries on this page are generated automatically from [OpenAPI specification](ap
 
   **4 endpoints using this schema**
 
-  * [`GET /batches/{id}`](https://openrouter.ai/docs/api/api-reference/batch/get-a-batch)
-  * [`POST /batches`](https://openrouter.ai/docs/api/api-reference/batch/create-a-batch)
-  * [`POST /presets/{slug}/responses`](https://openrouter.ai/docs/api/api-reference/presets/create-a-preset-from-a-responses-request-body)
-  * [`POST /responses`](https://openrouter.ai/docs/api/api-reference/responses/create-a-response)
+  * [`GET /batches/{id}`](api/api-reference/batch/get-a-batch.md)
+  * [`POST /batches`](api/api-reference/batch/create-a-batch.md)
+  * [`POST /presets/{slug}/responses`](api/api-reference/presets/create-a-preset-from-a-responses-request-body.md)
+  * [`POST /responses`](api/api-reference/responses/create-a-response.md)
 
 ## Modified schemas
 
 * `OutputItems`: new union variant added
-  * Used by [`GET /batches/{id}`](https://openrouter.ai/docs/api/api-reference/batch/get-a-batch), [`POST /batches`](https://openrouter.ai/docs/api/api-reference/batch/create-a-batch), [`POST /responses`](https://openrouter.ai/docs/api/api-reference/responses/create-a-response)
+  * Used by [`GET /batches/{id}`](api/api-reference/batch/get-a-batch.md), [`POST /batches`](api/api-reference/batch/create-a-batch.md), [`POST /responses`](api/api-reference/responses/create-a-response.md)
 * `CreateObservabilityDestinationRequest`: new property `broadcast_generation_cost_allocation`
-  * Used by [`POST /observability/destinations`](https://openrouter.ai/docs/api/api-reference/observability/create-an-observability-destination)
+  * Used by [`POST /observability/destinations`](api/api-reference/observability/create-an-observability-destination.md)
 * `CreateObservabilityDestinationResponse`: example modified
-  * Used by [`POST /observability/destinations`](https://openrouter.ai/docs/api/api-reference/observability/create-an-observability-destination)
+  * Used by [`POST /observability/destinations`](api/api-reference/observability/create-an-observability-destination.md)
 * `GetObservabilityDestinationResponse`: example modified
-  * Used by [`GET /observability/destinations/{id}`](https://openrouter.ai/docs/api/api-reference/observability/get-an-observability-destination)
+  * Used by [`GET /observability/destinations/{id}`](api/api-reference/observability/get-an-observability-destination.md)
 * `ListObservabilityDestinationsResponse`: example modified
-  * Used by [`GET /observability/destinations`](https://openrouter.ai/docs/api/api-reference/observability/list-observability-destinations)
+  * Used by [`GET /observability/destinations`](api/api-reference/observability/list-observability-destinations.md)
 * `ObservabilityArizeDestination`: example modified; new property `broadcast_generation_cost_allocation`
 
   **4 endpoints using this schema**
 
-  * [`GET /observability/destinations`](https://openrouter.ai/docs/api/api-reference/observability/list-observability-destinations)
-  * [`GET /observability/destinations/{id}`](https://openrouter.ai/docs/api/api-reference/observability/get-an-observability-destination)
-  * [`PATCH /observability/destinations/{id}`](https://openrouter.ai/docs/api/api-reference/observability/update-an-observability-destination)
-  * [`POST /observability/destinations`](https://openrouter.ai/docs/api/api-reference/observability/create-an-observability-destination)
+  * [`GET /observability/destinations`](api/api-reference/observability/list-observability-destinations.md)
+  * [`GET /observability/destinations/{id}`](api/api-reference/observability/get-an-observability-destination.md)
+  * [`PATCH /observability/destinations/{id}`](api/api-reference/observability/update-an-observability-destination.md)
+  * [`POST /observability/destinations`](api/api-reference/observability/create-an-observability-destination.md)
 * `ObservabilityBraintrustDestination`: example modified; new property `broadcast_generation_cost_allocation`
 
   **4 endpoints using this schema**
 
-  * [`GET /observability/destinations`](https://openrouter.ai/docs/api/api-reference/observability/list-observability-destinations)
-  * [`GET /observability/destinations/{id}`](https://openrouter.ai/docs/api/api-reference/observability/get-an-observability-destination)
-  * [`PATCH /observability/destinations/{id}`](https://openrouter.ai/docs/api/api-reference/observability/update-an-observability-destination)
-  * [`POST /observability/destinations`](https://openrouter.ai/docs/api/api-reference/observability/create-an-observability-destination)
+  * [`GET /observability/destinations`](api/api-reference/observability/list-observability-destinations.md)
+  * [`GET /observability/destinations/{id}`](api/api-reference/observability/get-an-observability-destination.md)
+  * [`PATCH /observability/destinations/{id}`](api/api-reference/observability/update-an-observability-destination.md)
+  * [`POST /observability/destinations`](api/api-reference/observability/create-an-observability-destination.md)
 * `ObservabilityClickhouseDestination`: example modified; new property `broadcast_generation_cost_allocation`
 
   **4 endpoints using this schema**
 
-  * [`GET /observability/destinations`](https://openrouter.ai/docs/api/api-reference/observability/list-observability-destinations)
-  * [`GET /observability/destinations/{id}`](https://openrouter.ai/docs/api/api-reference/observability/get-an-observability-destination)
-  * [`PATCH /observability/destinations/{id}`](https://openrouter.ai/docs/api/api-reference/observability/update-an-observability-destination)
-  * [`POST /observability/destinations`](https://openrouter.ai/docs/api/api-reference/observability/create-an-observability-destination)
+  * [`GET /observability/destinations`](api/api-reference/observability/list-observability-destinations.md)
+  * [`GET /observability/destinations/{id}`](api/api-reference/observability/get-an-observability-destination.md)
+  * [`PATCH /observability/destinations/{id}`](api/api-reference/observability/update-an-observability-destination.md)
+  * [`POST /observability/destinations`](api/api-reference/observability/create-an-observability-destination.md)
 * `ObservabilityDatadogDestination`: example modified; new property `broadcast_generation_cost_allocation`
 
   **4 endpoints using this schema**
 
-  * [`GET /observability/destinations`](https://openrouter.ai/docs/api/api-reference/observability/list-observability-destinations)
-  * [`GET /observability/destinations/{id}`](https://openrouter.ai/docs/api/api-reference/observability/get-an-observability-destination)
-  * [`PATCH /observability/destinations/{id}`](https://openrouter.ai/docs/api/api-reference/observability/update-an-observability-destination)
-  * [`POST /observability/destinations`](https://openrouter.ai/docs/api/api-reference/observability/create-an-observability-destination)
+  * [`GET /observability/destinations`](api/api-reference/observability/list-observability-destinations.md)
+  * [`GET /observability/destinations/{id}`](api/api-reference/observability/get-an-observability-destination.md)
+  * [`PATCH /observability/destinations/{id}`](api/api-reference/observability/update-an-observability-destination.md)
+  * [`POST /observability/destinations`](api/api-reference/observability/create-an-observability-destination.md)
 * `ObservabilityDestination`: example modified
 
   **4 endpoints using this schema**
 
-  * [`GET /observability/destinations`](https://openrouter.ai/docs/api/api-reference/observability/list-observability-destinations)
-  * [`GET /observability/destinations/{id}`](https://openrouter.ai/docs/api/api-reference/observability/get-an-observability-destination)
-  * [`PATCH /observability/destinations/{id}`](https://openrouter.ai/docs/api/api-reference/observability/update-an-observability-destination)
-  * [`POST /observability/destinations`](https://openrouter.ai/docs/api/api-reference/observability/create-an-observability-destination)
+  * [`GET /observability/destinations`](api/api-reference/observability/list-observability-destinations.md)
+  * [`GET /observability/destinations/{id}`](api/api-reference/observability/get-an-observability-destination.md)
+  * [`PATCH /observability/destinations/{id}`](api/api-reference/observability/update-an-observability-destination.md)
+  * [`POST /observability/destinations`](api/api-reference/observability/create-an-observability-destination.md)
 * `ObservabilityGrafanaDestination`: example modified; new property `broadcast_generation_cost_allocation`
 
   **4 endpoints using this schema**
 
-  * [`GET /observability/destinations`](https://openrouter.ai/docs/api/api-reference/observability/list-observability-destinations)
-  * [`GET /observability/destinations/{id}`](https://openrouter.ai/docs/api/api-reference/observability/get-an-observability-destination)
-  * [`PATCH /observability/destinations/{id}`](https://openrouter.ai/docs/api/api-reference/observability/update-an-observability-destination)
-  * [`POST /observability/destinations`](https://openrouter.ai/docs/api/api-reference/observability/create-an-observability-destination)
+  * [`GET /observability/destinations`](api/api-reference/observability/list-observability-destinations.md)
+  * [`GET /observability/destinations/{id}`](api/api-reference/observability/get-an-observability-destination.md)
+  * [`PATCH /observability/destinations/{id}`](api/api-reference/observability/update-an-observability-destination.md)
+  * [`POST /observability/destinations`](api/api-reference/observability/create-an-observability-destination.md)
 * `ObservabilityLangfuseDestination`: example modified; new property `broadcast_generation_cost_allocation`
 
   **4 endpoints using this schema**
 
-  * [`GET /observability/destinations`](https://openrouter.ai/docs/api/api-reference/observability/list-observability-destinations)
-  * [`GET /observability/destinations/{id}`](https://openrouter.ai/docs/api/api-reference/observability/get-an-observability-destination)
-  * [`PATCH /observability/destinations/{id}`](https://openrouter.ai/docs/api/api-reference/observability/update-an-observability-destination)
-  * [`POST /observability/destinations`](https://openrouter.ai/docs/api/api-reference/observability/create-an-observability-destination)
+  * [`GET /observability/destinations`](api/api-reference/observability/list-observability-destinations.md)
+  * [`GET /observability/destinations/{id}`](api/api-reference/observability/get-an-observability-destination.md)
+  * [`PATCH /observability/destinations/{id}`](api/api-reference/observability/update-an-observability-destination.md)
+  * [`POST /observability/destinations`](api/api-reference/observability/create-an-observability-destination.md)
 * `ObservabilityLangsmithDestination`: example modified; new property `broadcast_generation_cost_allocation`
 
   **4 endpoints using this schema**
 
-  * [`GET /observability/destinations`](https://openrouter.ai/docs/api/api-reference/observability/list-observability-destinations)
-  * [`GET /observability/destinations/{id}`](https://openrouter.ai/docs/api/api-reference/observability/get-an-observability-destination)
-  * [`PATCH /observability/destinations/{id}`](https://openrouter.ai/docs/api/api-reference/observability/update-an-observability-destination)
-  * [`POST /observability/destinations`](https://openrouter.ai/docs/api/api-reference/observability/create-an-observability-destination)
+  * [`GET /observability/destinations`](api/api-reference/observability/list-observability-destinations.md)
+  * [`GET /observability/destinations/{id}`](api/api-reference/observability/get-an-observability-destination.md)
+  * [`PATCH /observability/destinations/{id}`](api/api-reference/observability/update-an-observability-destination.md)
+  * [`POST /observability/destinations`](api/api-reference/observability/create-an-observability-destination.md)
 * `ObservabilityNewrelicDestination`: example modified; new property `broadcast_generation_cost_allocation`
 
   **4 endpoints using this schema**
 
-  * [`GET /observability/destinations`](https://openrouter.ai/docs/api/api-reference/observability/list-observability-destinations)
-  * [`GET /observability/destinations/{id}`](https://openrouter.ai/docs/api/api-reference/observability/get-an-observability-destination)
-  * [`PATCH /observability/destinations/{id}`](https://openrouter.ai/docs/api/api-reference/observability/update-an-observability-destination)
-  * [`POST /observability/destinations`](https://openrouter.ai/docs/api/api-reference/observability/create-an-observability-destination)
+  * [`GET /observability/destinations`](api/api-reference/observability/list-observability-destinations.md)
+  * [`GET /observability/destinations/{id}`](api/api-reference/observability/get-an-observability-destination.md)
+  * [`PATCH /observability/destinations/{id}`](api/api-reference/observability/update-an-observability-destination.md)
+  * [`POST /observability/destinations`](api/api-reference/observability/create-an-observability-destination.md)
 * `ObservabilityOpikDestination`: example modified; new property `broadcast_generation_cost_allocation`
 
   **4 endpoints using this schema**
 
-  * [`GET /observability/destinations`](https://openrouter.ai/docs/api/api-reference/observability/list-observability-destinations)
-  * [`GET /observability/destinations/{id}`](https://openrouter.ai/docs/api/api-reference/observability/get-an-observability-destination)
-  * [`PATCH /observability/destinations/{id}`](https://openrouter.ai/docs/api/api-reference/observability/update-an-observability-destination)
-  * [`POST /observability/destinations`](https://openrouter.ai/docs/api/api-reference/observability/create-an-observability-destination)
+  * [`GET /observability/destinations`](api/api-reference/observability/list-observability-destinations.md)
+  * [`GET /observability/destinations/{id}`](api/api-reference/observability/get-an-observability-destination.md)
+  * [`PATCH /observability/destinations/{id}`](api/api-reference/observability/update-an-observability-destination.md)
+  * [`POST /observability/destinations`](api/api-reference/observability/create-an-observability-destination.md)
 * `ObservabilityOtelCollectorDestination`: example modified; new property `broadcast_generation_cost_allocation`
 
   **4 endpoints using this schema**
 
-  * [`GET /observability/destinations`](https://openrouter.ai/docs/api/api-reference/observability/list-observability-destinations)
-  * [`GET /observability/destinations/{id}`](https://openrouter.ai/docs/api/api-reference/observability/get-an-observability-destination)
-  * [`PATCH /observability/destinations/{id}`](https://openrouter.ai/docs/api/api-reference/observability/update-an-observability-destination)
-  * [`POST /observability/destinations`](https://openrouter.ai/docs/api/api-reference/observability/create-an-observability-destination)
+  * [`GET /observability/destinations`](api/api-reference/observability/list-observability-destinations.md)
+  * [`GET /observability/destinations/{id}`](api/api-reference/observability/get-an-observability-destination.md)
+  * [`PATCH /observability/destinations/{id}`](api/api-reference/observability/update-an-observability-destination.md)
+  * [`POST /observability/destinations`](api/api-reference/observability/create-an-observability-destination.md)
 * `ObservabilityPosthogDestination`: example modified; new property `broadcast_generation_cost_allocation`
 
   **4 endpoints using this schema**
 
-  * [`GET /observability/destinations`](https://openrouter.ai/docs/api/api-reference/observability/list-observability-destinations)
-  * [`GET /observability/destinations/{id}`](https://openrouter.ai/docs/api/api-reference/observability/get-an-observability-destination)
-  * [`PATCH /observability/destinations/{id}`](https://openrouter.ai/docs/api/api-reference/observability/update-an-observability-destination)
-  * [`POST /observability/destinations`](https://openrouter.ai/docs/api/api-reference/observability/create-an-observability-destination)
+  * [`GET /observability/destinations`](api/api-reference/observability/list-observability-destinations.md)
+  * [`GET /observability/destinations/{id}`](api/api-reference/observability/get-an-observability-destination.md)
+  * [`PATCH /observability/destinations/{id}`](api/api-reference/observability/update-an-observability-destination.md)
+  * [`POST /observability/destinations`](api/api-reference/observability/create-an-observability-destination.md)
 * `ObservabilityRampDestination`: example modified; new property `broadcast_generation_cost_allocation`
 
   **4 endpoints using this schema**
 
-  * [`GET /observability/destinations`](https://openrouter.ai/docs/api/api-reference/observability/list-observability-destinations)
-  * [`GET /observability/destinations/{id}`](https://openrouter.ai/docs/api/api-reference/observability/get-an-observability-destination)
-  * [`PATCH /observability/destinations/{id}`](https://openrouter.ai/docs/api/api-reference/observability/update-an-observability-destination)
-  * [`POST /observability/destinations`](https://openrouter.ai/docs/api/api-reference/observability/create-an-observability-destination)
+  * [`GET /observability/destinations`](api/api-reference/observability/list-observability-destinations.md)
+  * [`GET /observability/destinations/{id}`](api/api-reference/observability/get-an-observability-destination.md)
+  * [`PATCH /observability/destinations/{id}`](api/api-reference/observability/update-an-observability-destination.md)
+  * [`POST /observability/destinations`](api/api-reference/observability/create-an-observability-destination.md)
 * `ObservabilityS3Destination`: example modified; new property `broadcast_generation_cost_allocation`
 
   **4 endpoints using this schema**
 
-  * [`GET /observability/destinations`](https://openrouter.ai/docs/api/api-reference/observability/list-observability-destinations)
-  * [`GET /observability/destinations/{id}`](https://openrouter.ai/docs/api/api-reference/observability/get-an-observability-destination)
-  * [`PATCH /observability/destinations/{id}`](https://openrouter.ai/docs/api/api-reference/observability/update-an-observability-destination)
-  * [`POST /observability/destinations`](https://openrouter.ai/docs/api/api-reference/observability/create-an-observability-destination)
+  * [`GET /observability/destinations`](api/api-reference/observability/list-observability-destinations.md)
+  * [`GET /observability/destinations/{id}`](api/api-reference/observability/get-an-observability-destination.md)
+  * [`PATCH /observability/destinations/{id}`](api/api-reference/observability/update-an-observability-destination.md)
+  * [`POST /observability/destinations`](api/api-reference/observability/create-an-observability-destination.md)
 * `ObservabilitySentryDestination`: example modified; new property `broadcast_generation_cost_allocation`
 
   **4 endpoints using this schema**
 
-  * [`GET /observability/destinations`](https://openrouter.ai/docs/api/api-reference/observability/list-observability-destinations)
-  * [`GET /observability/destinations/{id}`](https://openrouter.ai/docs/api/api-reference/observability/get-an-observability-destination)
-  * [`PATCH /observability/destinations/{id}`](https://openrouter.ai/docs/api/api-reference/observability/update-an-observability-destination)
-  * [`POST /observability/destinations`](https://openrouter.ai/docs/api/api-reference/observability/create-an-observability-destination)
+  * [`GET /observability/destinations`](api/api-reference/observability/list-observability-destinations.md)
+  * [`GET /observability/destinations/{id}`](api/api-reference/observability/get-an-observability-destination.md)
+  * [`PATCH /observability/destinations/{id}`](api/api-reference/observability/update-an-observability-destination.md)
+  * [`POST /observability/destinations`](api/api-reference/observability/create-an-observability-destination.md)
 * `ObservabilitySnowflakeDestination`: example modified; new property `broadcast_generation_cost_allocation`
 
   **4 endpoints using this schema**
 
-  * [`GET /observability/destinations`](https://openrouter.ai/docs/api/api-reference/observability/list-observability-destinations)
-  * [`GET /observability/destinations/{id}`](https://openrouter.ai/docs/api/api-reference/observability/get-an-observability-destination)
-  * [`PATCH /observability/destinations/{id}`](https://openrouter.ai/docs/api/api-reference/observability/update-an-observability-destination)
-  * [`POST /observability/destinations`](https://openrouter.ai/docs/api/api-reference/observability/create-an-observability-destination)
+  * [`GET /observability/destinations`](api/api-reference/observability/list-observability-destinations.md)
+  * [`GET /observability/destinations/{id}`](api/api-reference/observability/get-an-observability-destination.md)
+  * [`PATCH /observability/destinations/{id}`](api/api-reference/observability/update-an-observability-destination.md)
+  * [`POST /observability/destinations`](api/api-reference/observability/create-an-observability-destination.md)
 * `ObservabilityWeaveDestination`: example modified; new property `broadcast_generation_cost_allocation`
 
   **4 endpoints using this schema**
 
-  * [`GET /observability/destinations`](https://openrouter.ai/docs/api/api-reference/observability/list-observability-destinations)
-  * [`GET /observability/destinations/{id}`](https://openrouter.ai/docs/api/api-reference/observability/get-an-observability-destination)
-  * [`PATCH /observability/destinations/{id}`](https://openrouter.ai/docs/api/api-reference/observability/update-an-observability-destination)
-  * [`POST /observability/destinations`](https://openrouter.ai/docs/api/api-reference/observability/create-an-observability-destination)
+  * [`GET /observability/destinations`](api/api-reference/observability/list-observability-destinations.md)
+  * [`GET /observability/destinations/{id}`](api/api-reference/observability/get-an-observability-destination.md)
+  * [`PATCH /observability/destinations/{id}`](api/api-reference/observability/update-an-observability-destination.md)
+  * [`POST /observability/destinations`](api/api-reference/observability/create-an-observability-destination.md)
 * `ObservabilityWebhookDestination`: example modified; new property `broadcast_generation_cost_allocation`
 
   **4 endpoints using this schema**
 
-  * [`GET /observability/destinations`](https://openrouter.ai/docs/api/api-reference/observability/list-observability-destinations)
-  * [`GET /observability/destinations/{id}`](https://openrouter.ai/docs/api/api-reference/observability/get-an-observability-destination)
-  * [`PATCH /observability/destinations/{id}`](https://openrouter.ai/docs/api/api-reference/observability/update-an-observability-destination)
-  * [`POST /observability/destinations`](https://openrouter.ai/docs/api/api-reference/observability/create-an-observability-destination)
+  * [`GET /observability/destinations`](api/api-reference/observability/list-observability-destinations.md)
+  * [`GET /observability/destinations/{id}`](api/api-reference/observability/get-an-observability-destination.md)
+  * [`PATCH /observability/destinations/{id}`](api/api-reference/observability/update-an-observability-destination.md)
+  * [`POST /observability/destinations`](api/api-reference/observability/create-an-observability-destination.md)
 * `UpdateObservabilityDestinationRequest`: new property `broadcast_generation_cost_allocation`
-  * Used by [`PATCH /observability/destinations/{id}`](https://openrouter.ai/docs/api/api-reference/observability/update-an-observability-destination)
+  * Used by [`PATCH /observability/destinations/{id}`](api/api-reference/observability/update-an-observability-destination.md)
 * `UpdateObservabilityDestinationResponse`: example modified
-  * Used by [`PATCH /observability/destinations/{id}`](https://openrouter.ai/docs/api/api-reference/observability/update-an-observability-destination)
+  * Used by [`PATCH /observability/destinations/{id}`](api/api-reference/observability/update-an-observability-destination.md)
 * `CreateGuardrailRequest`: new property `allow_safety_retention_google`
-  * Used by [`POST /guardrails`](https://openrouter.ai/docs/api/api-reference/guardrails/create-a-guardrail)
+  * Used by [`POST /guardrails`](api/api-reference/guardrails/create-a-guardrail.md)
 * `Guardrail`: new property `allow_safety_retention_google`
 
   **4 endpoints using this schema**
 
-  * [`GET /guardrails`](https://openrouter.ai/docs/api/api-reference/guardrails/list-guardrails)
-  * [`GET /guardrails/{id}`](https://openrouter.ai/docs/api/api-reference/guardrails/get-a-guardrail)
-  * [`PATCH /guardrails/{id}`](https://openrouter.ai/docs/api/api-reference/guardrails/update-a-guardrail)
-  * [`POST /guardrails`](https://openrouter.ai/docs/api/api-reference/guardrails/create-a-guardrail)
+  * [`GET /guardrails`](api/api-reference/guardrails/list-guardrails.md)
+  * [`GET /guardrails/{id}`](api/api-reference/guardrails/get-a-guardrail.md)
+  * [`PATCH /guardrails/{id}`](api/api-reference/guardrails/update-a-guardrail.md)
+  * [`POST /guardrails`](api/api-reference/guardrails/create-a-guardrail.md)
 * `SpeechInput`: description updated
-  * Used by [`POST /audio/speech`](https://openrouter.ai/docs/api/api-reference/tts/create-speech)
+  * Used by [`POST /audio/speech`](api/api-reference/tts/create-speech.md)
 * `SpeechRequest`: description updated
-  * Used by [`POST /audio/speech`](https://openrouter.ai/docs/api/api-reference/tts/create-speech)
+  * Used by [`POST /audio/speech`](api/api-reference/tts/create-speech.md)
 * `UpdateGuardrailRequest`: new property `allow_safety_retention_google`
-  * Used by [`PATCH /guardrails/{id}`](https://openrouter.ai/docs/api/api-reference/guardrails/update-a-guardrail)
+  * Used by [`PATCH /guardrails/{id}`](api/api-reference/guardrails/update-a-guardrail.md)
 * `CreateGuardrailRequest`: new property `allow_safety_retention_other`
-  * Used by [`POST /guardrails`](https://openrouter.ai/docs/api/api-reference/guardrails/create-a-guardrail)
+  * Used by [`POST /guardrails`](api/api-reference/guardrails/create-a-guardrail.md)
 * `Guardrail`: new property `allow_safety_retention_other`
 
   **4 endpoints using this schema**
 
-  * [`GET /guardrails`](https://openrouter.ai/docs/api/api-reference/guardrails/list-guardrails)
-  * [`GET /guardrails/{id}`](https://openrouter.ai/docs/api/api-reference/guardrails/get-a-guardrail)
-  * [`PATCH /guardrails/{id}`](https://openrouter.ai/docs/api/api-reference/guardrails/update-a-guardrail)
-  * [`POST /guardrails`](https://openrouter.ai/docs/api/api-reference/guardrails/create-a-guardrail)
+  * [`GET /guardrails`](api/api-reference/guardrails/list-guardrails.md)
+  * [`GET /guardrails/{id}`](api/api-reference/guardrails/get-a-guardrail.md)
+  * [`PATCH /guardrails/{id}`](api/api-reference/guardrails/update-a-guardrail.md)
+  * [`POST /guardrails`](api/api-reference/guardrails/create-a-guardrail.md)
 * `UpdateGuardrailRequest`: new property `allow_safety_retention_other`
-  * Used by [`PATCH /guardrails/{id}`](https://openrouter.ai/docs/api/api-reference/guardrails/update-a-guardrail)
+  * Used by [`PATCH /guardrails/{id}`](api/api-reference/guardrails/update-a-guardrail.md)
 
 **October 11, 2026**
 
 ## Modified endpoints
 
-* [`GET /embeddings/models`](https://openrouter.ai/docs/api/api-reference/embeddings/list-all-embeddings-models): response schema updated
+* [`GET /embeddings/models`](api/api-reference/embeddings/list-all-embeddings-models.md): response schema updated
 
 **October 10, 2026**
 
 ## Breaking changes
 
-* [`GET /key`](https://openrouter.ai/docs/api/api-reference/api-keys/get-current-api-key): required `budgets` property addedNo action needed
+* [`GET /key`](api/api-reference/api-keys/get-current-api-key.md): required `budgets` property addedNo action needed
   * No action required for existing consumers. New response-only field.
-* [`GET /key`](https://openrouter.ai/docs/api/api-reference/api-keys/get-current-api-key): required `effective_budget` property addedNo action needed
+* [`GET /key`](api/api-reference/api-keys/get-current-api-key.md): required `effective_budget` property addedNo action needed
   * No action required for existing consumers. New response-only field.
 
 ## Modified endpoints
 
-* [`GET /key`](https://openrouter.ai/docs/api/api-reference/api-keys/get-current-api-key): response schema updated
+* [`GET /key`](api/api-reference/api-keys/get-current-api-key.md): response schema updated
 
 ## New schemas
 
@@ -1567,89 +1567,89 @@ Entries on this page are generated automatically from [OpenAPI specification](ap
 
   **6 endpoints using this schema**
 
-  * [`POST /chat/completions`](https://openrouter.ai/docs/api/api-reference/chat/create-a-chat-completion)
-  * [`POST /messages`](https://openrouter.ai/docs/api/api-reference/anthropic-messages/create-a-message)
-  * [`POST /presets/{slug}/chat/completions`](https://openrouter.ai/docs/api/api-reference/presets/create-a-preset-from-a-chat-completions-request-body)
-  * [`POST /presets/{slug}/messages`](https://openrouter.ai/docs/api/api-reference/presets/create-a-preset-from-a-messages-request-body)
-  * [`POST /presets/{slug}/responses`](https://openrouter.ai/docs/api/api-reference/presets/create-a-preset-from-a-responses-request-body)
-  * [`POST /responses`](https://openrouter.ai/docs/api/api-reference/responses/create-a-response)
+  * [`POST /chat/completions`](api/api-reference/chat/create-a-chat-completion.md)
+  * [`POST /messages`](api/api-reference/anthropic-messages/create-a-message.md)
+  * [`POST /presets/{slug}/chat/completions`](api/api-reference/presets/create-a-preset-from-a-chat-completions-request-body.md)
+  * [`POST /presets/{slug}/messages`](api/api-reference/presets/create-a-preset-from-a-messages-request-body.md)
+  * [`POST /presets/{slug}/responses`](api/api-reference/presets/create-a-preset-from-a-responses-request-body.md)
+  * [`POST /responses`](api/api-reference/responses/create-a-response.md)
 * `DeferredCustomSearch`
 
   **6 endpoints using this schema**
 
-  * [`POST /chat/completions`](https://openrouter.ai/docs/api/api-reference/chat/create-a-chat-completion)
-  * [`POST /messages`](https://openrouter.ai/docs/api/api-reference/anthropic-messages/create-a-message)
-  * [`POST /presets/{slug}/chat/completions`](https://openrouter.ai/docs/api/api-reference/presets/create-a-preset-from-a-chat-completions-request-body)
-  * [`POST /presets/{slug}/messages`](https://openrouter.ai/docs/api/api-reference/presets/create-a-preset-from-a-messages-request-body)
-  * [`POST /presets/{slug}/responses`](https://openrouter.ai/docs/api/api-reference/presets/create-a-preset-from-a-responses-request-body)
-  * [`POST /responses`](https://openrouter.ai/docs/api/api-reference/responses/create-a-response)
+  * [`POST /chat/completions`](api/api-reference/chat/create-a-chat-completion.md)
+  * [`POST /messages`](api/api-reference/anthropic-messages/create-a-message.md)
+  * [`POST /presets/{slug}/chat/completions`](api/api-reference/presets/create-a-preset-from-a-chat-completions-request-body.md)
+  * [`POST /presets/{slug}/messages`](api/api-reference/presets/create-a-preset-from-a-messages-request-body.md)
+  * [`POST /presets/{slug}/responses`](api/api-reference/presets/create-a-preset-from-a-responses-request-body.md)
+  * [`POST /responses`](api/api-reference/responses/create-a-response.md)
 * `DeferredRegexSearch`
 
   **6 endpoints using this schema**
 
-  * [`POST /chat/completions`](https://openrouter.ai/docs/api/api-reference/chat/create-a-chat-completion)
-  * [`POST /messages`](https://openrouter.ai/docs/api/api-reference/anthropic-messages/create-a-message)
-  * [`POST /presets/{slug}/chat/completions`](https://openrouter.ai/docs/api/api-reference/presets/create-a-preset-from-a-chat-completions-request-body)
-  * [`POST /presets/{slug}/messages`](https://openrouter.ai/docs/api/api-reference/presets/create-a-preset-from-a-messages-request-body)
-  * [`POST /presets/{slug}/responses`](https://openrouter.ai/docs/api/api-reference/presets/create-a-preset-from-a-responses-request-body)
-  * [`POST /responses`](https://openrouter.ai/docs/api/api-reference/responses/create-a-response)
+  * [`POST /chat/completions`](api/api-reference/chat/create-a-chat-completion.md)
+  * [`POST /messages`](api/api-reference/anthropic-messages/create-a-message.md)
+  * [`POST /presets/{slug}/chat/completions`](api/api-reference/presets/create-a-preset-from-a-chat-completions-request-body.md)
+  * [`POST /presets/{slug}/messages`](api/api-reference/presets/create-a-preset-from-a-messages-request-body.md)
+  * [`POST /presets/{slug}/responses`](api/api-reference/presets/create-a-preset-from-a-responses-request-body.md)
+  * [`POST /responses`](api/api-reference/responses/create-a-response.md)
 * `DeferredToolsControl`
 
   **6 endpoints using this schema**
 
-  * [`POST /chat/completions`](https://openrouter.ai/docs/api/api-reference/chat/create-a-chat-completion)
-  * [`POST /messages`](https://openrouter.ai/docs/api/api-reference/anthropic-messages/create-a-message)
-  * [`POST /presets/{slug}/chat/completions`](https://openrouter.ai/docs/api/api-reference/presets/create-a-preset-from-a-chat-completions-request-body)
-  * [`POST /presets/{slug}/messages`](https://openrouter.ai/docs/api/api-reference/presets/create-a-preset-from-a-messages-request-body)
-  * [`POST /presets/{slug}/responses`](https://openrouter.ai/docs/api/api-reference/presets/create-a-preset-from-a-responses-request-body)
-  * [`POST /responses`](https://openrouter.ai/docs/api/api-reference/responses/create-a-response)
+  * [`POST /chat/completions`](api/api-reference/chat/create-a-chat-completion.md)
+  * [`POST /messages`](api/api-reference/anthropic-messages/create-a-message.md)
+  * [`POST /presets/{slug}/chat/completions`](api/api-reference/presets/create-a-preset-from-a-chat-completions-request-body.md)
+  * [`POST /presets/{slug}/messages`](api/api-reference/presets/create-a-preset-from-a-messages-request-body.md)
+  * [`POST /presets/{slug}/responses`](api/api-reference/presets/create-a-preset-from-a-responses-request-body.md)
+  * [`POST /responses`](api/api-reference/responses/create-a-response.md)
 * `DeferredToolsSearchStrategy`
 
   **6 endpoints using this schema**
 
-  * [`POST /chat/completions`](https://openrouter.ai/docs/api/api-reference/chat/create-a-chat-completion)
-  * [`POST /messages`](https://openrouter.ai/docs/api/api-reference/anthropic-messages/create-a-message)
-  * [`POST /presets/{slug}/chat/completions`](https://openrouter.ai/docs/api/api-reference/presets/create-a-preset-from-a-chat-completions-request-body)
-  * [`POST /presets/{slug}/messages`](https://openrouter.ai/docs/api/api-reference/presets/create-a-preset-from-a-messages-request-body)
-  * [`POST /presets/{slug}/responses`](https://openrouter.ai/docs/api/api-reference/presets/create-a-preset-from-a-responses-request-body)
-  * [`POST /responses`](https://openrouter.ai/docs/api/api-reference/responses/create-a-response)
+  * [`POST /chat/completions`](api/api-reference/chat/create-a-chat-completion.md)
+  * [`POST /messages`](api/api-reference/anthropic-messages/create-a-message.md)
+  * [`POST /presets/{slug}/chat/completions`](api/api-reference/presets/create-a-preset-from-a-chat-completions-request-body.md)
+  * [`POST /presets/{slug}/messages`](api/api-reference/presets/create-a-preset-from-a-messages-request-body.md)
+  * [`POST /presets/{slug}/responses`](api/api-reference/presets/create-a-preset-from-a-responses-request-body.md)
+  * [`POST /responses`](api/api-reference/responses/create-a-response.md)
 * `KeyBudget`
-  * Used by [`GET /key`](https://openrouter.ai/docs/api/api-reference/api-keys/get-current-api-key)
+  * Used by [`GET /key`](api/api-reference/api-keys/get-current-api-key.md)
 * `ORAnthropicToolSearchResult`
-  * Used by [`GET /batches/{id}`](https://openrouter.ai/docs/api/api-reference/batch/get-a-batch), [`POST /batches`](https://openrouter.ai/docs/api/api-reference/batch/create-a-batch), [`POST /messages`](https://openrouter.ai/docs/api/api-reference/anthropic-messages/create-a-message)
+  * Used by [`GET /batches/{id}`](api/api-reference/batch/get-a-batch.md), [`POST /batches`](api/api-reference/batch/create-a-batch.md), [`POST /messages`](api/api-reference/anthropic-messages/create-a-message.md)
 * `ORAnthropicToolSearchResultParam`
-  * Used by [`POST /messages`](https://openrouter.ai/docs/api/api-reference/anthropic-messages/create-a-message), [`POST /presets/{slug}/messages`](https://openrouter.ai/docs/api/api-reference/presets/create-a-preset-from-a-messages-request-body)
+  * Used by [`POST /messages`](api/api-reference/anthropic-messages/create-a-message.md), [`POST /presets/{slug}/messages`](api/api-reference/presets/create-a-preset-from-a-messages-request-body.md)
 
 ## Modified schemas
 
 * `ChatRequest`: new property `deferred_tools`
-  * Used by [`POST /chat/completions`](https://openrouter.ai/docs/api/api-reference/chat/create-a-chat-completion), [`POST /presets/{slug}/chat/completions`](https://openrouter.ai/docs/api/api-reference/presets/create-a-preset-from-a-chat-completions-request-body)
+  * Used by [`POST /chat/completions`](api/api-reference/chat/create-a-chat-completion.md), [`POST /presets/{slug}/chat/completions`](api/api-reference/presets/create-a-preset-from-a-chat-completions-request-body.md)
 * `CustomTool`: new property `defer_loading`
 
   **4 endpoints using this schema**
 
-  * [`GET /batches/{id}`](https://openrouter.ai/docs/api/api-reference/batch/get-a-batch)
-  * [`POST /batches`](https://openrouter.ai/docs/api/api-reference/batch/create-a-batch)
-  * [`POST /presets/{slug}/responses`](https://openrouter.ai/docs/api/api-reference/presets/create-a-preset-from-a-responses-request-body)
-  * [`POST /responses`](https://openrouter.ai/docs/api/api-reference/responses/create-a-response)
+  * [`GET /batches/{id}`](api/api-reference/batch/get-a-batch.md)
+  * [`POST /batches`](api/api-reference/batch/create-a-batch.md)
+  * [`POST /presets/{slug}/responses`](api/api-reference/presets/create-a-preset-from-a-responses-request-body.md)
+  * [`POST /responses`](api/api-reference/responses/create-a-response.md)
 * `MessagesContentBlockStartEvent`: new union variant added
-  * Used by [`POST /messages`](https://openrouter.ai/docs/api/api-reference/anthropic-messages/create-a-message)
+  * Used by [`POST /messages`](api/api-reference/anthropic-messages/create-a-message.md)
 * `MessagesRequest`: new property `deferred_tools`
-  * Used by [`POST /messages`](https://openrouter.ai/docs/api/api-reference/anthropic-messages/create-a-message), [`POST /presets/{slug}/messages`](https://openrouter.ai/docs/api/api-reference/presets/create-a-preset-from-a-messages-request-body)
+  * Used by [`POST /messages`](api/api-reference/anthropic-messages/create-a-message.md), [`POST /presets/{slug}/messages`](api/api-reference/presets/create-a-preset-from-a-messages-request-body.md)
 * `ORAnthropicContentBlock`: new union variant added
-  * Used by [`GET /batches/{id}`](https://openrouter.ai/docs/api/api-reference/batch/get-a-batch), [`POST /batches`](https://openrouter.ai/docs/api/api-reference/batch/create-a-batch), [`POST /messages`](https://openrouter.ai/docs/api/api-reference/anthropic-messages/create-a-message)
+  * Used by [`GET /batches/{id}`](api/api-reference/batch/get-a-batch.md), [`POST /batches`](api/api-reference/batch/create-a-batch.md), [`POST /messages`](api/api-reference/anthropic-messages/create-a-message.md)
 * `OutputToolSearchServerToolItem`: new property `matches`
 
   **4 endpoints using this schema**
 
-  * [`GET /batches/{id}`](https://openrouter.ai/docs/api/api-reference/batch/get-a-batch)
-  * [`POST /batches`](https://openrouter.ai/docs/api/api-reference/batch/create-a-batch)
-  * [`POST /presets/{slug}/responses`](https://openrouter.ai/docs/api/api-reference/presets/create-a-preset-from-a-responses-request-body)
-  * [`POST /responses`](https://openrouter.ai/docs/api/api-reference/responses/create-a-response)
+  * [`GET /batches/{id}`](api/api-reference/batch/get-a-batch.md)
+  * [`POST /batches`](api/api-reference/batch/create-a-batch.md)
+  * [`POST /presets/{slug}/responses`](api/api-reference/presets/create-a-preset-from-a-responses-request-body.md)
+  * [`POST /responses`](api/api-reference/responses/create-a-response.md)
 * `ResponsesRequest`: new property `deferred_tools`
-  * Used by [`POST /presets/{slug}/responses`](https://openrouter.ai/docs/api/api-reference/presets/create-a-preset-from-a-responses-request-body), [`POST /responses`](https://openrouter.ai/docs/api/api-reference/responses/create-a-response)
+  * Used by [`POST /presets/{slug}/responses`](api/api-reference/presets/create-a-preset-from-a-responses-request-body.md), [`POST /responses`](api/api-reference/responses/create-a-response.md)
 * `VideoGenerationResponse`: new property `expires_at`
-  * Used by [`GET /videos/{jobId}`](https://openrouter.ai/docs/api/api-reference/video-generation/poll-video-generation-status), [`POST /videos`](https://openrouter.ai/docs/api/api-reference/video-generation/submit-a-video-generation-request)
+  * Used by [`GET /videos/{jobId}`](api/api-reference/video-generation/poll-video-generation-status.md), [`POST /videos`](api/api-reference/video-generation/submit-a-video-generation-request.md)
 
 **October 9, 2026**
 
@@ -1692,17 +1692,17 @@ Entries on this page are generated automatically from [OpenAPI specification](ap
 * [`DELETE /end-users/{user}`](https://openrouter.ai/docs/api/api-reference/end-users/deactivate-a-registered-end-user): description updated
 * [`GET /end-users/{user}`](https://openrouter.ai/docs/api/api-reference/end-users/get-a-registered-end-user): description updated
 * [`PATCH /end-users/{user}`](https://openrouter.ai/docs/api/api-reference/end-users/update-a-registered-end-user): description updated
-* [`PATCH /keys/{hash}`](https://openrouter.ai/docs/api/api-reference/api-keys/update-an-api-key): description updated; request schema updated
-* [`POST /guardrails`](https://openrouter.ai/docs/api/api-reference/guardrails/create-a-guardrail): description updated
-* [`PATCH /guardrails/{id}`](https://openrouter.ai/docs/api/api-reference/guardrails/update-a-guardrail): description updated
-* [`POST /guardrails/{id}/assignments/keys`](https://openrouter.ai/docs/api/api-reference/guardrails/bulk-assign-keys-to-a-guardrail): description updated
+* [`PATCH /keys/{hash}`](api/api-reference/api-keys/update-an-api-key.md): description updated; request schema updated
+* [`POST /guardrails`](api/api-reference/guardrails/create-a-guardrail.md): description updated
+* [`PATCH /guardrails/{id}`](api/api-reference/guardrails/update-a-guardrail.md): description updated
+* [`POST /guardrails/{id}/assignments/keys`](api/api-reference/guardrails/bulk-assign-keys-to-a-guardrail.md): description updated
 * `POST /interns`: description updated
-* [`PATCH /keys/{hash}`](https://openrouter.ai/docs/api/api-reference/api-keys/update-an-api-key): description updated
+* [`PATCH /keys/{hash}`](api/api-reference/api-keys/update-an-api-key.md): description updated
 
 ## New response codes
 
-* [`PATCH /keys/{hash}`](https://openrouter.ai/docs/api/api-reference/api-keys/update-an-api-key): now returns `403`
-* [`PATCH /keys/{hash}`](https://openrouter.ai/docs/api/api-reference/api-keys/update-an-api-key): now returns `409`
+* [`PATCH /keys/{hash}`](api/api-reference/api-keys/update-an-api-key.md): now returns `403`
+* [`PATCH /keys/{hash}`](api/api-reference/api-keys/update-an-api-key.md): now returns `409`
 
 ## Modified schemas
 
@@ -1720,38 +1720,38 @@ Entries on this page are generated automatically from [OpenAPI specification](ap
 
   **6 endpoints using this schema**
 
-  * [`POST /chat/completions`](https://openrouter.ai/docs/api/api-reference/chat/create-a-chat-completion)
-  * [`POST /messages`](https://openrouter.ai/docs/api/api-reference/anthropic-messages/create-a-message)
-  * [`POST /presets/{slug}/chat/completions`](https://openrouter.ai/docs/api/api-reference/presets/create-a-preset-from-a-chat-completions-request-body)
-  * [`POST /presets/{slug}/messages`](https://openrouter.ai/docs/api/api-reference/presets/create-a-preset-from-a-messages-request-body)
-  * [`POST /presets/{slug}/responses`](https://openrouter.ai/docs/api/api-reference/presets/create-a-preset-from-a-responses-request-body)
-  * [`POST /responses`](https://openrouter.ai/docs/api/api-reference/responses/create-a-response)
+  * [`POST /chat/completions`](api/api-reference/chat/create-a-chat-completion.md)
+  * [`POST /messages`](api/api-reference/anthropic-messages/create-a-message.md)
+  * [`POST /presets/{slug}/chat/completions`](api/api-reference/presets/create-a-preset-from-a-chat-completions-request-body.md)
+  * [`POST /presets/{slug}/messages`](api/api-reference/presets/create-a-preset-from-a-messages-request-body.md)
+  * [`POST /presets/{slug}/responses`](api/api-reference/presets/create-a-preset-from-a-responses-request-body.md)
+  * [`POST /responses`](api/api-reference/responses/create-a-response.md)
 
 **October 8, 2026**
 
 ## Modified endpoints
 
-* [`GET /keys`](https://openrouter.ai/docs/api/api-reference/api-keys/list-api-keys): new parameter `include_expired`
+* [`GET /keys`](api/api-reference/api-keys/list-api-keys.md): new parameter `include_expired`
 * `POST /interns`: description updated; response schema updated
 
 ## Modified schemas
 
 * `PublicEndpoint`: description updated
-  * Used by [`GET /endpoints/zdr`](https://openrouter.ai/docs/api/api-reference/endpoints/preview-the-impact-of-zdr-on-the-available-endpoints), [`GET /models/{author}/{slug}/endpoints`](https://openrouter.ai/docs/api/api-reference/endpoints/list-all-endpoints-for-a-model)
+  * Used by [`GET /endpoints/zdr`](api/api-reference/endpoints/preview-the-impact-of-zdr-on-the-available-endpoints.md), [`GET /models/{author}/{slug}/endpoints`](api/api-reference/endpoints/list-all-endpoints-for-a-model.md)
 * `JevRouterPlugin`: new property `cost_tier`
 
   **6 endpoints using this schema**
 
-  * [`POST /chat/completions`](https://openrouter.ai/docs/api/api-reference/chat/create-a-chat-completion)
-  * [`POST /messages`](https://openrouter.ai/docs/api/api-reference/anthropic-messages/create-a-message)
-  * [`POST /presets/{slug}/chat/completions`](https://openrouter.ai/docs/api/api-reference/presets/create-a-preset-from-a-chat-completions-request-body)
-  * [`POST /presets/{slug}/messages`](https://openrouter.ai/docs/api/api-reference/presets/create-a-preset-from-a-messages-request-body)
-  * [`POST /presets/{slug}/responses`](https://openrouter.ai/docs/api/api-reference/presets/create-a-preset-from-a-responses-request-body)
-  * [`POST /responses`](https://openrouter.ai/docs/api/api-reference/responses/create-a-response)
+  * [`POST /chat/completions`](api/api-reference/chat/create-a-chat-completion.md)
+  * [`POST /messages`](api/api-reference/anthropic-messages/create-a-message.md)
+  * [`POST /presets/{slug}/chat/completions`](api/api-reference/presets/create-a-preset-from-a-chat-completions-request-body.md)
+  * [`POST /presets/{slug}/messages`](api/api-reference/presets/create-a-preset-from-a-messages-request-body.md)
+  * [`POST /presets/{slug}/responses`](api/api-reference/presets/create-a-preset-from-a-responses-request-body.md)
+  * [`POST /responses`](api/api-reference/responses/create-a-response.md)
 * `BulkAssignKeysRequest`: maxItems property\_added
-  * Used by [`POST /guardrails/{id}/assignments/keys`](https://openrouter.ai/docs/api/api-reference/guardrails/bulk-assign-keys-to-a-guardrail)
+  * Used by [`POST /guardrails/{id}/assignments/keys`](api/api-reference/guardrails/bulk-assign-keys-to-a-guardrail.md)
 * `BulkUnassignKeysRequest`: maxItems property\_added
-  * Used by [`POST /guardrails/{id}/assignments/keys/remove`](https://openrouter.ai/docs/api/api-reference/guardrails/bulk-unassign-keys-from-a-guardrail)
+  * Used by [`POST /guardrails/{id}/assignments/keys/remove`](api/api-reference/guardrails/bulk-unassign-keys-from-a-guardrail.md)
 
 **October 7, 2026**
 
@@ -1763,15 +1763,15 @@ Entries on this page are generated automatically from [OpenAPI specification](ap
 ## New schemas
 
 * `ToolSearchCallItem`
-  * Used by [`POST /presets/{slug}/responses`](https://openrouter.ai/docs/api/api-reference/presets/create-a-preset-from-a-responses-request-body), [`POST /responses`](https://openrouter.ai/docs/api/api-reference/responses/create-a-response)
+  * Used by [`POST /presets/{slug}/responses`](api/api-reference/presets/create-a-preset-from-a-responses-request-body.md), [`POST /responses`](api/api-reference/responses/create-a-response.md)
 * `ToolSearchOutputItem`
-  * Used by [`POST /presets/{slug}/responses`](https://openrouter.ai/docs/api/api-reference/presets/create-a-preset-from-a-responses-request-body), [`POST /responses`](https://openrouter.ai/docs/api/api-reference/responses/create-a-response)
+  * Used by [`POST /presets/{slug}/responses`](api/api-reference/presets/create-a-preset-from-a-responses-request-body.md), [`POST /responses`](api/api-reference/responses/create-a-response.md)
 * `SignInternDaemonRequest`
   * Used by `POST /interns/{internId}/daemon-access/sign`, `POST /interns/{internId}/daemon/sign`
 * `SignInternDaemonResponse`
   * Used by `POST /interns/{internId}/daemon-access/sign`, `POST /interns/{internId}/daemon/sign`
 * `OutputToolSearchCallItem`
-  * Used by [`GET /batches/{id}`](https://openrouter.ai/docs/api/api-reference/batch/get-a-batch), [`POST /batches`](https://openrouter.ai/docs/api/api-reference/batch/create-a-batch), [`POST /responses`](https://openrouter.ai/docs/api/api-reference/responses/create-a-response)
+  * Used by [`GET /batches/{id}`](api/api-reference/batch/get-a-batch.md), [`POST /batches`](api/api-reference/batch/create-a-batch.md), [`POST /responses`](api/api-reference/responses/create-a-response.md)
 
 ## Modified schemas
 
@@ -1779,66 +1779,66 @@ Entries on this page are generated automatically from [OpenAPI specification](ap
 
   **4 endpoints using this schema**
 
-  * [`GET /batches/{id}`](https://openrouter.ai/docs/api/api-reference/batch/get-a-batch)
-  * [`POST /batches`](https://openrouter.ai/docs/api/api-reference/batch/create-a-batch)
-  * [`POST /presets/{slug}/responses`](https://openrouter.ai/docs/api/api-reference/presets/create-a-preset-from-a-responses-request-body)
-  * [`POST /responses`](https://openrouter.ai/docs/api/api-reference/responses/create-a-response)
+  * [`GET /batches/{id}`](api/api-reference/batch/get-a-batch.md)
+  * [`POST /batches`](api/api-reference/batch/create-a-batch.md)
+  * [`POST /presets/{slug}/responses`](api/api-reference/presets/create-a-preset-from-a-responses-request-body.md)
+  * [`POST /responses`](api/api-reference/responses/create-a-response.md)
 * `OutputDatetimeItem`: new property `error`; \$ref modified
 
   **4 endpoints using this schema**
 
-  * [`GET /batches/{id}`](https://openrouter.ai/docs/api/api-reference/batch/get-a-batch)
-  * [`POST /batches`](https://openrouter.ai/docs/api/api-reference/batch/create-a-batch)
-  * [`POST /presets/{slug}/responses`](https://openrouter.ai/docs/api/api-reference/presets/create-a-preset-from-a-responses-request-body)
-  * [`POST /responses`](https://openrouter.ai/docs/api/api-reference/responses/create-a-response)
+  * [`GET /batches/{id}`](api/api-reference/batch/get-a-batch.md)
+  * [`POST /batches`](api/api-reference/batch/create-a-batch.md)
+  * [`POST /presets/{slug}/responses`](api/api-reference/presets/create-a-preset-from-a-responses-request-body.md)
+  * [`POST /responses`](api/api-reference/responses/create-a-response.md)
 * `OutputImageGenerationServerToolItem`: new property `error`; \$ref modified
 
   **4 endpoints using this schema**
 
-  * [`GET /batches/{id}`](https://openrouter.ai/docs/api/api-reference/batch/get-a-batch)
-  * [`POST /batches`](https://openrouter.ai/docs/api/api-reference/batch/create-a-batch)
-  * [`POST /presets/{slug}/responses`](https://openrouter.ai/docs/api/api-reference/presets/create-a-preset-from-a-responses-request-body)
-  * [`POST /responses`](https://openrouter.ai/docs/api/api-reference/responses/create-a-response)
+  * [`GET /batches/{id}`](api/api-reference/batch/get-a-batch.md)
+  * [`POST /batches`](api/api-reference/batch/create-a-batch.md)
+  * [`POST /presets/{slug}/responses`](api/api-reference/presets/create-a-preset-from-a-responses-request-body.md)
+  * [`POST /responses`](api/api-reference/responses/create-a-response.md)
 * `OutputSearchModelsServerToolItem`: new property `error`; \$ref modified
 
   **4 endpoints using this schema**
 
-  * [`GET /batches/{id}`](https://openrouter.ai/docs/api/api-reference/batch/get-a-batch)
-  * [`POST /batches`](https://openrouter.ai/docs/api/api-reference/batch/create-a-batch)
-  * [`POST /presets/{slug}/responses`](https://openrouter.ai/docs/api/api-reference/presets/create-a-preset-from-a-responses-request-body)
-  * [`POST /responses`](https://openrouter.ai/docs/api/api-reference/responses/create-a-response)
+  * [`GET /batches/{id}`](api/api-reference/batch/get-a-batch.md)
+  * [`POST /batches`](api/api-reference/batch/create-a-batch.md)
+  * [`POST /presets/{slug}/responses`](api/api-reference/presets/create-a-preset-from-a-responses-request-body.md)
+  * [`POST /responses`](api/api-reference/responses/create-a-response.md)
 * `OutputToolSearchServerToolItem`: new property `error`; \$ref modified
 
   **4 endpoints using this schema**
 
-  * [`GET /batches/{id}`](https://openrouter.ai/docs/api/api-reference/batch/get-a-batch)
-  * [`POST /batches`](https://openrouter.ai/docs/api/api-reference/batch/create-a-batch)
-  * [`POST /presets/{slug}/responses`](https://openrouter.ai/docs/api/api-reference/presets/create-a-preset-from-a-responses-request-body)
-  * [`POST /responses`](https://openrouter.ai/docs/api/api-reference/responses/create-a-response)
+  * [`GET /batches/{id}`](api/api-reference/batch/get-a-batch.md)
+  * [`POST /batches`](api/api-reference/batch/create-a-batch.md)
+  * [`POST /presets/{slug}/responses`](api/api-reference/presets/create-a-preset-from-a-responses-request-body.md)
+  * [`POST /responses`](api/api-reference/responses/create-a-response.md)
 * `OutputWebSearchServerToolItem`: new property `error`; \$ref modified
 
   **4 endpoints using this schema**
 
-  * [`GET /batches/{id}`](https://openrouter.ai/docs/api/api-reference/batch/get-a-batch)
-  * [`POST /batches`](https://openrouter.ai/docs/api/api-reference/batch/create-a-batch)
-  * [`POST /presets/{slug}/responses`](https://openrouter.ai/docs/api/api-reference/presets/create-a-preset-from-a-responses-request-body)
-  * [`POST /responses`](https://openrouter.ai/docs/api/api-reference/responses/create-a-response)
+  * [`GET /batches/{id}`](api/api-reference/batch/get-a-batch.md)
+  * [`POST /batches`](api/api-reference/batch/create-a-batch.md)
+  * [`POST /presets/{slug}/responses`](api/api-reference/presets/create-a-preset-from-a-responses-request-body.md)
+  * [`POST /responses`](api/api-reference/responses/create-a-response.md)
 * `SwitchyardRouterPlugin`: description updated
 
   **6 endpoints using this schema**
 
-  * [`POST /chat/completions`](https://openrouter.ai/docs/api/api-reference/chat/create-a-chat-completion)
-  * [`POST /messages`](https://openrouter.ai/docs/api/api-reference/anthropic-messages/create-a-message)
-  * [`POST /presets/{slug}/chat/completions`](https://openrouter.ai/docs/api/api-reference/presets/create-a-preset-from-a-chat-completions-request-body)
-  * [`POST /presets/{slug}/messages`](https://openrouter.ai/docs/api/api-reference/presets/create-a-preset-from-a-messages-request-body)
-  * [`POST /presets/{slug}/responses`](https://openrouter.ai/docs/api/api-reference/presets/create-a-preset-from-a-responses-request-body)
-  * [`POST /responses`](https://openrouter.ai/docs/api/api-reference/responses/create-a-response)
+  * [`POST /chat/completions`](api/api-reference/chat/create-a-chat-completion.md)
+  * [`POST /messages`](api/api-reference/anthropic-messages/create-a-message.md)
+  * [`POST /presets/{slug}/chat/completions`](api/api-reference/presets/create-a-preset-from-a-chat-completions-request-body.md)
+  * [`POST /presets/{slug}/messages`](api/api-reference/presets/create-a-preset-from-a-messages-request-body.md)
+  * [`POST /presets/{slug}/responses`](api/api-reference/presets/create-a-preset-from-a-responses-request-body.md)
+  * [`POST /responses`](api/api-reference/responses/create-a-response.md)
 * `MessagesStartEvent`: property `provider` updated
-  * Used by [`POST /messages`](https://openrouter.ai/docs/api/api-reference/anthropic-messages/create-a-message)
+  * Used by [`POST /messages`](api/api-reference/anthropic-messages/create-a-message.md)
 * `ProviderResponse`: x-speakeasy-unknown-values object\_added
-  * Used by [`GET /generation`](https://openrouter.ai/docs/api/api-reference/generations/get-request-&-usage-metadata-for-a-generation)
+  * Used by [`GET /generation`](api/api-reference/generations/get-request-&-usage-metadata-for-a-generation.md)
 * `OutputItems`: new union variant added
-  * Used by [`GET /batches/{id}`](https://openrouter.ai/docs/api/api-reference/batch/get-a-batch), [`POST /batches`](https://openrouter.ai/docs/api/api-reference/batch/create-a-batch), [`POST /responses`](https://openrouter.ai/docs/api/api-reference/responses/create-a-response)
+  * Used by [`GET /batches/{id}`](api/api-reference/batch/get-a-batch.md), [`POST /batches`](api/api-reference/batch/create-a-batch.md), [`POST /responses`](api/api-reference/responses/create-a-response.md)
 
 **October 6, 2026**
 
@@ -1850,37 +1850,37 @@ Entries on this page are generated automatically from [OpenAPI specification](ap
 
   **4 endpoints using this schema**
 
-  * [`GET /byok`](https://openrouter.ai/docs/api/api-reference/byok/list-byok-provider-credentials)
-  * [`GET /byok/{id}`](https://openrouter.ai/docs/api/api-reference/byok/get-a-byok-provider-credential)
-  * [`PATCH /byok/{id}`](https://openrouter.ai/docs/api/api-reference/byok/update-a-byok-provider-credential)
-  * [`POST /byok`](https://openrouter.ai/docs/api/api-reference/byok/create-a-byok-provider-credential)
-* [`GET /keys`](https://openrouter.ai/docs/api/api-reference/api-keys/list-api-keys): required `last_used_at` property addedNo action needed
+  * [`GET /byok`](api/api-reference/byok/list-byok-provider-credentials.md)
+  * [`GET /byok/{id}`](api/api-reference/byok/get-a-byok-provider-credential.md)
+  * [`PATCH /byok/{id}`](api/api-reference/byok/update-a-byok-provider-credential.md)
+  * [`POST /byok`](api/api-reference/byok/create-a-byok-provider-credential.md)
+* [`GET /keys`](api/api-reference/api-keys/list-api-keys.md): required `last_used_at` property addedNo action needed
   * No action required for existing consumers. API key responses now include `last_used_at`, an ISO 8601 UTC timestamp of the key's most recent recorded usage, or `null` if none has been recorded.
-* [`POST /keys`](https://openrouter.ai/docs/api/api-reference/api-keys/create-a-new-api-key): required `last_used_at` property addedNo action needed
-* [`GET /keys/{hash}`](https://openrouter.ai/docs/api/api-reference/api-keys/get-a-single-api-key): required `last_used_at` property addedNo action needed
-* [`PATCH /keys/{hash}`](https://openrouter.ai/docs/api/api-reference/api-keys/update-an-api-key): required `last_used_at` property addedNo action needed
+* [`POST /keys`](api/api-reference/api-keys/create-a-new-api-key.md): required `last_used_at` property addedNo action needed
+* [`GET /keys/{hash}`](api/api-reference/api-keys/get-a-single-api-key.md): required `last_used_at` property addedNo action needed
+* [`PATCH /keys/{hash}`](api/api-reference/api-keys/update-an-api-key.md): required `last_used_at` property addedNo action needed
 
 ## Modified endpoints
 
-* [`GET /byok`](https://openrouter.ai/docs/api/api-reference/byok/list-byok-provider-credentials): response schema updated
-* [`POST /byok`](https://openrouter.ai/docs/api/api-reference/byok/create-a-byok-provider-credential): response schema updated
-* [`GET /byok/{id}`](https://openrouter.ai/docs/api/api-reference/byok/get-a-byok-provider-credential): response schema updated
-* [`PATCH /byok/{id}`](https://openrouter.ai/docs/api/api-reference/byok/update-a-byok-provider-credential): response schema updated
-* [`GET /keys`](https://openrouter.ai/docs/api/api-reference/api-keys/list-api-keys): response schema updated
-* [`POST /keys`](https://openrouter.ai/docs/api/api-reference/api-keys/create-a-new-api-key): response schema updated
-* [`GET /keys/{hash}`](https://openrouter.ai/docs/api/api-reference/api-keys/get-a-single-api-key): response schema updated
-* [`PATCH /keys/{hash}`](https://openrouter.ai/docs/api/api-reference/api-keys/update-an-api-key): response schema updated
+* [`GET /byok`](api/api-reference/byok/list-byok-provider-credentials.md): response schema updated
+* [`POST /byok`](api/api-reference/byok/create-a-byok-provider-credential.md): response schema updated
+* [`GET /byok/{id}`](api/api-reference/byok/get-a-byok-provider-credential.md): response schema updated
+* [`PATCH /byok/{id}`](api/api-reference/byok/update-a-byok-provider-credential.md): response schema updated
+* [`GET /keys`](api/api-reference/api-keys/list-api-keys.md): response schema updated
+* [`POST /keys`](api/api-reference/api-keys/create-a-new-api-key.md): response schema updated
+* [`GET /keys/{hash}`](api/api-reference/api-keys/get-a-single-api-key.md): response schema updated
+* [`PATCH /keys/{hash}`](api/api-reference/api-keys/update-an-api-key.md): response schema updated
 
 ## New response codes
 
-* [`PATCH /byok/{id}`](https://openrouter.ai/docs/api/api-reference/byok/update-a-byok-provider-credential): now returns `409`
+* [`PATCH /byok/{id}`](api/api-reference/byok/update-a-byok-provider-credential.md): now returns `409`
 
 ## New schemas
 
 * `SpeechInput`
-  * Used by [`POST /audio/speech`](https://openrouter.ai/docs/api/api-reference/tts/create-speech)
+  * Used by [`POST /audio/speech`](api/api-reference/tts/create-speech.md)
 * `SpeechTurn`
-  * Used by [`POST /audio/speech`](https://openrouter.ai/docs/api/api-reference/tts/create-speech)
+  * Used by [`POST /audio/speech`](api/api-reference/tts/create-speech.md)
 
 ## Modified schemas
 
@@ -1888,41 +1888,41 @@ Entries on this page are generated automatically from [OpenAPI specification](ap
 
   **4 endpoints using this schema**
 
-  * [`GET /byok`](https://openrouter.ai/docs/api/api-reference/byok/list-byok-provider-credentials)
-  * [`GET /byok/{id}`](https://openrouter.ai/docs/api/api-reference/byok/get-a-byok-provider-credential)
-  * [`PATCH /byok/{id}`](https://openrouter.ai/docs/api/api-reference/byok/update-a-byok-provider-credential)
-  * [`POST /byok`](https://openrouter.ai/docs/api/api-reference/byok/create-a-byok-provider-credential)
+  * [`GET /byok`](api/api-reference/byok/list-byok-provider-credentials.md)
+  * [`GET /byok/{id}`](api/api-reference/byok/get-a-byok-provider-credential.md)
+  * [`PATCH /byok/{id}`](api/api-reference/byok/update-a-byok-provider-credential.md)
+  * [`POST /byok`](api/api-reference/byok/create-a-byok-provider-credential.md)
 * `CreateBYOKKeyRequest`: new property `declared_region`
-  * Used by [`POST /byok`](https://openrouter.ai/docs/api/api-reference/byok/create-a-byok-provider-credential)
+  * Used by [`POST /byok`](api/api-reference/byok/create-a-byok-provider-credential.md)
 * `CreateBYOKKeyResponse`: example modified
-  * Used by [`POST /byok`](https://openrouter.ai/docs/api/api-reference/byok/create-a-byok-provider-credential)
+  * Used by [`POST /byok`](api/api-reference/byok/create-a-byok-provider-credential.md)
 * `GetBYOKKeyResponse`: example modified
-  * Used by [`GET /byok/{id}`](https://openrouter.ai/docs/api/api-reference/byok/get-a-byok-provider-credential)
+  * Used by [`GET /byok/{id}`](api/api-reference/byok/get-a-byok-provider-credential.md)
 * `ListBYOKKeysResponse`: example modified
-  * Used by [`GET /byok`](https://openrouter.ai/docs/api/api-reference/byok/list-byok-provider-credentials)
+  * Used by [`GET /byok`](api/api-reference/byok/list-byok-provider-credentials.md)
 * `UpdateBYOKKeyRequest`: new property `declared_region`
-  * Used by [`PATCH /byok/{id}`](https://openrouter.ai/docs/api/api-reference/byok/update-a-byok-provider-credential)
+  * Used by [`PATCH /byok/{id}`](api/api-reference/byok/update-a-byok-provider-credential.md)
 * `UpdateBYOKKeyResponse`: example modified
-  * Used by [`PATCH /byok/{id}`](https://openrouter.ai/docs/api/api-reference/byok/update-a-byok-provider-credential)
+  * Used by [`PATCH /byok/{id}`](api/api-reference/byok/update-a-byok-provider-credential.md)
 * `SwitchyardRouterPlugin`: new property `judge_model`
 
   **6 endpoints using this schema**
 
-  * [`POST /chat/completions`](https://openrouter.ai/docs/api/api-reference/chat/create-a-chat-completion)
-  * [`POST /messages`](https://openrouter.ai/docs/api/api-reference/anthropic-messages/create-a-message)
-  * [`POST /presets/{slug}/chat/completions`](https://openrouter.ai/docs/api/api-reference/presets/create-a-preset-from-a-chat-completions-request-body)
-  * [`POST /presets/{slug}/messages`](https://openrouter.ai/docs/api/api-reference/presets/create-a-preset-from-a-messages-request-body)
-  * [`POST /presets/{slug}/responses`](https://openrouter.ai/docs/api/api-reference/presets/create-a-preset-from-a-responses-request-body)
-  * [`POST /responses`](https://openrouter.ai/docs/api/api-reference/responses/create-a-response)
+  * [`POST /chat/completions`](api/api-reference/chat/create-a-chat-completion.md)
+  * [`POST /messages`](api/api-reference/anthropic-messages/create-a-message.md)
+  * [`POST /presets/{slug}/chat/completions`](api/api-reference/presets/create-a-preset-from-a-chat-completions-request-body.md)
+  * [`POST /presets/{slug}/messages`](api/api-reference/presets/create-a-preset-from-a-messages-request-body.md)
+  * [`POST /presets/{slug}/responses`](api/api-reference/presets/create-a-preset-from-a-responses-request-body.md)
+  * [`POST /responses`](api/api-reference/responses/create-a-response.md)
 * `SpeechRequest`: new property `instructions`; \$ref modified
-  * Used by [`POST /audio/speech`](https://openrouter.ai/docs/api/api-reference/tts/create-speech)
+  * Used by [`POST /audio/speech`](api/api-reference/tts/create-speech.md)
 
 **October 5, 2026**
 
 ## Modified schemas
 
 * `BatchProviderPreferences`: description updated; new property `allow_fallbacks`
-  * Used by [`POST /batches`](https://openrouter.ai/docs/api/api-reference/batch/create-a-batch)
+  * Used by [`POST /batches`](api/api-reference/batch/create-a-batch.md)
 
 **October 2, 2026**
 
@@ -1932,7 +1932,7 @@ Entries on this page are generated automatically from [OpenAPI specification](ap
 
 ## Modified endpoints
 
-* [`POST /audio/transcriptions`](https://openrouter.ai/docs/api/api-reference/stt/create-transcription): description updated
+* [`POST /audio/transcriptions`](api/api-reference/stt/create-transcription.md): description updated
 
 ## Modified schemas
 
@@ -1940,57 +1940,57 @@ Entries on this page are generated automatically from [OpenAPI specification](ap
 
   **4 endpoints using this schema**
 
-  * [`GET /observability/destinations`](https://openrouter.ai/docs/api/api-reference/observability/list-observability-destinations)
-  * [`GET /observability/destinations/{id}`](https://openrouter.ai/docs/api/api-reference/observability/get-an-observability-destination)
-  * [`PATCH /observability/destinations/{id}`](https://openrouter.ai/docs/api/api-reference/observability/update-an-observability-destination)
-  * [`POST /observability/destinations`](https://openrouter.ai/docs/api/api-reference/observability/create-an-observability-destination)
+  * [`GET /observability/destinations`](api/api-reference/observability/list-observability-destinations.md)
+  * [`GET /observability/destinations/{id}`](api/api-reference/observability/get-an-observability-destination.md)
+  * [`PATCH /observability/destinations/{id}`](api/api-reference/observability/update-an-observability-destination.md)
+  * [`POST /observability/destinations`](api/api-reference/observability/create-an-observability-destination.md)
 * `ObservabilitySnowflakeDestination`: new property `shouldIncludeCacheWriteTokens`
 
   **4 endpoints using this schema**
 
-  * [`GET /observability/destinations`](https://openrouter.ai/docs/api/api-reference/observability/list-observability-destinations)
-  * [`GET /observability/destinations/{id}`](https://openrouter.ai/docs/api/api-reference/observability/get-an-observability-destination)
-  * [`PATCH /observability/destinations/{id}`](https://openrouter.ai/docs/api/api-reference/observability/update-an-observability-destination)
-  * [`POST /observability/destinations`](https://openrouter.ai/docs/api/api-reference/observability/create-an-observability-destination)
+  * [`GET /observability/destinations`](api/api-reference/observability/list-observability-destinations.md)
+  * [`GET /observability/destinations/{id}`](api/api-reference/observability/get-an-observability-destination.md)
+  * [`PATCH /observability/destinations/{id}`](api/api-reference/observability/update-an-observability-destination.md)
+  * [`POST /observability/destinations`](api/api-reference/observability/create-an-observability-destination.md)
 * `STTRequest`: description updated; new property `data_collection`; new property `zdr`
-  * Used by [`POST /audio/transcriptions`](https://openrouter.ai/docs/api/api-reference/stt/create-transcription)
+  * Used by [`POST /audio/transcriptions`](api/api-reference/stt/create-transcription.md)
 * `SpeechRequest`: description updated; new property `data_collection`; new property `zdr`
-  * Used by [`POST /audio/speech`](https://openrouter.ai/docs/api/api-reference/tts/create-speech)
+  * Used by [`POST /audio/speech`](api/api-reference/tts/create-speech.md)
 
 **October 1, 2026**
 
 ## Breaking changes
 
 * `ActivityItem`: required `cached_tokens` property addedNo action needed
-  * Used by [`GET /activity`](https://openrouter.ai/docs/api/api-reference/analytics/get-user-activity-grouped-by-endpoint)
+  * Used by [`GET /activity`](api/api-reference/analytics/get-user-activity-grouped-by-endpoint.md)
 
 ## Modified endpoints
 
-* [`GET /generation`](https://openrouter.ai/docs/api/api-reference/generations/get-request-&-usage-metadata-for-a-generation): parameter `id` updated
-* [`GET /generation/content`](https://openrouter.ai/docs/api/api-reference/generations/get-stored-prompt-completion-and-error-content-for-a-generation): parameter `id` updated
-* [`GET /activity`](https://openrouter.ai/docs/api/api-reference/analytics/get-user-activity-grouped-by-endpoint): response schema updated
-* [`PATCH /keys/{hash}`](https://openrouter.ai/docs/api/api-reference/api-keys/update-an-api-key): description updated; response schema updated
+* [`GET /generation`](api/api-reference/generations/get-request-&-usage-metadata-for-a-generation.md): parameter `id` updated
+* [`GET /generation/content`](api/api-reference/generations/get-stored-prompt-completion-and-error-content-for-a-generation.md): parameter `id` updated
+* [`GET /activity`](api/api-reference/analytics/get-user-activity-grouped-by-endpoint.md): response schema updated
+* [`PATCH /keys/{hash}`](api/api-reference/api-keys/update-an-api-key.md): description updated; response schema updated
 
 ## New response codes
 
-* [`GET /generation`](https://openrouter.ai/docs/api/api-reference/generations/get-request-&-usage-metadata-for-a-generation): now returns `400`
-* [`GET /generation/content`](https://openrouter.ai/docs/api/api-reference/generations/get-stored-prompt-completion-and-error-content-for-a-generation): now returns `400`
+* [`GET /generation`](api/api-reference/generations/get-request-&-usage-metadata-for-a-generation.md): now returns `400`
+* [`GET /generation/content`](api/api-reference/generations/get-stored-prompt-completion-and-error-content-for-a-generation.md): now returns `400`
 
 ## New schemas
 
 * `ChatDynamicServerTool`
-  * Used by [`POST /chat/completions`](https://openrouter.ai/docs/api/api-reference/chat/create-a-chat-completion), [`POST /presets/{slug}/chat/completions`](https://openrouter.ai/docs/api/api-reference/presets/create-a-preset-from-a-chat-completions-request-body)
+  * Used by [`POST /chat/completions`](api/api-reference/chat/create-a-chat-completion.md), [`POST /presets/{slug}/chat/completions`](api/api-reference/presets/create-a-preset-from-a-chat-completions-request-body.md)
 
 ## Modified schemas
 
 * `ChatFunctionTool`: new union variant added
-  * Used by [`POST /chat/completions`](https://openrouter.ai/docs/api/api-reference/chat/create-a-chat-completion), [`POST /presets/{slug}/chat/completions`](https://openrouter.ai/docs/api/api-reference/presets/create-a-preset-from-a-chat-completions-request-body)
+  * Used by [`POST /chat/completions`](api/api-reference/chat/create-a-chat-completion.md), [`POST /presets/{slug}/chat/completions`](api/api-reference/presets/create-a-preset-from-a-chat-completions-request-body.md)
 * `ActivityItem`: example modified; new property `cached_tokens`
-  * Used by [`GET /activity`](https://openrouter.ai/docs/api/api-reference/analytics/get-user-activity-grouped-by-endpoint)
+  * Used by [`GET /activity`](api/api-reference/analytics/get-user-activity-grouped-by-endpoint.md)
 * `ActivityResponse`: example modified
-  * Used by [`GET /activity`](https://openrouter.ai/docs/api/api-reference/analytics/get-user-activity-grouped-by-endpoint)
+  * Used by [`GET /activity`](api/api-reference/analytics/get-user-activity-grouped-by-endpoint.md)
 * `ImageGenerationRequest`: enum property\_added
-  * Used by [`POST /images`](https://openrouter.ai/docs/api/api-reference/images/generate-an-image)
+  * Used by [`POST /images`](api/api-reference/images/generate-an-image.md)
 
 **September 30, 2026**
 
@@ -2001,53 +2001,53 @@ Entries on this page are generated automatically from [OpenAPI specification](ap
 * [`GET /end-users/{user}`](https://openrouter.ai/docs/api/api-reference/end-users/get-a-registered-end-user): Get a registered end user
 * [`PATCH /end-users/{user}`](https://openrouter.ai/docs/api/api-reference/end-users/update-a-registered-end-user): Update a registered end user
 * [`DELETE /end-users/{user}`](https://openrouter.ai/docs/api/api-reference/end-users/deactivate-a-registered-end-user): Deactivate a registered end user
-* [`GET /organization/settings`](https://openrouter.ai/docs/api/api-reference/organization/get-organization-settings): Get organization settings
-* [`PATCH /organization/settings`](https://openrouter.ai/docs/api/api-reference/organization/update-organization-settings): Update organization settings
+* [`GET /organization/settings`](api/api-reference/organization/get-organization-settings.md): Get organization settings
+* [`PATCH /organization/settings`](api/api-reference/organization/update-organization-settings.md): Update organization settings
 
 ## Modified endpoints
 
-* [`GET /containers/{container_id}/files`](https://openrouter.ai/docs/api/api-reference/containers/list-container-files): description updated
+* [`GET /containers/{container_id}/files`](api/api-reference/containers/list-container-files.md): description updated
 
 ## New schemas
 
 * `Alignment`
-  * Used by [`GET /batches/{id}`](https://openrouter.ai/docs/api/api-reference/batch/get-a-batch), [`POST /batches`](https://openrouter.ai/docs/api/api-reference/batch/create-a-batch), [`POST /responses`](https://openrouter.ai/docs/api/api-reference/responses/create-a-response)
+  * Used by [`GET /batches/{id}`](api/api-reference/batch/get-a-batch.md), [`POST /batches`](api/api-reference/batch/create-a-batch.md), [`POST /responses`](api/api-reference/responses/create-a-response.md)
 * `AlignmentAllowedCallRecord`
-  * Used by [`GET /batches/{id}`](https://openrouter.ai/docs/api/api-reference/batch/get-a-batch), [`POST /batches`](https://openrouter.ai/docs/api/api-reference/batch/create-a-batch), [`POST /responses`](https://openrouter.ai/docs/api/api-reference/responses/create-a-response)
+  * Used by [`GET /batches/{id}`](api/api-reference/batch/get-a-batch.md), [`POST /batches`](api/api-reference/batch/create-a-batch.md), [`POST /responses`](api/api-reference/responses/create-a-response.md)
 * `AlignmentBlockedCallRecord`
-  * Used by [`GET /batches/{id}`](https://openrouter.ai/docs/api/api-reference/batch/get-a-batch), [`POST /batches`](https://openrouter.ai/docs/api/api-reference/batch/create-a-batch), [`POST /responses`](https://openrouter.ai/docs/api/api-reference/responses/create-a-response)
+  * Used by [`GET /batches/{id}`](api/api-reference/batch/get-a-batch.md), [`POST /batches`](api/api-reference/batch/create-a-batch.md), [`POST /responses`](api/api-reference/responses/create-a-response.md)
 * `AlignmentCallRecord`
-  * Used by [`GET /batches/{id}`](https://openrouter.ai/docs/api/api-reference/batch/get-a-batch), [`POST /batches`](https://openrouter.ai/docs/api/api-reference/batch/create-a-batch), [`POST /responses`](https://openrouter.ai/docs/api/api-reference/responses/create-a-response)
+  * Used by [`GET /batches/{id}`](api/api-reference/batch/get-a-batch.md), [`POST /batches`](api/api-reference/batch/create-a-batch.md), [`POST /responses`](api/api-reference/responses/create-a-response.md)
 * `AlignmentChatAudio`
-  * Used by [`GET /batches/{id}`](https://openrouter.ai/docs/api/api-reference/batch/get-a-batch), [`POST /batches`](https://openrouter.ai/docs/api/api-reference/batch/create-a-batch), [`POST /responses`](https://openrouter.ai/docs/api/api-reference/responses/create-a-response)
+  * Used by [`GET /batches/{id}`](api/api-reference/batch/get-a-batch.md), [`POST /batches`](api/api-reference/batch/create-a-batch.md), [`POST /responses`](api/api-reference/responses/create-a-response.md)
 * `AlignmentChatImage`
-  * Used by [`GET /batches/{id}`](https://openrouter.ai/docs/api/api-reference/batch/get-a-batch), [`POST /batches`](https://openrouter.ai/docs/api/api-reference/batch/create-a-batch), [`POST /responses`](https://openrouter.ai/docs/api/api-reference/responses/create-a-response)
+  * Used by [`GET /batches/{id}`](api/api-reference/batch/get-a-batch.md), [`POST /batches`](api/api-reference/batch/create-a-batch.md), [`POST /responses`](api/api-reference/responses/create-a-response.md)
 * `AlignmentChatRejected`
-  * Used by [`GET /batches/{id}`](https://openrouter.ai/docs/api/api-reference/batch/get-a-batch), [`POST /batches`](https://openrouter.ai/docs/api/api-reference/batch/create-a-batch), [`POST /responses`](https://openrouter.ai/docs/api/api-reference/responses/create-a-response)
+  * Used by [`GET /batches/{id}`](api/api-reference/batch/get-a-batch.md), [`POST /batches`](api/api-reference/batch/create-a-batch.md), [`POST /responses`](api/api-reference/responses/create-a-response.md)
 * `AlignmentChatToolCall`
-  * Used by [`GET /batches/{id}`](https://openrouter.ai/docs/api/api-reference/batch/get-a-batch), [`POST /batches`](https://openrouter.ai/docs/api/api-reference/batch/create-a-batch), [`POST /responses`](https://openrouter.ai/docs/api/api-reference/responses/create-a-response)
+  * Used by [`GET /batches/{id}`](api/api-reference/batch/get-a-batch.md), [`POST /batches`](api/api-reference/batch/create-a-batch.md), [`POST /responses`](api/api-reference/responses/create-a-response.md)
 * `AlignmentPlugin`
 
   **6 endpoints using this schema**
 
-  * [`POST /chat/completions`](https://openrouter.ai/docs/api/api-reference/chat/create-a-chat-completion)
-  * [`POST /messages`](https://openrouter.ai/docs/api/api-reference/anthropic-messages/create-a-message)
-  * [`POST /presets/{slug}/chat/completions`](https://openrouter.ai/docs/api/api-reference/presets/create-a-preset-from-a-chat-completions-request-body)
-  * [`POST /presets/{slug}/messages`](https://openrouter.ai/docs/api/api-reference/presets/create-a-preset-from-a-messages-request-body)
-  * [`POST /presets/{slug}/responses`](https://openrouter.ai/docs/api/api-reference/presets/create-a-preset-from-a-responses-request-body)
-  * [`POST /responses`](https://openrouter.ai/docs/api/api-reference/responses/create-a-response)
+  * [`POST /chat/completions`](api/api-reference/chat/create-a-chat-completion.md)
+  * [`POST /messages`](api/api-reference/anthropic-messages/create-a-message.md)
+  * [`POST /presets/{slug}/chat/completions`](api/api-reference/presets/create-a-preset-from-a-chat-completions-request-body.md)
+  * [`POST /presets/{slug}/messages`](api/api-reference/presets/create-a-preset-from-a-messages-request-body.md)
+  * [`POST /presets/{slug}/responses`](api/api-reference/presets/create-a-preset-from-a-responses-request-body.md)
+  * [`POST /responses`](api/api-reference/responses/create-a-response.md)
 * `AlignmentRejected`
-  * Used by [`GET /batches/{id}`](https://openrouter.ai/docs/api/api-reference/batch/get-a-batch), [`POST /batches`](https://openrouter.ai/docs/api/api-reference/batch/create-a-batch), [`POST /responses`](https://openrouter.ai/docs/api/api-reference/responses/create-a-response)
+  * Used by [`GET /batches/{id}`](api/api-reference/batch/get-a-batch.md), [`POST /batches`](api/api-reference/batch/create-a-batch.md), [`POST /responses`](api/api-reference/responses/create-a-response.md)
 * `AlignmentResponsesRejected`
-  * Used by [`GET /batches/{id}`](https://openrouter.ai/docs/api/api-reference/batch/get-a-batch), [`POST /batches`](https://openrouter.ai/docs/api/api-reference/batch/create-a-batch), [`POST /responses`](https://openrouter.ai/docs/api/api-reference/responses/create-a-response)
+  * Used by [`GET /batches/{id}`](api/api-reference/batch/get-a-batch.md), [`POST /batches`](api/api-reference/batch/create-a-batch.md), [`POST /responses`](api/api-reference/responses/create-a-response.md)
 * `AlignmentRuleRecord`
-  * Used by [`GET /batches/{id}`](https://openrouter.ai/docs/api/api-reference/batch/get-a-batch), [`POST /batches`](https://openrouter.ai/docs/api/api-reference/batch/create-a-batch), [`POST /responses`](https://openrouter.ai/docs/api/api-reference/responses/create-a-response)
+  * Used by [`GET /batches/{id}`](api/api-reference/batch/get-a-batch.md), [`POST /batches`](api/api-reference/batch/create-a-batch.md), [`POST /responses`](api/api-reference/responses/create-a-response.md)
 * `AlignmentUnavailableCallRecord`
-  * Used by [`GET /batches/{id}`](https://openrouter.ai/docs/api/api-reference/batch/get-a-batch), [`POST /batches`](https://openrouter.ai/docs/api/api-reference/batch/create-a-batch), [`POST /responses`](https://openrouter.ai/docs/api/api-reference/responses/create-a-response)
+  * Used by [`GET /batches/{id}`](api/api-reference/batch/get-a-batch.md), [`POST /batches`](api/api-reference/batch/create-a-batch.md), [`POST /responses`](api/api-reference/responses/create-a-response.md)
 * `OpenResponsesErrorField`
-  * Used by [`GET /batches/{id}`](https://openrouter.ai/docs/api/api-reference/batch/get-a-batch), [`POST /batches`](https://openrouter.ai/docs/api/api-reference/batch/create-a-batch), [`POST /responses`](https://openrouter.ai/docs/api/api-reference/responses/create-a-response)
+  * Used by [`GET /batches/{id}`](api/api-reference/batch/get-a-batch.md), [`POST /batches`](api/api-reference/batch/create-a-batch.md), [`POST /responses`](api/api-reference/responses/create-a-response.md)
 * `OpenResponsesErrorMetadata`
-  * Used by [`GET /batches/{id}`](https://openrouter.ai/docs/api/api-reference/batch/get-a-batch), [`POST /batches`](https://openrouter.ai/docs/api/api-reference/batch/create-a-batch), [`POST /responses`](https://openrouter.ai/docs/api/api-reference/responses/create-a-response)
+  * Used by [`GET /batches/{id}`](api/api-reference/batch/get-a-batch.md), [`POST /batches`](api/api-reference/batch/create-a-batch.md), [`POST /responses`](api/api-reference/responses/create-a-response.md)
 * `CreateEndUserRequest`
   * Used by [`POST /end-users`](https://openrouter.ai/docs/api/api-reference/end-users/register-an-end-user)
 * `EndUser`
@@ -2065,28 +2065,28 @@ Entries on this page are generated automatically from [OpenAPI specification](ap
 * `UpdateEndUserRequest`
   * Used by [`PATCH /end-users/{user}`](https://openrouter.ai/docs/api/api-reference/end-users/update-a-registered-end-user)
 * `OrganizationSettings`
-  * Used by [`GET /organization/settings`](https://openrouter.ai/docs/api/api-reference/organization/get-organization-settings), [`PATCH /organization/settings`](https://openrouter.ai/docs/api/api-reference/organization/update-organization-settings)
+  * Used by [`GET /organization/settings`](api/api-reference/organization/get-organization-settings.md), [`PATCH /organization/settings`](api/api-reference/organization/update-organization-settings.md)
 * `UpdateOrganizationSettingsRequest`
-  * Used by [`PATCH /organization/settings`](https://openrouter.ai/docs/api/api-reference/organization/update-organization-settings)
+  * Used by [`PATCH /organization/settings`](api/api-reference/organization/update-organization-settings.md)
 
 ## Modified schemas
 
 * `ChatRequest`: new union variant added
-  * Used by [`POST /chat/completions`](https://openrouter.ai/docs/api/api-reference/chat/create-a-chat-completion), [`POST /presets/{slug}/chat/completions`](https://openrouter.ai/docs/api/api-reference/presets/create-a-preset-from-a-chat-completions-request-body)
+  * Used by [`POST /chat/completions`](api/api-reference/chat/create-a-chat-completion.md), [`POST /presets/{slug}/chat/completions`](api/api-reference/presets/create-a-preset-from-a-chat-completions-request-body.md)
 * `MessagesRequest`: new union variant added
-  * Used by [`POST /messages`](https://openrouter.ai/docs/api/api-reference/anthropic-messages/create-a-message), [`POST /presets/{slug}/messages`](https://openrouter.ai/docs/api/api-reference/presets/create-a-preset-from-a-messages-request-body)
+  * Used by [`POST /messages`](api/api-reference/anthropic-messages/create-a-message.md), [`POST /presets/{slug}/messages`](api/api-reference/presets/create-a-preset-from-a-messages-request-body.md)
 * `ResponsesRequest`: new union variant added
-  * Used by [`POST /presets/{slug}/responses`](https://openrouter.ai/docs/api/api-reference/presets/create-a-preset-from-a-responses-request-body), [`POST /responses`](https://openrouter.ai/docs/api/api-reference/responses/create-a-response)
+  * Used by [`POST /presets/{slug}/responses`](api/api-reference/presets/create-a-preset-from-a-responses-request-body.md), [`POST /responses`](api/api-reference/responses/create-a-response.md)
 * `SwitchyardRouterPlugin`: description updated
 
   **6 endpoints using this schema**
 
-  * [`POST /chat/completions`](https://openrouter.ai/docs/api/api-reference/chat/create-a-chat-completion)
-  * [`POST /messages`](https://openrouter.ai/docs/api/api-reference/anthropic-messages/create-a-message)
-  * [`POST /presets/{slug}/chat/completions`](https://openrouter.ai/docs/api/api-reference/presets/create-a-preset-from-a-chat-completions-request-body)
-  * [`POST /presets/{slug}/messages`](https://openrouter.ai/docs/api/api-reference/presets/create-a-preset-from-a-messages-request-body)
-  * [`POST /presets/{slug}/responses`](https://openrouter.ai/docs/api/api-reference/presets/create-a-preset-from-a-responses-request-body)
-  * [`POST /responses`](https://openrouter.ai/docs/api/api-reference/responses/create-a-response)
+  * [`POST /chat/completions`](api/api-reference/chat/create-a-chat-completion.md)
+  * [`POST /messages`](api/api-reference/anthropic-messages/create-a-message.md)
+  * [`POST /presets/{slug}/chat/completions`](api/api-reference/presets/create-a-preset-from-a-chat-completions-request-body.md)
+  * [`POST /presets/{slug}/messages`](api/api-reference/presets/create-a-preset-from-a-messages-request-body.md)
+  * [`POST /presets/{slug}/responses`](api/api-reference/presets/create-a-preset-from-a-responses-request-body.md)
+  * [`POST /responses`](api/api-reference/responses/create-a-response.md)
 
 **September 29, 2026**
 
@@ -2096,27 +2096,27 @@ Entries on this page are generated automatically from [OpenAPI specification](ap
 
   **6 endpoints using this schema**
 
-  * [`POST /chat/completions`](https://openrouter.ai/docs/api/api-reference/chat/create-a-chat-completion)
-  * [`POST /messages`](https://openrouter.ai/docs/api/api-reference/anthropic-messages/create-a-message)
-  * [`POST /presets/{slug}/chat/completions`](https://openrouter.ai/docs/api/api-reference/presets/create-a-preset-from-a-chat-completions-request-body)
-  * [`POST /presets/{slug}/messages`](https://openrouter.ai/docs/api/api-reference/presets/create-a-preset-from-a-messages-request-body)
-  * [`POST /presets/{slug}/responses`](https://openrouter.ai/docs/api/api-reference/presets/create-a-preset-from-a-responses-request-body)
-  * [`POST /responses`](https://openrouter.ai/docs/api/api-reference/responses/create-a-response)
+  * [`POST /chat/completions`](api/api-reference/chat/create-a-chat-completion.md)
+  * [`POST /messages`](api/api-reference/anthropic-messages/create-a-message.md)
+  * [`POST /presets/{slug}/chat/completions`](api/api-reference/presets/create-a-preset-from-a-chat-completions-request-body.md)
+  * [`POST /presets/{slug}/messages`](api/api-reference/presets/create-a-preset-from-a-messages-request-body.md)
+  * [`POST /presets/{slug}/responses`](api/api-reference/presets/create-a-preset-from-a-responses-request-body.md)
+  * [`POST /responses`](api/api-reference/responses/create-a-response.md)
 * `STTInputAudio`: properties `data` object removedNo action needed
-  * Used by [`POST /audio/transcriptions`](https://openrouter.ai/docs/api/api-reference/stt/create-transcription)
+  * Used by [`POST /audio/transcriptions`](api/api-reference/stt/create-transcription.md)
 * `STTInputAudio`: properties `format` object removedNo action needed
-  * Used by [`POST /audio/transcriptions`](https://openrouter.ai/docs/api/api-reference/stt/create-transcription)
+  * Used by [`POST /audio/transcriptions`](api/api-reference/stt/create-transcription.md)
 * `STTInputAudio`: required `data` property removedNo action needed
-  * Used by [`POST /audio/transcriptions`](https://openrouter.ai/docs/api/api-reference/stt/create-transcription)
+  * Used by [`POST /audio/transcriptions`](api/api-reference/stt/create-transcription.md)
 * `STTInputAudio`: required `format` property removedNo action needed
-  * Used by [`POST /audio/transcriptions`](https://openrouter.ai/docs/api/api-reference/stt/create-transcription)
-* [`POST /audio/transcriptions`](https://openrouter.ai/docs/api/api-reference/stt/create-transcription): required `file` property removedNo action needed
+  * Used by [`POST /audio/transcriptions`](api/api-reference/stt/create-transcription.md)
+* [`POST /audio/transcriptions`](api/api-reference/stt/create-transcription.md): required `file` property removedNo action needed
 
 ## New endpoints
 
-* [`GET /vault/interns/{internId}/effective-secrets`](https://openrouter.ai/docs/api/api-reference/vault/list-the-secrets-an-intern-receives): List the secrets an intern receives
-* [`GET /tools`](https://openrouter.ai/docs/api/api-reference/tools/list-server-tools): List server tools
-* [`GET /tools/{name}`](https://openrouter.ai/docs/api/api-reference/tools/get-a-server-tool): Get a server tool
+* [`GET /vault/interns/{internId}/effective-secrets`](api/api-reference/vault/list-the-secrets-an-intern-receives.md): List the secrets an intern receives
+* [`GET /tools`](api/api-reference/tools/list-server-tools.md): List server tools
+* [`GET /tools/{name}`](api/api-reference/tools/get-a-server-tool.md): Get a server tool
 
 ## Modified endpoints
 
@@ -2129,64 +2129,64 @@ Entries on this page are generated automatically from [OpenAPI specification](ap
 * `GET /interns/{internId}/daemon-access`: description updated
 * `POST /interns/{internId}/provision`: description updated
 * `POST /interns/{internId}/suspend`: description updated
-* [`GET /vault/interns/{internId}/secrets`](https://openrouter.ai/docs/api/api-reference/vault/list-intern-secrets): description updated
-* [`POST /vault/interns/{internId}/secrets/copy`](https://openrouter.ai/docs/api/api-reference/vault/copy-workspace-secrets-to-an-intern): description updated
-* [`DELETE /vault/interns/{internId}/secrets/{name}`](https://openrouter.ai/docs/api/api-reference/vault/delete-an-intern-secret): description updated
-* [`PUT /vault/interns/{internId}/secrets/{name}`](https://openrouter.ai/docs/api/api-reference/vault/store-an-intern-secret): description updated
-* [`GET /vault/secrets`](https://openrouter.ai/docs/api/api-reference/vault/list-workspace-secrets): description updated
-* [`DELETE /vault/secrets/{name}`](https://openrouter.ai/docs/api/api-reference/vault/delete-a-workspace-secret): description updated
-* [`PUT /vault/secrets/{name}`](https://openrouter.ai/docs/api/api-reference/vault/store-a-workspace-secret): description updated
-* [`POST /audio/transcriptions`](https://openrouter.ai/docs/api/api-reference/stt/create-transcription): description updated; request schema updated
-* [`GET /byok`](https://openrouter.ai/docs/api/api-reference/byok/list-byok-provider-credentials): parameter `provider` updated
+* [`GET /vault/interns/{internId}/secrets`](api/api-reference/vault/list-intern-secrets.md): description updated
+* [`POST /vault/interns/{internId}/secrets/copy`](api/api-reference/vault/copy-workspace-secrets-to-an-intern.md): description updated
+* [`DELETE /vault/interns/{internId}/secrets/{name}`](api/api-reference/vault/delete-an-intern-secret.md): description updated
+* [`PUT /vault/interns/{internId}/secrets/{name}`](api/api-reference/vault/store-an-intern-secret.md): description updated
+* [`GET /vault/secrets`](api/api-reference/vault/list-workspace-secrets.md): description updated
+* [`DELETE /vault/secrets/{name}`](api/api-reference/vault/delete-a-workspace-secret.md): description updated
+* [`PUT /vault/secrets/{name}`](api/api-reference/vault/store-a-workspace-secret.md): description updated
+* [`POST /audio/transcriptions`](api/api-reference/stt/create-transcription.md): description updated; request schema updated
+* [`GET /byok`](api/api-reference/byok/list-byok-provider-credentials.md): parameter `provider` updated
 
 ## New response codes
 
-* [`GET /batches/{id}`](https://openrouter.ai/docs/api/api-reference/batch/get-a-batch): now returns `410`
+* [`GET /batches/{id}`](api/api-reference/batch/get-a-batch.md): now returns `410`
 
 ## New schemas
 
 * `VaultEffectiveSecret`
-  * Used by [`GET /vault/interns/{internId}/effective-secrets`](https://openrouter.ai/docs/api/api-reference/vault/list-the-secrets-an-intern-receives)
+  * Used by [`GET /vault/interns/{internId}/effective-secrets`](api/api-reference/vault/list-the-secrets-an-intern-receives.md)
 * `VaultEffectiveSecretListResponse`
-  * Used by [`GET /vault/interns/{internId}/effective-secrets`](https://openrouter.ai/docs/api/api-reference/vault/list-the-secrets-an-intern-receives)
+  * Used by [`GET /vault/interns/{internId}/effective-secrets`](api/api-reference/vault/list-the-secrets-an-intern-receives.md)
 * `JevRouterPlugin`
 
   **6 endpoints using this schema**
 
-  * [`POST /chat/completions`](https://openrouter.ai/docs/api/api-reference/chat/create-a-chat-completion)
-  * [`POST /messages`](https://openrouter.ai/docs/api/api-reference/anthropic-messages/create-a-message)
-  * [`POST /presets/{slug}/chat/completions`](https://openrouter.ai/docs/api/api-reference/presets/create-a-preset-from-a-chat-completions-request-body)
-  * [`POST /presets/{slug}/messages`](https://openrouter.ai/docs/api/api-reference/presets/create-a-preset-from-a-messages-request-body)
-  * [`POST /presets/{slug}/responses`](https://openrouter.ai/docs/api/api-reference/presets/create-a-preset-from-a-responses-request-body)
-  * [`POST /responses`](https://openrouter.ai/docs/api/api-reference/responses/create-a-response)
+  * [`POST /chat/completions`](api/api-reference/chat/create-a-chat-completion.md)
+  * [`POST /messages`](api/api-reference/anthropic-messages/create-a-message.md)
+  * [`POST /presets/{slug}/chat/completions`](api/api-reference/presets/create-a-preset-from-a-chat-completions-request-body.md)
+  * [`POST /presets/{slug}/messages`](api/api-reference/presets/create-a-preset-from-a-messages-request-body.md)
+  * [`POST /presets/{slug}/responses`](api/api-reference/presets/create-a-preset-from-a-responses-request-body.md)
+  * [`POST /responses`](api/api-reference/responses/create-a-response.md)
 * `STTEntity`
-  * Used by [`POST /audio/transcriptions`](https://openrouter.ai/docs/api/api-reference/stt/create-transcription)
+  * Used by [`POST /audio/transcriptions`](api/api-reference/stt/create-transcription.md)
 * `STTInlineInputAudio`
-  * Used by [`POST /audio/transcriptions`](https://openrouter.ai/docs/api/api-reference/stt/create-transcription)
+  * Used by [`POST /audio/transcriptions`](api/api-reference/stt/create-transcription.md)
 * `STTUrlInputAudio`
-  * Used by [`POST /audio/transcriptions`](https://openrouter.ai/docs/api/api-reference/stt/create-transcription)
+  * Used by [`POST /audio/transcriptions`](api/api-reference/stt/create-transcription.md)
 * `GetToolResponse`
-  * Used by [`GET /tools/{name}`](https://openrouter.ai/docs/api/api-reference/tools/get-a-server-tool)
+  * Used by [`GET /tools/{name}`](api/api-reference/tools/get-a-server-tool.md)
 * `ListToolsResponse`
-  * Used by [`GET /tools`](https://openrouter.ai/docs/api/api-reference/tools/list-server-tools)
+  * Used by [`GET /tools`](api/api-reference/tools/list-server-tools.md)
 * `ServerTool`
-  * Used by [`GET /tools`](https://openrouter.ai/docs/api/api-reference/tools/list-server-tools), [`GET /tools/{name}`](https://openrouter.ai/docs/api/api-reference/tools/get-a-server-tool)
+  * Used by [`GET /tools`](api/api-reference/tools/list-server-tools.md), [`GET /tools/{name}`](api/api-reference/tools/get-a-server-tool.md)
 * `ServerToolDetails`
-  * Used by [`GET /tools/{name}`](https://openrouter.ai/docs/api/api-reference/tools/get-a-server-tool)
+  * Used by [`GET /tools/{name}`](api/api-reference/tools/get-a-server-tool.md)
 * `ServerToolEngine`
-  * Used by [`GET /tools`](https://openrouter.ai/docs/api/api-reference/tools/list-server-tools), [`GET /tools/{name}`](https://openrouter.ai/docs/api/api-reference/tools/get-a-server-tool)
+  * Used by [`GET /tools`](api/api-reference/tools/list-server-tools.md), [`GET /tools/{name}`](api/api-reference/tools/get-a-server-tool.md)
 * `ServerToolExecutedBy`
-  * Used by [`GET /tools`](https://openrouter.ai/docs/api/api-reference/tools/list-server-tools), [`GET /tools/{name}`](https://openrouter.ai/docs/api/api-reference/tools/get-a-server-tool)
+  * Used by [`GET /tools`](api/api-reference/tools/list-server-tools.md), [`GET /tools/{name}`](api/api-reference/tools/get-a-server-tool.md)
 * `ServerToolInputName`
-  * Used by [`GET /tools`](https://openrouter.ai/docs/api/api-reference/tools/list-server-tools), [`GET /tools/{name}`](https://openrouter.ai/docs/api/api-reference/tools/get-a-server-tool)
+  * Used by [`GET /tools`](api/api-reference/tools/list-server-tools.md), [`GET /tools/{name}`](api/api-reference/tools/get-a-server-tool.md)
 * `ServerToolNativeModel`
-  * Used by [`GET /tools/{name}`](https://openrouter.ai/docs/api/api-reference/tools/get-a-server-tool)
+  * Used by [`GET /tools/{name}`](api/api-reference/tools/get-a-server-tool.md)
 * `ServerToolNativeSupport`
-  * Used by [`GET /tools`](https://openrouter.ai/docs/api/api-reference/tools/list-server-tools), [`GET /tools/{name}`](https://openrouter.ai/docs/api/api-reference/tools/get-a-server-tool)
+  * Used by [`GET /tools`](api/api-reference/tools/list-server-tools.md), [`GET /tools/{name}`](api/api-reference/tools/get-a-server-tool.md)
 * `ServerToolOutputName`
-  * Used by [`GET /tools`](https://openrouter.ai/docs/api/api-reference/tools/list-server-tools), [`GET /tools/{name}`](https://openrouter.ai/docs/api/api-reference/tools/get-a-server-tool)
+  * Used by [`GET /tools`](api/api-reference/tools/list-server-tools.md), [`GET /tools/{name}`](api/api-reference/tools/get-a-server-tool.md)
 * `ServerToolPrice`
-  * Used by [`GET /tools`](https://openrouter.ai/docs/api/api-reference/tools/list-server-tools), [`GET /tools/{name}`](https://openrouter.ai/docs/api/api-reference/tools/get-a-server-tool)
+  * Used by [`GET /tools`](api/api-reference/tools/list-server-tools.md), [`GET /tools/{name}`](api/api-reference/tools/get-a-server-tool.md)
 
 ## Modified schemas
 
@@ -2194,231 +2194,231 @@ Entries on this page are generated automatically from [OpenAPI specification](ap
 
   **4 endpoints using this schema**
 
-  * [`GET /batches/{id}`](https://openrouter.ai/docs/api/api-reference/batch/get-a-batch)
-  * [`POST /batches`](https://openrouter.ai/docs/api/api-reference/batch/create-a-batch)
-  * [`POST /presets/{slug}/responses`](https://openrouter.ai/docs/api/api-reference/presets/create-a-preset-from-a-responses-request-body)
-  * [`POST /responses`](https://openrouter.ai/docs/api/api-reference/responses/create-a-response)
+  * [`GET /batches/{id}`](api/api-reference/batch/get-a-batch.md)
+  * [`POST /batches`](api/api-reference/batch/create-a-batch.md)
+  * [`POST /presets/{slug}/responses`](api/api-reference/presets/create-a-preset-from-a-responses-request-body.md)
+  * [`POST /responses`](api/api-reference/responses/create-a-response.md)
 * `ChatRequest`: new union variant added
-  * Used by [`POST /chat/completions`](https://openrouter.ai/docs/api/api-reference/chat/create-a-chat-completion), [`POST /presets/{slug}/chat/completions`](https://openrouter.ai/docs/api/api-reference/presets/create-a-preset-from-a-chat-completions-request-body)
+  * Used by [`POST /chat/completions`](api/api-reference/chat/create-a-chat-completion.md), [`POST /presets/{slug}/chat/completions`](api/api-reference/presets/create-a-preset-from-a-chat-completions-request-body.md)
 * `MessagesRequest`: new union variant added
-  * Used by [`POST /messages`](https://openrouter.ai/docs/api/api-reference/anthropic-messages/create-a-message), [`POST /presets/{slug}/messages`](https://openrouter.ai/docs/api/api-reference/presets/create-a-preset-from-a-messages-request-body)
+  * Used by [`POST /messages`](api/api-reference/anthropic-messages/create-a-message.md), [`POST /presets/{slug}/messages`](api/api-reference/presets/create-a-preset-from-a-messages-request-body.md)
 * `ResponsesRequest`: new union variant added
-  * Used by [`POST /presets/{slug}/responses`](https://openrouter.ai/docs/api/api-reference/presets/create-a-preset-from-a-responses-request-body), [`POST /responses`](https://openrouter.ai/docs/api/api-reference/responses/create-a-response)
+  * Used by [`POST /presets/{slug}/responses`](api/api-reference/presets/create-a-preset-from-a-responses-request-body.md), [`POST /responses`](api/api-reference/responses/create-a-response.md)
 * `JevRouterPlugin`: new property `allowed_models`; description updated
 
   **6 endpoints using this schema**
 
-  * [`POST /chat/completions`](https://openrouter.ai/docs/api/api-reference/chat/create-a-chat-completion)
-  * [`POST /messages`](https://openrouter.ai/docs/api/api-reference/anthropic-messages/create-a-message)
-  * [`POST /presets/{slug}/chat/completions`](https://openrouter.ai/docs/api/api-reference/presets/create-a-preset-from-a-chat-completions-request-body)
-  * [`POST /presets/{slug}/messages`](https://openrouter.ai/docs/api/api-reference/presets/create-a-preset-from-a-messages-request-body)
-  * [`POST /presets/{slug}/responses`](https://openrouter.ai/docs/api/api-reference/presets/create-a-preset-from-a-responses-request-body)
-  * [`POST /responses`](https://openrouter.ai/docs/api/api-reference/responses/create-a-response)
+  * [`POST /chat/completions`](api/api-reference/chat/create-a-chat-completion.md)
+  * [`POST /messages`](api/api-reference/anthropic-messages/create-a-message.md)
+  * [`POST /presets/{slug}/chat/completions`](api/api-reference/presets/create-a-preset-from-a-chat-completions-request-body.md)
+  * [`POST /presets/{slug}/messages`](api/api-reference/presets/create-a-preset-from-a-messages-request-body.md)
+  * [`POST /presets/{slug}/responses`](api/api-reference/presets/create-a-preset-from-a-responses-request-body.md)
+  * [`POST /responses`](api/api-reference/responses/create-a-response.md)
 * `BYOKProviderSlug`: enum property\_added
 
   **4 endpoints using this schema**
 
-  * [`GET /byok`](https://openrouter.ai/docs/api/api-reference/byok/list-byok-provider-credentials)
-  * [`GET /byok/{id}`](https://openrouter.ai/docs/api/api-reference/byok/get-a-byok-provider-credential)
-  * [`PATCH /byok/{id}`](https://openrouter.ai/docs/api/api-reference/byok/update-a-byok-provider-credential)
-  * [`POST /byok`](https://openrouter.ai/docs/api/api-reference/byok/create-a-byok-provider-credential)
+  * [`GET /byok`](api/api-reference/byok/list-byok-provider-credentials.md)
+  * [`GET /byok/{id}`](api/api-reference/byok/get-a-byok-provider-credential.md)
+  * [`PATCH /byok/{id}`](api/api-reference/byok/update-a-byok-provider-credential.md)
+  * [`POST /byok`](api/api-reference/byok/create-a-byok-provider-credential.md)
 * `MessagesStartEvent`: property `provider` updated
-  * Used by [`POST /messages`](https://openrouter.ai/docs/api/api-reference/anthropic-messages/create-a-message)
+  * Used by [`POST /messages`](api/api-reference/anthropic-messages/create-a-message.md)
 * `ProviderName`: enum property\_added
 
   **14 endpoints using this schema**
 
-  * [`GET /endpoints/zdr`](https://openrouter.ai/docs/api/api-reference/endpoints/preview-the-impact-of-zdr-on-the-available-endpoints)
-  * [`GET /models/{author}/{slug}/endpoints`](https://openrouter.ai/docs/api/api-reference/endpoints/list-all-endpoints-for-a-model)
-  * [`POST /api/alpha/decisions`](https://openrouter.ai/docs/api/api-reference/alphadecisions/submit-a-decisions-request)
-  * [`POST /batches`](https://openrouter.ai/docs/api/api-reference/batch/create-a-batch)
-  * [`POST /chat/completions`](https://openrouter.ai/docs/api/api-reference/chat/create-a-chat-completion)
-  * [`POST /embeddings`](https://openrouter.ai/docs/api/api-reference/embeddings/submit-an-embedding-request)
-  * [`POST /images`](https://openrouter.ai/docs/api/api-reference/images/generate-an-image)
-  * [`POST /messages`](https://openrouter.ai/docs/api/api-reference/anthropic-messages/create-a-message)
-  * [`POST /presets/{slug}/chat/completions`](https://openrouter.ai/docs/api/api-reference/presets/create-a-preset-from-a-chat-completions-request-body)
-  * [`POST /presets/{slug}/messages`](https://openrouter.ai/docs/api/api-reference/presets/create-a-preset-from-a-messages-request-body)
-  * [`POST /presets/{slug}/responses`](https://openrouter.ai/docs/api/api-reference/presets/create-a-preset-from-a-responses-request-body)
-  * [`POST /rerank`](https://openrouter.ai/docs/api/api-reference/rerank/submit-a-rerank-request)
-  * [`POST /responses`](https://openrouter.ai/docs/api/api-reference/responses/create-a-response)
-  * [`POST /systemone`](https://openrouter.ai/docs/api/api-reference/systemone/submit-a-system-one-request)
+  * [`GET /endpoints/zdr`](api/api-reference/endpoints/preview-the-impact-of-zdr-on-the-available-endpoints.md)
+  * [`GET /models/{author}/{slug}/endpoints`](api/api-reference/endpoints/list-all-endpoints-for-a-model.md)
+  * [`POST /api/alpha/decisions`](api/api-reference/alphadecisions/submit-a-decisions-request.md)
+  * [`POST /batches`](api/api-reference/batch/create-a-batch.md)
+  * [`POST /chat/completions`](api/api-reference/chat/create-a-chat-completion.md)
+  * [`POST /embeddings`](api/api-reference/embeddings/submit-an-embedding-request.md)
+  * [`POST /images`](api/api-reference/images/generate-an-image.md)
+  * [`POST /messages`](api/api-reference/anthropic-messages/create-a-message.md)
+  * [`POST /presets/{slug}/chat/completions`](api/api-reference/presets/create-a-preset-from-a-chat-completions-request-body.md)
+  * [`POST /presets/{slug}/messages`](api/api-reference/presets/create-a-preset-from-a-messages-request-body.md)
+  * [`POST /presets/{slug}/responses`](api/api-reference/presets/create-a-preset-from-a-responses-request-body.md)
+  * [`POST /rerank`](api/api-reference/rerank/submit-a-rerank-request.md)
+  * [`POST /responses`](api/api-reference/responses/create-a-response.md)
+  * [`POST /systemone`](api/api-reference/systemone/submit-a-system-one-request.md)
 * `ProviderOptions`: new property `elevenlabs`
 
   **14 endpoints using this schema**
 
-  * [`POST /api/alpha/decisions`](https://openrouter.ai/docs/api/api-reference/alphadecisions/submit-a-decisions-request)
-  * [`POST /audio/speech`](https://openrouter.ai/docs/api/api-reference/tts/create-speech)
-  * [`POST /audio/transcriptions`](https://openrouter.ai/docs/api/api-reference/stt/create-transcription)
-  * [`POST /chat/completions`](https://openrouter.ai/docs/api/api-reference/chat/create-a-chat-completion)
-  * [`POST /embeddings`](https://openrouter.ai/docs/api/api-reference/embeddings/submit-an-embedding-request)
-  * [`POST /images`](https://openrouter.ai/docs/api/api-reference/images/generate-an-image)
-  * [`POST /messages`](https://openrouter.ai/docs/api/api-reference/anthropic-messages/create-a-message)
-  * [`POST /presets/{slug}/chat/completions`](https://openrouter.ai/docs/api/api-reference/presets/create-a-preset-from-a-chat-completions-request-body)
-  * [`POST /presets/{slug}/messages`](https://openrouter.ai/docs/api/api-reference/presets/create-a-preset-from-a-messages-request-body)
-  * [`POST /presets/{slug}/responses`](https://openrouter.ai/docs/api/api-reference/presets/create-a-preset-from-a-responses-request-body)
-  * [`POST /rerank`](https://openrouter.ai/docs/api/api-reference/rerank/submit-a-rerank-request)
-  * [`POST /responses`](https://openrouter.ai/docs/api/api-reference/responses/create-a-response)
-  * [`POST /systemone`](https://openrouter.ai/docs/api/api-reference/systemone/submit-a-system-one-request)
-  * [`POST /videos`](https://openrouter.ai/docs/api/api-reference/video-generation/submit-a-video-generation-request)
+  * [`POST /api/alpha/decisions`](api/api-reference/alphadecisions/submit-a-decisions-request.md)
+  * [`POST /audio/speech`](api/api-reference/tts/create-speech.md)
+  * [`POST /audio/transcriptions`](api/api-reference/stt/create-transcription.md)
+  * [`POST /chat/completions`](api/api-reference/chat/create-a-chat-completion.md)
+  * [`POST /embeddings`](api/api-reference/embeddings/submit-an-embedding-request.md)
+  * [`POST /images`](api/api-reference/images/generate-an-image.md)
+  * [`POST /messages`](api/api-reference/anthropic-messages/create-a-message.md)
+  * [`POST /presets/{slug}/chat/completions`](api/api-reference/presets/create-a-preset-from-a-chat-completions-request-body.md)
+  * [`POST /presets/{slug}/messages`](api/api-reference/presets/create-a-preset-from-a-messages-request-body.md)
+  * [`POST /presets/{slug}/responses`](api/api-reference/presets/create-a-preset-from-a-responses-request-body.md)
+  * [`POST /rerank`](api/api-reference/rerank/submit-a-rerank-request.md)
+  * [`POST /responses`](api/api-reference/responses/create-a-response.md)
+  * [`POST /systemone`](api/api-reference/systemone/submit-a-system-one-request.md)
+  * [`POST /videos`](api/api-reference/video-generation/submit-a-video-generation-request.md)
 * `ProviderResponse`: enum property\_added
-  * Used by [`GET /generation`](https://openrouter.ai/docs/api/api-reference/generations/get-request-&-usage-metadata-for-a-generation)
+  * Used by [`GET /generation`](api/api-reference/generations/get-request-&-usage-metadata-for-a-generation.md)
 * `STTInputAudio`:
   * new union variant added
   * description updated
   * example property\_removed
   * type property\_removed
-  * Used by [`POST /audio/transcriptions`](https://openrouter.ai/docs/api/api-reference/stt/create-transcription)
+  * Used by [`POST /audio/transcriptions`](api/api-reference/stt/create-transcription.md)
 * `STTRequest`: description updated; new property `diarize`; new property `keyterms`
-  * Used by [`POST /audio/transcriptions`](https://openrouter.ai/docs/api/api-reference/stt/create-transcription)
+  * Used by [`POST /audio/transcriptions`](api/api-reference/stt/create-transcription.md)
 * `STTResponse`: new property `entities`; new property `language_confidence`
-  * Used by [`POST /audio/transcriptions`](https://openrouter.ai/docs/api/api-reference/stt/create-transcription)
+  * Used by [`POST /audio/transcriptions`](api/api-reference/stt/create-transcription.md)
 * `STTSegment`: new property `channel`; new property `speaker_label`
-  * Used by [`POST /audio/transcriptions`](https://openrouter.ai/docs/api/api-reference/stt/create-transcription)
+  * Used by [`POST /audio/transcriptions`](api/api-reference/stt/create-transcription.md)
 * `STTWord`:
   * new property `channel`
   * new property `speaker_label`
   * new property `type`
   * description updated
-  * Used by [`POST /audio/transcriptions`](https://openrouter.ai/docs/api/api-reference/stt/create-transcription)
+  * Used by [`POST /audio/transcriptions`](api/api-reference/stt/create-transcription.md)
 * `ChatRequest`: description updated; enum property\_added
-  * Used by [`POST /chat/completions`](https://openrouter.ai/docs/api/api-reference/chat/create-a-chat-completion), [`POST /presets/{slug}/chat/completions`](https://openrouter.ai/docs/api/api-reference/presets/create-a-preset-from-a-chat-completions-request-body)
+  * Used by [`POST /chat/completions`](api/api-reference/chat/create-a-chat-completion.md), [`POST /presets/{slug}/chat/completions`](api/api-reference/presets/create-a-preset-from-a-chat-completions-request-body.md)
 * `ResponsesRequest`: description updated; enum property\_added
-  * Used by [`POST /presets/{slug}/responses`](https://openrouter.ai/docs/api/api-reference/presets/create-a-preset-from-a-responses-request-body), [`POST /responses`](https://openrouter.ai/docs/api/api-reference/responses/create-a-response)
+  * Used by [`POST /presets/{slug}/responses`](api/api-reference/presets/create-a-preset-from-a-responses-request-body.md), [`POST /responses`](api/api-reference/responses/create-a-response.md)
 * `ServiceTier`: enum property\_added
-  * Used by [`GET /batches/{id}`](https://openrouter.ai/docs/api/api-reference/batch/get-a-batch), [`POST /batches`](https://openrouter.ai/docs/api/api-reference/batch/create-a-batch), [`POST /responses`](https://openrouter.ai/docs/api/api-reference/responses/create-a-response)
+  * Used by [`GET /batches/{id}`](api/api-reference/batch/get-a-batch.md), [`POST /batches`](api/api-reference/batch/create-a-batch.md), [`POST /responses`](api/api-reference/responses/create-a-response.md)
 * `SpeechRequest`: description updated
-  * Used by [`POST /audio/speech`](https://openrouter.ai/docs/api/api-reference/tts/create-speech)
+  * Used by [`POST /audio/speech`](api/api-reference/tts/create-speech.md)
 
 **September 28, 2026**
 
 ## Breaking changes
 
 * `PublicEndpoint`: required `native_tools` property addedNo action needed
-  * Used by [`GET /endpoints/zdr`](https://openrouter.ai/docs/api/api-reference/endpoints/preview-the-impact-of-zdr-on-the-available-endpoints), [`GET /models/{author}/{slug}/endpoints`](https://openrouter.ai/docs/api/api-reference/endpoints/list-all-endpoints-for-a-model)
+  * Used by [`GET /endpoints/zdr`](api/api-reference/endpoints/preview-the-impact-of-zdr-on-the-available-endpoints.md), [`GET /models/{author}/{slug}/endpoints`](api/api-reference/endpoints/list-all-endpoints-for-a-model.md)
 
 ## New endpoints
 
 * `GET /interns/{internId}/daemon`: Get an intern's daemon access
-* [`GET /private-endpoints`](https://openrouter.ai/docs/api/api-reference/private-endpoints/list-private-endpoints): List private endpoints
-* [`POST /private-endpoints`](https://openrouter.ai/docs/api/api-reference/private-endpoints/create-a-private-endpoint): Create a private endpoint
-* [`GET /private-endpoints/{id}`](https://openrouter.ai/docs/api/api-reference/private-endpoints/get-a-private-endpoint): Get a private endpoint
+* [`GET /private-endpoints`](api/api-reference/private-endpoints/list-private-endpoints.md): List private endpoints
+* [`POST /private-endpoints`](api/api-reference/private-endpoints/create-a-private-endpoint.md): Create a private endpoint
+* [`GET /private-endpoints/{id}`](api/api-reference/private-endpoints/get-a-private-endpoint.md): Get a private endpoint
 * [`PATCH /private-endpoints/{id}`](https://openrouter.ai/docs/api/api-reference/private-endpoints/update-a-draft-private-endpoint): Update a draft private endpoint
-* [`DELETE /private-endpoints/{id}`](https://openrouter.ai/docs/api/api-reference/private-endpoints/delete-a-private-endpoint): Delete a private endpoint
-* [`POST /private-endpoints/{id}/activate`](https://openrouter.ai/docs/api/api-reference/private-endpoints/activate-a-validated-private-endpoint): Activate a validated private endpoint
-* [`POST /private-endpoints/{id}/disable`](https://openrouter.ai/docs/api/api-reference/private-endpoints/disable-a-private-endpoint): Disable a private endpoint
-* [`POST /private-endpoints/{id}/enable`](https://openrouter.ai/docs/api/api-reference/private-endpoints/enable-a-private-endpoint): Enable a private endpoint
+* [`DELETE /private-endpoints/{id}`](api/api-reference/private-endpoints/delete-a-private-endpoint.md): Delete a private endpoint
+* [`POST /private-endpoints/{id}/activate`](api/api-reference/private-endpoints/activate-a-validated-private-endpoint.md): Activate a validated private endpoint
+* [`POST /private-endpoints/{id}/disable`](api/api-reference/private-endpoints/disable-a-private-endpoint.md): Disable a private endpoint
+* [`POST /private-endpoints/{id}/enable`](api/api-reference/private-endpoints/enable-a-private-endpoint.md): Enable a private endpoint
 * [`PUT /private-endpoints/{id}/pricing`](https://openrouter.ai/docs/api/api-reference/private-endpoints/set-private-endpoint-pricing): Set private endpoint pricing
-* [`POST /private-endpoints/{id}/validate`](https://openrouter.ai/docs/api/api-reference/private-endpoints/validate-a-draft-private-endpoint): Validate a draft private endpoint
+* [`POST /private-endpoints/{id}/validate`](api/api-reference/private-endpoints/validate-a-draft-private-endpoint.md): Validate a draft private endpoint
 
 ## Modified endpoints
 
-* [`GET /endpoints/zdr`](https://openrouter.ai/docs/api/api-reference/endpoints/preview-the-impact-of-zdr-on-the-available-endpoints): response schema updated
-* [`GET /models/{author}/{slug}/endpoints`](https://openrouter.ai/docs/api/api-reference/endpoints/list-all-endpoints-for-a-model): response schema updated
+* [`GET /endpoints/zdr`](api/api-reference/endpoints/preview-the-impact-of-zdr-on-the-available-endpoints.md): response schema updated
+* [`GET /models/{author}/{slug}/endpoints`](api/api-reference/endpoints/list-all-endpoints-for-a-model.md): response schema updated
 * `GET /interns/{internId}/daemon-access`: deprecated property\_added; description updated
 
 ## New schemas
 
 * `CreatePrivateEndpointRequest`
-  * Used by [`POST /private-endpoints`](https://openrouter.ai/docs/api/api-reference/private-endpoints/create-a-private-endpoint)
+  * Used by [`POST /private-endpoints`](api/api-reference/private-endpoints/create-a-private-endpoint.md)
 * `CreatePrivateEndpointValidationFailedResponse`
-  * Used by [`POST /private-endpoints`](https://openrouter.ai/docs/api/api-reference/private-endpoints/create-a-private-endpoint)
+  * Used by [`POST /private-endpoints`](api/api-reference/private-endpoints/create-a-private-endpoint.md)
 * `DeletePrivateEndpointResponse`
-  * Used by [`DELETE /private-endpoints/{id}`](https://openrouter.ai/docs/api/api-reference/private-endpoints/delete-a-private-endpoint)
+  * Used by [`DELETE /private-endpoints/{id}`](api/api-reference/private-endpoints/delete-a-private-endpoint.md)
 * `ListPrivateEndpointsResponse`
-  * Used by [`GET /private-endpoints`](https://openrouter.ai/docs/api/api-reference/private-endpoints/list-private-endpoints)
+  * Used by [`GET /private-endpoints`](api/api-reference/private-endpoints/list-private-endpoints.md)
 * `ManagedPrivateEndpoint`
 
   **4 endpoints using this schema**
 
-  * [`POST /private-endpoints`](https://openrouter.ai/docs/api/api-reference/private-endpoints/create-a-private-endpoint)
-  * [`POST /private-endpoints/{id}/activate`](https://openrouter.ai/docs/api/api-reference/private-endpoints/activate-a-validated-private-endpoint)
-  * [`POST /private-endpoints/{id}/disable`](https://openrouter.ai/docs/api/api-reference/private-endpoints/disable-a-private-endpoint)
-  * [`POST /private-endpoints/{id}/enable`](https://openrouter.ai/docs/api/api-reference/private-endpoints/enable-a-private-endpoint)
+  * [`POST /private-endpoints`](api/api-reference/private-endpoints/create-a-private-endpoint.md)
+  * [`POST /private-endpoints/{id}/activate`](api/api-reference/private-endpoints/activate-a-validated-private-endpoint.md)
+  * [`POST /private-endpoints/{id}/disable`](api/api-reference/private-endpoints/disable-a-private-endpoint.md)
+  * [`POST /private-endpoints/{id}/enable`](api/api-reference/private-endpoints/enable-a-private-endpoint.md)
 * `ManagedPrivateEndpointResponse`
 
   **4 endpoints using this schema**
 
-  * [`POST /private-endpoints`](https://openrouter.ai/docs/api/api-reference/private-endpoints/create-a-private-endpoint)
-  * [`POST /private-endpoints/{id}/activate`](https://openrouter.ai/docs/api/api-reference/private-endpoints/activate-a-validated-private-endpoint)
-  * [`POST /private-endpoints/{id}/disable`](https://openrouter.ai/docs/api/api-reference/private-endpoints/disable-a-private-endpoint)
-  * [`POST /private-endpoints/{id}/enable`](https://openrouter.ai/docs/api/api-reference/private-endpoints/enable-a-private-endpoint)
+  * [`POST /private-endpoints`](api/api-reference/private-endpoints/create-a-private-endpoint.md)
+  * [`POST /private-endpoints/{id}/activate`](api/api-reference/private-endpoints/activate-a-validated-private-endpoint.md)
+  * [`POST /private-endpoints/{id}/disable`](api/api-reference/private-endpoints/disable-a-private-endpoint.md)
+  * [`POST /private-endpoints/{id}/enable`](api/api-reference/private-endpoints/enable-a-private-endpoint.md)
 * `PrivateEndpoint`
-  * Used by [`GET /private-endpoints/{id}`](https://openrouter.ai/docs/api/api-reference/private-endpoints/get-a-private-endpoint), [`PATCH /private-endpoints/{id}`](https://openrouter.ai/docs/api/api-reference/private-endpoints/update-a-draft-private-endpoint), [`PUT /private-endpoints/{id}/pricing`](https://openrouter.ai/docs/api/api-reference/private-endpoints/set-private-endpoint-pricing)
+  * Used by [`GET /private-endpoints/{id}`](api/api-reference/private-endpoints/get-a-private-endpoint.md), [`PATCH /private-endpoints/{id}`](https://openrouter.ai/docs/api/api-reference/private-endpoints/update-a-draft-private-endpoint), [`PUT /private-endpoints/{id}/pricing`](https://openrouter.ai/docs/api/api-reference/private-endpoints/set-private-endpoint-pricing)
 * `PrivateEndpointActivation`
-  * Used by [`POST /private-endpoints`](https://openrouter.ai/docs/api/api-reference/private-endpoints/create-a-private-endpoint)
+  * Used by [`POST /private-endpoints`](api/api-reference/private-endpoints/create-a-private-endpoint.md)
 * `PrivateEndpointCheck`
-  * Used by [`POST /private-endpoints`](https://openrouter.ai/docs/api/api-reference/private-endpoints/create-a-private-endpoint), [`POST /private-endpoints/{id}/validate`](https://openrouter.ai/docs/api/api-reference/private-endpoints/validate-a-draft-private-endpoint)
+  * Used by [`POST /private-endpoints`](api/api-reference/private-endpoints/create-a-private-endpoint.md), [`POST /private-endpoints/{id}/validate`](api/api-reference/private-endpoints/validate-a-draft-private-endpoint.md)
 * `PrivateEndpointCheckReason`
-  * Used by [`POST /private-endpoints`](https://openrouter.ai/docs/api/api-reference/private-endpoints/create-a-private-endpoint), [`POST /private-endpoints/{id}/validate`](https://openrouter.ai/docs/api/api-reference/private-endpoints/validate-a-draft-private-endpoint)
+  * Used by [`POST /private-endpoints`](api/api-reference/private-endpoints/create-a-private-endpoint.md), [`POST /private-endpoints/{id}/validate`](api/api-reference/private-endpoints/validate-a-draft-private-endpoint.md)
 * `PrivateEndpointDeclaredRegion`
 
   **7 endpoints using this schema**
 
-  * [`GET /private-endpoints/{id}`](https://openrouter.ai/docs/api/api-reference/private-endpoints/get-a-private-endpoint)
+  * [`GET /private-endpoints/{id}`](api/api-reference/private-endpoints/get-a-private-endpoint.md)
   * [`PATCH /private-endpoints/{id}`](https://openrouter.ai/docs/api/api-reference/private-endpoints/update-a-draft-private-endpoint)
-  * [`POST /private-endpoints`](https://openrouter.ai/docs/api/api-reference/private-endpoints/create-a-private-endpoint)
-  * [`POST /private-endpoints/{id}/activate`](https://openrouter.ai/docs/api/api-reference/private-endpoints/activate-a-validated-private-endpoint)
-  * [`POST /private-endpoints/{id}/disable`](https://openrouter.ai/docs/api/api-reference/private-endpoints/disable-a-private-endpoint)
-  * [`POST /private-endpoints/{id}/enable`](https://openrouter.ai/docs/api/api-reference/private-endpoints/enable-a-private-endpoint)
+  * [`POST /private-endpoints`](api/api-reference/private-endpoints/create-a-private-endpoint.md)
+  * [`POST /private-endpoints/{id}/activate`](api/api-reference/private-endpoints/activate-a-validated-private-endpoint.md)
+  * [`POST /private-endpoints/{id}/disable`](api/api-reference/private-endpoints/disable-a-private-endpoint.md)
+  * [`POST /private-endpoints/{id}/enable`](api/api-reference/private-endpoints/enable-a-private-endpoint.md)
   * [`PUT /private-endpoints/{id}/pricing`](https://openrouter.ai/docs/api/api-reference/private-endpoints/set-private-endpoint-pricing)
 * `PrivateEndpointPricing`
 
   **4 endpoints using this schema**
 
-  * [`GET /private-endpoints/{id}`](https://openrouter.ai/docs/api/api-reference/private-endpoints/get-a-private-endpoint)
+  * [`GET /private-endpoints/{id}`](api/api-reference/private-endpoints/get-a-private-endpoint.md)
   * [`PATCH /private-endpoints/{id}`](https://openrouter.ai/docs/api/api-reference/private-endpoints/update-a-draft-private-endpoint)
-  * [`POST /private-endpoints`](https://openrouter.ai/docs/api/api-reference/private-endpoints/create-a-private-endpoint)
+  * [`POST /private-endpoints`](api/api-reference/private-endpoints/create-a-private-endpoint.md)
   * [`PUT /private-endpoints/{id}/pricing`](https://openrouter.ai/docs/api/api-reference/private-endpoints/set-private-endpoint-pricing)
 * `PrivateEndpointResponse`
-  * Used by [`GET /private-endpoints/{id}`](https://openrouter.ai/docs/api/api-reference/private-endpoints/get-a-private-endpoint), [`PATCH /private-endpoints/{id}`](https://openrouter.ai/docs/api/api-reference/private-endpoints/update-a-draft-private-endpoint), [`PUT /private-endpoints/{id}/pricing`](https://openrouter.ai/docs/api/api-reference/private-endpoints/set-private-endpoint-pricing)
+  * Used by [`GET /private-endpoints/{id}`](api/api-reference/private-endpoints/get-a-private-endpoint.md), [`PATCH /private-endpoints/{id}`](https://openrouter.ai/docs/api/api-reference/private-endpoints/update-a-draft-private-endpoint), [`PUT /private-endpoints/{id}/pricing`](https://openrouter.ai/docs/api/api-reference/private-endpoints/set-private-endpoint-pricing)
 * `PrivateEndpointStatus`
 
   **8 endpoints using this schema**
 
-  * [`GET /private-endpoints`](https://openrouter.ai/docs/api/api-reference/private-endpoints/list-private-endpoints)
-  * [`GET /private-endpoints/{id}`](https://openrouter.ai/docs/api/api-reference/private-endpoints/get-a-private-endpoint)
+  * [`GET /private-endpoints`](api/api-reference/private-endpoints/list-private-endpoints.md)
+  * [`GET /private-endpoints/{id}`](api/api-reference/private-endpoints/get-a-private-endpoint.md)
   * [`PATCH /private-endpoints/{id}`](https://openrouter.ai/docs/api/api-reference/private-endpoints/update-a-draft-private-endpoint)
-  * [`POST /private-endpoints`](https://openrouter.ai/docs/api/api-reference/private-endpoints/create-a-private-endpoint)
-  * [`POST /private-endpoints/{id}/activate`](https://openrouter.ai/docs/api/api-reference/private-endpoints/activate-a-validated-private-endpoint)
-  * [`POST /private-endpoints/{id}/disable`](https://openrouter.ai/docs/api/api-reference/private-endpoints/disable-a-private-endpoint)
-  * [`POST /private-endpoints/{id}/enable`](https://openrouter.ai/docs/api/api-reference/private-endpoints/enable-a-private-endpoint)
+  * [`POST /private-endpoints`](api/api-reference/private-endpoints/create-a-private-endpoint.md)
+  * [`POST /private-endpoints/{id}/activate`](api/api-reference/private-endpoints/activate-a-validated-private-endpoint.md)
+  * [`POST /private-endpoints/{id}/disable`](api/api-reference/private-endpoints/disable-a-private-endpoint.md)
+  * [`POST /private-endpoints/{id}/enable`](api/api-reference/private-endpoints/enable-a-private-endpoint.md)
   * [`PUT /private-endpoints/{id}/pricing`](https://openrouter.ai/docs/api/api-reference/private-endpoints/set-private-endpoint-pricing)
 * `PrivateEndpointSummary`
 
   **5 endpoints using this schema**
 
-  * [`GET /private-endpoints`](https://openrouter.ai/docs/api/api-reference/private-endpoints/list-private-endpoints)
-  * [`POST /private-endpoints`](https://openrouter.ai/docs/api/api-reference/private-endpoints/create-a-private-endpoint)
-  * [`POST /private-endpoints/{id}/activate`](https://openrouter.ai/docs/api/api-reference/private-endpoints/activate-a-validated-private-endpoint)
-  * [`POST /private-endpoints/{id}/disable`](https://openrouter.ai/docs/api/api-reference/private-endpoints/disable-a-private-endpoint)
-  * [`POST /private-endpoints/{id}/enable`](https://openrouter.ai/docs/api/api-reference/private-endpoints/enable-a-private-endpoint)
+  * [`GET /private-endpoints`](api/api-reference/private-endpoints/list-private-endpoints.md)
+  * [`POST /private-endpoints`](api/api-reference/private-endpoints/create-a-private-endpoint.md)
+  * [`POST /private-endpoints/{id}/activate`](api/api-reference/private-endpoints/activate-a-validated-private-endpoint.md)
+  * [`POST /private-endpoints/{id}/disable`](api/api-reference/private-endpoints/disable-a-private-endpoint.md)
+  * [`POST /private-endpoints/{id}/enable`](api/api-reference/private-endpoints/enable-a-private-endpoint.md)
 * `PrivateEndpointValidation`
-  * Used by [`POST /private-endpoints/{id}/validate`](https://openrouter.ai/docs/api/api-reference/private-endpoints/validate-a-draft-private-endpoint)
+  * Used by [`POST /private-endpoints/{id}/validate`](api/api-reference/private-endpoints/validate-a-draft-private-endpoint.md)
 * `PrivateEndpointValidationNullable`
-  * Used by [`POST /private-endpoints`](https://openrouter.ai/docs/api/api-reference/private-endpoints/create-a-private-endpoint)
+  * Used by [`POST /private-endpoints`](api/api-reference/private-endpoints/create-a-private-endpoint.md)
 * `PrivateEndpointValidationResponse`
-  * Used by [`POST /private-endpoints/{id}/validate`](https://openrouter.ai/docs/api/api-reference/private-endpoints/validate-a-draft-private-endpoint)
+  * Used by [`POST /private-endpoints/{id}/validate`](api/api-reference/private-endpoints/validate-a-draft-private-endpoint.md)
 * `UpdatePrivateEndpointPricingRequest`
   * Used by [`PUT /private-endpoints/{id}/pricing`](https://openrouter.ai/docs/api/api-reference/private-endpoints/set-private-endpoint-pricing)
 * `UpdatePrivateEndpointRequest`
   * Used by [`PATCH /private-endpoints/{id}`](https://openrouter.ai/docs/api/api-reference/private-endpoints/update-a-draft-private-endpoint)
 * `ValidatePrivateEndpointRequest`
-  * Used by [`POST /private-endpoints/{id}/validate`](https://openrouter.ai/docs/api/api-reference/private-endpoints/validate-a-draft-private-endpoint)
+  * Used by [`POST /private-endpoints/{id}/validate`](api/api-reference/private-endpoints/validate-a-draft-private-endpoint.md)
 
 ## Modified schemas
 
 * `AnthropicWebFetchToolResultError`: enum property\_added
-  * Used by [`GET /batches/{id}`](https://openrouter.ai/docs/api/api-reference/batch/get-a-batch), [`POST /batches`](https://openrouter.ai/docs/api/api-reference/batch/create-a-batch), [`POST /messages`](https://openrouter.ai/docs/api/api-reference/anthropic-messages/create-a-message)
+  * Used by [`GET /batches/{id}`](api/api-reference/batch/get-a-batch.md), [`POST /batches`](api/api-reference/batch/create-a-batch.md), [`POST /messages`](api/api-reference/anthropic-messages/create-a-message.md)
 * `PublicEndpoint`: example modified; new property `native_tools`
-  * Used by [`GET /endpoints/zdr`](https://openrouter.ai/docs/api/api-reference/endpoints/preview-the-impact-of-zdr-on-the-available-endpoints), [`GET /models/{author}/{slug}/endpoints`](https://openrouter.ai/docs/api/api-reference/endpoints/list-all-endpoints-for-a-model)
+  * Used by [`GET /endpoints/zdr`](api/api-reference/endpoints/preview-the-impact-of-zdr-on-the-available-endpoints.md), [`GET /models/{author}/{slug}/endpoints`](api/api-reference/endpoints/list-all-endpoints-for-a-model.md)
 * `MessagesRequest`: new union variant added
-  * Used by [`POST /messages`](https://openrouter.ai/docs/api/api-reference/anthropic-messages/create-a-message), [`POST /presets/{slug}/messages`](https://openrouter.ai/docs/api/api-reference/presets/create-a-preset-from-a-messages-request-body)
+  * Used by [`POST /messages`](api/api-reference/anthropic-messages/create-a-message.md), [`POST /presets/{slug}/messages`](api/api-reference/presets/create-a-preset-from-a-messages-request-body.md)
 
 **September 27, 2026**
 
 ## New response codes
 
-* [`POST /embeddings`](https://openrouter.ai/docs/api/api-reference/embeddings/submit-an-embedding-request): now returns `504`
+* [`POST /embeddings`](api/api-reference/embeddings/submit-an-embedding-request.md): now returns `504`
 
 **September 25, 2026**
 
@@ -2426,125 +2426,125 @@ Entries on this page are generated automatically from [OpenAPI specification](ap
 
 * `GET /interns/{internId}/daemon-access`: codes `429` object removedNo action needed
 * `SpeechInputReferenceAudioInput`: required `data` property removedNo action needed
-  * Used by [`POST /audio/speech`](https://openrouter.ai/docs/api/api-reference/tts/create-speech)
+  * Used by [`POST /audio/speech`](api/api-reference/tts/create-speech.md)
 
 ## New endpoints
 
-* [`GET /batches`](https://openrouter.ai/docs/api/api-reference/batch/list-batches): List batches
-* [`POST /batches`](https://openrouter.ai/docs/api/api-reference/batch/create-a-batch): Create a batch
-* [`GET /batches/{id}`](https://openrouter.ai/docs/api/api-reference/batch/get-a-batch): Get a batch
-* [`DELETE /batches/{id}`](https://openrouter.ai/docs/api/api-reference/batch/delete-a-batch): Delete a batch
+* [`GET /batches`](api/api-reference/batch/list-batches.md): List batches
+* [`POST /batches`](api/api-reference/batch/create-a-batch.md): Create a batch
+* [`GET /batches/{id}`](api/api-reference/batch/get-a-batch.md): Get a batch
+* [`DELETE /batches/{id}`](api/api-reference/batch/delete-a-batch.md): Delete a batch
 
 ## Modified endpoints
 
 * `GET /interns/{internId}/daemon-access`: description updated
-* [`POST /audio/speech`](https://openrouter.ai/docs/api/api-reference/tts/create-speech): description updated
-* [`GET /endpoints/zdr`](https://openrouter.ai/docs/api/api-reference/endpoints/preview-the-impact-of-zdr-on-the-available-endpoints): response schema updated
-* [`GET /byok`](https://openrouter.ai/docs/api/api-reference/byok/list-byok-provider-credentials): parameter `provider` updated
+* [`POST /audio/speech`](api/api-reference/tts/create-speech.md): description updated
+* [`GET /endpoints/zdr`](api/api-reference/endpoints/preview-the-impact-of-zdr-on-the-available-endpoints.md): response schema updated
+* [`GET /byok`](api/api-reference/byok/list-byok-provider-credentials.md): parameter `provider` updated
 
 ## New schemas
 
 * `SpeechInputReferenceImage`
-  * Used by [`POST /audio/speech`](https://openrouter.ai/docs/api/api-reference/tts/create-speech)
+  * Used by [`POST /audio/speech`](api/api-reference/tts/create-speech.md)
 * `SpeechInputReferenceImageInput`
-  * Used by [`POST /audio/speech`](https://openrouter.ai/docs/api/api-reference/tts/create-speech)
+  * Used by [`POST /audio/speech`](api/api-reference/tts/create-speech.md)
 * `BatchDeletedObject`
-  * Used by [`DELETE /batches/{id}`](https://openrouter.ai/docs/api/api-reference/batch/delete-a-batch)
+  * Used by [`DELETE /batches/{id}`](api/api-reference/batch/delete-a-batch.md)
 * `BatchDeletionOutcome`
-  * Used by [`DELETE /batches/{id}`](https://openrouter.ai/docs/api/api-reference/batch/delete-a-batch)
+  * Used by [`DELETE /batches/{id}`](api/api-reference/batch/delete-a-batch.md)
 * `BatchDeletionTargets`
-  * Used by [`DELETE /batches/{id}`](https://openrouter.ai/docs/api/api-reference/batch/delete-a-batch)
+  * Used by [`DELETE /batches/{id}`](api/api-reference/batch/delete-a-batch.md)
 * `BatchErrorResponse`
 
   **4 endpoints using this schema**
 
-  * [`DELETE /batches/{id}`](https://openrouter.ai/docs/api/api-reference/batch/delete-a-batch)
-  * [`GET /batches`](https://openrouter.ai/docs/api/api-reference/batch/list-batches)
-  * [`GET /batches/{id}`](https://openrouter.ai/docs/api/api-reference/batch/get-a-batch)
-  * [`POST /batches`](https://openrouter.ai/docs/api/api-reference/batch/create-a-batch)
+  * [`DELETE /batches/{id}`](api/api-reference/batch/delete-a-batch.md)
+  * [`GET /batches`](api/api-reference/batch/list-batches.md)
+  * [`GET /batches/{id}`](api/api-reference/batch/get-a-batch.md)
+  * [`POST /batches`](api/api-reference/batch/create-a-batch.md)
 * `BatchListItem`
-  * Used by [`GET /batches`](https://openrouter.ai/docs/api/api-reference/batch/list-batches)
+  * Used by [`GET /batches`](api/api-reference/batch/list-batches.md)
 * `BatchListResponse`
-  * Used by [`GET /batches`](https://openrouter.ai/docs/api/api-reference/batch/list-batches)
+  * Used by [`GET /batches`](api/api-reference/batch/list-batches.md)
 * `BatchListStatus`
-  * Used by [`GET /batches`](https://openrouter.ai/docs/api/api-reference/batch/list-batches)
+  * Used by [`GET /batches`](api/api-reference/batch/list-batches.md)
 * `BatchListTimestamp`
-  * Used by [`GET /batches`](https://openrouter.ai/docs/api/api-reference/batch/list-batches)
+  * Used by [`GET /batches`](api/api-reference/batch/list-batches.md)
 * `BatchObject`
-  * Used by [`GET /batches/{id}`](https://openrouter.ai/docs/api/api-reference/batch/get-a-batch), [`POST /batches`](https://openrouter.ai/docs/api/api-reference/batch/create-a-batch)
+  * Used by [`GET /batches/{id}`](api/api-reference/batch/get-a-batch.md), [`POST /batches`](api/api-reference/batch/create-a-batch.md)
 * `BatchPaymentRequiredResponse`
-  * Used by [`GET /batches/{id}`](https://openrouter.ai/docs/api/api-reference/batch/get-a-batch)
+  * Used by [`GET /batches/{id}`](api/api-reference/batch/get-a-batch.md)
 * `BatchProviderPreferences`
-  * Used by [`POST /batches`](https://openrouter.ai/docs/api/api-reference/batch/create-a-batch)
+  * Used by [`POST /batches`](api/api-reference/batch/create-a-batch.md)
 * `BatchSubmitBody`
-  * Used by [`POST /batches`](https://openrouter.ai/docs/api/api-reference/batch/create-a-batch)
+  * Used by [`POST /batches`](api/api-reference/batch/create-a-batch.md)
 * `FinishReason`
-  * Used by [`GET /batches/{id}`](https://openrouter.ai/docs/api/api-reference/batch/get-a-batch), [`POST /batches`](https://openrouter.ai/docs/api/api-reference/batch/create-a-batch)
+  * Used by [`GET /batches/{id}`](api/api-reference/batch/get-a-batch.md), [`POST /batches`](api/api-reference/batch/create-a-batch.md)
 
 ## Modified schemas
 
 * `PublicEndpoint`: example modified; new property `supports_image_reference`; new property `supports_multiple_audio_references`
-  * Used by [`GET /endpoints/zdr`](https://openrouter.ai/docs/api/api-reference/endpoints/preview-the-impact-of-zdr-on-the-available-endpoints), [`GET /models/{author}/{slug}/endpoints`](https://openrouter.ai/docs/api/api-reference/endpoints/list-all-endpoints-for-a-model)
+  * Used by [`GET /endpoints/zdr`](api/api-reference/endpoints/preview-the-impact-of-zdr-on-the-available-endpoints.md), [`GET /models/{author}/{slug}/endpoints`](api/api-reference/endpoints/list-all-endpoints-for-a-model.md)
 * `SpeechInputReference`: description updated; new union variant added
-  * Used by [`POST /audio/speech`](https://openrouter.ai/docs/api/api-reference/tts/create-speech)
+  * Used by [`POST /audio/speech`](api/api-reference/tts/create-speech.md)
 * `SpeechInputReferenceAudio`: description updated
-  * Used by [`POST /audio/speech`](https://openrouter.ai/docs/api/api-reference/tts/create-speech)
+  * Used by [`POST /audio/speech`](api/api-reference/tts/create-speech.md)
 * `SpeechInputReferenceAudioInput`: new property `url`; description updated
-  * Used by [`POST /audio/speech`](https://openrouter.ai/docs/api/api-reference/tts/create-speech)
+  * Used by [`POST /audio/speech`](api/api-reference/tts/create-speech.md)
 * `SpeechInputReferenceText`: description updated
-  * Used by [`POST /audio/speech`](https://openrouter.ai/docs/api/api-reference/tts/create-speech)
+  * Used by [`POST /audio/speech`](api/api-reference/tts/create-speech.md)
 * `SpeechRequest`: description updated
-  * Used by [`POST /audio/speech`](https://openrouter.ai/docs/api/api-reference/tts/create-speech)
+  * Used by [`POST /audio/speech`](api/api-reference/tts/create-speech.md)
 * `ImageGenerationRequest`: enum property\_added
-  * Used by [`POST /images`](https://openrouter.ai/docs/api/api-reference/images/generate-an-image)
+  * Used by [`POST /images`](api/api-reference/images/generate-an-image.md)
 * `BYOKProviderSlug`: enum property\_added
 
   **4 endpoints using this schema**
 
-  * [`GET /byok`](https://openrouter.ai/docs/api/api-reference/byok/list-byok-provider-credentials)
-  * [`GET /byok/{id}`](https://openrouter.ai/docs/api/api-reference/byok/get-a-byok-provider-credential)
-  * [`PATCH /byok/{id}`](https://openrouter.ai/docs/api/api-reference/byok/update-a-byok-provider-credential)
-  * [`POST /byok`](https://openrouter.ai/docs/api/api-reference/byok/create-a-byok-provider-credential)
+  * [`GET /byok`](api/api-reference/byok/list-byok-provider-credentials.md)
+  * [`GET /byok/{id}`](api/api-reference/byok/get-a-byok-provider-credential.md)
+  * [`PATCH /byok/{id}`](api/api-reference/byok/update-a-byok-provider-credential.md)
+  * [`POST /byok`](api/api-reference/byok/create-a-byok-provider-credential.md)
 * `MessagesStartEvent`: property `provider` updated
-  * Used by [`POST /messages`](https://openrouter.ai/docs/api/api-reference/anthropic-messages/create-a-message)
+  * Used by [`POST /messages`](api/api-reference/anthropic-messages/create-a-message.md)
 * `ProviderName`: enum property\_added
 
   **14 endpoints using this schema**
 
-  * [`GET /endpoints/zdr`](https://openrouter.ai/docs/api/api-reference/endpoints/preview-the-impact-of-zdr-on-the-available-endpoints)
-  * [`GET /models/{author}/{slug}/endpoints`](https://openrouter.ai/docs/api/api-reference/endpoints/list-all-endpoints-for-a-model)
-  * [`POST /api/alpha/decisions`](https://openrouter.ai/docs/api/api-reference/alphadecisions/submit-a-decisions-request)
-  * [`POST /batches`](https://openrouter.ai/docs/api/api-reference/batch/create-a-batch)
-  * [`POST /chat/completions`](https://openrouter.ai/docs/api/api-reference/chat/create-a-chat-completion)
-  * [`POST /embeddings`](https://openrouter.ai/docs/api/api-reference/embeddings/submit-an-embedding-request)
-  * [`POST /images`](https://openrouter.ai/docs/api/api-reference/images/generate-an-image)
-  * [`POST /messages`](https://openrouter.ai/docs/api/api-reference/anthropic-messages/create-a-message)
-  * [`POST /presets/{slug}/chat/completions`](https://openrouter.ai/docs/api/api-reference/presets/create-a-preset-from-a-chat-completions-request-body)
-  * [`POST /presets/{slug}/messages`](https://openrouter.ai/docs/api/api-reference/presets/create-a-preset-from-a-messages-request-body)
-  * [`POST /presets/{slug}/responses`](https://openrouter.ai/docs/api/api-reference/presets/create-a-preset-from-a-responses-request-body)
-  * [`POST /rerank`](https://openrouter.ai/docs/api/api-reference/rerank/submit-a-rerank-request)
-  * [`POST /responses`](https://openrouter.ai/docs/api/api-reference/responses/create-a-response)
-  * [`POST /systemone`](https://openrouter.ai/docs/api/api-reference/systemone/submit-a-system-one-request)
+  * [`GET /endpoints/zdr`](api/api-reference/endpoints/preview-the-impact-of-zdr-on-the-available-endpoints.md)
+  * [`GET /models/{author}/{slug}/endpoints`](api/api-reference/endpoints/list-all-endpoints-for-a-model.md)
+  * [`POST /api/alpha/decisions`](api/api-reference/alphadecisions/submit-a-decisions-request.md)
+  * [`POST /batches`](api/api-reference/batch/create-a-batch.md)
+  * [`POST /chat/completions`](api/api-reference/chat/create-a-chat-completion.md)
+  * [`POST /embeddings`](api/api-reference/embeddings/submit-an-embedding-request.md)
+  * [`POST /images`](api/api-reference/images/generate-an-image.md)
+  * [`POST /messages`](api/api-reference/anthropic-messages/create-a-message.md)
+  * [`POST /presets/{slug}/chat/completions`](api/api-reference/presets/create-a-preset-from-a-chat-completions-request-body.md)
+  * [`POST /presets/{slug}/messages`](api/api-reference/presets/create-a-preset-from-a-messages-request-body.md)
+  * [`POST /presets/{slug}/responses`](api/api-reference/presets/create-a-preset-from-a-responses-request-body.md)
+  * [`POST /rerank`](api/api-reference/rerank/submit-a-rerank-request.md)
+  * [`POST /responses`](api/api-reference/responses/create-a-response.md)
+  * [`POST /systemone`](api/api-reference/systemone/submit-a-system-one-request.md)
 * `ProviderOptions`: new property `respan`
 
   **14 endpoints using this schema**
 
-  * [`POST /api/alpha/decisions`](https://openrouter.ai/docs/api/api-reference/alphadecisions/submit-a-decisions-request)
-  * [`POST /audio/speech`](https://openrouter.ai/docs/api/api-reference/tts/create-speech)
-  * [`POST /audio/transcriptions`](https://openrouter.ai/docs/api/api-reference/stt/create-transcription)
-  * [`POST /chat/completions`](https://openrouter.ai/docs/api/api-reference/chat/create-a-chat-completion)
-  * [`POST /embeddings`](https://openrouter.ai/docs/api/api-reference/embeddings/submit-an-embedding-request)
-  * [`POST /images`](https://openrouter.ai/docs/api/api-reference/images/generate-an-image)
-  * [`POST /messages`](https://openrouter.ai/docs/api/api-reference/anthropic-messages/create-a-message)
-  * [`POST /presets/{slug}/chat/completions`](https://openrouter.ai/docs/api/api-reference/presets/create-a-preset-from-a-chat-completions-request-body)
-  * [`POST /presets/{slug}/messages`](https://openrouter.ai/docs/api/api-reference/presets/create-a-preset-from-a-messages-request-body)
-  * [`POST /presets/{slug}/responses`](https://openrouter.ai/docs/api/api-reference/presets/create-a-preset-from-a-responses-request-body)
-  * [`POST /rerank`](https://openrouter.ai/docs/api/api-reference/rerank/submit-a-rerank-request)
-  * [`POST /responses`](https://openrouter.ai/docs/api/api-reference/responses/create-a-response)
-  * [`POST /systemone`](https://openrouter.ai/docs/api/api-reference/systemone/submit-a-system-one-request)
-  * [`POST /videos`](https://openrouter.ai/docs/api/api-reference/video-generation/submit-a-video-generation-request)
+  * [`POST /api/alpha/decisions`](api/api-reference/alphadecisions/submit-a-decisions-request.md)
+  * [`POST /audio/speech`](api/api-reference/tts/create-speech.md)
+  * [`POST /audio/transcriptions`](api/api-reference/stt/create-transcription.md)
+  * [`POST /chat/completions`](api/api-reference/chat/create-a-chat-completion.md)
+  * [`POST /embeddings`](api/api-reference/embeddings/submit-an-embedding-request.md)
+  * [`POST /images`](api/api-reference/images/generate-an-image.md)
+  * [`POST /messages`](api/api-reference/anthropic-messages/create-a-message.md)
+  * [`POST /presets/{slug}/chat/completions`](api/api-reference/presets/create-a-preset-from-a-chat-completions-request-body.md)
+  * [`POST /presets/{slug}/messages`](api/api-reference/presets/create-a-preset-from-a-messages-request-body.md)
+  * [`POST /presets/{slug}/responses`](api/api-reference/presets/create-a-preset-from-a-responses-request-body.md)
+  * [`POST /rerank`](api/api-reference/rerank/submit-a-rerank-request.md)
+  * [`POST /responses`](api/api-reference/responses/create-a-response.md)
+  * [`POST /systemone`](api/api-reference/systemone/submit-a-system-one-request.md)
+  * [`POST /videos`](api/api-reference/video-generation/submit-a-video-generation-request.md)
 * `ProviderResponse`: enum property\_added
-  * Used by [`GET /generation`](https://openrouter.ai/docs/api/api-reference/generations/get-request-&-usage-metadata-for-a-generation)
+  * Used by [`GET /generation`](api/api-reference/generations/get-request-&-usage-metadata-for-a-generation.md)
 
 **September 24, 2026**
 
@@ -2554,8 +2554,8 @@ Entries on this page are generated automatically from [OpenAPI specification](ap
 
 ## Modified endpoints
 
-* [`GET /scim/groups`](https://openrouter.ai/docs/api/api-reference/scim/list-scim-groups): new parameter `display_name`; new parameter `external_id`
-* [`GET /byok`](https://openrouter.ai/docs/api/api-reference/byok/list-byok-provider-credentials): parameter `provider` updated
+* [`GET /scim/groups`](api/api-reference/scim/list-scim-groups.md): new parameter `display_name`; new parameter `external_id`
+* [`GET /byok`](api/api-reference/byok/list-byok-provider-credentials.md): parameter `provider` updated
 
 ## New schemas
 
@@ -2568,63 +2568,63 @@ Entries on this page are generated automatically from [OpenAPI specification](ap
 
   **10 endpoints using this schema**
 
-  * [`POST /api/alpha/decisions`](https://openrouter.ai/docs/api/api-reference/alphadecisions/submit-a-decisions-request)
-  * [`POST /chat/completions`](https://openrouter.ai/docs/api/api-reference/chat/create-a-chat-completion)
-  * [`POST /embeddings`](https://openrouter.ai/docs/api/api-reference/embeddings/submit-an-embedding-request)
-  * [`POST /messages`](https://openrouter.ai/docs/api/api-reference/anthropic-messages/create-a-message)
-  * [`POST /presets/{slug}/chat/completions`](https://openrouter.ai/docs/api/api-reference/presets/create-a-preset-from-a-chat-completions-request-body)
-  * [`POST /presets/{slug}/messages`](https://openrouter.ai/docs/api/api-reference/presets/create-a-preset-from-a-messages-request-body)
-  * [`POST /presets/{slug}/responses`](https://openrouter.ai/docs/api/api-reference/presets/create-a-preset-from-a-responses-request-body)
-  * [`POST /rerank`](https://openrouter.ai/docs/api/api-reference/rerank/submit-a-rerank-request)
-  * [`POST /responses`](https://openrouter.ai/docs/api/api-reference/responses/create-a-response)
-  * [`POST /systemone`](https://openrouter.ai/docs/api/api-reference/systemone/submit-a-system-one-request)
+  * [`POST /api/alpha/decisions`](api/api-reference/alphadecisions/submit-a-decisions-request.md)
+  * [`POST /chat/completions`](api/api-reference/chat/create-a-chat-completion.md)
+  * [`POST /embeddings`](api/api-reference/embeddings/submit-an-embedding-request.md)
+  * [`POST /messages`](api/api-reference/anthropic-messages/create-a-message.md)
+  * [`POST /presets/{slug}/chat/completions`](api/api-reference/presets/create-a-preset-from-a-chat-completions-request-body.md)
+  * [`POST /presets/{slug}/messages`](api/api-reference/presets/create-a-preset-from-a-messages-request-body.md)
+  * [`POST /presets/{slug}/responses`](api/api-reference/presets/create-a-preset-from-a-responses-request-body.md)
+  * [`POST /rerank`](api/api-reference/rerank/submit-a-rerank-request.md)
+  * [`POST /responses`](api/api-reference/responses/create-a-response.md)
+  * [`POST /systemone`](api/api-reference/systemone/submit-a-system-one-request.md)
 * `BYOKProviderSlug`: enum property\_added
 
   **4 endpoints using this schema**
 
-  * [`GET /byok`](https://openrouter.ai/docs/api/api-reference/byok/list-byok-provider-credentials)
-  * [`GET /byok/{id}`](https://openrouter.ai/docs/api/api-reference/byok/get-a-byok-provider-credential)
-  * [`PATCH /byok/{id}`](https://openrouter.ai/docs/api/api-reference/byok/update-a-byok-provider-credential)
-  * [`POST /byok`](https://openrouter.ai/docs/api/api-reference/byok/create-a-byok-provider-credential)
+  * [`GET /byok`](api/api-reference/byok/list-byok-provider-credentials.md)
+  * [`GET /byok/{id}`](api/api-reference/byok/get-a-byok-provider-credential.md)
+  * [`PATCH /byok/{id}`](api/api-reference/byok/update-a-byok-provider-credential.md)
+  * [`POST /byok`](api/api-reference/byok/create-a-byok-provider-credential.md)
 * `MessagesStartEvent`: property `provider` updated
-  * Used by [`POST /messages`](https://openrouter.ai/docs/api/api-reference/anthropic-messages/create-a-message)
+  * Used by [`POST /messages`](api/api-reference/anthropic-messages/create-a-message.md)
 * `ProviderName`: enum property\_added
 
   **13 endpoints using this schema**
 
-  * [`GET /endpoints/zdr`](https://openrouter.ai/docs/api/api-reference/endpoints/preview-the-impact-of-zdr-on-the-available-endpoints)
-  * [`GET /models/{author}/{slug}/endpoints`](https://openrouter.ai/docs/api/api-reference/endpoints/list-all-endpoints-for-a-model)
-  * [`POST /api/alpha/decisions`](https://openrouter.ai/docs/api/api-reference/alphadecisions/submit-a-decisions-request)
-  * [`POST /chat/completions`](https://openrouter.ai/docs/api/api-reference/chat/create-a-chat-completion)
-  * [`POST /embeddings`](https://openrouter.ai/docs/api/api-reference/embeddings/submit-an-embedding-request)
-  * [`POST /images`](https://openrouter.ai/docs/api/api-reference/images/generate-an-image)
-  * [`POST /messages`](https://openrouter.ai/docs/api/api-reference/anthropic-messages/create-a-message)
-  * [`POST /presets/{slug}/chat/completions`](https://openrouter.ai/docs/api/api-reference/presets/create-a-preset-from-a-chat-completions-request-body)
-  * [`POST /presets/{slug}/messages`](https://openrouter.ai/docs/api/api-reference/presets/create-a-preset-from-a-messages-request-body)
-  * [`POST /presets/{slug}/responses`](https://openrouter.ai/docs/api/api-reference/presets/create-a-preset-from-a-responses-request-body)
-  * [`POST /rerank`](https://openrouter.ai/docs/api/api-reference/rerank/submit-a-rerank-request)
-  * [`POST /responses`](https://openrouter.ai/docs/api/api-reference/responses/create-a-response)
-  * [`POST /systemone`](https://openrouter.ai/docs/api/api-reference/systemone/submit-a-system-one-request)
+  * [`GET /endpoints/zdr`](api/api-reference/endpoints/preview-the-impact-of-zdr-on-the-available-endpoints.md)
+  * [`GET /models/{author}/{slug}/endpoints`](api/api-reference/endpoints/list-all-endpoints-for-a-model.md)
+  * [`POST /api/alpha/decisions`](api/api-reference/alphadecisions/submit-a-decisions-request.md)
+  * [`POST /chat/completions`](api/api-reference/chat/create-a-chat-completion.md)
+  * [`POST /embeddings`](api/api-reference/embeddings/submit-an-embedding-request.md)
+  * [`POST /images`](api/api-reference/images/generate-an-image.md)
+  * [`POST /messages`](api/api-reference/anthropic-messages/create-a-message.md)
+  * [`POST /presets/{slug}/chat/completions`](api/api-reference/presets/create-a-preset-from-a-chat-completions-request-body.md)
+  * [`POST /presets/{slug}/messages`](api/api-reference/presets/create-a-preset-from-a-messages-request-body.md)
+  * [`POST /presets/{slug}/responses`](api/api-reference/presets/create-a-preset-from-a-responses-request-body.md)
+  * [`POST /rerank`](api/api-reference/rerank/submit-a-rerank-request.md)
+  * [`POST /responses`](api/api-reference/responses/create-a-response.md)
+  * [`POST /systemone`](api/api-reference/systemone/submit-a-system-one-request.md)
 * `ProviderOptions`: new property `scaledown`
 
   **14 endpoints using this schema**
 
-  * [`POST /api/alpha/decisions`](https://openrouter.ai/docs/api/api-reference/alphadecisions/submit-a-decisions-request)
-  * [`POST /audio/speech`](https://openrouter.ai/docs/api/api-reference/tts/create-speech)
-  * [`POST /audio/transcriptions`](https://openrouter.ai/docs/api/api-reference/stt/create-transcription)
-  * [`POST /chat/completions`](https://openrouter.ai/docs/api/api-reference/chat/create-a-chat-completion)
-  * [`POST /embeddings`](https://openrouter.ai/docs/api/api-reference/embeddings/submit-an-embedding-request)
-  * [`POST /images`](https://openrouter.ai/docs/api/api-reference/images/generate-an-image)
-  * [`POST /messages`](https://openrouter.ai/docs/api/api-reference/anthropic-messages/create-a-message)
-  * [`POST /presets/{slug}/chat/completions`](https://openrouter.ai/docs/api/api-reference/presets/create-a-preset-from-a-chat-completions-request-body)
-  * [`POST /presets/{slug}/messages`](https://openrouter.ai/docs/api/api-reference/presets/create-a-preset-from-a-messages-request-body)
-  * [`POST /presets/{slug}/responses`](https://openrouter.ai/docs/api/api-reference/presets/create-a-preset-from-a-responses-request-body)
-  * [`POST /rerank`](https://openrouter.ai/docs/api/api-reference/rerank/submit-a-rerank-request)
-  * [`POST /responses`](https://openrouter.ai/docs/api/api-reference/responses/create-a-response)
-  * [`POST /systemone`](https://openrouter.ai/docs/api/api-reference/systemone/submit-a-system-one-request)
-  * [`POST /videos`](https://openrouter.ai/docs/api/api-reference/video-generation/submit-a-video-generation-request)
+  * [`POST /api/alpha/decisions`](api/api-reference/alphadecisions/submit-a-decisions-request.md)
+  * [`POST /audio/speech`](api/api-reference/tts/create-speech.md)
+  * [`POST /audio/transcriptions`](api/api-reference/stt/create-transcription.md)
+  * [`POST /chat/completions`](api/api-reference/chat/create-a-chat-completion.md)
+  * [`POST /embeddings`](api/api-reference/embeddings/submit-an-embedding-request.md)
+  * [`POST /images`](api/api-reference/images/generate-an-image.md)
+  * [`POST /messages`](api/api-reference/anthropic-messages/create-a-message.md)
+  * [`POST /presets/{slug}/chat/completions`](api/api-reference/presets/create-a-preset-from-a-chat-completions-request-body.md)
+  * [`POST /presets/{slug}/messages`](api/api-reference/presets/create-a-preset-from-a-messages-request-body.md)
+  * [`POST /presets/{slug}/responses`](api/api-reference/presets/create-a-preset-from-a-responses-request-body.md)
+  * [`POST /rerank`](api/api-reference/rerank/submit-a-rerank-request.md)
+  * [`POST /responses`](api/api-reference/responses/create-a-response.md)
+  * [`POST /systemone`](api/api-reference/systemone/submit-a-system-one-request.md)
+  * [`POST /videos`](api/api-reference/video-generation/submit-a-video-generation-request.md)
 * `ProviderResponse`: enum property\_added
-  * Used by [`GET /generation`](https://openrouter.ai/docs/api/api-reference/generations/get-request-&-usage-metadata-for-a-generation)
+  * Used by [`GET /generation`](api/api-reference/generations/get-request-&-usage-metadata-for-a-generation.md)
 
 **September 23, 2026**
 
@@ -2638,25 +2638,25 @@ Entries on this page are generated automatically from [OpenAPI specification](ap
 * \$.components: allOf object removedNo action needed
 * \$.components: anyOf object removedNo action needed
 * `CustomToolCallItem`: allOf `allOf` object removedNo action needed
-  * Used by [`POST /presets/{slug}/responses`](https://openrouter.ai/docs/api/api-reference/presets/create-a-preset-from-a-responses-request-body), [`POST /responses`](https://openrouter.ai/docs/api/api-reference/responses/create-a-response)
+  * Used by [`POST /presets/{slug}/responses`](api/api-reference/presets/create-a-preset-from-a-responses-request-body.md), [`POST /responses`](api/api-reference/responses/create-a-response.md)
 * `CustomToolCallItem`: required `call_id` property addedNo action needed
-  * Used by [`POST /presets/{slug}/responses`](https://openrouter.ai/docs/api/api-reference/presets/create-a-preset-from-a-responses-request-body), [`POST /responses`](https://openrouter.ai/docs/api/api-reference/responses/create-a-response)
+  * Used by [`POST /presets/{slug}/responses`](api/api-reference/presets/create-a-preset-from-a-responses-request-body.md), [`POST /responses`](api/api-reference/responses/create-a-response.md)
 * `CustomToolCallItem`: required `input` property addedNo action needed
-  * Used by [`POST /presets/{slug}/responses`](https://openrouter.ai/docs/api/api-reference/presets/create-a-preset-from-a-responses-request-body), [`POST /responses`](https://openrouter.ai/docs/api/api-reference/responses/create-a-response)
+  * Used by [`POST /presets/{slug}/responses`](api/api-reference/presets/create-a-preset-from-a-responses-request-body.md), [`POST /responses`](api/api-reference/responses/create-a-response.md)
 * `CustomToolCallItem`: required `name` property addedNo action needed
-  * Used by [`POST /presets/{slug}/responses`](https://openrouter.ai/docs/api/api-reference/presets/create-a-preset-from-a-responses-request-body), [`POST /responses`](https://openrouter.ai/docs/api/api-reference/responses/create-a-response)
+  * Used by [`POST /presets/{slug}/responses`](api/api-reference/presets/create-a-preset-from-a-responses-request-body.md), [`POST /responses`](api/api-reference/responses/create-a-response.md)
 * `CustomToolCallItem`: required `type` property addedNo action needed
-  * Used by [`POST /presets/{slug}/responses`](https://openrouter.ai/docs/api/api-reference/presets/create-a-preset-from-a-responses-request-body), [`POST /responses`](https://openrouter.ai/docs/api/api-reference/responses/create-a-response)
+  * Used by [`POST /presets/{slug}/responses`](api/api-reference/presets/create-a-preset-from-a-responses-request-body.md), [`POST /responses`](api/api-reference/responses/create-a-response.md)
 * `FunctionCallItem`: allOf `allOf` object removedNo action needed
-  * Used by [`POST /presets/{slug}/responses`](https://openrouter.ai/docs/api/api-reference/presets/create-a-preset-from-a-responses-request-body), [`POST /responses`](https://openrouter.ai/docs/api/api-reference/responses/create-a-response)
+  * Used by [`POST /presets/{slug}/responses`](api/api-reference/presets/create-a-preset-from-a-responses-request-body.md), [`POST /responses`](api/api-reference/responses/create-a-response.md)
 * `FunctionCallItem`: required `arguments` property addedNo action needed
-  * Used by [`POST /presets/{slug}/responses`](https://openrouter.ai/docs/api/api-reference/presets/create-a-preset-from-a-responses-request-body), [`POST /responses`](https://openrouter.ai/docs/api/api-reference/responses/create-a-response)
+  * Used by [`POST /presets/{slug}/responses`](api/api-reference/presets/create-a-preset-from-a-responses-request-body.md), [`POST /responses`](api/api-reference/responses/create-a-response.md)
 * `FunctionCallItem`: required `call_id` property addedNo action needed
-  * Used by [`POST /presets/{slug}/responses`](https://openrouter.ai/docs/api/api-reference/presets/create-a-preset-from-a-responses-request-body), [`POST /responses`](https://openrouter.ai/docs/api/api-reference/responses/create-a-response)
+  * Used by [`POST /presets/{slug}/responses`](api/api-reference/presets/create-a-preset-from-a-responses-request-body.md), [`POST /responses`](api/api-reference/responses/create-a-response.md)
 * `FunctionCallItem`: required `name` property addedNo action needed
-  * Used by [`POST /presets/{slug}/responses`](https://openrouter.ai/docs/api/api-reference/presets/create-a-preset-from-a-responses-request-body), [`POST /responses`](https://openrouter.ai/docs/api/api-reference/responses/create-a-response)
+  * Used by [`POST /presets/{slug}/responses`](api/api-reference/presets/create-a-preset-from-a-responses-request-body.md), [`POST /responses`](api/api-reference/responses/create-a-response.md)
 * `FunctionCallItem`: required `type` property addedNo action needed
-  * Used by [`POST /presets/{slug}/responses`](https://openrouter.ai/docs/api/api-reference/presets/create-a-preset-from-a-responses-request-body), [`POST /responses`](https://openrouter.ai/docs/api/api-reference/responses/create-a-response)
+  * Used by [`POST /presets/{slug}/responses`](api/api-reference/presets/create-a-preset-from-a-responses-request-body.md), [`POST /responses`](api/api-reference/responses/create-a-response.md)
 
 ## New endpoints
 
@@ -2681,7 +2681,7 @@ Entries on this page are generated automatically from [OpenAPI specification](ap
   * new property `status`
   * new property `type`
   * type property\_added
-  * Used by [`POST /presets/{slug}/responses`](https://openrouter.ai/docs/api/api-reference/presets/create-a-preset-from-a-responses-request-body), [`POST /responses`](https://openrouter.ai/docs/api/api-reference/responses/create-a-response)
+  * Used by [`POST /presets/{slug}/responses`](api/api-reference/presets/create-a-preset-from-a-responses-request-body.md), [`POST /responses`](api/api-reference/responses/create-a-response.md)
 * `FunctionCallItem`:
   * new property `arguments`
   * new property `async`
@@ -2694,17 +2694,17 @@ Entries on this page are generated automatically from [OpenAPI specification](ap
   * new property `subagent_items`
   * new property `type`
   * type property\_added
-  * Used by [`POST /presets/{slug}/responses`](https://openrouter.ai/docs/api/api-reference/presets/create-a-preset-from-a-responses-request-body), [`POST /responses`](https://openrouter.ai/docs/api/api-reference/responses/create-a-response)
+  * Used by [`POST /presets/{slug}/responses`](api/api-reference/presets/create-a-preset-from-a-responses-request-body.md), [`POST /responses`](api/api-reference/responses/create-a-response.md)
 
 **September 22, 2026**
 
 ## Modified endpoints
 
-* [`GET /workspaces`](https://openrouter.ai/docs/api/api-reference/workspaces/list-workspaces): response schema updated
-* [`POST /workspaces`](https://openrouter.ai/docs/api/api-reference/workspaces/create-a-workspace): response schema updated
-* [`GET /workspaces/{id}`](https://openrouter.ai/docs/api/api-reference/workspaces/get-a-workspace): response schema updated
-* [`PATCH /workspaces/{id}`](https://openrouter.ai/docs/api/api-reference/workspaces/update-a-workspace): response schema updated
-* [`POST /api/alpha/decisions`](https://openrouter.ai/docs/api/api-reference/alphadecisions/submit-a-decisions-request): description updated
+* [`GET /workspaces`](api/api-reference/workspaces/list-workspaces.md): response schema updated
+* [`POST /workspaces`](api/api-reference/workspaces/create-a-workspace.md): response schema updated
+* [`GET /workspaces/{id}`](api/api-reference/workspaces/get-a-workspace.md): response schema updated
+* [`PATCH /workspaces/{id}`](api/api-reference/workspaces/update-a-workspace.md): response schema updated
+* [`POST /api/alpha/decisions`](api/api-reference/alphadecisions/submit-a-decisions-request.md): description updated
 * `POST /interns/{internId}/chat/completions`: description updated
 * `DELETE /interns/{internId}`: description updated; response schema updated
 * `POST /interns/{internId}/provision`: description updated; response schema updated
@@ -2713,54 +2713,54 @@ Entries on this page are generated automatically from [OpenAPI specification](ap
 ## New schemas
 
 * `AnthropicSafeguard`
-  * Used by [`POST /messages`](https://openrouter.ai/docs/api/api-reference/anthropic-messages/create-a-message), [`POST /presets/{slug}/messages`](https://openrouter.ai/docs/api/api-reference/presets/create-a-preset-from-a-messages-request-body)
+  * Used by [`POST /messages`](api/api-reference/anthropic-messages/create-a-message.md), [`POST /presets/{slug}/messages`](api/api-reference/presets/create-a-preset-from-a-messages-request-body.md)
 * `AnthropicSafeguardResult`
-  * Used by [`POST /messages`](https://openrouter.ai/docs/api/api-reference/anthropic-messages/create-a-message)
+  * Used by [`POST /messages`](api/api-reference/anthropic-messages/create-a-message.md)
 * `SwitchyardRouterPlugin`
 
   **6 endpoints using this schema**
 
-  * [`POST /chat/completions`](https://openrouter.ai/docs/api/api-reference/chat/create-a-chat-completion)
-  * [`POST /messages`](https://openrouter.ai/docs/api/api-reference/anthropic-messages/create-a-message)
-  * [`POST /presets/{slug}/chat/completions`](https://openrouter.ai/docs/api/api-reference/presets/create-a-preset-from-a-chat-completions-request-body)
-  * [`POST /presets/{slug}/messages`](https://openrouter.ai/docs/api/api-reference/presets/create-a-preset-from-a-messages-request-body)
-  * [`POST /presets/{slug}/responses`](https://openrouter.ai/docs/api/api-reference/presets/create-a-preset-from-a-responses-request-body)
-  * [`POST /responses`](https://openrouter.ai/docs/api/api-reference/responses/create-a-response)
+  * [`POST /chat/completions`](api/api-reference/chat/create-a-chat-completion.md)
+  * [`POST /messages`](api/api-reference/anthropic-messages/create-a-message.md)
+  * [`POST /presets/{slug}/chat/completions`](api/api-reference/presets/create-a-preset-from-a-chat-completions-request-body.md)
+  * [`POST /presets/{slug}/messages`](api/api-reference/presets/create-a-preset-from-a-messages-request-body.md)
+  * [`POST /presets/{slug}/responses`](api/api-reference/presets/create-a-preset-from-a-responses-request-body.md)
+  * [`POST /responses`](api/api-reference/responses/create-a-response.md)
 
 ## Modified schemas
 
 * `CreateWorkspaceRequest`: new property `disabled_server_tools`
-  * Used by [`POST /workspaces`](https://openrouter.ai/docs/api/api-reference/workspaces/create-a-workspace)
+  * Used by [`POST /workspaces`](api/api-reference/workspaces/create-a-workspace.md)
 * `CreateWorkspaceResponse`: example modified
-  * Used by [`POST /workspaces`](https://openrouter.ai/docs/api/api-reference/workspaces/create-a-workspace)
+  * Used by [`POST /workspaces`](api/api-reference/workspaces/create-a-workspace.md)
 * `GetWorkspaceResponse`: example modified
-  * Used by [`GET /workspaces/{id}`](https://openrouter.ai/docs/api/api-reference/workspaces/get-a-workspace)
+  * Used by [`GET /workspaces/{id}`](api/api-reference/workspaces/get-a-workspace.md)
 * `ListWorkspacesResponse`: example modified
-  * Used by [`GET /workspaces`](https://openrouter.ai/docs/api/api-reference/workspaces/list-workspaces)
+  * Used by [`GET /workspaces`](api/api-reference/workspaces/list-workspaces.md)
 * `MessagesDeltaEvent`: new property `safeguard_results`
-  * Used by [`POST /messages`](https://openrouter.ai/docs/api/api-reference/anthropic-messages/create-a-message)
+  * Used by [`POST /messages`](api/api-reference/anthropic-messages/create-a-message.md)
 * `MessagesRequest`: new property `safeguards`
-  * Used by [`POST /messages`](https://openrouter.ai/docs/api/api-reference/anthropic-messages/create-a-message), [`POST /presets/{slug}/messages`](https://openrouter.ai/docs/api/api-reference/presets/create-a-preset-from-a-messages-request-body)
+  * Used by [`POST /messages`](api/api-reference/anthropic-messages/create-a-message.md), [`POST /presets/{slug}/messages`](api/api-reference/presets/create-a-preset-from-a-messages-request-body.md)
 * `UpdateWorkspaceRequest`: new property `disabled_server_tools`
-  * Used by [`PATCH /workspaces/{id}`](https://openrouter.ai/docs/api/api-reference/workspaces/update-a-workspace)
+  * Used by [`PATCH /workspaces/{id}`](api/api-reference/workspaces/update-a-workspace.md)
 * `UpdateWorkspaceResponse`: example modified
-  * Used by [`PATCH /workspaces/{id}`](https://openrouter.ai/docs/api/api-reference/workspaces/update-a-workspace)
+  * Used by [`PATCH /workspaces/{id}`](api/api-reference/workspaces/update-a-workspace.md)
 * `Workspace`: example modified; new property `disabled_server_tools`
 
   **4 endpoints using this schema**
 
-  * [`GET /workspaces`](https://openrouter.ai/docs/api/api-reference/workspaces/list-workspaces)
-  * [`GET /workspaces/{id}`](https://openrouter.ai/docs/api/api-reference/workspaces/get-a-workspace)
-  * [`PATCH /workspaces/{id}`](https://openrouter.ai/docs/api/api-reference/workspaces/update-a-workspace)
-  * [`POST /workspaces`](https://openrouter.ai/docs/api/api-reference/workspaces/create-a-workspace)
+  * [`GET /workspaces`](api/api-reference/workspaces/list-workspaces.md)
+  * [`GET /workspaces/{id}`](api/api-reference/workspaces/get-a-workspace.md)
+  * [`PATCH /workspaces/{id}`](api/api-reference/workspaces/update-a-workspace.md)
+  * [`POST /workspaces`](api/api-reference/workspaces/create-a-workspace.md)
 * `ResponsesRequest`: description updated
-  * Used by [`POST /presets/{slug}/responses`](https://openrouter.ai/docs/api/api-reference/presets/create-a-preset-from-a-responses-request-body), [`POST /responses`](https://openrouter.ai/docs/api/api-reference/responses/create-a-response)
+  * Used by [`POST /presets/{slug}/responses`](api/api-reference/presets/create-a-preset-from-a-responses-request-body.md), [`POST /responses`](api/api-reference/responses/create-a-response.md)
 * `ChatRequest`: new union variant added
-  * Used by [`POST /chat/completions`](https://openrouter.ai/docs/api/api-reference/chat/create-a-chat-completion), [`POST /presets/{slug}/chat/completions`](https://openrouter.ai/docs/api/api-reference/presets/create-a-preset-from-a-chat-completions-request-body)
+  * Used by [`POST /chat/completions`](api/api-reference/chat/create-a-chat-completion.md), [`POST /presets/{slug}/chat/completions`](api/api-reference/presets/create-a-preset-from-a-chat-completions-request-body.md)
 * `MessagesRequest`: new union variant added
-  * Used by [`POST /messages`](https://openrouter.ai/docs/api/api-reference/anthropic-messages/create-a-message), [`POST /presets/{slug}/messages`](https://openrouter.ai/docs/api/api-reference/presets/create-a-preset-from-a-messages-request-body)
+  * Used by [`POST /messages`](api/api-reference/anthropic-messages/create-a-message.md), [`POST /presets/{slug}/messages`](api/api-reference/presets/create-a-preset-from-a-messages-request-body.md)
 * `ResponsesRequest`: new union variant added
-  * Used by [`POST /presets/{slug}/responses`](https://openrouter.ai/docs/api/api-reference/presets/create-a-preset-from-a-responses-request-body), [`POST /responses`](https://openrouter.ai/docs/api/api-reference/responses/create-a-response)
+  * Used by [`POST /presets/{slug}/responses`](api/api-reference/presets/create-a-preset-from-a-responses-request-body.md), [`POST /responses`](api/api-reference/responses/create-a-response.md)
 
 **September 21, 2026**
 
@@ -2772,10 +2772,10 @@ Entries on this page are generated automatically from [OpenAPI specification](ap
 
   **4 endpoints using this schema**
 
-  * [`GET /byok`](https://openrouter.ai/docs/api/api-reference/byok/list-byok-provider-credentials)
-  * [`GET /byok/{id}`](https://openrouter.ai/docs/api/api-reference/byok/get-a-byok-provider-credential)
-  * [`PATCH /byok/{id}`](https://openrouter.ai/docs/api/api-reference/byok/update-a-byok-provider-credential)
-  * [`POST /byok`](https://openrouter.ai/docs/api/api-reference/byok/create-a-byok-provider-credential)
+  * [`GET /byok`](api/api-reference/byok/list-byok-provider-credentials.md)
+  * [`GET /byok/{id}`](api/api-reference/byok/get-a-byok-provider-credential.md)
+  * [`PATCH /byok/{id}`](api/api-reference/byok/update-a-byok-provider-credential.md)
+  * [`POST /byok`](api/api-reference/byok/create-a-byok-provider-credential.md)
 
 ## Modified endpoints
 
@@ -2787,10 +2787,10 @@ Entries on this page are generated automatically from [OpenAPI specification](ap
 * `POST /interns/{internId}/chat/completions`: response schema updated; description updated
 * `POST /interns/{internId}/provision`: description updated; response schema updated
 * `POST /interns/{internId}/suspend`: description updated; response schema updated
-* [`GET /byok`](https://openrouter.ai/docs/api/api-reference/byok/list-byok-provider-credentials): response schema updated
-* [`POST /byok`](https://openrouter.ai/docs/api/api-reference/byok/create-a-byok-provider-credential): response schema updated
-* [`GET /byok/{id}`](https://openrouter.ai/docs/api/api-reference/byok/get-a-byok-provider-credential): response schema updated
-* [`PATCH /byok/{id}`](https://openrouter.ai/docs/api/api-reference/byok/update-a-byok-provider-credential): response schema updated
+* [`GET /byok`](api/api-reference/byok/list-byok-provider-credentials.md): response schema updated
+* [`POST /byok`](api/api-reference/byok/create-a-byok-provider-credential.md): response schema updated
+* [`GET /byok/{id}`](api/api-reference/byok/get-a-byok-provider-credential.md): response schema updated
+* [`PATCH /byok/{id}`](api/api-reference/byok/update-a-byok-provider-credential.md): response schema updated
 * `POST /interns/{internId}/chat/completions`: description updated
 * `POST /interns`: description updated
 * `DELETE /interns/{internId}`: description updated
@@ -2817,12 +2817,12 @@ Entries on this page are generated automatically from [OpenAPI specification](ap
 
   **6 endpoints using this schema**
 
-  * [`POST /chat/completions`](https://openrouter.ai/docs/api/api-reference/chat/create-a-chat-completion)
-  * [`POST /messages`](https://openrouter.ai/docs/api/api-reference/anthropic-messages/create-a-message)
-  * [`POST /presets/{slug}/chat/completions`](https://openrouter.ai/docs/api/api-reference/presets/create-a-preset-from-a-chat-completions-request-body)
-  * [`POST /presets/{slug}/messages`](https://openrouter.ai/docs/api/api-reference/presets/create-a-preset-from-a-messages-request-body)
-  * [`POST /presets/{slug}/responses`](https://openrouter.ai/docs/api/api-reference/presets/create-a-preset-from-a-responses-request-body)
-  * [`POST /responses`](https://openrouter.ai/docs/api/api-reference/responses/create-a-response)
+  * [`POST /chat/completions`](api/api-reference/chat/create-a-chat-completion.md)
+  * [`POST /messages`](api/api-reference/anthropic-messages/create-a-message.md)
+  * [`POST /presets/{slug}/chat/completions`](api/api-reference/presets/create-a-preset-from-a-chat-completions-request-body.md)
+  * [`POST /presets/{slug}/messages`](api/api-reference/presets/create-a-preset-from-a-messages-request-body.md)
+  * [`POST /presets/{slug}/responses`](api/api-reference/presets/create-a-preset-from-a-responses-request-body.md)
+  * [`POST /responses`](api/api-reference/responses/create-a-response.md)
 * `InternChatSteeredResponse`
   * Used by `POST /interns/{internId}/chat/completions`
 
@@ -2848,66 +2848,66 @@ Entries on this page are generated automatically from [OpenAPI specification](ap
   * `POST /interns/{internId}/provision`
   * `POST /interns/{internId}/suspend`
 * `VideoGenerationRequest`: enum property\_added
-  * Used by [`POST /videos`](https://openrouter.ai/docs/api/api-reference/video-generation/submit-a-video-generation-request)
+  * Used by [`POST /videos`](api/api-reference/video-generation/submit-a-video-generation-request.md)
 * `VideoModel`: enum property\_added
-  * Used by [`GET /videos/models`](https://openrouter.ai/docs/api/api-reference/video-generation/list-all-video-generation-models)
+  * Used by [`GET /videos/models`](api/api-reference/video-generation/list-all-video-generation-models.md)
 * `ChatWebSearchShorthand`: new property `x_search`; description updated
-  * Used by [`POST /chat/completions`](https://openrouter.ai/docs/api/api-reference/chat/create-a-chat-completion), [`POST /presets/{slug}/chat/completions`](https://openrouter.ai/docs/api/api-reference/presets/create-a-preset-from-a-chat-completions-request-body)
+  * Used by [`POST /chat/completions`](api/api-reference/chat/create-a-chat-completion.md), [`POST /presets/{slug}/chat/completions`](api/api-reference/presets/create-a-preset-from-a-chat-completions-request-body.md)
 * `Legacy_WebSearchServerTool`: new property `x_search`
-  * Used by [`POST /presets/{slug}/responses`](https://openrouter.ai/docs/api/api-reference/presets/create-a-preset-from-a-responses-request-body), [`POST /responses`](https://openrouter.ai/docs/api/api-reference/responses/create-a-response)
+  * Used by [`POST /presets/{slug}/responses`](api/api-reference/presets/create-a-preset-from-a-responses-request-body.md), [`POST /responses`](api/api-reference/responses/create-a-response.md)
 * `Preview_20250311_WebSearchServerTool`: new property `x_search`
-  * Used by [`POST /presets/{slug}/responses`](https://openrouter.ai/docs/api/api-reference/presets/create-a-preset-from-a-responses-request-body), [`POST /responses`](https://openrouter.ai/docs/api/api-reference/responses/create-a-response)
+  * Used by [`POST /presets/{slug}/responses`](api/api-reference/presets/create-a-preset-from-a-responses-request-body.md), [`POST /responses`](api/api-reference/responses/create-a-response.md)
 * `Preview_WebSearchServerTool`: new property `x_search`
-  * Used by [`POST /presets/{slug}/responses`](https://openrouter.ai/docs/api/api-reference/presets/create-a-preset-from-a-responses-request-body), [`POST /responses`](https://openrouter.ai/docs/api/api-reference/responses/create-a-response)
+  * Used by [`POST /presets/{slug}/responses`](api/api-reference/presets/create-a-preset-from-a-responses-request-body.md), [`POST /responses`](api/api-reference/responses/create-a-response.md)
 * `WebSearchConfig`: new property `x_search`; description updated
 
   **4 endpoints using this schema**
 
-  * [`POST /chat/completions`](https://openrouter.ai/docs/api/api-reference/chat/create-a-chat-completion)
-  * [`POST /messages`](https://openrouter.ai/docs/api/api-reference/anthropic-messages/create-a-message)
-  * [`POST /presets/{slug}/chat/completions`](https://openrouter.ai/docs/api/api-reference/presets/create-a-preset-from-a-chat-completions-request-body)
-  * [`POST /presets/{slug}/messages`](https://openrouter.ai/docs/api/api-reference/presets/create-a-preset-from-a-messages-request-body)
+  * [`POST /chat/completions`](api/api-reference/chat/create-a-chat-completion.md)
+  * [`POST /messages`](api/api-reference/anthropic-messages/create-a-message.md)
+  * [`POST /presets/{slug}/chat/completions`](api/api-reference/presets/create-a-preset-from-a-chat-completions-request-body.md)
+  * [`POST /presets/{slug}/messages`](api/api-reference/presets/create-a-preset-from-a-messages-request-body.md)
 * `WebSearchPlugin`: new property `x_search`
 
   **6 endpoints using this schema**
 
-  * [`POST /chat/completions`](https://openrouter.ai/docs/api/api-reference/chat/create-a-chat-completion)
-  * [`POST /messages`](https://openrouter.ai/docs/api/api-reference/anthropic-messages/create-a-message)
-  * [`POST /presets/{slug}/chat/completions`](https://openrouter.ai/docs/api/api-reference/presets/create-a-preset-from-a-chat-completions-request-body)
-  * [`POST /presets/{slug}/messages`](https://openrouter.ai/docs/api/api-reference/presets/create-a-preset-from-a-messages-request-body)
-  * [`POST /presets/{slug}/responses`](https://openrouter.ai/docs/api/api-reference/presets/create-a-preset-from-a-responses-request-body)
-  * [`POST /responses`](https://openrouter.ai/docs/api/api-reference/responses/create-a-response)
+  * [`POST /chat/completions`](api/api-reference/chat/create-a-chat-completion.md)
+  * [`POST /messages`](api/api-reference/anthropic-messages/create-a-message.md)
+  * [`POST /presets/{slug}/chat/completions`](api/api-reference/presets/create-a-preset-from-a-chat-completions-request-body.md)
+  * [`POST /presets/{slug}/messages`](api/api-reference/presets/create-a-preset-from-a-messages-request-body.md)
+  * [`POST /presets/{slug}/responses`](api/api-reference/presets/create-a-preset-from-a-responses-request-body.md)
+  * [`POST /responses`](api/api-reference/responses/create-a-response.md)
 * `WebSearchServerTool`: new property `x_search`
-  * Used by [`POST /presets/{slug}/responses`](https://openrouter.ai/docs/api/api-reference/presets/create-a-preset-from-a-responses-request-body), [`POST /responses`](https://openrouter.ai/docs/api/api-reference/responses/create-a-response)
+  * Used by [`POST /presets/{slug}/responses`](api/api-reference/presets/create-a-preset-from-a-responses-request-body.md), [`POST /responses`](api/api-reference/responses/create-a-response.md)
 * `WebSearchServerToolConfig`: new property `x_search`; description updated
-  * Used by [`POST /presets/{slug}/responses`](https://openrouter.ai/docs/api/api-reference/presets/create-a-preset-from-a-responses-request-body), [`POST /responses`](https://openrouter.ai/docs/api/api-reference/responses/create-a-response)
+  * Used by [`POST /presets/{slug}/responses`](api/api-reference/presets/create-a-preset-from-a-responses-request-body.md), [`POST /responses`](api/api-reference/responses/create-a-response.md)
 * `BYOKKey`: example modified; new property `declared_zdr`
 
   **4 endpoints using this schema**
 
-  * [`GET /byok`](https://openrouter.ai/docs/api/api-reference/byok/list-byok-provider-credentials)
-  * [`GET /byok/{id}`](https://openrouter.ai/docs/api/api-reference/byok/get-a-byok-provider-credential)
-  * [`PATCH /byok/{id}`](https://openrouter.ai/docs/api/api-reference/byok/update-a-byok-provider-credential)
-  * [`POST /byok`](https://openrouter.ai/docs/api/api-reference/byok/create-a-byok-provider-credential)
+  * [`GET /byok`](api/api-reference/byok/list-byok-provider-credentials.md)
+  * [`GET /byok/{id}`](api/api-reference/byok/get-a-byok-provider-credential.md)
+  * [`PATCH /byok/{id}`](api/api-reference/byok/update-a-byok-provider-credential.md)
+  * [`POST /byok`](api/api-reference/byok/create-a-byok-provider-credential.md)
 * `CreateBYOKKeyRequest`: new property `declared_zdr`
-  * Used by [`POST /byok`](https://openrouter.ai/docs/api/api-reference/byok/create-a-byok-provider-credential)
+  * Used by [`POST /byok`](api/api-reference/byok/create-a-byok-provider-credential.md)
 * `CreateBYOKKeyResponse`: example modified
-  * Used by [`POST /byok`](https://openrouter.ai/docs/api/api-reference/byok/create-a-byok-provider-credential)
+  * Used by [`POST /byok`](api/api-reference/byok/create-a-byok-provider-credential.md)
 * `GetBYOKKeyResponse`: example modified
-  * Used by [`GET /byok/{id}`](https://openrouter.ai/docs/api/api-reference/byok/get-a-byok-provider-credential)
+  * Used by [`GET /byok/{id}`](api/api-reference/byok/get-a-byok-provider-credential.md)
 * `ListBYOKKeysResponse`: example modified
-  * Used by [`GET /byok`](https://openrouter.ai/docs/api/api-reference/byok/list-byok-provider-credentials)
+  * Used by [`GET /byok`](api/api-reference/byok/list-byok-provider-credentials.md)
 * `UpdateBYOKKeyRequest`: new property `declared_zdr`
-  * Used by [`PATCH /byok/{id}`](https://openrouter.ai/docs/api/api-reference/byok/update-a-byok-provider-credential)
+  * Used by [`PATCH /byok/{id}`](api/api-reference/byok/update-a-byok-provider-credential.md)
 * `UpdateBYOKKeyResponse`: example modified
-  * Used by [`PATCH /byok/{id}`](https://openrouter.ai/docs/api/api-reference/byok/update-a-byok-provider-credential)
+  * Used by [`PATCH /byok/{id}`](api/api-reference/byok/update-a-byok-provider-credential.md)
 
 **September 20, 2026**
 
 ## Breaking changes
 
-* [`POST /systemone`](https://openrouter.ai/docs/api/api-reference/systemone/submit-a-system-one-request): x-speakeasy-ignore `true` object removedNo action needed
-* [`POST /systemone`](https://openrouter.ai/docs/api/api-reference/systemone/submit-a-system-one-request): tags `alpha.decisions` property removedNo action needed
+* [`POST /systemone`](api/api-reference/systemone/submit-a-system-one-request.md): x-speakeasy-ignore `true` object removedNo action needed
+* [`POST /systemone`](api/api-reference/systemone/submit-a-system-one-request.md): tags `alpha.decisions` property removedNo action needed
 
 ## New endpoints
 
@@ -2915,14 +2915,14 @@ Entries on this page are generated automatically from [OpenAPI specification](ap
 
 ## Modified endpoints
 
-* [`POST /systemone`](https://openrouter.ai/docs/api/api-reference/systemone/submit-a-system-one-request): x-speakeasy-name-override object\_added; description updated; tags property\_added
+* [`POST /systemone`](api/api-reference/systemone/submit-a-system-one-request.md): x-speakeasy-name-override object\_added; description updated; tags property\_added
 
 **September 19, 2026**
 
 ## Breaking changes
 
-* [`GET /key`](https://openrouter.ai/docs/api/api-reference/api-keys/get-current-api-key): required `organization_id` property addedNo action needed
-* [`GET /key`](https://openrouter.ai/docs/api/api-reference/api-keys/get-current-api-key): required `workspace_id` property addedNo action needed
+* [`GET /key`](api/api-reference/api-keys/get-current-api-key.md): required `organization_id` property addedNo action needed
+* [`GET /key`](api/api-reference/api-keys/get-current-api-key.md): required `workspace_id` property addedNo action needed
 * `CreateInternRequest`: required `workspace_id` property removedNo action needed
   * Used by `POST /interns`
 * `InternChatAssistantMessage`: required `content` property removedNo action needed
@@ -2932,18 +2932,18 @@ Entries on this page are generated automatically from [OpenAPI specification](ap
 
 ## Modified endpoints
 
-* [`GET /key`](https://openrouter.ai/docs/api/api-reference/api-keys/get-current-api-key): response schema updated
+* [`GET /key`](api/api-reference/api-keys/get-current-api-key.md): response schema updated
 * `POST /interns`: description updated; response schema updated
 * `POST /interns/{internId}/chat/completions`: description updated
 * `DELETE /interns/{internId}`: description updated
 * `GET /interns`: new parameter `starting_after`
-* [`PATCH /observability/destinations/{id}`](https://openrouter.ai/docs/api/api-reference/observability/update-an-observability-destination): description updated; response schema updated
+* [`PATCH /observability/destinations/{id}`](api/api-reference/observability/update-an-observability-destination.md): description updated; response schema updated
 
 ## New response codes
 
 * `DELETE /interns/{internId}`: now returns `400`
 * `DELETE /interns/{internId}`: now returns `413`
-* [`PATCH /byok/{id}`](https://openrouter.ai/docs/api/api-reference/byok/update-a-byok-provider-credential): now returns `403`
+* [`PATCH /byok/{id}`](api/api-reference/byok/update-a-byok-provider-credential.md): now returns `403`
 
 ## New schemas
 
@@ -2957,7 +2957,7 @@ Entries on this page are generated automatically from [OpenAPI specification](ap
 * `CreateInternRequest`: description updated
   * Used by `POST /interns`
 * `TokenExchangeRequest`: pattern property\_added
-  * Used by [`POST /oauth/token`](https://openrouter.ai/docs/api/api-reference/oauth/exchange-a-workload-identity-token)
+  * Used by [`POST /oauth/token`](api/api-reference/oauth/exchange-a-workload-identity-token.md)
 * `InternChatCompletionChunk`: description updated
   * Used by `POST /interns/{internId}/chat/completions`
 * `UpdateInternRequest`: description updated; minLength property\_added; pattern property\_added
@@ -3265,7 +3265,7 @@ Entries on this page are generated automatically from [OpenAPI specification](ap
 * `DecisionsScoreQuestion`: new union variant added; description updated; type property\_removed
   * Used by [`POST /api/alpha/decisions`](https://openrouter.ai/docs/api/api-reference/alphadecisions/submit-a-decisions-questions-and-answers-request)
 * `PublicEndpoint`: new property `decisions`
-  * Used by [`GET /endpoints/zdr`](https://openrouter.ai/docs/api/api-reference/endpoints/preview-the-impact-of-zdr-on-the-available-endpoints), [`GET /models/{author}/{slug}/endpoints`](https://openrouter.ai/docs/api/api-reference/endpoints/list-all-endpoints-for-a-model)
+  * Used by [`GET /endpoints/zdr`](api/api-reference/endpoints/preview-the-impact-of-zdr-on-the-available-endpoints.md), [`GET /models/{author}/{slug}/endpoints`](api/api-reference/endpoints/list-all-endpoints-for-a-model.md)
 * `Intern`:
 
   * example modified
@@ -3289,11 +3289,11 @@ Entries on this page are generated automatically from [OpenAPI specification](ap
 
   **5 endpoints using this schema**
 
-  * [`GET /vault/interns/{internId}/secrets`](https://openrouter.ai/docs/api/api-reference/vault/list-intern-secrets)
-  * [`GET /vault/secrets`](https://openrouter.ai/docs/api/api-reference/vault/list-workspace-secrets)
-  * [`POST /vault/interns/{internId}/secrets/copy`](https://openrouter.ai/docs/api/api-reference/vault/copy-workspace-secrets-to-an-intern)
-  * [`PUT /vault/interns/{internId}/secrets/{name}`](https://openrouter.ai/docs/api/api-reference/vault/store-an-intern-secret)
-  * [`PUT /vault/secrets/{name}`](https://openrouter.ai/docs/api/api-reference/vault/store-a-workspace-secret)
+  * [`GET /vault/interns/{internId}/secrets`](api/api-reference/vault/list-intern-secrets.md)
+  * [`GET /vault/secrets`](api/api-reference/vault/list-workspace-secrets.md)
+  * [`POST /vault/interns/{internId}/secrets/copy`](api/api-reference/vault/copy-workspace-secrets-to-an-intern.md)
+  * [`PUT /vault/interns/{internId}/secrets/{name}`](api/api-reference/vault/store-an-intern-secret.md)
+  * [`PUT /vault/secrets/{name}`](api/api-reference/vault/store-a-workspace-secret.md)
 
 **September 17, 2026**
 
@@ -3304,13 +3304,13 @@ Entries on this page are generated automatically from [OpenAPI specification](ap
 
 ## Modified endpoints
 
-* [`GET /containers/{container_id}/files`](https://openrouter.ai/docs/api/api-reference/containers/list-container-files): description updated
-* [`POST /presets/{slug}/responses`](https://openrouter.ai/docs/api/api-reference/presets/create-a-preset-from-a-responses-request-body): description updated
-* [`POST /responses`](https://openrouter.ai/docs/api/api-reference/responses/create-a-response): description updated; response schema updated
-* [`GET /byok`](https://openrouter.ai/docs/api/api-reference/byok/list-byok-provider-credentials): parameter `provider` updated
-* [`GET /models`](https://openrouter.ai/docs/api/api-reference/models/list-all-models-and-their-properties): description updated
-* [`GET /models/count`](https://openrouter.ai/docs/api/api-reference/models/get-total-count-of-available-models): description updated
-* [`GET /models/user`](https://openrouter.ai/docs/api/api-reference/models/list-models-filtered-by-user-provider-preferences-privacy-settings-and-guardrails): description updated
+* [`GET /containers/{container_id}/files`](api/api-reference/containers/list-container-files.md): description updated
+* [`POST /presets/{slug}/responses`](api/api-reference/presets/create-a-preset-from-a-responses-request-body.md): description updated
+* [`POST /responses`](api/api-reference/responses/create-a-response.md): description updated; response schema updated
+* [`GET /byok`](api/api-reference/byok/list-byok-provider-credentials.md): parameter `provider` updated
+* [`GET /models`](api/api-reference/models/list-all-models-and-their-properties.md): description updated
+* [`GET /models/count`](api/api-reference/models/get-total-count-of-available-models.md): description updated
+* [`GET /models/user`](api/api-reference/models/list-models-filtered-by-user-provider-preferences-privacy-settings-and-guardrails.md): description updated
 * [`POST /api/alpha/decisions`](https://openrouter.ai/docs/api/api-reference/decisions/submit-a-decisions-questions-and-answers-request): x-speakeasy-name-override modified
 
 ## New schemas
@@ -3383,198 +3383,198 @@ Entries on this page are generated automatically from [OpenAPI specification](ap
 ## Modified schemas
 
 * `AnthropicImageBlockParam`: new union variant added
-  * Used by [`POST /messages`](https://openrouter.ai/docs/api/api-reference/anthropic-messages/create-a-message), [`POST /presets/{slug}/messages`](https://openrouter.ai/docs/api/api-reference/presets/create-a-preset-from-a-messages-request-body)
+  * Used by [`POST /messages`](api/api-reference/anthropic-messages/create-a-message.md), [`POST /presets/{slug}/messages`](api/api-reference/presets/create-a-preset-from-a-messages-request-body.md)
 * `ContainerFileListResponse`: description updated
-  * Used by [`GET /containers/{container_id}/files`](https://openrouter.ai/docs/api/api-reference/containers/list-container-files)
+  * Used by [`GET /containers/{container_id}/files`](api/api-reference/containers/list-container-files.md)
 * `InputImage`: description updated; new property `file_id`
-  * Used by [`POST /presets/{slug}/responses`](https://openrouter.ai/docs/api/api-reference/presets/create-a-preset-from-a-responses-request-body), [`POST /responses`](https://openrouter.ai/docs/api/api-reference/responses/create-a-response)
+  * Used by [`POST /presets/{slug}/responses`](api/api-reference/presets/create-a-preset-from-a-responses-request-body.md), [`POST /responses`](api/api-reference/responses/create-a-response.md)
 * `STTResponse`: new property `confidence`
-  * Used by [`POST /audio/transcriptions`](https://openrouter.ai/docs/api/api-reference/stt/create-transcription)
+  * Used by [`POST /audio/transcriptions`](api/api-reference/stt/create-transcription.md)
 * `STTWord`: example modified; new property `confidence`
-  * Used by [`POST /audio/transcriptions`](https://openrouter.ai/docs/api/api-reference/stt/create-transcription)
+  * Used by [`POST /audio/transcriptions`](api/api-reference/stt/create-transcription.md)
 * `BYOKProviderSlug`: enum property\_added
 
   **4 endpoints using this schema**
 
-  * [`GET /byok`](https://openrouter.ai/docs/api/api-reference/byok/list-byok-provider-credentials)
-  * [`GET /byok/{id}`](https://openrouter.ai/docs/api/api-reference/byok/get-a-byok-provider-credential)
-  * [`PATCH /byok/{id}`](https://openrouter.ai/docs/api/api-reference/byok/update-a-byok-provider-credential)
-  * [`POST /byok`](https://openrouter.ai/docs/api/api-reference/byok/create-a-byok-provider-credential)
+  * [`GET /byok`](api/api-reference/byok/list-byok-provider-credentials.md)
+  * [`GET /byok/{id}`](api/api-reference/byok/get-a-byok-provider-credential.md)
+  * [`PATCH /byok/{id}`](api/api-reference/byok/update-a-byok-provider-credential.md)
+  * [`POST /byok`](api/api-reference/byok/create-a-byok-provider-credential.md)
 * `GenerationResponse`: property `api_type` updated
-  * Used by [`GET /generation`](https://openrouter.ai/docs/api/api-reference/generations/get-request-&-usage-metadata-for-a-generation)
+  * Used by [`GET /generation`](api/api-reference/generations/get-request-&-usage-metadata-for-a-generation.md)
 * `ImageOutputModality`: enum property\_added
-  * Used by [`GET /images/models`](https://openrouter.ai/docs/api/api-reference/images/list-image-generation-models)
+  * Used by [`GET /images/models`](api/api-reference/images/list-image-generation-models.md)
 * `MessagesStartEvent`: property `provider` updated
-  * Used by [`POST /messages`](https://openrouter.ai/docs/api/api-reference/anthropic-messages/create-a-message)
+  * Used by [`POST /messages`](api/api-reference/anthropic-messages/create-a-message.md)
 * `OutputModality`: enum property\_added
 
   **5 endpoints using this schema**
 
-  * [`GET /embeddings/models`](https://openrouter.ai/docs/api/api-reference/embeddings/list-all-embeddings-models)
-  * [`GET /model/{author}/{slug}`](https://openrouter.ai/docs/api/api-reference/models/get-a-model-by-its-slug)
-  * [`GET /models`](https://openrouter.ai/docs/api/api-reference/models/list-all-models-and-their-properties)
-  * [`GET /models/user`](https://openrouter.ai/docs/api/api-reference/models/list-models-filtered-by-user-provider-preferences-privacy-settings-and-guardrails)
-  * [`GET /models/{author}/{slug}/endpoints`](https://openrouter.ai/docs/api/api-reference/endpoints/list-all-endpoints-for-a-model)
+  * [`GET /embeddings/models`](api/api-reference/embeddings/list-all-embeddings-models.md)
+  * [`GET /model/{author}/{slug}`](api/api-reference/models/get-a-model-by-its-slug.md)
+  * [`GET /models`](api/api-reference/models/list-all-models-and-their-properties.md)
+  * [`GET /models/user`](api/api-reference/models/list-models-filtered-by-user-provider-preferences-privacy-settings-and-guardrails.md)
+  * [`GET /models/{author}/{slug}/endpoints`](api/api-reference/endpoints/list-all-endpoints-for-a-model.md)
 * `ProviderName`: enum property\_added
 
   **12 endpoints using this schema**
 
-  * [`GET /endpoints/zdr`](https://openrouter.ai/docs/api/api-reference/endpoints/preview-the-impact-of-zdr-on-the-available-endpoints)
-  * [`GET /models/{author}/{slug}/endpoints`](https://openrouter.ai/docs/api/api-reference/endpoints/list-all-endpoints-for-a-model)
+  * [`GET /endpoints/zdr`](api/api-reference/endpoints/preview-the-impact-of-zdr-on-the-available-endpoints.md)
+  * [`GET /models/{author}/{slug}/endpoints`](api/api-reference/endpoints/list-all-endpoints-for-a-model.md)
   * [`POST /api/alpha/decisions`](https://openrouter.ai/docs/api/api-reference/decisions/submit-a-decisions-questions-and-answers-request)
-  * [`POST /chat/completions`](https://openrouter.ai/docs/api/api-reference/chat/create-a-chat-completion)
-  * [`POST /embeddings`](https://openrouter.ai/docs/api/api-reference/embeddings/submit-an-embedding-request)
-  * [`POST /images`](https://openrouter.ai/docs/api/api-reference/images/generate-an-image)
-  * [`POST /messages`](https://openrouter.ai/docs/api/api-reference/anthropic-messages/create-a-message)
-  * [`POST /presets/{slug}/chat/completions`](https://openrouter.ai/docs/api/api-reference/presets/create-a-preset-from-a-chat-completions-request-body)
-  * [`POST /presets/{slug}/messages`](https://openrouter.ai/docs/api/api-reference/presets/create-a-preset-from-a-messages-request-body)
-  * [`POST /presets/{slug}/responses`](https://openrouter.ai/docs/api/api-reference/presets/create-a-preset-from-a-responses-request-body)
-  * [`POST /rerank`](https://openrouter.ai/docs/api/api-reference/rerank/submit-a-rerank-request)
-  * [`POST /responses`](https://openrouter.ai/docs/api/api-reference/responses/create-a-response)
+  * [`POST /chat/completions`](api/api-reference/chat/create-a-chat-completion.md)
+  * [`POST /embeddings`](api/api-reference/embeddings/submit-an-embedding-request.md)
+  * [`POST /images`](api/api-reference/images/generate-an-image.md)
+  * [`POST /messages`](api/api-reference/anthropic-messages/create-a-message.md)
+  * [`POST /presets/{slug}/chat/completions`](api/api-reference/presets/create-a-preset-from-a-chat-completions-request-body.md)
+  * [`POST /presets/{slug}/messages`](api/api-reference/presets/create-a-preset-from-a-messages-request-body.md)
+  * [`POST /presets/{slug}/responses`](api/api-reference/presets/create-a-preset-from-a-responses-request-body.md)
+  * [`POST /rerank`](api/api-reference/rerank/submit-a-rerank-request.md)
+  * [`POST /responses`](api/api-reference/responses/create-a-response.md)
 * `ProviderOptions`: new property `typesafe`
 
   **4 endpoints using this schema**
 
-  * [`POST /audio/speech`](https://openrouter.ai/docs/api/api-reference/tts/create-speech)
-  * [`POST /audio/transcriptions`](https://openrouter.ai/docs/api/api-reference/stt/create-transcription)
-  * [`POST /images`](https://openrouter.ai/docs/api/api-reference/images/generate-an-image)
-  * [`POST /videos`](https://openrouter.ai/docs/api/api-reference/video-generation/submit-a-video-generation-request)
+  * [`POST /audio/speech`](api/api-reference/tts/create-speech.md)
+  * [`POST /audio/transcriptions`](api/api-reference/stt/create-transcription.md)
+  * [`POST /images`](api/api-reference/images/generate-an-image.md)
+  * [`POST /videos`](api/api-reference/video-generation/submit-a-video-generation-request.md)
 * `ProviderResponse`: enum property\_added
-  * Used by [`GET /generation`](https://openrouter.ai/docs/api/api-reference/generations/get-request-&-usage-metadata-for-a-generation)
+  * Used by [`GET /generation`](api/api-reference/generations/get-request-&-usage-metadata-for-a-generation.md)
 * `DecisionsRequest`: new union variant added; description updated
   * Used by [`POST /api/alpha/decisions`](https://openrouter.ai/docs/api/api-reference/decisions/submit-a-decisions-questions-and-answers-request)
 * `VideoGenerationRequest`: new property `previous_job_id`
-  * Used by [`POST /videos`](https://openrouter.ai/docs/api/api-reference/video-generation/submit-a-video-generation-request)
+  * Used by [`POST /videos`](api/api-reference/video-generation/submit-a-video-generation-request.md)
 * `VideoGenerationResponse`: example modified; description updated
-  * Used by [`GET /videos/{jobId}`](https://openrouter.ai/docs/api/api-reference/video-generation/poll-video-generation-status), [`POST /videos`](https://openrouter.ai/docs/api/api-reference/video-generation/submit-a-video-generation-request)
+  * Used by [`GET /videos/{jobId}`](api/api-reference/video-generation/poll-video-generation-status.md), [`POST /videos`](api/api-reference/video-generation/submit-a-video-generation-request.md)
 * `ProviderOptions`: new property `unbiased`
 
   **4 endpoints using this schema**
 
-  * [`POST /audio/speech`](https://openrouter.ai/docs/api/api-reference/tts/create-speech)
-  * [`POST /audio/transcriptions`](https://openrouter.ai/docs/api/api-reference/stt/create-transcription)
-  * [`POST /images`](https://openrouter.ai/docs/api/api-reference/images/generate-an-image)
-  * [`POST /videos`](https://openrouter.ai/docs/api/api-reference/video-generation/submit-a-video-generation-request)
+  * [`POST /audio/speech`](api/api-reference/tts/create-speech.md)
+  * [`POST /audio/transcriptions`](api/api-reference/stt/create-transcription.md)
+  * [`POST /images`](api/api-reference/images/generate-an-image.md)
+  * [`POST /videos`](api/api-reference/video-generation/submit-a-video-generation-request.md)
 
 **September 16, 2026**
 
 ## Breaking changes
 
-* [`GET /key`](https://openrouter.ai/docs/api/api-reference/api-keys/get-current-api-key): required `free_model_daily_requests` property addedNo action needed
-* [`GET /key`](https://openrouter.ai/docs/api/api-reference/api-keys/get-current-api-key): required `allowed_data_regions` property addedNo action needed
+* [`GET /key`](api/api-reference/api-keys/get-current-api-key.md): required `free_model_daily_requests` property addedNo action needed
+* [`GET /key`](api/api-reference/api-keys/get-current-api-key.md): required `allowed_data_regions` property addedNo action needed
 
 ## New endpoints
 
-* [`GET /vault/interns/{internId}/secrets`](https://openrouter.ai/docs/api/api-reference/vault/list-intern-secrets): List intern secrets
-* [`POST /vault/interns/{internId}/secrets/copy`](https://openrouter.ai/docs/api/api-reference/vault/copy-workspace-secrets-to-an-intern): Copy workspace secrets to an intern
-* [`PUT /vault/interns/{internId}/secrets/{name}`](https://openrouter.ai/docs/api/api-reference/vault/store-an-intern-secret): Store an intern secret
-* [`DELETE /vault/interns/{internId}/secrets/{name}`](https://openrouter.ai/docs/api/api-reference/vault/delete-an-intern-secret): Delete an intern secret
-* [`GET /vault/secrets`](https://openrouter.ai/docs/api/api-reference/vault/list-workspace-secrets): List workspace secrets
-* [`PUT /vault/secrets/{name}`](https://openrouter.ai/docs/api/api-reference/vault/store-a-workspace-secret): Store a workspace secret
-* [`DELETE /vault/secrets/{name}`](https://openrouter.ai/docs/api/api-reference/vault/delete-a-workspace-secret): Delete a workspace secret
+* [`GET /vault/interns/{internId}/secrets`](api/api-reference/vault/list-intern-secrets.md): List intern secrets
+* [`POST /vault/interns/{internId}/secrets/copy`](api/api-reference/vault/copy-workspace-secrets-to-an-intern.md): Copy workspace secrets to an intern
+* [`PUT /vault/interns/{internId}/secrets/{name}`](api/api-reference/vault/store-an-intern-secret.md): Store an intern secret
+* [`DELETE /vault/interns/{internId}/secrets/{name}`](api/api-reference/vault/delete-an-intern-secret.md): Delete an intern secret
+* [`GET /vault/secrets`](api/api-reference/vault/list-workspace-secrets.md): List workspace secrets
+* [`PUT /vault/secrets/{name}`](api/api-reference/vault/store-a-workspace-secret.md): Store a workspace secret
+* [`DELETE /vault/secrets/{name}`](api/api-reference/vault/delete-a-workspace-secret.md): Delete a workspace secret
 
 ## Modified endpoints
 
-* [`GET /key`](https://openrouter.ai/docs/api/api-reference/api-keys/get-current-api-key): response schema updated
-* [`POST /embeddings`](https://openrouter.ai/docs/api/api-reference/embeddings/submit-an-embedding-request): request schema updated
-* [`POST /rerank`](https://openrouter.ai/docs/api/api-reference/rerank/submit-a-rerank-request): request schema updated
-* [`POST /audio/transcriptions`](https://openrouter.ai/docs/api/api-reference/stt/create-transcription): request schema updated
+* [`GET /key`](api/api-reference/api-keys/get-current-api-key.md): response schema updated
+* [`POST /embeddings`](api/api-reference/embeddings/submit-an-embedding-request.md): request schema updated
+* [`POST /rerank`](api/api-reference/rerank/submit-a-rerank-request.md): request schema updated
+* [`POST /audio/transcriptions`](api/api-reference/stt/create-transcription.md): request schema updated
 
 ## New response codes
 
-* [`POST /audio/transcriptions`](https://openrouter.ai/docs/api/api-reference/stt/create-transcription): now returns `504`
+* [`POST /audio/transcriptions`](api/api-reference/stt/create-transcription.md): now returns `504`
 
 ## New schemas
 
 * `FreeModelDailyRequests`
-  * Used by [`GET /key`](https://openrouter.ai/docs/api/api-reference/api-keys/get-current-api-key)
+  * Used by [`GET /key`](api/api-reference/api-keys/get-current-api-key.md)
 * `GatewayTimeoutResponse`
-  * Used by [`POST /audio/transcriptions`](https://openrouter.ai/docs/api/api-reference/stt/create-transcription)
+  * Used by [`POST /audio/transcriptions`](api/api-reference/stt/create-transcription.md)
 * `GatewayTimeoutResponseErrorData`
-  * Used by [`POST /audio/transcriptions`](https://openrouter.ai/docs/api/api-reference/stt/create-transcription)
+  * Used by [`POST /audio/transcriptions`](api/api-reference/stt/create-transcription.md)
 * `VaultSecret`
 
   **5 endpoints using this schema**
 
-  * [`GET /vault/interns/{internId}/secrets`](https://openrouter.ai/docs/api/api-reference/vault/list-intern-secrets)
-  * [`GET /vault/secrets`](https://openrouter.ai/docs/api/api-reference/vault/list-workspace-secrets)
-  * [`POST /vault/interns/{internId}/secrets/copy`](https://openrouter.ai/docs/api/api-reference/vault/copy-workspace-secrets-to-an-intern)
-  * [`PUT /vault/interns/{internId}/secrets/{name}`](https://openrouter.ai/docs/api/api-reference/vault/store-an-intern-secret)
-  * [`PUT /vault/secrets/{name}`](https://openrouter.ai/docs/api/api-reference/vault/store-a-workspace-secret)
+  * [`GET /vault/interns/{internId}/secrets`](api/api-reference/vault/list-intern-secrets.md)
+  * [`GET /vault/secrets`](api/api-reference/vault/list-workspace-secrets.md)
+  * [`POST /vault/interns/{internId}/secrets/copy`](api/api-reference/vault/copy-workspace-secrets-to-an-intern.md)
+  * [`PUT /vault/interns/{internId}/secrets/{name}`](api/api-reference/vault/store-an-intern-secret.md)
+  * [`PUT /vault/secrets/{name}`](api/api-reference/vault/store-a-workspace-secret.md)
 * `VaultSecretCopyRequest`
-  * Used by [`POST /vault/interns/{internId}/secrets/copy`](https://openrouter.ai/docs/api/api-reference/vault/copy-workspace-secrets-to-an-intern)
+  * Used by [`POST /vault/interns/{internId}/secrets/copy`](api/api-reference/vault/copy-workspace-secrets-to-an-intern.md)
 * `VaultSecretCopyResponse`
-  * Used by [`POST /vault/interns/{internId}/secrets/copy`](https://openrouter.ai/docs/api/api-reference/vault/copy-workspace-secrets-to-an-intern)
+  * Used by [`POST /vault/interns/{internId}/secrets/copy`](api/api-reference/vault/copy-workspace-secrets-to-an-intern.md)
 * `VaultSecretListResponse`
-  * Used by [`GET /vault/interns/{internId}/secrets`](https://openrouter.ai/docs/api/api-reference/vault/list-intern-secrets), [`GET /vault/secrets`](https://openrouter.ai/docs/api/api-reference/vault/list-workspace-secrets)
+  * Used by [`GET /vault/interns/{internId}/secrets`](api/api-reference/vault/list-intern-secrets.md), [`GET /vault/secrets`](api/api-reference/vault/list-workspace-secrets.md)
 * `VaultSecretResponse`
-  * Used by [`PUT /vault/interns/{internId}/secrets/{name}`](https://openrouter.ai/docs/api/api-reference/vault/store-an-intern-secret), [`PUT /vault/secrets/{name}`](https://openrouter.ai/docs/api/api-reference/vault/store-a-workspace-secret)
+  * Used by [`PUT /vault/interns/{internId}/secrets/{name}`](api/api-reference/vault/store-an-intern-secret.md), [`PUT /vault/secrets/{name}`](api/api-reference/vault/store-a-workspace-secret.md)
 * `VaultSecretWriteRequest`
-  * Used by [`PUT /vault/interns/{internId}/secrets/{name}`](https://openrouter.ai/docs/api/api-reference/vault/store-an-intern-secret), [`PUT /vault/secrets/{name}`](https://openrouter.ai/docs/api/api-reference/vault/store-a-workspace-secret)
+  * Used by [`PUT /vault/interns/{internId}/secrets/{name}`](api/api-reference/vault/store-an-intern-secret.md), [`PUT /vault/secrets/{name}`](api/api-reference/vault/store-a-workspace-secret.md)
 
 ## Modified schemas
 
 * `OutputBashServerToolItem`: new property `error`; \$ref modified
-  * Used by [`POST /presets/{slug}/responses`](https://openrouter.ai/docs/api/api-reference/presets/create-a-preset-from-a-responses-request-body), [`POST /responses`](https://openrouter.ai/docs/api/api-reference/responses/create-a-response)
+  * Used by [`POST /presets/{slug}/responses`](api/api-reference/presets/create-a-preset-from-a-responses-request-body.md), [`POST /responses`](api/api-reference/responses/create-a-response.md)
 * `OutputShellCallOutputItem`: description updated; new property `error`
-  * Used by [`POST /responses`](https://openrouter.ai/docs/api/api-reference/responses/create-a-response)
+  * Used by [`POST /responses`](api/api-reference/responses/create-a-response.md)
 * `OutputShellServerToolItem`: new property `error`; \$ref modified
-  * Used by [`POST /presets/{slug}/responses`](https://openrouter.ai/docs/api/api-reference/presets/create-a-preset-from-a-responses-request-body), [`POST /responses`](https://openrouter.ai/docs/api/api-reference/responses/create-a-response)
+  * Used by [`POST /presets/{slug}/responses`](api/api-reference/presets/create-a-preset-from-a-responses-request-body.md), [`POST /responses`](api/api-reference/responses/create-a-response.md)
 * `ShellCallOutputItem`: new property `error`
-  * Used by [`POST /presets/{slug}/responses`](https://openrouter.ai/docs/api/api-reference/presets/create-a-preset-from-a-responses-request-body), [`POST /responses`](https://openrouter.ai/docs/api/api-reference/responses/create-a-response)
+  * Used by [`POST /presets/{slug}/responses`](api/api-reference/presets/create-a-preset-from-a-responses-request-body.md), [`POST /responses`](api/api-reference/responses/create-a-response.md)
 * `ImageGenerationRequest`: new property `session_id`
-  * Used by [`POST /images`](https://openrouter.ai/docs/api/api-reference/images/generate-an-image)
+  * Used by [`POST /images`](api/api-reference/images/generate-an-image.md)
 * `STTRequest`: new property `session_id`
-  * Used by [`POST /audio/transcriptions`](https://openrouter.ai/docs/api/api-reference/stt/create-transcription)
+  * Used by [`POST /audio/transcriptions`](api/api-reference/stt/create-transcription.md)
 * `SpeechRequest`: new property `session_id`
-  * Used by [`POST /audio/speech`](https://openrouter.ai/docs/api/api-reference/tts/create-speech)
+  * Used by [`POST /audio/speech`](api/api-reference/tts/create-speech.md)
 * `VideoGenerationRequest`: new property `session_id`
-  * Used by [`POST /videos`](https://openrouter.ai/docs/api/api-reference/video-generation/submit-a-video-generation-request)
+  * Used by [`POST /videos`](api/api-reference/video-generation/submit-a-video-generation-request.md)
 
 **September 15, 2026**
 
 ## Modified endpoints
 
-* [`POST /guardrails`](https://openrouter.ai/docs/api/api-reference/guardrails/create-a-guardrail): description updated
-* [`POST /rerank`](https://openrouter.ai/docs/api/api-reference/rerank/submit-a-rerank-request): request schema updated
-* [`POST /embeddings`](https://openrouter.ai/docs/api/api-reference/embeddings/submit-an-embedding-request): request schema updated
+* [`POST /guardrails`](api/api-reference/guardrails/create-a-guardrail.md): description updated
+* [`POST /rerank`](api/api-reference/rerank/submit-a-rerank-request.md): request schema updated
+* [`POST /embeddings`](api/api-reference/embeddings/submit-an-embedding-request.md): request schema updated
 
 ## New response codes
 
-* [`PATCH /guardrails/{id}`](https://openrouter.ai/docs/api/api-reference/guardrails/update-a-guardrail): now returns `403`
-* [`POST /guardrails/{id}/assignments/keys`](https://openrouter.ai/docs/api/api-reference/guardrails/bulk-assign-keys-to-a-guardrail): now returns `403`
+* [`PATCH /guardrails/{id}`](api/api-reference/guardrails/update-a-guardrail.md): now returns `403`
+* [`POST /guardrails/{id}/assignments/keys`](api/api-reference/guardrails/bulk-assign-keys-to-a-guardrail.md): now returns `403`
 
 ## Modified schemas
 
 * `ImageGenerationRequest`: enum property\_added
-  * Used by [`POST /images`](https://openrouter.ai/docs/api/api-reference/images/generate-an-image)
+  * Used by [`POST /images`](api/api-reference/images/generate-an-image.md)
 * `ImageGenerationRequest`: maxLength property\_added
-  * Used by [`POST /images`](https://openrouter.ai/docs/api/api-reference/images/generate-an-image)
+  * Used by [`POST /images`](api/api-reference/images/generate-an-image.md)
 * `STTRequest`: new property `user`
-  * Used by [`POST /audio/transcriptions`](https://openrouter.ai/docs/api/api-reference/stt/create-transcription)
+  * Used by [`POST /audio/transcriptions`](api/api-reference/stt/create-transcription.md)
 * `SpeechRequest`: new property `user`
-  * Used by [`POST /audio/speech`](https://openrouter.ai/docs/api/api-reference/tts/create-speech)
+  * Used by [`POST /audio/speech`](api/api-reference/tts/create-speech.md)
 * `VideoGenerationRequest`: new property `user`
-  * Used by [`POST /videos`](https://openrouter.ai/docs/api/api-reference/video-generation/submit-a-video-generation-request)
+  * Used by [`POST /videos`](api/api-reference/video-generation/submit-a-video-generation-request.md)
 * `ImageGenerationRequest`: new property `trace`
-  * Used by [`POST /images`](https://openrouter.ai/docs/api/api-reference/images/generate-an-image)
+  * Used by [`POST /images`](api/api-reference/images/generate-an-image.md)
 * `STTRequest`: new property `trace`
-  * Used by [`POST /audio/transcriptions`](https://openrouter.ai/docs/api/api-reference/stt/create-transcription)
+  * Used by [`POST /audio/transcriptions`](api/api-reference/stt/create-transcription.md)
 * `SpeechRequest`: new property `trace`
-  * Used by [`POST /audio/speech`](https://openrouter.ai/docs/api/api-reference/tts/create-speech)
+  * Used by [`POST /audio/speech`](api/api-reference/tts/create-speech.md)
 * `VideoGenerationRequest`: new property `trace`
-  * Used by [`POST /videos`](https://openrouter.ai/docs/api/api-reference/video-generation/submit-a-video-generation-request)
+  * Used by [`POST /videos`](api/api-reference/video-generation/submit-a-video-generation-request.md)
 
 **September 14, 2026**
 
 ## Modified endpoints
 
-* [`GET /byok`](https://openrouter.ai/docs/api/api-reference/byok/list-byok-provider-credentials): parameter `provider` updated
+* [`GET /byok`](api/api-reference/byok/list-byok-provider-credentials.md): parameter `provider` updated
 
 ## New response codes
 
-* [`GET /videos/{jobId}/content`](https://openrouter.ai/docs/api/api-reference/video-generation/download-generated-video-content): now returns `409`
-* [`GET /videos/{jobId}/content`](https://openrouter.ai/docs/api/api-reference/video-generation/download-generated-video-content): now returns `410`
+* [`GET /videos/{jobId}/content`](api/api-reference/video-generation/download-generated-video-content.md): now returns `409`
+* [`GET /videos/{jobId}/content`](api/api-reference/video-generation/download-generated-video-content.md): now returns `410`
 
 ## Modified schemas
 
@@ -3582,97 +3582,97 @@ Entries on this page are generated automatically from [OpenAPI specification](ap
 
   **4 endpoints using this schema**
 
-  * [`GET /byok`](https://openrouter.ai/docs/api/api-reference/byok/list-byok-provider-credentials)
-  * [`GET /byok/{id}`](https://openrouter.ai/docs/api/api-reference/byok/get-a-byok-provider-credential)
-  * [`PATCH /byok/{id}`](https://openrouter.ai/docs/api/api-reference/byok/update-a-byok-provider-credential)
-  * [`POST /byok`](https://openrouter.ai/docs/api/api-reference/byok/create-a-byok-provider-credential)
+  * [`GET /byok`](api/api-reference/byok/list-byok-provider-credentials.md)
+  * [`GET /byok/{id}`](api/api-reference/byok/get-a-byok-provider-credential.md)
+  * [`PATCH /byok/{id}`](api/api-reference/byok/update-a-byok-provider-credential.md)
+  * [`POST /byok`](api/api-reference/byok/create-a-byok-provider-credential.md)
 * `MessagesStartEvent`: property `provider` updated
-  * Used by [`POST /messages`](https://openrouter.ai/docs/api/api-reference/anthropic-messages/create-a-message)
+  * Used by [`POST /messages`](api/api-reference/anthropic-messages/create-a-message.md)
 * `ProviderName`: enum property\_added
 
   **11 endpoints using this schema**
 
-  * [`GET /endpoints/zdr`](https://openrouter.ai/docs/api/api-reference/endpoints/preview-the-impact-of-zdr-on-the-available-endpoints)
-  * [`GET /models/{author}/{slug}/endpoints`](https://openrouter.ai/docs/api/api-reference/endpoints/list-all-endpoints-for-a-model)
-  * [`POST /chat/completions`](https://openrouter.ai/docs/api/api-reference/chat/create-a-chat-completion)
-  * [`POST /embeddings`](https://openrouter.ai/docs/api/api-reference/embeddings/submit-an-embedding-request)
-  * [`POST /images`](https://openrouter.ai/docs/api/api-reference/images/generate-an-image)
-  * [`POST /messages`](https://openrouter.ai/docs/api/api-reference/anthropic-messages/create-a-message)
-  * [`POST /presets/{slug}/chat/completions`](https://openrouter.ai/docs/api/api-reference/presets/create-a-preset-from-a-chat-completions-request-body)
-  * [`POST /presets/{slug}/messages`](https://openrouter.ai/docs/api/api-reference/presets/create-a-preset-from-a-messages-request-body)
-  * [`POST /presets/{slug}/responses`](https://openrouter.ai/docs/api/api-reference/presets/create-a-preset-from-a-responses-request-body)
-  * [`POST /rerank`](https://openrouter.ai/docs/api/api-reference/rerank/submit-a-rerank-request)
-  * [`POST /responses`](https://openrouter.ai/docs/api/api-reference/responses/create-a-response)
+  * [`GET /endpoints/zdr`](api/api-reference/endpoints/preview-the-impact-of-zdr-on-the-available-endpoints.md)
+  * [`GET /models/{author}/{slug}/endpoints`](api/api-reference/endpoints/list-all-endpoints-for-a-model.md)
+  * [`POST /chat/completions`](api/api-reference/chat/create-a-chat-completion.md)
+  * [`POST /embeddings`](api/api-reference/embeddings/submit-an-embedding-request.md)
+  * [`POST /images`](api/api-reference/images/generate-an-image.md)
+  * [`POST /messages`](api/api-reference/anthropic-messages/create-a-message.md)
+  * [`POST /presets/{slug}/chat/completions`](api/api-reference/presets/create-a-preset-from-a-chat-completions-request-body.md)
+  * [`POST /presets/{slug}/messages`](api/api-reference/presets/create-a-preset-from-a-messages-request-body.md)
+  * [`POST /presets/{slug}/responses`](api/api-reference/presets/create-a-preset-from-a-responses-request-body.md)
+  * [`POST /rerank`](api/api-reference/rerank/submit-a-rerank-request.md)
+  * [`POST /responses`](api/api-reference/responses/create-a-response.md)
 * `ProviderOptions`: new property `assemblyai`
 
   **4 endpoints using this schema**
 
-  * [`POST /audio/speech`](https://openrouter.ai/docs/api/api-reference/tts/create-speech)
-  * [`POST /audio/transcriptions`](https://openrouter.ai/docs/api/api-reference/stt/create-transcription)
-  * [`POST /images`](https://openrouter.ai/docs/api/api-reference/images/generate-an-image)
-  * [`POST /videos`](https://openrouter.ai/docs/api/api-reference/video-generation/submit-a-video-generation-request)
+  * [`POST /audio/speech`](api/api-reference/tts/create-speech.md)
+  * [`POST /audio/transcriptions`](api/api-reference/stt/create-transcription.md)
+  * [`POST /images`](api/api-reference/images/generate-an-image.md)
+  * [`POST /videos`](api/api-reference/video-generation/submit-a-video-generation-request.md)
 * `ProviderResponse`: enum property\_added
-  * Used by [`GET /generation`](https://openrouter.ai/docs/api/api-reference/generations/get-request-&-usage-metadata-for-a-generation)
+  * Used by [`GET /generation`](api/api-reference/generations/get-request-&-usage-metadata-for-a-generation.md)
 
 **September 11, 2026**
 
 ## Modified endpoints
 
-* [`POST /presets/{slug}/responses`](https://openrouter.ai/docs/api/api-reference/presets/create-a-preset-from-a-responses-request-body): request schema updated
-* [`GET /byok`](https://openrouter.ai/docs/api/api-reference/byok/list-byok-provider-credentials): parameter `provider` updated
+* [`POST /presets/{slug}/responses`](api/api-reference/presets/create-a-preset-from-a-responses-request-body.md): request schema updated
+* [`GET /byok`](api/api-reference/byok/list-byok-provider-credentials.md): parameter `provider` updated
 
 ## Modified schemas
 
 * `CustomTool`: new property `async`
-  * Used by [`POST /presets/{slug}/responses`](https://openrouter.ai/docs/api/api-reference/presets/create-a-preset-from-a-responses-request-body), [`POST /responses`](https://openrouter.ai/docs/api/api-reference/responses/create-a-response)
+  * Used by [`POST /presets/{slug}/responses`](api/api-reference/presets/create-a-preset-from-a-responses-request-body.md), [`POST /responses`](api/api-reference/responses/create-a-response.md)
 * `FusionPlugin`: example modified; description updated
 
   **6 endpoints using this schema**
 
-  * [`POST /chat/completions`](https://openrouter.ai/docs/api/api-reference/chat/create-a-chat-completion)
-  * [`POST /messages`](https://openrouter.ai/docs/api/api-reference/anthropic-messages/create-a-message)
-  * [`POST /presets/{slug}/chat/completions`](https://openrouter.ai/docs/api/api-reference/presets/create-a-preset-from-a-chat-completions-request-body)
-  * [`POST /presets/{slug}/messages`](https://openrouter.ai/docs/api/api-reference/presets/create-a-preset-from-a-messages-request-body)
-  * [`POST /presets/{slug}/responses`](https://openrouter.ai/docs/api/api-reference/presets/create-a-preset-from-a-responses-request-body)
-  * [`POST /responses`](https://openrouter.ai/docs/api/api-reference/responses/create-a-response)
+  * [`POST /chat/completions`](api/api-reference/chat/create-a-chat-completion.md)
+  * [`POST /messages`](api/api-reference/anthropic-messages/create-a-message.md)
+  * [`POST /presets/{slug}/chat/completions`](api/api-reference/presets/create-a-preset-from-a-chat-completions-request-body.md)
+  * [`POST /presets/{slug}/messages`](api/api-reference/presets/create-a-preset-from-a-messages-request-body.md)
+  * [`POST /presets/{slug}/responses`](api/api-reference/presets/create-a-preset-from-a-responses-request-body.md)
+  * [`POST /responses`](api/api-reference/responses/create-a-response.md)
 * `FusionServerToolConfig`: example modified
 
   **4 endpoints using this schema**
 
-  * [`POST /chat/completions`](https://openrouter.ai/docs/api/api-reference/chat/create-a-chat-completion)
-  * [`POST /presets/{slug}/chat/completions`](https://openrouter.ai/docs/api/api-reference/presets/create-a-preset-from-a-chat-completions-request-body)
-  * [`POST /presets/{slug}/responses`](https://openrouter.ai/docs/api/api-reference/presets/create-a-preset-from-a-responses-request-body)
-  * [`POST /responses`](https://openrouter.ai/docs/api/api-reference/responses/create-a-response)
+  * [`POST /chat/completions`](api/api-reference/chat/create-a-chat-completion.md)
+  * [`POST /presets/{slug}/chat/completions`](api/api-reference/presets/create-a-preset-from-a-chat-completions-request-body.md)
+  * [`POST /presets/{slug}/responses`](api/api-reference/presets/create-a-preset-from-a-responses-request-body.md)
+  * [`POST /responses`](api/api-reference/responses/create-a-response.md)
 * `FusionServerTool_OpenRouter`: example modified
 
   **4 endpoints using this schema**
 
-  * [`POST /chat/completions`](https://openrouter.ai/docs/api/api-reference/chat/create-a-chat-completion)
-  * [`POST /presets/{slug}/chat/completions`](https://openrouter.ai/docs/api/api-reference/presets/create-a-preset-from-a-chat-completions-request-body)
-  * [`POST /presets/{slug}/responses`](https://openrouter.ai/docs/api/api-reference/presets/create-a-preset-from-a-responses-request-body)
-  * [`POST /responses`](https://openrouter.ai/docs/api/api-reference/responses/create-a-response)
+  * [`POST /chat/completions`](api/api-reference/chat/create-a-chat-completion.md)
+  * [`POST /presets/{slug}/chat/completions`](api/api-reference/presets/create-a-preset-from-a-chat-completions-request-body.md)
+  * [`POST /presets/{slug}/responses`](api/api-reference/presets/create-a-preset-from-a-responses-request-body.md)
+  * [`POST /responses`](api/api-reference/responses/create-a-response.md)
 * `NamespaceFunctionTool`: new property `async`
-  * Used by [`POST /presets/{slug}/responses`](https://openrouter.ai/docs/api/api-reference/presets/create-a-preset-from-a-responses-request-body), [`POST /responses`](https://openrouter.ai/docs/api/api-reference/responses/create-a-response)
+  * Used by [`POST /presets/{slug}/responses`](api/api-reference/presets/create-a-preset-from-a-responses-request-body.md), [`POST /responses`](api/api-reference/responses/create-a-response.md)
 * `OpenAIResponseCustomToolCall`: new property `async`
-  * Used by [`POST /presets/{slug}/responses`](https://openrouter.ai/docs/api/api-reference/presets/create-a-preset-from-a-responses-request-body), [`POST /responses`](https://openrouter.ai/docs/api/api-reference/responses/create-a-response)
+  * Used by [`POST /presets/{slug}/responses`](api/api-reference/presets/create-a-preset-from-a-responses-request-body.md), [`POST /responses`](api/api-reference/responses/create-a-response.md)
 * `OpenAIResponseFunctionToolCall`: new property `async`
-  * Used by [`POST /presets/{slug}/responses`](https://openrouter.ai/docs/api/api-reference/presets/create-a-preset-from-a-responses-request-body), [`POST /responses`](https://openrouter.ai/docs/api/api-reference/responses/create-a-response)
+  * Used by [`POST /presets/{slug}/responses`](api/api-reference/presets/create-a-preset-from-a-responses-request-body.md), [`POST /responses`](api/api-reference/responses/create-a-response.md)
 * `OutputCustomToolCallItem`: new property `async`
-  * Used by [`POST /presets/{slug}/responses`](https://openrouter.ai/docs/api/api-reference/presets/create-a-preset-from-a-responses-request-body), [`POST /responses`](https://openrouter.ai/docs/api/api-reference/responses/create-a-response)
+  * Used by [`POST /presets/{slug}/responses`](api/api-reference/presets/create-a-preset-from-a-responses-request-body.md), [`POST /responses`](api/api-reference/responses/create-a-response.md)
 * `OutputItemCustomToolCall`: new property `async`
-  * Used by [`POST /responses`](https://openrouter.ai/docs/api/api-reference/responses/create-a-response)
+  * Used by [`POST /responses`](api/api-reference/responses/create-a-response.md)
 * `OutputItemFunctionCall`: new property `async`
-  * Used by [`POST /presets/{slug}/responses`](https://openrouter.ai/docs/api/api-reference/presets/create-a-preset-from-a-responses-request-body), [`POST /responses`](https://openrouter.ai/docs/api/api-reference/responses/create-a-response)
+  * Used by [`POST /presets/{slug}/responses`](api/api-reference/presets/create-a-preset-from-a-responses-request-body.md), [`POST /responses`](api/api-reference/responses/create-a-response.md)
 * `ResponsesErrorField`: enum property\_added
-  * Used by [`POST /responses`](https://openrouter.ai/docs/api/api-reference/responses/create-a-response)
+  * Used by [`POST /responses`](api/api-reference/responses/create-a-response.md)
 * `BYOKProviderSlug`: enum property\_added
 
   **4 endpoints using this schema**
 
-  * [`GET /byok`](https://openrouter.ai/docs/api/api-reference/byok/list-byok-provider-credentials)
-  * [`GET /byok/{id}`](https://openrouter.ai/docs/api/api-reference/byok/get-a-byok-provider-credential)
-  * [`PATCH /byok/{id}`](https://openrouter.ai/docs/api/api-reference/byok/update-a-byok-provider-credential)
-  * [`POST /byok`](https://openrouter.ai/docs/api/api-reference/byok/create-a-byok-provider-credential)
+  * [`GET /byok`](api/api-reference/byok/list-byok-provider-credentials.md)
+  * [`GET /byok/{id}`](api/api-reference/byok/get-a-byok-provider-credential.md)
+  * [`PATCH /byok/{id}`](api/api-reference/byok/update-a-byok-provider-credential.md)
+  * [`POST /byok`](api/api-reference/byok/create-a-byok-provider-credential.md)
 
 **September 10, 2026**
 
@@ -3685,10 +3685,10 @@ Entries on this page are generated automatically from [OpenAPI specification](ap
 
 ## New endpoints
 
-* [`GET /workspaces/{workspace_ref}/budgets`](https://openrouter.ai/docs/api/api-reference/workspaces/list-workspace-budgets): List workspace budgets
-* [`GET /workspaces/{workspace_ref}/budgets/{interval}`](https://openrouter.ai/docs/api/api-reference/workspaces/get-a-workspace-budget): Get a workspace budget
-* [`PUT /workspaces/{workspace_ref}/budgets/{interval}`](https://openrouter.ai/docs/api/api-reference/workspaces/create-or-update-a-workspace-budget): Create or update a workspace budget
-* [`DELETE /workspaces/{workspace_ref}/budgets/{interval}`](https://openrouter.ai/docs/api/api-reference/workspaces/delete-a-workspace-budget): Delete a workspace budget
+* [`GET /workspaces/{workspace_ref}/budgets`](api/api-reference/workspaces/list-workspace-budgets.md): List workspace budgets
+* [`GET /workspaces/{workspace_ref}/budgets/{interval}`](api/api-reference/workspaces/get-a-workspace-budget.md): Get a workspace budget
+* [`PUT /workspaces/{workspace_ref}/budgets/{interval}`](api/api-reference/workspaces/create-or-update-a-workspace-budget.md): Create or update a workspace budget
+* [`DELETE /workspaces/{workspace_ref}/budgets/{interval}`](api/api-reference/workspaces/delete-a-workspace-budget.md): Delete a workspace budget
 
 **September 9, 2026**
 
@@ -3698,25 +3698,25 @@ Entries on this page are generated automatically from [OpenAPI specification](ap
 
   **4 endpoints using this schema**
 
-  * [`GET /byok`](https://openrouter.ai/docs/api/api-reference/byok/list-byok-provider-credentials)
-  * [`GET /byok/{id}`](https://openrouter.ai/docs/api/api-reference/byok/get-a-byok-provider-credential)
-  * [`PATCH /byok/{id}`](https://openrouter.ai/docs/api/api-reference/byok/update-a-byok-provider-credential)
-  * [`POST /byok`](https://openrouter.ai/docs/api/api-reference/byok/create-a-byok-provider-credential)
+  * [`GET /byok`](api/api-reference/byok/list-byok-provider-credentials.md)
+  * [`GET /byok/{id}`](api/api-reference/byok/get-a-byok-provider-credential.md)
+  * [`PATCH /byok/{id}`](api/api-reference/byok/update-a-byok-provider-credential.md)
+  * [`POST /byok`](api/api-reference/byok/create-a-byok-provider-credential.md)
 * `BYOKKey`: required `is_required` property addedNo action needed
 
   **4 endpoints using this schema**
 
-  * [`GET /byok`](https://openrouter.ai/docs/api/api-reference/byok/list-byok-provider-credentials)
-  * [`GET /byok/{id}`](https://openrouter.ai/docs/api/api-reference/byok/get-a-byok-provider-credential)
-  * [`PATCH /byok/{id}`](https://openrouter.ai/docs/api/api-reference/byok/update-a-byok-provider-credential)
-  * [`POST /byok`](https://openrouter.ai/docs/api/api-reference/byok/create-a-byok-provider-credential)
+  * [`GET /byok`](api/api-reference/byok/list-byok-provider-credentials.md)
+  * [`GET /byok/{id}`](api/api-reference/byok/get-a-byok-provider-credential.md)
+  * [`PATCH /byok/{id}`](api/api-reference/byok/update-a-byok-provider-credential.md)
+  * [`POST /byok`](api/api-reference/byok/create-a-byok-provider-credential.md)
 
 ## Modified endpoints
 
-* [`GET /byok`](https://openrouter.ai/docs/api/api-reference/byok/list-byok-provider-credentials): parameter `provider` updated; response schema updated
-* [`POST /byok`](https://openrouter.ai/docs/api/api-reference/byok/create-a-byok-provider-credential): response schema updated
-* [`GET /byok/{id}`](https://openrouter.ai/docs/api/api-reference/byok/get-a-byok-provider-credential): response schema updated
-* [`PATCH /byok/{id}`](https://openrouter.ai/docs/api/api-reference/byok/update-a-byok-provider-credential): response schema updated
+* [`GET /byok`](api/api-reference/byok/list-byok-provider-credentials.md): parameter `provider` updated; response schema updated
+* [`POST /byok`](api/api-reference/byok/create-a-byok-provider-credential.md): response schema updated
+* [`GET /byok/{id}`](api/api-reference/byok/get-a-byok-provider-credential.md): response schema updated
+* [`PATCH /byok/{id}`](api/api-reference/byok/update-a-byok-provider-credential.md): response schema updated
 
 ## Modified schemas
 
@@ -3729,59 +3729,59 @@ Entries on this page are generated automatically from [OpenAPI specification](ap
 
   **4 endpoints using this schema**
 
-  * [`GET /byok`](https://openrouter.ai/docs/api/api-reference/byok/list-byok-provider-credentials)
-  * [`GET /byok/{id}`](https://openrouter.ai/docs/api/api-reference/byok/get-a-byok-provider-credential)
-  * [`PATCH /byok/{id}`](https://openrouter.ai/docs/api/api-reference/byok/update-a-byok-provider-credential)
-  * [`POST /byok`](https://openrouter.ai/docs/api/api-reference/byok/create-a-byok-provider-credential)
+  * [`GET /byok`](api/api-reference/byok/list-byok-provider-credentials.md)
+  * [`GET /byok/{id}`](api/api-reference/byok/get-a-byok-provider-credential.md)
+  * [`PATCH /byok/{id}`](api/api-reference/byok/update-a-byok-provider-credential.md)
+  * [`POST /byok`](api/api-reference/byok/create-a-byok-provider-credential.md)
 * `BYOKProviderSlug`: enum property\_added
 
   **4 endpoints using this schema**
 
-  * [`GET /byok`](https://openrouter.ai/docs/api/api-reference/byok/list-byok-provider-credentials)
-  * [`GET /byok/{id}`](https://openrouter.ai/docs/api/api-reference/byok/get-a-byok-provider-credential)
-  * [`PATCH /byok/{id}`](https://openrouter.ai/docs/api/api-reference/byok/update-a-byok-provider-credential)
-  * [`POST /byok`](https://openrouter.ai/docs/api/api-reference/byok/create-a-byok-provider-credential)
+  * [`GET /byok`](api/api-reference/byok/list-byok-provider-credentials.md)
+  * [`GET /byok/{id}`](api/api-reference/byok/get-a-byok-provider-credential.md)
+  * [`PATCH /byok/{id}`](api/api-reference/byok/update-a-byok-provider-credential.md)
+  * [`POST /byok`](api/api-reference/byok/create-a-byok-provider-credential.md)
 * `CreateBYOKKeyRequest`: new property `is_byok_only`; new property `is_required`; description updated
-  * Used by [`POST /byok`](https://openrouter.ai/docs/api/api-reference/byok/create-a-byok-provider-credential)
+  * Used by [`POST /byok`](api/api-reference/byok/create-a-byok-provider-credential.md)
 * `CreateBYOKKeyResponse`: example modified
-  * Used by [`POST /byok`](https://openrouter.ai/docs/api/api-reference/byok/create-a-byok-provider-credential)
+  * Used by [`POST /byok`](api/api-reference/byok/create-a-byok-provider-credential.md)
 * `GetBYOKKeyResponse`: example modified
-  * Used by [`GET /byok/{id}`](https://openrouter.ai/docs/api/api-reference/byok/get-a-byok-provider-credential)
+  * Used by [`GET /byok/{id}`](api/api-reference/byok/get-a-byok-provider-credential.md)
 * `ListBYOKKeysResponse`: example modified
-  * Used by [`GET /byok`](https://openrouter.ai/docs/api/api-reference/byok/list-byok-provider-credentials)
+  * Used by [`GET /byok`](api/api-reference/byok/list-byok-provider-credentials.md)
 * `MessagesStartEvent`: property `provider` updated
-  * Used by [`POST /messages`](https://openrouter.ai/docs/api/api-reference/anthropic-messages/create-a-message)
+  * Used by [`POST /messages`](api/api-reference/anthropic-messages/create-a-message.md)
 * `ProviderName`: enum property\_added
 
   **11 endpoints using this schema**
 
-  * [`GET /endpoints/zdr`](https://openrouter.ai/docs/api/api-reference/endpoints/preview-the-impact-of-zdr-on-the-available-endpoints)
-  * [`GET /models/{author}/{slug}/endpoints`](https://openrouter.ai/docs/api/api-reference/endpoints/list-all-endpoints-for-a-model)
-  * [`POST /chat/completions`](https://openrouter.ai/docs/api/api-reference/chat/create-a-chat-completion)
-  * [`POST /embeddings`](https://openrouter.ai/docs/api/api-reference/embeddings/submit-an-embedding-request)
-  * [`POST /images`](https://openrouter.ai/docs/api/api-reference/images/generate-an-image)
-  * [`POST /messages`](https://openrouter.ai/docs/api/api-reference/anthropic-messages/create-a-message)
-  * [`POST /presets/{slug}/chat/completions`](https://openrouter.ai/docs/api/api-reference/presets/create-a-preset-from-a-chat-completions-request-body)
-  * [`POST /presets/{slug}/messages`](https://openrouter.ai/docs/api/api-reference/presets/create-a-preset-from-a-messages-request-body)
-  * [`POST /presets/{slug}/responses`](https://openrouter.ai/docs/api/api-reference/presets/create-a-preset-from-a-responses-request-body)
-  * [`POST /rerank`](https://openrouter.ai/docs/api/api-reference/rerank/submit-a-rerank-request)
-  * [`POST /responses`](https://openrouter.ai/docs/api/api-reference/responses/create-a-response)
+  * [`GET /endpoints/zdr`](api/api-reference/endpoints/preview-the-impact-of-zdr-on-the-available-endpoints.md)
+  * [`GET /models/{author}/{slug}/endpoints`](api/api-reference/endpoints/list-all-endpoints-for-a-model.md)
+  * [`POST /chat/completions`](api/api-reference/chat/create-a-chat-completion.md)
+  * [`POST /embeddings`](api/api-reference/embeddings/submit-an-embedding-request.md)
+  * [`POST /images`](api/api-reference/images/generate-an-image.md)
+  * [`POST /messages`](api/api-reference/anthropic-messages/create-a-message.md)
+  * [`POST /presets/{slug}/chat/completions`](api/api-reference/presets/create-a-preset-from-a-chat-completions-request-body.md)
+  * [`POST /presets/{slug}/messages`](api/api-reference/presets/create-a-preset-from-a-messages-request-body.md)
+  * [`POST /presets/{slug}/responses`](api/api-reference/presets/create-a-preset-from-a-responses-request-body.md)
+  * [`POST /rerank`](api/api-reference/rerank/submit-a-rerank-request.md)
+  * [`POST /responses`](api/api-reference/responses/create-a-response.md)
 * `ProviderOptions`: new property `near-ai`
 
   **4 endpoints using this schema**
 
-  * [`POST /audio/speech`](https://openrouter.ai/docs/api/api-reference/tts/create-speech)
-  * [`POST /audio/transcriptions`](https://openrouter.ai/docs/api/api-reference/stt/create-transcription)
-  * [`POST /images`](https://openrouter.ai/docs/api/api-reference/images/generate-an-image)
-  * [`POST /videos`](https://openrouter.ai/docs/api/api-reference/video-generation/submit-a-video-generation-request)
+  * [`POST /audio/speech`](api/api-reference/tts/create-speech.md)
+  * [`POST /audio/transcriptions`](api/api-reference/stt/create-transcription.md)
+  * [`POST /images`](api/api-reference/images/generate-an-image.md)
+  * [`POST /videos`](api/api-reference/video-generation/submit-a-video-generation-request.md)
 * `ProviderResponse`: enum property\_added
-  * Used by [`GET /generation`](https://openrouter.ai/docs/api/api-reference/generations/get-request-&-usage-metadata-for-a-generation)
+  * Used by [`GET /generation`](api/api-reference/generations/get-request-&-usage-metadata-for-a-generation.md)
 * `UpdateBYOKKeyRequest`: new property `is_byok_only`; new property `is_required`; description updated
-  * Used by [`PATCH /byok/{id}`](https://openrouter.ai/docs/api/api-reference/byok/update-a-byok-provider-credential)
+  * Used by [`PATCH /byok/{id}`](api/api-reference/byok/update-a-byok-provider-credential.md)
 * `UpdateBYOKKeyResponse`: example modified
-  * Used by [`PATCH /byok/{id}`](https://openrouter.ai/docs/api/api-reference/byok/update-a-byok-provider-credential)
+  * Used by [`PATCH /byok/{id}`](api/api-reference/byok/update-a-byok-provider-credential.md)
 * `AnthropicThinkingBlockBinding`: new property `mismatch_behavior`
-  * Used by [`POST /messages`](https://openrouter.ai/docs/api/api-reference/anthropic-messages/create-a-message), [`POST /presets/{slug}/messages`](https://openrouter.ai/docs/api/api-reference/presets/create-a-preset-from-a-messages-request-body)
+  * Used by [`POST /messages`](api/api-reference/anthropic-messages/create-a-message.md), [`POST /presets/{slug}/messages`](api/api-reference/presets/create-a-preset-from-a-messages-request-body.md)
 
 **September 8, 2026**
 
@@ -3795,50 +3795,50 @@ Entries on this page are generated automatically from [OpenAPI specification](ap
 
   **6 endpoints using this schema**
 
-  * [`POST /chat/completions`](https://openrouter.ai/docs/api/api-reference/chat/create-a-chat-completion)
-  * [`POST /messages`](https://openrouter.ai/docs/api/api-reference/anthropic-messages/create-a-message)
-  * [`POST /presets/{slug}/chat/completions`](https://openrouter.ai/docs/api/api-reference/presets/create-a-preset-from-a-chat-completions-request-body)
-  * [`POST /presets/{slug}/messages`](https://openrouter.ai/docs/api/api-reference/presets/create-a-preset-from-a-messages-request-body)
-  * [`POST /presets/{slug}/responses`](https://openrouter.ai/docs/api/api-reference/presets/create-a-preset-from-a-responses-request-body)
-  * [`POST /responses`](https://openrouter.ai/docs/api/api-reference/responses/create-a-response)
+  * [`POST /chat/completions`](api/api-reference/chat/create-a-chat-completion.md)
+  * [`POST /messages`](api/api-reference/anthropic-messages/create-a-message.md)
+  * [`POST /presets/{slug}/chat/completions`](api/api-reference/presets/create-a-preset-from-a-chat-completions-request-body.md)
+  * [`POST /presets/{slug}/messages`](api/api-reference/presets/create-a-preset-from-a-messages-request-body.md)
+  * [`POST /presets/{slug}/responses`](api/api-reference/presets/create-a-preset-from-a-responses-request-body.md)
+  * [`POST /responses`](api/api-reference/responses/create-a-response.md)
 * `ShellServerToolConfig`: properties `sleep_after_seconds` object removedAction required
 
   * Remove `sleep_after_seconds` from bash and shell tool configuration. There is no replacement; container lifecycle now uses the service-managed behavior.
 
   **4 endpoints using this schema**
 
-  * [`POST /messages`](https://openrouter.ai/docs/api/api-reference/anthropic-messages/create-a-message)
-  * [`POST /presets/{slug}/messages`](https://openrouter.ai/docs/api/api-reference/presets/create-a-preset-from-a-messages-request-body)
-  * [`POST /presets/{slug}/responses`](https://openrouter.ai/docs/api/api-reference/presets/create-a-preset-from-a-responses-request-body)
-  * [`POST /responses`](https://openrouter.ai/docs/api/api-reference/responses/create-a-response)
+  * [`POST /messages`](api/api-reference/anthropic-messages/create-a-message.md)
+  * [`POST /presets/{slug}/messages`](api/api-reference/presets/create-a-preset-from-a-messages-request-body.md)
+  * [`POST /presets/{slug}/responses`](api/api-reference/presets/create-a-preset-from-a-responses-request-body.md)
+  * [`POST /responses`](api/api-reference/responses/create-a-response.md)
 * `BYOKProviderSlug`: enum `ncompass` property removedAction required
 
   * Remove `ncompass` from BYOK and provider configuration. The provider has been retired and has no replacement slug.
 
   **4 endpoints using this schema**
 
-  * [`GET /byok`](https://openrouter.ai/docs/api/api-reference/byok/list-byok-provider-credentials)
-  * [`GET /byok/{id}`](https://openrouter.ai/docs/api/api-reference/byok/get-a-byok-provider-credential)
-  * [`PATCH /byok/{id}`](https://openrouter.ai/docs/api/api-reference/byok/update-a-byok-provider-credential)
-  * [`POST /byok`](https://openrouter.ai/docs/api/api-reference/byok/create-a-byok-provider-credential)
+  * [`GET /byok`](api/api-reference/byok/list-byok-provider-credentials.md)
+  * [`GET /byok/{id}`](api/api-reference/byok/get-a-byok-provider-credential.md)
+  * [`PATCH /byok/{id}`](api/api-reference/byok/update-a-byok-provider-credential.md)
+  * [`POST /byok`](api/api-reference/byok/create-a-byok-provider-credential.md)
 * `ProviderName`: enum `NCompass` property removedAction required
 
   * Remove `ncompass` from BYOK and provider configuration. The provider has been retired and has no replacement slug.
 
   **11 endpoints using this schema**
 
-  * [`GET /endpoints/zdr`](https://openrouter.ai/docs/api/api-reference/endpoints/preview-the-impact-of-zdr-on-the-available-endpoints)
-  * [`GET /models/{author}/{slug}/endpoints`](https://openrouter.ai/docs/api/api-reference/endpoints/list-all-endpoints-for-a-model)
-  * [`POST /chat/completions`](https://openrouter.ai/docs/api/api-reference/chat/create-a-chat-completion)
-  * [`POST /embeddings`](https://openrouter.ai/docs/api/api-reference/embeddings/submit-an-embedding-request)
-  * [`POST /images`](https://openrouter.ai/docs/api/api-reference/images/generate-an-image)
-  * [`POST /messages`](https://openrouter.ai/docs/api/api-reference/anthropic-messages/create-a-message)
-  * [`POST /presets/{slug}/chat/completions`](https://openrouter.ai/docs/api/api-reference/presets/create-a-preset-from-a-chat-completions-request-body)
-  * [`POST /presets/{slug}/messages`](https://openrouter.ai/docs/api/api-reference/presets/create-a-preset-from-a-messages-request-body)
-  * [`POST /presets/{slug}/responses`](https://openrouter.ai/docs/api/api-reference/presets/create-a-preset-from-a-responses-request-body)
-  * [`POST /rerank`](https://openrouter.ai/docs/api/api-reference/rerank/submit-a-rerank-request)
-  * [`POST /responses`](https://openrouter.ai/docs/api/api-reference/responses/create-a-response)
-* [`GET /byok`](https://openrouter.ai/docs/api/api-reference/byok/list-byok-provider-credentials): enum `ncompass` property removedAction required
+  * [`GET /endpoints/zdr`](api/api-reference/endpoints/preview-the-impact-of-zdr-on-the-available-endpoints.md)
+  * [`GET /models/{author}/{slug}/endpoints`](api/api-reference/endpoints/list-all-endpoints-for-a-model.md)
+  * [`POST /chat/completions`](api/api-reference/chat/create-a-chat-completion.md)
+  * [`POST /embeddings`](api/api-reference/embeddings/submit-an-embedding-request.md)
+  * [`POST /images`](api/api-reference/images/generate-an-image.md)
+  * [`POST /messages`](api/api-reference/anthropic-messages/create-a-message.md)
+  * [`POST /presets/{slug}/chat/completions`](api/api-reference/presets/create-a-preset-from-a-chat-completions-request-body.md)
+  * [`POST /presets/{slug}/messages`](api/api-reference/presets/create-a-preset-from-a-messages-request-body.md)
+  * [`POST /presets/{slug}/responses`](api/api-reference/presets/create-a-preset-from-a-responses-request-body.md)
+  * [`POST /rerank`](api/api-reference/rerank/submit-a-rerank-request.md)
+  * [`POST /responses`](api/api-reference/responses/create-a-response.md)
+* [`GET /byok`](api/api-reference/byok/list-byok-provider-credentials.md): enum `ncompass` property removedAction required
   * Remove `ncompass` from BYOK and provider configuration. The provider has been retired and has no replacement slug.
 * `BYOKProviderSlug`: enum `prime-intellect` property removedAction required
 
@@ -3846,56 +3846,56 @@ Entries on this page are generated automatically from [OpenAPI specification](ap
 
   **4 endpoints using this schema**
 
-  * [`GET /byok`](https://openrouter.ai/docs/api/api-reference/byok/list-byok-provider-credentials)
-  * [`GET /byok/{id}`](https://openrouter.ai/docs/api/api-reference/byok/get-a-byok-provider-credential)
-  * [`PATCH /byok/{id}`](https://openrouter.ai/docs/api/api-reference/byok/update-a-byok-provider-credential)
-  * [`POST /byok`](https://openrouter.ai/docs/api/api-reference/byok/create-a-byok-provider-credential)
+  * [`GET /byok`](api/api-reference/byok/list-byok-provider-credentials.md)
+  * [`GET /byok/{id}`](api/api-reference/byok/get-a-byok-provider-credential.md)
+  * [`PATCH /byok/{id}`](api/api-reference/byok/update-a-byok-provider-credential.md)
+  * [`POST /byok`](api/api-reference/byok/create-a-byok-provider-credential.md)
 * `ProviderOptions`: properties `prime-intellect` object removedAction required
 
   * Replace the provider slug and configuration key `prime-intellect` with `primeintellect`.
 
   **4 endpoints using this schema**
 
-  * [`POST /audio/speech`](https://openrouter.ai/docs/api/api-reference/tts/create-speech)
-  * [`POST /audio/transcriptions`](https://openrouter.ai/docs/api/api-reference/stt/create-transcription)
-  * [`POST /images`](https://openrouter.ai/docs/api/api-reference/images/generate-an-image)
-  * [`POST /videos`](https://openrouter.ai/docs/api/api-reference/video-generation/submit-a-video-generation-request)
-* [`GET /byok`](https://openrouter.ai/docs/api/api-reference/byok/list-byok-provider-credentials): enum `prime-intellect` property removedAction required
+  * [`POST /audio/speech`](api/api-reference/tts/create-speech.md)
+  * [`POST /audio/transcriptions`](api/api-reference/stt/create-transcription.md)
+  * [`POST /images`](api/api-reference/images/generate-an-image.md)
+  * [`POST /videos`](api/api-reference/video-generation/submit-a-video-generation-request.md)
+* [`GET /byok`](api/api-reference/byok/list-byok-provider-credentials.md): enum `prime-intellect` property removedAction required
   * Replace the provider slug and configuration key `prime-intellect` with `primeintellect`.
 
 ## Modified endpoints
 
-* [`GET /byok`](https://openrouter.ai/docs/api/api-reference/byok/list-byok-provider-credentials): parameter `provider` updated
+* [`GET /byok`](api/api-reference/byok/list-byok-provider-credentials.md): parameter `provider` updated
 
 ## Modified schemas
 
 * `ChatDeveloperMessage`: new property `configuration_update`
-  * Used by [`POST /chat/completions`](https://openrouter.ai/docs/api/api-reference/chat/create-a-chat-completion), [`POST /presets/{slug}/chat/completions`](https://openrouter.ai/docs/api/api-reference/presets/create-a-preset-from-a-chat-completions-request-body)
+  * Used by [`POST /chat/completions`](api/api-reference/chat/create-a-chat-completion.md), [`POST /presets/{slug}/chat/completions`](api/api-reference/presets/create-a-preset-from-a-chat-completions-request-body.md)
 * `BYOKProviderSlug`: enum property\_added
 
   **4 endpoints using this schema**
 
-  * [`GET /byok`](https://openrouter.ai/docs/api/api-reference/byok/list-byok-provider-credentials)
-  * [`GET /byok/{id}`](https://openrouter.ai/docs/api/api-reference/byok/get-a-byok-provider-credential)
-  * [`PATCH /byok/{id}`](https://openrouter.ai/docs/api/api-reference/byok/update-a-byok-provider-credential)
-  * [`POST /byok`](https://openrouter.ai/docs/api/api-reference/byok/create-a-byok-provider-credential)
+  * [`GET /byok`](api/api-reference/byok/list-byok-provider-credentials.md)
+  * [`GET /byok/{id}`](api/api-reference/byok/get-a-byok-provider-credential.md)
+  * [`PATCH /byok/{id}`](api/api-reference/byok/update-a-byok-provider-credential.md)
+  * [`POST /byok`](api/api-reference/byok/create-a-byok-provider-credential.md)
 * `ProviderOptions`: new property `primeintellect`
 
   **4 endpoints using this schema**
 
-  * [`POST /audio/speech`](https://openrouter.ai/docs/api/api-reference/tts/create-speech)
-  * [`POST /audio/transcriptions`](https://openrouter.ai/docs/api/api-reference/stt/create-transcription)
-  * [`POST /images`](https://openrouter.ai/docs/api/api-reference/images/generate-an-image)
-  * [`POST /videos`](https://openrouter.ai/docs/api/api-reference/video-generation/submit-a-video-generation-request)
+  * [`POST /audio/speech`](api/api-reference/tts/create-speech.md)
+  * [`POST /audio/transcriptions`](api/api-reference/stt/create-transcription.md)
+  * [`POST /images`](api/api-reference/images/generate-an-image.md)
+  * [`POST /videos`](api/api-reference/video-generation/submit-a-video-generation-request.md)
 * `ImageGenerationRequest`: enum property\_added
-  * Used by [`POST /images`](https://openrouter.ai/docs/api/api-reference/images/generate-an-image)
+  * Used by [`POST /images`](api/api-reference/images/generate-an-image.md)
 
 **September 7, 2026**
 
 ## Modified schemas
 
 * `STTInputAudio`: pattern property\_added
-  * Used by [`POST /audio/transcriptions`](https://openrouter.ai/docs/api/api-reference/stt/create-transcription)
+  * Used by [`POST /audio/transcriptions`](api/api-reference/stt/create-transcription.md)
 
 **September 5, 2026**
 
@@ -3905,146 +3905,146 @@ Entries on this page are generated automatically from [OpenAPI specification](ap
 
   **4 endpoints using this schema**
 
-  * [`GET /observability/destinations`](https://openrouter.ai/docs/api/api-reference/observability/list-observability-destinations)
-  * [`GET /observability/destinations/{id}`](https://openrouter.ai/docs/api/api-reference/observability/get-an-observability-destination)
-  * [`PATCH /observability/destinations/{id}`](https://openrouter.ai/docs/api/api-reference/observability/update-an-observability-destination)
-  * [`POST /observability/destinations`](https://openrouter.ai/docs/api/api-reference/observability/create-an-observability-destination)
+  * [`GET /observability/destinations`](api/api-reference/observability/list-observability-destinations.md)
+  * [`GET /observability/destinations/{id}`](api/api-reference/observability/get-an-observability-destination.md)
+  * [`PATCH /observability/destinations/{id}`](api/api-reference/observability/update-an-observability-destination.md)
+  * [`POST /observability/destinations`](api/api-reference/observability/create-an-observability-destination.md)
 * `ObservabilityBraintrustDestination`: required `regions` property addedNo action needed
 
   **4 endpoints using this schema**
 
-  * [`GET /observability/destinations`](https://openrouter.ai/docs/api/api-reference/observability/list-observability-destinations)
-  * [`GET /observability/destinations/{id}`](https://openrouter.ai/docs/api/api-reference/observability/get-an-observability-destination)
-  * [`PATCH /observability/destinations/{id}`](https://openrouter.ai/docs/api/api-reference/observability/update-an-observability-destination)
-  * [`POST /observability/destinations`](https://openrouter.ai/docs/api/api-reference/observability/create-an-observability-destination)
+  * [`GET /observability/destinations`](api/api-reference/observability/list-observability-destinations.md)
+  * [`GET /observability/destinations/{id}`](api/api-reference/observability/get-an-observability-destination.md)
+  * [`PATCH /observability/destinations/{id}`](api/api-reference/observability/update-an-observability-destination.md)
+  * [`POST /observability/destinations`](api/api-reference/observability/create-an-observability-destination.md)
 * `ObservabilityClickhouseDestination`: required `regions` property addedNo action needed
 
   **4 endpoints using this schema**
 
-  * [`GET /observability/destinations`](https://openrouter.ai/docs/api/api-reference/observability/list-observability-destinations)
-  * [`GET /observability/destinations/{id}`](https://openrouter.ai/docs/api/api-reference/observability/get-an-observability-destination)
-  * [`PATCH /observability/destinations/{id}`](https://openrouter.ai/docs/api/api-reference/observability/update-an-observability-destination)
-  * [`POST /observability/destinations`](https://openrouter.ai/docs/api/api-reference/observability/create-an-observability-destination)
+  * [`GET /observability/destinations`](api/api-reference/observability/list-observability-destinations.md)
+  * [`GET /observability/destinations/{id}`](api/api-reference/observability/get-an-observability-destination.md)
+  * [`PATCH /observability/destinations/{id}`](api/api-reference/observability/update-an-observability-destination.md)
+  * [`POST /observability/destinations`](api/api-reference/observability/create-an-observability-destination.md)
 * `ObservabilityDatadogDestination`: required `regions` property addedNo action needed
 
   **4 endpoints using this schema**
 
-  * [`GET /observability/destinations`](https://openrouter.ai/docs/api/api-reference/observability/list-observability-destinations)
-  * [`GET /observability/destinations/{id}`](https://openrouter.ai/docs/api/api-reference/observability/get-an-observability-destination)
-  * [`PATCH /observability/destinations/{id}`](https://openrouter.ai/docs/api/api-reference/observability/update-an-observability-destination)
-  * [`POST /observability/destinations`](https://openrouter.ai/docs/api/api-reference/observability/create-an-observability-destination)
+  * [`GET /observability/destinations`](api/api-reference/observability/list-observability-destinations.md)
+  * [`GET /observability/destinations/{id}`](api/api-reference/observability/get-an-observability-destination.md)
+  * [`PATCH /observability/destinations/{id}`](api/api-reference/observability/update-an-observability-destination.md)
+  * [`POST /observability/destinations`](api/api-reference/observability/create-an-observability-destination.md)
 * `ObservabilityGrafanaDestination`: required `regions` property addedNo action needed
 
   **4 endpoints using this schema**
 
-  * [`GET /observability/destinations`](https://openrouter.ai/docs/api/api-reference/observability/list-observability-destinations)
-  * [`GET /observability/destinations/{id}`](https://openrouter.ai/docs/api/api-reference/observability/get-an-observability-destination)
-  * [`PATCH /observability/destinations/{id}`](https://openrouter.ai/docs/api/api-reference/observability/update-an-observability-destination)
-  * [`POST /observability/destinations`](https://openrouter.ai/docs/api/api-reference/observability/create-an-observability-destination)
+  * [`GET /observability/destinations`](api/api-reference/observability/list-observability-destinations.md)
+  * [`GET /observability/destinations/{id}`](api/api-reference/observability/get-an-observability-destination.md)
+  * [`PATCH /observability/destinations/{id}`](api/api-reference/observability/update-an-observability-destination.md)
+  * [`POST /observability/destinations`](api/api-reference/observability/create-an-observability-destination.md)
 * `ObservabilityLangfuseDestination`: required `regions` property addedNo action needed
 
   **4 endpoints using this schema**
 
-  * [`GET /observability/destinations`](https://openrouter.ai/docs/api/api-reference/observability/list-observability-destinations)
-  * [`GET /observability/destinations/{id}`](https://openrouter.ai/docs/api/api-reference/observability/get-an-observability-destination)
-  * [`PATCH /observability/destinations/{id}`](https://openrouter.ai/docs/api/api-reference/observability/update-an-observability-destination)
-  * [`POST /observability/destinations`](https://openrouter.ai/docs/api/api-reference/observability/create-an-observability-destination)
+  * [`GET /observability/destinations`](api/api-reference/observability/list-observability-destinations.md)
+  * [`GET /observability/destinations/{id}`](api/api-reference/observability/get-an-observability-destination.md)
+  * [`PATCH /observability/destinations/{id}`](api/api-reference/observability/update-an-observability-destination.md)
+  * [`POST /observability/destinations`](api/api-reference/observability/create-an-observability-destination.md)
 * `ObservabilityLangsmithDestination`: required `regions` property addedNo action needed
 
   **4 endpoints using this schema**
 
-  * [`GET /observability/destinations`](https://openrouter.ai/docs/api/api-reference/observability/list-observability-destinations)
-  * [`GET /observability/destinations/{id}`](https://openrouter.ai/docs/api/api-reference/observability/get-an-observability-destination)
-  * [`PATCH /observability/destinations/{id}`](https://openrouter.ai/docs/api/api-reference/observability/update-an-observability-destination)
-  * [`POST /observability/destinations`](https://openrouter.ai/docs/api/api-reference/observability/create-an-observability-destination)
+  * [`GET /observability/destinations`](api/api-reference/observability/list-observability-destinations.md)
+  * [`GET /observability/destinations/{id}`](api/api-reference/observability/get-an-observability-destination.md)
+  * [`PATCH /observability/destinations/{id}`](api/api-reference/observability/update-an-observability-destination.md)
+  * [`POST /observability/destinations`](api/api-reference/observability/create-an-observability-destination.md)
 * `ObservabilityNewrelicDestination`: required `regions` property addedNo action needed
 
   **4 endpoints using this schema**
 
-  * [`GET /observability/destinations`](https://openrouter.ai/docs/api/api-reference/observability/list-observability-destinations)
-  * [`GET /observability/destinations/{id}`](https://openrouter.ai/docs/api/api-reference/observability/get-an-observability-destination)
-  * [`PATCH /observability/destinations/{id}`](https://openrouter.ai/docs/api/api-reference/observability/update-an-observability-destination)
-  * [`POST /observability/destinations`](https://openrouter.ai/docs/api/api-reference/observability/create-an-observability-destination)
+  * [`GET /observability/destinations`](api/api-reference/observability/list-observability-destinations.md)
+  * [`GET /observability/destinations/{id}`](api/api-reference/observability/get-an-observability-destination.md)
+  * [`PATCH /observability/destinations/{id}`](api/api-reference/observability/update-an-observability-destination.md)
+  * [`POST /observability/destinations`](api/api-reference/observability/create-an-observability-destination.md)
 * `ObservabilityOpikDestination`: required `regions` property addedNo action needed
 
   **4 endpoints using this schema**
 
-  * [`GET /observability/destinations`](https://openrouter.ai/docs/api/api-reference/observability/list-observability-destinations)
-  * [`GET /observability/destinations/{id}`](https://openrouter.ai/docs/api/api-reference/observability/get-an-observability-destination)
-  * [`PATCH /observability/destinations/{id}`](https://openrouter.ai/docs/api/api-reference/observability/update-an-observability-destination)
-  * [`POST /observability/destinations`](https://openrouter.ai/docs/api/api-reference/observability/create-an-observability-destination)
+  * [`GET /observability/destinations`](api/api-reference/observability/list-observability-destinations.md)
+  * [`GET /observability/destinations/{id}`](api/api-reference/observability/get-an-observability-destination.md)
+  * [`PATCH /observability/destinations/{id}`](api/api-reference/observability/update-an-observability-destination.md)
+  * [`POST /observability/destinations`](api/api-reference/observability/create-an-observability-destination.md)
 * `ObservabilityOtelCollectorDestination`: required `regions` property addedNo action needed
 
   **4 endpoints using this schema**
 
-  * [`GET /observability/destinations`](https://openrouter.ai/docs/api/api-reference/observability/list-observability-destinations)
-  * [`GET /observability/destinations/{id}`](https://openrouter.ai/docs/api/api-reference/observability/get-an-observability-destination)
-  * [`PATCH /observability/destinations/{id}`](https://openrouter.ai/docs/api/api-reference/observability/update-an-observability-destination)
-  * [`POST /observability/destinations`](https://openrouter.ai/docs/api/api-reference/observability/create-an-observability-destination)
+  * [`GET /observability/destinations`](api/api-reference/observability/list-observability-destinations.md)
+  * [`GET /observability/destinations/{id}`](api/api-reference/observability/get-an-observability-destination.md)
+  * [`PATCH /observability/destinations/{id}`](api/api-reference/observability/update-an-observability-destination.md)
+  * [`POST /observability/destinations`](api/api-reference/observability/create-an-observability-destination.md)
 * `ObservabilityPosthogDestination`: required `regions` property addedNo action needed
 
   **4 endpoints using this schema**
 
-  * [`GET /observability/destinations`](https://openrouter.ai/docs/api/api-reference/observability/list-observability-destinations)
-  * [`GET /observability/destinations/{id}`](https://openrouter.ai/docs/api/api-reference/observability/get-an-observability-destination)
-  * [`PATCH /observability/destinations/{id}`](https://openrouter.ai/docs/api/api-reference/observability/update-an-observability-destination)
-  * [`POST /observability/destinations`](https://openrouter.ai/docs/api/api-reference/observability/create-an-observability-destination)
+  * [`GET /observability/destinations`](api/api-reference/observability/list-observability-destinations.md)
+  * [`GET /observability/destinations/{id}`](api/api-reference/observability/get-an-observability-destination.md)
+  * [`PATCH /observability/destinations/{id}`](api/api-reference/observability/update-an-observability-destination.md)
+  * [`POST /observability/destinations`](api/api-reference/observability/create-an-observability-destination.md)
 * `ObservabilityRampDestination`: required `regions` property addedNo action needed
 
   **4 endpoints using this schema**
 
-  * [`GET /observability/destinations`](https://openrouter.ai/docs/api/api-reference/observability/list-observability-destinations)
-  * [`GET /observability/destinations/{id}`](https://openrouter.ai/docs/api/api-reference/observability/get-an-observability-destination)
-  * [`PATCH /observability/destinations/{id}`](https://openrouter.ai/docs/api/api-reference/observability/update-an-observability-destination)
-  * [`POST /observability/destinations`](https://openrouter.ai/docs/api/api-reference/observability/create-an-observability-destination)
+  * [`GET /observability/destinations`](api/api-reference/observability/list-observability-destinations.md)
+  * [`GET /observability/destinations/{id}`](api/api-reference/observability/get-an-observability-destination.md)
+  * [`PATCH /observability/destinations/{id}`](api/api-reference/observability/update-an-observability-destination.md)
+  * [`POST /observability/destinations`](api/api-reference/observability/create-an-observability-destination.md)
 * `ObservabilityS3Destination`: required `regions` property addedNo action needed
 
   **4 endpoints using this schema**
 
-  * [`GET /observability/destinations`](https://openrouter.ai/docs/api/api-reference/observability/list-observability-destinations)
-  * [`GET /observability/destinations/{id}`](https://openrouter.ai/docs/api/api-reference/observability/get-an-observability-destination)
-  * [`PATCH /observability/destinations/{id}`](https://openrouter.ai/docs/api/api-reference/observability/update-an-observability-destination)
-  * [`POST /observability/destinations`](https://openrouter.ai/docs/api/api-reference/observability/create-an-observability-destination)
+  * [`GET /observability/destinations`](api/api-reference/observability/list-observability-destinations.md)
+  * [`GET /observability/destinations/{id}`](api/api-reference/observability/get-an-observability-destination.md)
+  * [`PATCH /observability/destinations/{id}`](api/api-reference/observability/update-an-observability-destination.md)
+  * [`POST /observability/destinations`](api/api-reference/observability/create-an-observability-destination.md)
 * `ObservabilitySentryDestination`: required `regions` property addedNo action needed
 
   **4 endpoints using this schema**
 
-  * [`GET /observability/destinations`](https://openrouter.ai/docs/api/api-reference/observability/list-observability-destinations)
-  * [`GET /observability/destinations/{id}`](https://openrouter.ai/docs/api/api-reference/observability/get-an-observability-destination)
-  * [`PATCH /observability/destinations/{id}`](https://openrouter.ai/docs/api/api-reference/observability/update-an-observability-destination)
-  * [`POST /observability/destinations`](https://openrouter.ai/docs/api/api-reference/observability/create-an-observability-destination)
+  * [`GET /observability/destinations`](api/api-reference/observability/list-observability-destinations.md)
+  * [`GET /observability/destinations/{id}`](api/api-reference/observability/get-an-observability-destination.md)
+  * [`PATCH /observability/destinations/{id}`](api/api-reference/observability/update-an-observability-destination.md)
+  * [`POST /observability/destinations`](api/api-reference/observability/create-an-observability-destination.md)
 * `ObservabilitySnowflakeDestination`: required `regions` property addedNo action needed
 
   **4 endpoints using this schema**
 
-  * [`GET /observability/destinations`](https://openrouter.ai/docs/api/api-reference/observability/list-observability-destinations)
-  * [`GET /observability/destinations/{id}`](https://openrouter.ai/docs/api/api-reference/observability/get-an-observability-destination)
-  * [`PATCH /observability/destinations/{id}`](https://openrouter.ai/docs/api/api-reference/observability/update-an-observability-destination)
-  * [`POST /observability/destinations`](https://openrouter.ai/docs/api/api-reference/observability/create-an-observability-destination)
+  * [`GET /observability/destinations`](api/api-reference/observability/list-observability-destinations.md)
+  * [`GET /observability/destinations/{id}`](api/api-reference/observability/get-an-observability-destination.md)
+  * [`PATCH /observability/destinations/{id}`](api/api-reference/observability/update-an-observability-destination.md)
+  * [`POST /observability/destinations`](api/api-reference/observability/create-an-observability-destination.md)
 * `ObservabilityWeaveDestination`: required `regions` property addedNo action needed
 
   **4 endpoints using this schema**
 
-  * [`GET /observability/destinations`](https://openrouter.ai/docs/api/api-reference/observability/list-observability-destinations)
-  * [`GET /observability/destinations/{id}`](https://openrouter.ai/docs/api/api-reference/observability/get-an-observability-destination)
-  * [`PATCH /observability/destinations/{id}`](https://openrouter.ai/docs/api/api-reference/observability/update-an-observability-destination)
-  * [`POST /observability/destinations`](https://openrouter.ai/docs/api/api-reference/observability/create-an-observability-destination)
+  * [`GET /observability/destinations`](api/api-reference/observability/list-observability-destinations.md)
+  * [`GET /observability/destinations/{id}`](api/api-reference/observability/get-an-observability-destination.md)
+  * [`PATCH /observability/destinations/{id}`](api/api-reference/observability/update-an-observability-destination.md)
+  * [`POST /observability/destinations`](api/api-reference/observability/create-an-observability-destination.md)
 * `ObservabilityWebhookDestination`: required `regions` property addedNo action needed
 
   **4 endpoints using this schema**
 
-  * [`GET /observability/destinations`](https://openrouter.ai/docs/api/api-reference/observability/list-observability-destinations)
-  * [`GET /observability/destinations/{id}`](https://openrouter.ai/docs/api/api-reference/observability/get-an-observability-destination)
-  * [`PATCH /observability/destinations/{id}`](https://openrouter.ai/docs/api/api-reference/observability/update-an-observability-destination)
-  * [`POST /observability/destinations`](https://openrouter.ai/docs/api/api-reference/observability/create-an-observability-destination)
-* [`GET /observability/destinations`](https://openrouter.ai/docs/api/api-reference/observability/list-observability-destinations): required `regions` property addedNo action needed
+  * [`GET /observability/destinations`](api/api-reference/observability/list-observability-destinations.md)
+  * [`GET /observability/destinations/{id}`](api/api-reference/observability/get-an-observability-destination.md)
+  * [`PATCH /observability/destinations/{id}`](api/api-reference/observability/update-an-observability-destination.md)
+  * [`POST /observability/destinations`](api/api-reference/observability/create-an-observability-destination.md)
+* [`GET /observability/destinations`](api/api-reference/observability/list-observability-destinations.md): required `regions` property addedNo action needed
 
 ## Modified endpoints
 
-* [`GET /observability/destinations`](https://openrouter.ai/docs/api/api-reference/observability/list-observability-destinations): response schema updated
-* [`POST /observability/destinations`](https://openrouter.ai/docs/api/api-reference/observability/create-an-observability-destination): response schema updated
-* [`GET /observability/destinations/{id}`](https://openrouter.ai/docs/api/api-reference/observability/get-an-observability-destination): response schema updated
-* [`PATCH /observability/destinations/{id}`](https://openrouter.ai/docs/api/api-reference/observability/update-an-observability-destination): response schema updated
+* [`GET /observability/destinations`](api/api-reference/observability/list-observability-destinations.md): response schema updated
+* [`POST /observability/destinations`](api/api-reference/observability/create-an-observability-destination.md): response schema updated
+* [`GET /observability/destinations/{id}`](api/api-reference/observability/get-an-observability-destination.md): response schema updated
+* [`PATCH /observability/destinations/{id}`](api/api-reference/observability/update-an-observability-destination.md): response schema updated
 
 ## New schemas
 
@@ -4052,255 +4052,255 @@ Entries on this page are generated automatically from [OpenAPI specification](ap
 
   **4 endpoints using this schema**
 
-  * [`GET /observability/destinations`](https://openrouter.ai/docs/api/api-reference/observability/list-observability-destinations)
-  * [`GET /observability/destinations/{id}`](https://openrouter.ai/docs/api/api-reference/observability/get-an-observability-destination)
-  * [`PATCH /observability/destinations/{id}`](https://openrouter.ai/docs/api/api-reference/observability/update-an-observability-destination)
-  * [`POST /observability/destinations`](https://openrouter.ai/docs/api/api-reference/observability/create-an-observability-destination)
+  * [`GET /observability/destinations`](api/api-reference/observability/list-observability-destinations.md)
+  * [`GET /observability/destinations/{id}`](api/api-reference/observability/get-an-observability-destination.md)
+  * [`PATCH /observability/destinations/{id}`](api/api-reference/observability/update-an-observability-destination.md)
+  * [`POST /observability/destinations`](api/api-reference/observability/create-an-observability-destination.md)
 * `ObservabilityDataRegionInput`
-  * Used by [`PATCH /observability/destinations/{id}`](https://openrouter.ai/docs/api/api-reference/observability/update-an-observability-destination), [`POST /observability/destinations`](https://openrouter.ai/docs/api/api-reference/observability/create-an-observability-destination)
+  * Used by [`PATCH /observability/destinations/{id}`](api/api-reference/observability/update-an-observability-destination.md), [`POST /observability/destinations`](api/api-reference/observability/create-an-observability-destination.md)
 
 ## Modified schemas
 
 * `CreateObservabilityDestinationRequest`: new property `regions`
-  * Used by [`POST /observability/destinations`](https://openrouter.ai/docs/api/api-reference/observability/create-an-observability-destination)
+  * Used by [`POST /observability/destinations`](api/api-reference/observability/create-an-observability-destination.md)
 * `CreateObservabilityDestinationResponse`: example modified
-  * Used by [`POST /observability/destinations`](https://openrouter.ai/docs/api/api-reference/observability/create-an-observability-destination)
+  * Used by [`POST /observability/destinations`](api/api-reference/observability/create-an-observability-destination.md)
 * `GetObservabilityDestinationResponse`: example modified
-  * Used by [`GET /observability/destinations/{id}`](https://openrouter.ai/docs/api/api-reference/observability/get-an-observability-destination)
+  * Used by [`GET /observability/destinations/{id}`](api/api-reference/observability/get-an-observability-destination.md)
 * `ListObservabilityDestinationsResponse`: example modified
-  * Used by [`GET /observability/destinations`](https://openrouter.ai/docs/api/api-reference/observability/list-observability-destinations)
+  * Used by [`GET /observability/destinations`](api/api-reference/observability/list-observability-destinations.md)
 * `ObservabilityArizeDestination`: example modified; new property `regions`
 
   **4 endpoints using this schema**
 
-  * [`GET /observability/destinations`](https://openrouter.ai/docs/api/api-reference/observability/list-observability-destinations)
-  * [`GET /observability/destinations/{id}`](https://openrouter.ai/docs/api/api-reference/observability/get-an-observability-destination)
-  * [`PATCH /observability/destinations/{id}`](https://openrouter.ai/docs/api/api-reference/observability/update-an-observability-destination)
-  * [`POST /observability/destinations`](https://openrouter.ai/docs/api/api-reference/observability/create-an-observability-destination)
+  * [`GET /observability/destinations`](api/api-reference/observability/list-observability-destinations.md)
+  * [`GET /observability/destinations/{id}`](api/api-reference/observability/get-an-observability-destination.md)
+  * [`PATCH /observability/destinations/{id}`](api/api-reference/observability/update-an-observability-destination.md)
+  * [`POST /observability/destinations`](api/api-reference/observability/create-an-observability-destination.md)
 * `ObservabilityBraintrustDestination`: example modified; new property `regions`
 
   **4 endpoints using this schema**
 
-  * [`GET /observability/destinations`](https://openrouter.ai/docs/api/api-reference/observability/list-observability-destinations)
-  * [`GET /observability/destinations/{id}`](https://openrouter.ai/docs/api/api-reference/observability/get-an-observability-destination)
-  * [`PATCH /observability/destinations/{id}`](https://openrouter.ai/docs/api/api-reference/observability/update-an-observability-destination)
-  * [`POST /observability/destinations`](https://openrouter.ai/docs/api/api-reference/observability/create-an-observability-destination)
+  * [`GET /observability/destinations`](api/api-reference/observability/list-observability-destinations.md)
+  * [`GET /observability/destinations/{id}`](api/api-reference/observability/get-an-observability-destination.md)
+  * [`PATCH /observability/destinations/{id}`](api/api-reference/observability/update-an-observability-destination.md)
+  * [`POST /observability/destinations`](api/api-reference/observability/create-an-observability-destination.md)
 * `ObservabilityClickhouseDestination`: example modified; new property `regions`
 
   **4 endpoints using this schema**
 
-  * [`GET /observability/destinations`](https://openrouter.ai/docs/api/api-reference/observability/list-observability-destinations)
-  * [`GET /observability/destinations/{id}`](https://openrouter.ai/docs/api/api-reference/observability/get-an-observability-destination)
-  * [`PATCH /observability/destinations/{id}`](https://openrouter.ai/docs/api/api-reference/observability/update-an-observability-destination)
-  * [`POST /observability/destinations`](https://openrouter.ai/docs/api/api-reference/observability/create-an-observability-destination)
+  * [`GET /observability/destinations`](api/api-reference/observability/list-observability-destinations.md)
+  * [`GET /observability/destinations/{id}`](api/api-reference/observability/get-an-observability-destination.md)
+  * [`PATCH /observability/destinations/{id}`](api/api-reference/observability/update-an-observability-destination.md)
+  * [`POST /observability/destinations`](api/api-reference/observability/create-an-observability-destination.md)
 * `ObservabilityDatadogDestination`: example modified; new property `regions`
 
   **4 endpoints using this schema**
 
-  * [`GET /observability/destinations`](https://openrouter.ai/docs/api/api-reference/observability/list-observability-destinations)
-  * [`GET /observability/destinations/{id}`](https://openrouter.ai/docs/api/api-reference/observability/get-an-observability-destination)
-  * [`PATCH /observability/destinations/{id}`](https://openrouter.ai/docs/api/api-reference/observability/update-an-observability-destination)
-  * [`POST /observability/destinations`](https://openrouter.ai/docs/api/api-reference/observability/create-an-observability-destination)
+  * [`GET /observability/destinations`](api/api-reference/observability/list-observability-destinations.md)
+  * [`GET /observability/destinations/{id}`](api/api-reference/observability/get-an-observability-destination.md)
+  * [`PATCH /observability/destinations/{id}`](api/api-reference/observability/update-an-observability-destination.md)
+  * [`POST /observability/destinations`](api/api-reference/observability/create-an-observability-destination.md)
 * `ObservabilityDestination`: example modified
 
   **4 endpoints using this schema**
 
-  * [`GET /observability/destinations`](https://openrouter.ai/docs/api/api-reference/observability/list-observability-destinations)
-  * [`GET /observability/destinations/{id}`](https://openrouter.ai/docs/api/api-reference/observability/get-an-observability-destination)
-  * [`PATCH /observability/destinations/{id}`](https://openrouter.ai/docs/api/api-reference/observability/update-an-observability-destination)
-  * [`POST /observability/destinations`](https://openrouter.ai/docs/api/api-reference/observability/create-an-observability-destination)
+  * [`GET /observability/destinations`](api/api-reference/observability/list-observability-destinations.md)
+  * [`GET /observability/destinations/{id}`](api/api-reference/observability/get-an-observability-destination.md)
+  * [`PATCH /observability/destinations/{id}`](api/api-reference/observability/update-an-observability-destination.md)
+  * [`POST /observability/destinations`](api/api-reference/observability/create-an-observability-destination.md)
 * `ObservabilityGrafanaDestination`: example modified; new property `regions`
 
   **4 endpoints using this schema**
 
-  * [`GET /observability/destinations`](https://openrouter.ai/docs/api/api-reference/observability/list-observability-destinations)
-  * [`GET /observability/destinations/{id}`](https://openrouter.ai/docs/api/api-reference/observability/get-an-observability-destination)
-  * [`PATCH /observability/destinations/{id}`](https://openrouter.ai/docs/api/api-reference/observability/update-an-observability-destination)
-  * [`POST /observability/destinations`](https://openrouter.ai/docs/api/api-reference/observability/create-an-observability-destination)
+  * [`GET /observability/destinations`](api/api-reference/observability/list-observability-destinations.md)
+  * [`GET /observability/destinations/{id}`](api/api-reference/observability/get-an-observability-destination.md)
+  * [`PATCH /observability/destinations/{id}`](api/api-reference/observability/update-an-observability-destination.md)
+  * [`POST /observability/destinations`](api/api-reference/observability/create-an-observability-destination.md)
 * `ObservabilityLangfuseDestination`: example modified; new property `regions`
 
   **4 endpoints using this schema**
 
-  * [`GET /observability/destinations`](https://openrouter.ai/docs/api/api-reference/observability/list-observability-destinations)
-  * [`GET /observability/destinations/{id}`](https://openrouter.ai/docs/api/api-reference/observability/get-an-observability-destination)
-  * [`PATCH /observability/destinations/{id}`](https://openrouter.ai/docs/api/api-reference/observability/update-an-observability-destination)
-  * [`POST /observability/destinations`](https://openrouter.ai/docs/api/api-reference/observability/create-an-observability-destination)
+  * [`GET /observability/destinations`](api/api-reference/observability/list-observability-destinations.md)
+  * [`GET /observability/destinations/{id}`](api/api-reference/observability/get-an-observability-destination.md)
+  * [`PATCH /observability/destinations/{id}`](api/api-reference/observability/update-an-observability-destination.md)
+  * [`POST /observability/destinations`](api/api-reference/observability/create-an-observability-destination.md)
 * `ObservabilityLangsmithDestination`: example modified; new property `regions`
 
   **4 endpoints using this schema**
 
-  * [`GET /observability/destinations`](https://openrouter.ai/docs/api/api-reference/observability/list-observability-destinations)
-  * [`GET /observability/destinations/{id}`](https://openrouter.ai/docs/api/api-reference/observability/get-an-observability-destination)
-  * [`PATCH /observability/destinations/{id}`](https://openrouter.ai/docs/api/api-reference/observability/update-an-observability-destination)
-  * [`POST /observability/destinations`](https://openrouter.ai/docs/api/api-reference/observability/create-an-observability-destination)
+  * [`GET /observability/destinations`](api/api-reference/observability/list-observability-destinations.md)
+  * [`GET /observability/destinations/{id}`](api/api-reference/observability/get-an-observability-destination.md)
+  * [`PATCH /observability/destinations/{id}`](api/api-reference/observability/update-an-observability-destination.md)
+  * [`POST /observability/destinations`](api/api-reference/observability/create-an-observability-destination.md)
 * `ObservabilityNewrelicDestination`: example modified; new property `regions`
 
   **4 endpoints using this schema**
 
-  * [`GET /observability/destinations`](https://openrouter.ai/docs/api/api-reference/observability/list-observability-destinations)
-  * [`GET /observability/destinations/{id}`](https://openrouter.ai/docs/api/api-reference/observability/get-an-observability-destination)
-  * [`PATCH /observability/destinations/{id}`](https://openrouter.ai/docs/api/api-reference/observability/update-an-observability-destination)
-  * [`POST /observability/destinations`](https://openrouter.ai/docs/api/api-reference/observability/create-an-observability-destination)
+  * [`GET /observability/destinations`](api/api-reference/observability/list-observability-destinations.md)
+  * [`GET /observability/destinations/{id}`](api/api-reference/observability/get-an-observability-destination.md)
+  * [`PATCH /observability/destinations/{id}`](api/api-reference/observability/update-an-observability-destination.md)
+  * [`POST /observability/destinations`](api/api-reference/observability/create-an-observability-destination.md)
 * `ObservabilityOpikDestination`: example modified; new property `regions`
 
   **4 endpoints using this schema**
 
-  * [`GET /observability/destinations`](https://openrouter.ai/docs/api/api-reference/observability/list-observability-destinations)
-  * [`GET /observability/destinations/{id}`](https://openrouter.ai/docs/api/api-reference/observability/get-an-observability-destination)
-  * [`PATCH /observability/destinations/{id}`](https://openrouter.ai/docs/api/api-reference/observability/update-an-observability-destination)
-  * [`POST /observability/destinations`](https://openrouter.ai/docs/api/api-reference/observability/create-an-observability-destination)
+  * [`GET /observability/destinations`](api/api-reference/observability/list-observability-destinations.md)
+  * [`GET /observability/destinations/{id}`](api/api-reference/observability/get-an-observability-destination.md)
+  * [`PATCH /observability/destinations/{id}`](api/api-reference/observability/update-an-observability-destination.md)
+  * [`POST /observability/destinations`](api/api-reference/observability/create-an-observability-destination.md)
 * `ObservabilityOtelCollectorDestination`: example modified; new property `regions`
 
   **4 endpoints using this schema**
 
-  * [`GET /observability/destinations`](https://openrouter.ai/docs/api/api-reference/observability/list-observability-destinations)
-  * [`GET /observability/destinations/{id}`](https://openrouter.ai/docs/api/api-reference/observability/get-an-observability-destination)
-  * [`PATCH /observability/destinations/{id}`](https://openrouter.ai/docs/api/api-reference/observability/update-an-observability-destination)
-  * [`POST /observability/destinations`](https://openrouter.ai/docs/api/api-reference/observability/create-an-observability-destination)
+  * [`GET /observability/destinations`](api/api-reference/observability/list-observability-destinations.md)
+  * [`GET /observability/destinations/{id}`](api/api-reference/observability/get-an-observability-destination.md)
+  * [`PATCH /observability/destinations/{id}`](api/api-reference/observability/update-an-observability-destination.md)
+  * [`POST /observability/destinations`](api/api-reference/observability/create-an-observability-destination.md)
 * `ObservabilityPosthogDestination`: example modified; new property `regions`
 
   **4 endpoints using this schema**
 
-  * [`GET /observability/destinations`](https://openrouter.ai/docs/api/api-reference/observability/list-observability-destinations)
-  * [`GET /observability/destinations/{id}`](https://openrouter.ai/docs/api/api-reference/observability/get-an-observability-destination)
-  * [`PATCH /observability/destinations/{id}`](https://openrouter.ai/docs/api/api-reference/observability/update-an-observability-destination)
-  * [`POST /observability/destinations`](https://openrouter.ai/docs/api/api-reference/observability/create-an-observability-destination)
+  * [`GET /observability/destinations`](api/api-reference/observability/list-observability-destinations.md)
+  * [`GET /observability/destinations/{id}`](api/api-reference/observability/get-an-observability-destination.md)
+  * [`PATCH /observability/destinations/{id}`](api/api-reference/observability/update-an-observability-destination.md)
+  * [`POST /observability/destinations`](api/api-reference/observability/create-an-observability-destination.md)
 * `ObservabilityRampDestination`: example modified; new property `regions`
 
   **4 endpoints using this schema**
 
-  * [`GET /observability/destinations`](https://openrouter.ai/docs/api/api-reference/observability/list-observability-destinations)
-  * [`GET /observability/destinations/{id}`](https://openrouter.ai/docs/api/api-reference/observability/get-an-observability-destination)
-  * [`PATCH /observability/destinations/{id}`](https://openrouter.ai/docs/api/api-reference/observability/update-an-observability-destination)
-  * [`POST /observability/destinations`](https://openrouter.ai/docs/api/api-reference/observability/create-an-observability-destination)
+  * [`GET /observability/destinations`](api/api-reference/observability/list-observability-destinations.md)
+  * [`GET /observability/destinations/{id}`](api/api-reference/observability/get-an-observability-destination.md)
+  * [`PATCH /observability/destinations/{id}`](api/api-reference/observability/update-an-observability-destination.md)
+  * [`POST /observability/destinations`](api/api-reference/observability/create-an-observability-destination.md)
 * `ObservabilityS3Destination`: example modified; new property `regions`
 
   **4 endpoints using this schema**
 
-  * [`GET /observability/destinations`](https://openrouter.ai/docs/api/api-reference/observability/list-observability-destinations)
-  * [`GET /observability/destinations/{id}`](https://openrouter.ai/docs/api/api-reference/observability/get-an-observability-destination)
-  * [`PATCH /observability/destinations/{id}`](https://openrouter.ai/docs/api/api-reference/observability/update-an-observability-destination)
-  * [`POST /observability/destinations`](https://openrouter.ai/docs/api/api-reference/observability/create-an-observability-destination)
+  * [`GET /observability/destinations`](api/api-reference/observability/list-observability-destinations.md)
+  * [`GET /observability/destinations/{id}`](api/api-reference/observability/get-an-observability-destination.md)
+  * [`PATCH /observability/destinations/{id}`](api/api-reference/observability/update-an-observability-destination.md)
+  * [`POST /observability/destinations`](api/api-reference/observability/create-an-observability-destination.md)
 * `ObservabilitySentryDestination`: example modified; new property `regions`
 
   **4 endpoints using this schema**
 
-  * [`GET /observability/destinations`](https://openrouter.ai/docs/api/api-reference/observability/list-observability-destinations)
-  * [`GET /observability/destinations/{id}`](https://openrouter.ai/docs/api/api-reference/observability/get-an-observability-destination)
-  * [`PATCH /observability/destinations/{id}`](https://openrouter.ai/docs/api/api-reference/observability/update-an-observability-destination)
-  * [`POST /observability/destinations`](https://openrouter.ai/docs/api/api-reference/observability/create-an-observability-destination)
+  * [`GET /observability/destinations`](api/api-reference/observability/list-observability-destinations.md)
+  * [`GET /observability/destinations/{id}`](api/api-reference/observability/get-an-observability-destination.md)
+  * [`PATCH /observability/destinations/{id}`](api/api-reference/observability/update-an-observability-destination.md)
+  * [`POST /observability/destinations`](api/api-reference/observability/create-an-observability-destination.md)
 * `ObservabilitySnowflakeDestination`: example modified; new property `regions`
 
   **4 endpoints using this schema**
 
-  * [`GET /observability/destinations`](https://openrouter.ai/docs/api/api-reference/observability/list-observability-destinations)
-  * [`GET /observability/destinations/{id}`](https://openrouter.ai/docs/api/api-reference/observability/get-an-observability-destination)
-  * [`PATCH /observability/destinations/{id}`](https://openrouter.ai/docs/api/api-reference/observability/update-an-observability-destination)
-  * [`POST /observability/destinations`](https://openrouter.ai/docs/api/api-reference/observability/create-an-observability-destination)
+  * [`GET /observability/destinations`](api/api-reference/observability/list-observability-destinations.md)
+  * [`GET /observability/destinations/{id}`](api/api-reference/observability/get-an-observability-destination.md)
+  * [`PATCH /observability/destinations/{id}`](api/api-reference/observability/update-an-observability-destination.md)
+  * [`POST /observability/destinations`](api/api-reference/observability/create-an-observability-destination.md)
 * `ObservabilityWeaveDestination`: example modified; new property `regions`
 
   **4 endpoints using this schema**
 
-  * [`GET /observability/destinations`](https://openrouter.ai/docs/api/api-reference/observability/list-observability-destinations)
-  * [`GET /observability/destinations/{id}`](https://openrouter.ai/docs/api/api-reference/observability/get-an-observability-destination)
-  * [`PATCH /observability/destinations/{id}`](https://openrouter.ai/docs/api/api-reference/observability/update-an-observability-destination)
-  * [`POST /observability/destinations`](https://openrouter.ai/docs/api/api-reference/observability/create-an-observability-destination)
+  * [`GET /observability/destinations`](api/api-reference/observability/list-observability-destinations.md)
+  * [`GET /observability/destinations/{id}`](api/api-reference/observability/get-an-observability-destination.md)
+  * [`PATCH /observability/destinations/{id}`](api/api-reference/observability/update-an-observability-destination.md)
+  * [`POST /observability/destinations`](api/api-reference/observability/create-an-observability-destination.md)
 * `ObservabilityWebhookDestination`: example modified; new property `regions`
 
   **4 endpoints using this schema**
 
-  * [`GET /observability/destinations`](https://openrouter.ai/docs/api/api-reference/observability/list-observability-destinations)
-  * [`GET /observability/destinations/{id}`](https://openrouter.ai/docs/api/api-reference/observability/get-an-observability-destination)
-  * [`PATCH /observability/destinations/{id}`](https://openrouter.ai/docs/api/api-reference/observability/update-an-observability-destination)
-  * [`POST /observability/destinations`](https://openrouter.ai/docs/api/api-reference/observability/create-an-observability-destination)
+  * [`GET /observability/destinations`](api/api-reference/observability/list-observability-destinations.md)
+  * [`GET /observability/destinations/{id}`](api/api-reference/observability/get-an-observability-destination.md)
+  * [`PATCH /observability/destinations/{id}`](api/api-reference/observability/update-an-observability-destination.md)
+  * [`POST /observability/destinations`](api/api-reference/observability/create-an-observability-destination.md)
 * `UpdateObservabilityDestinationRequest`: new property `regions`
-  * Used by [`PATCH /observability/destinations/{id}`](https://openrouter.ai/docs/api/api-reference/observability/update-an-observability-destination)
+  * Used by [`PATCH /observability/destinations/{id}`](api/api-reference/observability/update-an-observability-destination.md)
 * `UpdateObservabilityDestinationResponse`: example modified
-  * Used by [`PATCH /observability/destinations/{id}`](https://openrouter.ai/docs/api/api-reference/observability/update-an-observability-destination)
+  * Used by [`PATCH /observability/destinations/{id}`](api/api-reference/observability/update-an-observability-destination.md)
 
 **September 4, 2026**
 
 ## New endpoints
 
-* [`POST /scim/sync-jobs`](https://openrouter.ai/docs/api/api-reference/scim/start-a-scim-directory-sync): Start a SCIM directory sync
-* [`GET /scim/sync-jobs/{id}`](https://openrouter.ai/docs/api/api-reference/scim/get-scim-directory-sync-status): Get SCIM directory sync status
+* [`POST /scim/sync-jobs`](api/api-reference/scim/start-a-scim-directory-sync.md): Start a SCIM directory sync
+* [`GET /scim/sync-jobs/{id}`](api/api-reference/scim/get-scim-directory-sync-status.md): Get SCIM directory sync status
 
 ## New schemas
 
 * `CreateScimSyncJobResponse`
-  * Used by [`POST /scim/sync-jobs`](https://openrouter.ai/docs/api/api-reference/scim/start-a-scim-directory-sync)
+  * Used by [`POST /scim/sync-jobs`](api/api-reference/scim/start-a-scim-directory-sync.md)
 * `GetScimSyncJobResponse`
-  * Used by [`GET /scim/sync-jobs/{id}`](https://openrouter.ai/docs/api/api-reference/scim/get-scim-directory-sync-status)
+  * Used by [`GET /scim/sync-jobs/{id}`](api/api-reference/scim/get-scim-directory-sync-status.md)
 * `ScimSyncJob`
-  * Used by [`GET /scim/sync-jobs/{id}`](https://openrouter.ai/docs/api/api-reference/scim/get-scim-directory-sync-status), [`POST /scim/sync-jobs`](https://openrouter.ai/docs/api/api-reference/scim/start-a-scim-directory-sync)
+  * Used by [`GET /scim/sync-jobs/{id}`](api/api-reference/scim/get-scim-directory-sync-status.md), [`POST /scim/sync-jobs`](api/api-reference/scim/start-a-scim-directory-sync.md)
 * `ConfigurationUpdateItem`
-  * Used by [`POST /presets/{slug}/responses`](https://openrouter.ai/docs/api/api-reference/presets/create-a-preset-from-a-responses-request-body), [`POST /responses`](https://openrouter.ai/docs/api/api-reference/responses/create-a-response)
+  * Used by [`POST /presets/{slug}/responses`](api/api-reference/presets/create-a-preset-from-a-responses-request-body.md), [`POST /responses`](api/api-reference/responses/create-a-response.md)
 * `ConfigurationUpdateReasoning`
 
   **4 endpoints using this schema**
 
-  * [`POST /chat/completions`](https://openrouter.ai/docs/api/api-reference/chat/create-a-chat-completion)
-  * [`POST /presets/{slug}/chat/completions`](https://openrouter.ai/docs/api/api-reference/presets/create-a-preset-from-a-chat-completions-request-body)
-  * [`POST /presets/{slug}/responses`](https://openrouter.ai/docs/api/api-reference/presets/create-a-preset-from-a-responses-request-body)
-  * [`POST /responses`](https://openrouter.ai/docs/api/api-reference/responses/create-a-response)
+  * [`POST /chat/completions`](api/api-reference/chat/create-a-chat-completion.md)
+  * [`POST /presets/{slug}/chat/completions`](api/api-reference/presets/create-a-preset-from-a-chat-completions-request-body.md)
+  * [`POST /presets/{slug}/responses`](api/api-reference/presets/create-a-preset-from-a-responses-request-body.md)
+  * [`POST /responses`](api/api-reference/responses/create-a-response.md)
 * `McpHttpError`
-  * Used by [`POST /presets/{slug}/responses`](https://openrouter.ai/docs/api/api-reference/presets/create-a-preset-from-a-responses-request-body), [`POST /responses`](https://openrouter.ai/docs/api/api-reference/responses/create-a-response)
+  * Used by [`POST /presets/{slug}/responses`](api/api-reference/presets/create-a-preset-from-a-responses-request-body.md), [`POST /responses`](api/api-reference/responses/create-a-response.md)
 * `McpProtocolError`
-  * Used by [`POST /presets/{slug}/responses`](https://openrouter.ai/docs/api/api-reference/presets/create-a-preset-from-a-responses-request-body), [`POST /responses`](https://openrouter.ai/docs/api/api-reference/responses/create-a-response)
+  * Used by [`POST /presets/{slug}/responses`](api/api-reference/presets/create-a-preset-from-a-responses-request-body.md), [`POST /responses`](api/api-reference/responses/create-a-response.md)
 * `McpToolCallError`
-  * Used by [`POST /presets/{slug}/responses`](https://openrouter.ai/docs/api/api-reference/presets/create-a-preset-from-a-responses-request-body), [`POST /responses`](https://openrouter.ai/docs/api/api-reference/responses/create-a-response)
+  * Used by [`POST /presets/{slug}/responses`](api/api-reference/presets/create-a-preset-from-a-responses-request-body.md), [`POST /responses`](api/api-reference/responses/create-a-response.md)
 * `McpToolExecutionError`
-  * Used by [`POST /presets/{slug}/responses`](https://openrouter.ai/docs/api/api-reference/presets/create-a-preset-from-a-responses-request-body), [`POST /responses`](https://openrouter.ai/docs/api/api-reference/responses/create-a-response)
+  * Used by [`POST /presets/{slug}/responses`](api/api-reference/presets/create-a-preset-from-a-responses-request-body.md), [`POST /responses`](api/api-reference/responses/create-a-response.md)
 
 ## Modified schemas
 
 * `ChatSystemMessage`: new property `configuration_update`
-  * Used by [`POST /chat/completions`](https://openrouter.ai/docs/api/api-reference/chat/create-a-chat-completion), [`POST /presets/{slug}/chat/completions`](https://openrouter.ai/docs/api/api-reference/presets/create-a-preset-from-a-chat-completions-request-body)
+  * Used by [`POST /chat/completions`](api/api-reference/chat/create-a-chat-completion.md), [`POST /presets/{slug}/chat/completions`](api/api-reference/presets/create-a-preset-from-a-chat-completions-request-body.md)
 * `McpCallItem`: \$ref modified
-  * Used by [`POST /presets/{slug}/responses`](https://openrouter.ai/docs/api/api-reference/presets/create-a-preset-from-a-responses-request-body), [`POST /responses`](https://openrouter.ai/docs/api/api-reference/responses/create-a-response)
+  * Used by [`POST /presets/{slug}/responses`](api/api-reference/presets/create-a-preset-from-a-responses-request-body.md), [`POST /responses`](api/api-reference/responses/create-a-response.md)
 * `ResponsesErrorField`: enum property\_added
-  * Used by [`POST /responses`](https://openrouter.ai/docs/api/api-reference/responses/create-a-response)
+  * Used by [`POST /responses`](api/api-reference/responses/create-a-response.md)
 * `SandboxSleepAfterSeconds`: description updated; example modified
 
   **6 endpoints using this schema**
 
-  * [`POST /chat/completions`](https://openrouter.ai/docs/api/api-reference/chat/create-a-chat-completion)
-  * [`POST /messages`](https://openrouter.ai/docs/api/api-reference/anthropic-messages/create-a-message)
-  * [`POST /presets/{slug}/chat/completions`](https://openrouter.ai/docs/api/api-reference/presets/create-a-preset-from-a-chat-completions-request-body)
-  * [`POST /presets/{slug}/messages`](https://openrouter.ai/docs/api/api-reference/presets/create-a-preset-from-a-messages-request-body)
-  * [`POST /presets/{slug}/responses`](https://openrouter.ai/docs/api/api-reference/presets/create-a-preset-from-a-responses-request-body)
-  * [`POST /responses`](https://openrouter.ai/docs/api/api-reference/responses/create-a-response)
+  * [`POST /chat/completions`](api/api-reference/chat/create-a-chat-completion.md)
+  * [`POST /messages`](api/api-reference/anthropic-messages/create-a-message.md)
+  * [`POST /presets/{slug}/chat/completions`](api/api-reference/presets/create-a-preset-from-a-chat-completions-request-body.md)
+  * [`POST /presets/{slug}/messages`](api/api-reference/presets/create-a-preset-from-a-messages-request-body.md)
+  * [`POST /presets/{slug}/responses`](api/api-reference/presets/create-a-preset-from-a-responses-request-body.md)
+  * [`POST /responses`](api/api-reference/responses/create-a-response.md)
 
 **September 3, 2026**
 
 ## New endpoints
 
-* [`GET /oauth/jwks`](https://openrouter.ai/docs/api/api-reference/oauth/openrouter-access-token-signing-keys): OpenRouter access token signing keys
-* [`POST /oauth/token`](https://openrouter.ai/docs/api/api-reference/oauth/exchange-a-workload-identity-token): Exchange a workload identity token
+* [`GET /oauth/jwks`](api/api-reference/oauth/openrouter-access-token-signing-keys.md): OpenRouter access token signing keys
+* [`POST /oauth/token`](api/api-reference/oauth/exchange-a-workload-identity-token.md): Exchange a workload identity token
 
 ## Modified endpoints
 
-* [`POST /keys`](https://openrouter.ai/docs/api/api-reference/api-keys/create-a-new-api-key): description updated; request schema updated
-* [`DELETE /keys/{hash}`](https://openrouter.ai/docs/api/api-reference/api-keys/delete-an-api-key): description updated
-* [`PATCH /keys/{hash}`](https://openrouter.ai/docs/api/api-reference/api-keys/update-an-api-key): description updated
-* [`POST /guardrails`](https://openrouter.ai/docs/api/api-reference/guardrails/create-a-guardrail): description updated; request schema updated
-* [`PATCH /guardrails/{id}`](https://openrouter.ai/docs/api/api-reference/guardrails/update-a-guardrail): description updated
-* [`GET /byok`](https://openrouter.ai/docs/api/api-reference/byok/list-byok-provider-credentials): parameter `provider` updated
+* [`POST /keys`](api/api-reference/api-keys/create-a-new-api-key.md): description updated; request schema updated
+* [`DELETE /keys/{hash}`](api/api-reference/api-keys/delete-an-api-key.md): description updated
+* [`PATCH /keys/{hash}`](api/api-reference/api-keys/update-an-api-key.md): description updated
+* [`POST /guardrails`](api/api-reference/guardrails/create-a-guardrail.md): description updated; request schema updated
+* [`PATCH /guardrails/{id}`](api/api-reference/guardrails/update-a-guardrail.md): description updated
+* [`GET /byok`](api/api-reference/byok/list-byok-provider-credentials.md): parameter `provider` updated
 
 ## New response codes
 
-* [`PATCH /guardrails/{id}`](https://openrouter.ai/docs/api/api-reference/guardrails/update-a-guardrail): now returns `409`
+* [`PATCH /guardrails/{id}`](api/api-reference/guardrails/update-a-guardrail.md): now returns `409`
 
 ## New schemas
 
 * `OAuthErrorResponse`
-  * Used by [`POST /oauth/token`](https://openrouter.ai/docs/api/api-reference/oauth/exchange-a-workload-identity-token)
+  * Used by [`POST /oauth/token`](api/api-reference/oauth/exchange-a-workload-identity-token.md)
 * `OAuthJwks`
-  * Used by [`GET /oauth/jwks`](https://openrouter.ai/docs/api/api-reference/oauth/openrouter-access-token-signing-keys)
+  * Used by [`GET /oauth/jwks`](api/api-reference/oauth/openrouter-access-token-signing-keys.md)
 * `TokenExchangeRequest`
-  * Used by [`POST /oauth/token`](https://openrouter.ai/docs/api/api-reference/oauth/exchange-a-workload-identity-token)
+  * Used by [`POST /oauth/token`](api/api-reference/oauth/exchange-a-workload-identity-token.md)
 * `TokenExchangeResponse`
-  * Used by [`POST /oauth/token`](https://openrouter.ai/docs/api/api-reference/oauth/exchange-a-workload-identity-token)
+  * Used by [`POST /oauth/token`](api/api-reference/oauth/exchange-a-workload-identity-token.md)
 
 ## Modified schemas
 
@@ -4308,59 +4308,59 @@ Entries on this page are generated automatically from [OpenAPI specification](ap
 
   **4 endpoints using this schema**
 
-  * [`GET /byok`](https://openrouter.ai/docs/api/api-reference/byok/list-byok-provider-credentials)
-  * [`GET /byok/{id}`](https://openrouter.ai/docs/api/api-reference/byok/get-a-byok-provider-credential)
-  * [`PATCH /byok/{id}`](https://openrouter.ai/docs/api/api-reference/byok/update-a-byok-provider-credential)
-  * [`POST /byok`](https://openrouter.ai/docs/api/api-reference/byok/create-a-byok-provider-credential)
+  * [`GET /byok`](api/api-reference/byok/list-byok-provider-credentials.md)
+  * [`GET /byok/{id}`](api/api-reference/byok/get-a-byok-provider-credential.md)
+  * [`PATCH /byok/{id}`](api/api-reference/byok/update-a-byok-provider-credential.md)
+  * [`POST /byok`](api/api-reference/byok/create-a-byok-provider-credential.md)
 * `MessagesStartEvent`: property `provider` updated
-  * Used by [`POST /messages`](https://openrouter.ai/docs/api/api-reference/anthropic-messages/create-a-message)
+  * Used by [`POST /messages`](api/api-reference/anthropic-messages/create-a-message.md)
 * `ProviderName`: enum property\_added
 
   **11 endpoints using this schema**
 
-  * [`GET /endpoints/zdr`](https://openrouter.ai/docs/api/api-reference/endpoints/preview-the-impact-of-zdr-on-the-available-endpoints)
-  * [`GET /models/{author}/{slug}/endpoints`](https://openrouter.ai/docs/api/api-reference/endpoints/list-all-endpoints-for-a-model)
-  * [`POST /chat/completions`](https://openrouter.ai/docs/api/api-reference/chat/create-a-chat-completion)
-  * [`POST /embeddings`](https://openrouter.ai/docs/api/api-reference/embeddings/submit-an-embedding-request)
-  * [`POST /images`](https://openrouter.ai/docs/api/api-reference/images/generate-an-image)
-  * [`POST /messages`](https://openrouter.ai/docs/api/api-reference/anthropic-messages/create-a-message)
-  * [`POST /presets/{slug}/chat/completions`](https://openrouter.ai/docs/api/api-reference/presets/create-a-preset-from-a-chat-completions-request-body)
-  * [`POST /presets/{slug}/messages`](https://openrouter.ai/docs/api/api-reference/presets/create-a-preset-from-a-messages-request-body)
-  * [`POST /presets/{slug}/responses`](https://openrouter.ai/docs/api/api-reference/presets/create-a-preset-from-a-responses-request-body)
-  * [`POST /rerank`](https://openrouter.ai/docs/api/api-reference/rerank/submit-a-rerank-request)
-  * [`POST /responses`](https://openrouter.ai/docs/api/api-reference/responses/create-a-response)
+  * [`GET /endpoints/zdr`](api/api-reference/endpoints/preview-the-impact-of-zdr-on-the-available-endpoints.md)
+  * [`GET /models/{author}/{slug}/endpoints`](api/api-reference/endpoints/list-all-endpoints-for-a-model.md)
+  * [`POST /chat/completions`](api/api-reference/chat/create-a-chat-completion.md)
+  * [`POST /embeddings`](api/api-reference/embeddings/submit-an-embedding-request.md)
+  * [`POST /images`](api/api-reference/images/generate-an-image.md)
+  * [`POST /messages`](api/api-reference/anthropic-messages/create-a-message.md)
+  * [`POST /presets/{slug}/chat/completions`](api/api-reference/presets/create-a-preset-from-a-chat-completions-request-body.md)
+  * [`POST /presets/{slug}/messages`](api/api-reference/presets/create-a-preset-from-a-messages-request-body.md)
+  * [`POST /presets/{slug}/responses`](api/api-reference/presets/create-a-preset-from-a-responses-request-body.md)
+  * [`POST /rerank`](api/api-reference/rerank/submit-a-rerank-request.md)
+  * [`POST /responses`](api/api-reference/responses/create-a-response.md)
 * `ProviderOptions`: new property `prime-intellect`
 
   **4 endpoints using this schema**
 
-  * [`POST /audio/speech`](https://openrouter.ai/docs/api/api-reference/tts/create-speech)
-  * [`POST /audio/transcriptions`](https://openrouter.ai/docs/api/api-reference/stt/create-transcription)
-  * [`POST /images`](https://openrouter.ai/docs/api/api-reference/images/generate-an-image)
-  * [`POST /videos`](https://openrouter.ai/docs/api/api-reference/video-generation/submit-a-video-generation-request)
+  * [`POST /audio/speech`](api/api-reference/tts/create-speech.md)
+  * [`POST /audio/transcriptions`](api/api-reference/stt/create-transcription.md)
+  * [`POST /images`](api/api-reference/images/generate-an-image.md)
+  * [`POST /videos`](api/api-reference/video-generation/submit-a-video-generation-request.md)
 * `ProviderResponse`: enum property\_added
-  * Used by [`GET /generation`](https://openrouter.ai/docs/api/api-reference/generations/get-request-&-usage-metadata-for-a-generation)
+  * Used by [`GET /generation`](api/api-reference/generations/get-request-&-usage-metadata-for-a-generation.md)
 
 **September 2, 2026**
 
 ## Breaking changes
 
-* [`POST /keys`](https://openrouter.ai/docs/api/api-reference/api-keys/create-a-new-api-key): properties `external_api_key` object removedNo action needed
-* [`POST /keys`](https://openrouter.ai/docs/api/api-reference/api-keys/create-a-new-api-key): properties `external_user` object removedNo action needed
+* [`POST /keys`](api/api-reference/api-keys/create-a-new-api-key.md): properties `external_api_key` object removedNo action needed
+* [`POST /keys`](api/api-reference/api-keys/create-a-new-api-key.md): properties `external_user` object removedNo action needed
 
 ## Modified endpoints
 
-* [`POST /scim/group-mappings`](https://openrouter.ai/docs/api/api-reference/scim/create-a-scim-group-mapping): description updated
-* [`POST /keys`](https://openrouter.ai/docs/api/api-reference/api-keys/create-a-new-api-key): description updated
+* [`POST /scim/group-mappings`](api/api-reference/scim/create-a-scim-group-mapping.md): description updated
+* [`POST /keys`](api/api-reference/api-keys/create-a-new-api-key.md): description updated
 
 ## New response codes
 
-* [`POST /audio/speech`](https://openrouter.ai/docs/api/api-reference/tts/create-speech): now returns `403`
-* [`POST /audio/transcriptions`](https://openrouter.ai/docs/api/api-reference/stt/create-transcription): now returns `403`
-* [`POST /embeddings`](https://openrouter.ai/docs/api/api-reference/embeddings/submit-an-embedding-request): now returns `403`
-* [`POST /rerank`](https://openrouter.ai/docs/api/api-reference/rerank/submit-a-rerank-request): now returns `403`
-* [`POST /videos`](https://openrouter.ai/docs/api/api-reference/video-generation/submit-a-video-generation-request): now returns `403`
-* [`GET /videos/{jobId}`](https://openrouter.ai/docs/api/api-reference/video-generation/poll-video-generation-status): now returns `403`
-* [`GET /videos/{jobId}/content`](https://openrouter.ai/docs/api/api-reference/video-generation/download-generated-video-content): now returns `403`
+* [`POST /audio/speech`](api/api-reference/tts/create-speech.md): now returns `403`
+* [`POST /audio/transcriptions`](api/api-reference/stt/create-transcription.md): now returns `403`
+* [`POST /embeddings`](api/api-reference/embeddings/submit-an-embedding-request.md): now returns `403`
+* [`POST /rerank`](api/api-reference/rerank/submit-a-rerank-request.md): now returns `403`
+* [`POST /videos`](api/api-reference/video-generation/submit-a-video-generation-request.md): now returns `403`
+* [`GET /videos/{jobId}`](api/api-reference/video-generation/poll-video-generation-status.md): now returns `403`
+* [`GET /videos/{jobId}/content`](api/api-reference/video-generation/download-generated-video-content.md): now returns `403`
 
 ## New schemas
 
@@ -4368,10 +4368,10 @@ Entries on this page are generated automatically from [OpenAPI specification](ap
 
   **4 endpoints using this schema**
 
-  * [`GET /guardrails`](https://openrouter.ai/docs/api/api-reference/guardrails/list-guardrails)
-  * [`GET /guardrails/{id}`](https://openrouter.ai/docs/api/api-reference/guardrails/get-a-guardrail)
-  * [`PATCH /guardrails/{id}`](https://openrouter.ai/docs/api/api-reference/guardrails/update-a-guardrail)
-  * [`POST /guardrails`](https://openrouter.ai/docs/api/api-reference/guardrails/create-a-guardrail)
+  * [`GET /guardrails`](api/api-reference/guardrails/list-guardrails.md)
+  * [`GET /guardrails/{id}`](api/api-reference/guardrails/get-a-guardrail.md)
+  * [`PATCH /guardrails/{id}`](api/api-reference/guardrails/update-a-guardrail.md)
+  * [`POST /guardrails`](api/api-reference/guardrails/create-a-guardrail.md)
 
 ## Modified schemas
 
@@ -4379,65 +4379,65 @@ Entries on this page are generated automatically from [OpenAPI specification](ap
 
   **4 endpoints using this schema**
 
-  * [`POST /chat/completions`](https://openrouter.ai/docs/api/api-reference/chat/create-a-chat-completion)
-  * [`POST /embeddings`](https://openrouter.ai/docs/api/api-reference/embeddings/submit-an-embedding-request)
-  * [`POST /images`](https://openrouter.ai/docs/api/api-reference/images/generate-an-image)
-  * [`POST /messages`](https://openrouter.ai/docs/api/api-reference/anthropic-messages/create-a-message)
+  * [`POST /chat/completions`](api/api-reference/chat/create-a-chat-completion.md)
+  * [`POST /embeddings`](api/api-reference/embeddings/submit-an-embedding-request.md)
+  * [`POST /images`](api/api-reference/images/generate-an-image.md)
+  * [`POST /messages`](api/api-reference/anthropic-messages/create-a-message.md)
 * `Usage`: example modified
-  * Used by [`POST /responses`](https://openrouter.ai/docs/api/api-reference/responses/create-a-response)
+  * Used by [`POST /responses`](api/api-reference/responses/create-a-response.md)
 * `ChatContentVideoInput`: new property `processing`
-  * Used by [`POST /chat/completions`](https://openrouter.ai/docs/api/api-reference/chat/create-a-chat-completion), [`POST /presets/{slug}/chat/completions`](https://openrouter.ai/docs/api/api-reference/presets/create-a-preset-from-a-chat-completions-request-body)
+  * Used by [`POST /chat/completions`](api/api-reference/chat/create-a-chat-completion.md), [`POST /presets/{slug}/chat/completions`](api/api-reference/presets/create-a-preset-from-a-chat-completions-request-body.md)
 * `InputVideo`: new property `processing`
-  * Used by [`POST /presets/{slug}/responses`](https://openrouter.ai/docs/api/api-reference/presets/create-a-preset-from-a-responses-request-body), [`POST /responses`](https://openrouter.ai/docs/api/api-reference/responses/create-a-response)
+  * Used by [`POST /presets/{slug}/responses`](api/api-reference/presets/create-a-preset-from-a-responses-request-body.md), [`POST /responses`](api/api-reference/responses/create-a-response.md)
 * `Legacy_ChatContentVideoInput`: new property `processing`
-  * Used by [`POST /chat/completions`](https://openrouter.ai/docs/api/api-reference/chat/create-a-chat-completion), [`POST /presets/{slug}/chat/completions`](https://openrouter.ai/docs/api/api-reference/presets/create-a-preset-from-a-chat-completions-request-body)
+  * Used by [`POST /chat/completions`](api/api-reference/chat/create-a-chat-completion.md), [`POST /presets/{slug}/chat/completions`](api/api-reference/presets/create-a-preset-from-a-chat-completions-request-body.md)
 * `OpenRouterMetadata`: example modified; new property `generation_time`
-  * Used by [`POST /chat/completions`](https://openrouter.ai/docs/api/api-reference/chat/create-a-chat-completion), [`POST /messages`](https://openrouter.ai/docs/api/api-reference/anthropic-messages/create-a-message), [`POST /responses`](https://openrouter.ai/docs/api/api-reference/responses/create-a-response)
+  * Used by [`POST /chat/completions`](api/api-reference/chat/create-a-chat-completion.md), [`POST /messages`](api/api-reference/anthropic-messages/create-a-message.md), [`POST /responses`](api/api-reference/responses/create-a-response.md)
 * `CreateGuardrailRequest`: new property `allowed_data_regions`
-  * Used by [`POST /guardrails`](https://openrouter.ai/docs/api/api-reference/guardrails/create-a-guardrail)
+  * Used by [`POST /guardrails`](api/api-reference/guardrails/create-a-guardrail.md)
 * `Guardrail`: example modified; new property `allowed_data_regions`
 
   **4 endpoints using this schema**
 
-  * [`GET /guardrails`](https://openrouter.ai/docs/api/api-reference/guardrails/list-guardrails)
-  * [`GET /guardrails/{id}`](https://openrouter.ai/docs/api/api-reference/guardrails/get-a-guardrail)
-  * [`PATCH /guardrails/{id}`](https://openrouter.ai/docs/api/api-reference/guardrails/update-a-guardrail)
-  * [`POST /guardrails`](https://openrouter.ai/docs/api/api-reference/guardrails/create-a-guardrail)
+  * [`GET /guardrails`](api/api-reference/guardrails/list-guardrails.md)
+  * [`GET /guardrails/{id}`](api/api-reference/guardrails/get-a-guardrail.md)
+  * [`PATCH /guardrails/{id}`](api/api-reference/guardrails/update-a-guardrail.md)
+  * [`POST /guardrails`](api/api-reference/guardrails/create-a-guardrail.md)
 * `UpdateGuardrailRequest`: new property `allowed_data_regions`
-  * Used by [`PATCH /guardrails/{id}`](https://openrouter.ai/docs/api/api-reference/guardrails/update-a-guardrail)
+  * Used by [`PATCH /guardrails/{id}`](api/api-reference/guardrails/update-a-guardrail.md)
 
 **September 1, 2026**
 
 ## Breaking changes
 
 * `AnthropicThinkingBlockBinding`: required `prefix_mismatch_behavior` property removedNo action needed
-  * Used by [`POST /messages`](https://openrouter.ai/docs/api/api-reference/anthropic-messages/create-a-message), [`POST /presets/{slug}/messages`](https://openrouter.ai/docs/api/api-reference/presets/create-a-preset-from-a-messages-request-body)
+  * Used by [`POST /messages`](api/api-reference/anthropic-messages/create-a-message.md), [`POST /presets/{slug}/messages`](api/api-reference/presets/create-a-preset-from-a-messages-request-body.md)
 * `AnthropicThinkingBlockBinding`: type `string` modifiedNo action needed
-  * Used by [`POST /messages`](https://openrouter.ai/docs/api/api-reference/anthropic-messages/create-a-message), [`POST /presets/{slug}/messages`](https://openrouter.ai/docs/api/api-reference/presets/create-a-preset-from-a-messages-request-body)
+  * Used by [`POST /messages`](api/api-reference/anthropic-messages/create-a-message.md), [`POST /presets/{slug}/messages`](api/api-reference/presets/create-a-preset-from-a-messages-request-body.md)
 
 ## Modified endpoints
 
-* [`GET /models`](https://openrouter.ai/docs/api/api-reference/models/list-all-models-and-their-properties): description updated
-* [`GET /models/count`](https://openrouter.ai/docs/api/api-reference/models/get-total-count-of-available-models): description updated
-* [`GET /models/user`](https://openrouter.ai/docs/api/api-reference/models/list-models-filtered-by-user-provider-preferences-privacy-settings-and-guardrails): description updated
-* [`GET /byok`](https://openrouter.ai/docs/api/api-reference/byok/list-byok-provider-credentials): parameter `provider` updated
+* [`GET /models`](api/api-reference/models/list-all-models-and-their-properties.md): description updated
+* [`GET /models/count`](api/api-reference/models/get-total-count-of-available-models.md): description updated
+* [`GET /models/user`](api/api-reference/models/list-models-filtered-by-user-provider-preferences-privacy-settings-and-guardrails.md): description updated
+* [`GET /byok`](api/api-reference/byok/list-byok-provider-credentials.md): parameter `provider` updated
 
 ## New schemas
 
 * `AnthropicInputTransformation`
-  * Used by [`POST /messages`](https://openrouter.ai/docs/api/api-reference/anthropic-messages/create-a-message)
+  * Used by [`POST /messages`](api/api-reference/anthropic-messages/create-a-message.md)
 * `AnthropicMessageOutputConfig`
-  * Used by [`POST /messages`](https://openrouter.ai/docs/api/api-reference/anthropic-messages/create-a-message), [`POST /presets/{slug}/messages`](https://openrouter.ai/docs/api/api-reference/presets/create-a-preset-from-a-messages-request-body)
+  * Used by [`POST /messages`](api/api-reference/anthropic-messages/create-a-message.md), [`POST /presets/{slug}/messages`](api/api-reference/presets/create-a-preset-from-a-messages-request-body.md)
 * `AnthropicOutputEffort`
-  * Used by [`POST /messages`](https://openrouter.ai/docs/api/api-reference/anthropic-messages/create-a-message), [`POST /presets/{slug}/messages`](https://openrouter.ai/docs/api/api-reference/presets/create-a-preset-from-a-messages-request-body)
+  * Used by [`POST /messages`](api/api-reference/anthropic-messages/create-a-message.md), [`POST /presets/{slug}/messages`](api/api-reference/presets/create-a-preset-from-a-messages-request-body.md)
 * `AnthropicSystemClearAt`
-  * Used by [`POST /messages`](https://openrouter.ai/docs/api/api-reference/anthropic-messages/create-a-message), [`POST /presets/{slug}/messages`](https://openrouter.ai/docs/api/api-reference/presets/create-a-preset-from-a-messages-request-body)
+  * Used by [`POST /messages`](api/api-reference/anthropic-messages/create-a-message.md), [`POST /presets/{slug}/messages`](api/api-reference/presets/create-a-preset-from-a-messages-request-body.md)
 * `AnthropicThinkingBlockBinding`
-  * Used by [`POST /messages`](https://openrouter.ai/docs/api/api-reference/anthropic-messages/create-a-message), [`POST /presets/{slug}/messages`](https://openrouter.ai/docs/api/api-reference/presets/create-a-preset-from-a-messages-request-body)
+  * Used by [`POST /messages`](api/api-reference/anthropic-messages/create-a-message.md), [`POST /presets/{slug}/messages`](api/api-reference/presets/create-a-preset-from-a-messages-request-body.md)
 * `ORAnthropicServerToolUsage`
-  * Used by [`POST /messages`](https://openrouter.ai/docs/api/api-reference/anthropic-messages/create-a-message)
+  * Used by [`POST /messages`](api/api-reference/anthropic-messages/create-a-message.md)
 * `AnthropicContainerSkill`
-  * Used by [`POST /messages`](https://openrouter.ai/docs/api/api-reference/anthropic-messages/create-a-message)
+  * Used by [`POST /messages`](api/api-reference/anthropic-messages/create-a-message.md)
 
 ## Modified schemas
 
@@ -4445,26 +4445,26 @@ Entries on this page are generated automatically from [OpenAPI specification](ap
 
   **4 endpoints using this schema**
 
-  * [`GET /byok`](https://openrouter.ai/docs/api/api-reference/byok/list-byok-provider-credentials)
-  * [`GET /byok/{id}`](https://openrouter.ai/docs/api/api-reference/byok/get-a-byok-provider-credential)
-  * [`PATCH /byok/{id}`](https://openrouter.ai/docs/api/api-reference/byok/update-a-byok-provider-credential)
-  * [`POST /byok`](https://openrouter.ai/docs/api/api-reference/byok/create-a-byok-provider-credential)
+  * [`GET /byok`](api/api-reference/byok/list-byok-provider-credentials.md)
+  * [`GET /byok/{id}`](api/api-reference/byok/get-a-byok-provider-credential.md)
+  * [`PATCH /byok/{id}`](api/api-reference/byok/update-a-byok-provider-credential.md)
+  * [`POST /byok`](api/api-reference/byok/create-a-byok-provider-credential.md)
 * `AnthropicThinkingDisplay`: enum property\_added
-  * Used by [`POST /messages`](https://openrouter.ai/docs/api/api-reference/anthropic-messages/create-a-message), [`POST /presets/{slug}/messages`](https://openrouter.ai/docs/api/api-reference/presets/create-a-preset-from-a-messages-request-body)
+  * Used by [`POST /messages`](api/api-reference/anthropic-messages/create-a-message.md), [`POST /presets/{slug}/messages`](api/api-reference/presets/create-a-preset-from-a-messages-request-body.md)
 * `BaseMessagesResult`: new property `input_transformations`
-  * Used by [`POST /messages`](https://openrouter.ai/docs/api/api-reference/anthropic-messages/create-a-message)
+  * Used by [`POST /messages`](api/api-reference/anthropic-messages/create-a-message.md)
 * `MessagesMessageParam`: new property `clear_at`; new property `output_config`
-  * Used by [`POST /messages`](https://openrouter.ai/docs/api/api-reference/anthropic-messages/create-a-message), [`POST /presets/{slug}/messages`](https://openrouter.ai/docs/api/api-reference/presets/create-a-preset-from-a-messages-request-body)
+  * Used by [`POST /messages`](api/api-reference/anthropic-messages/create-a-message.md), [`POST /presets/{slug}/messages`](api/api-reference/presets/create-a-preset-from-a-messages-request-body.md)
 * `MessagesStartEvent`: new property `input_transformations`
-  * Used by [`POST /messages`](https://openrouter.ai/docs/api/api-reference/anthropic-messages/create-a-message)
+  * Used by [`POST /messages`](api/api-reference/anthropic-messages/create-a-message.md)
 * `MessagesDeltaEvent`: property `server_tool_use` updated
-  * Used by [`POST /messages`](https://openrouter.ai/docs/api/api-reference/anthropic-messages/create-a-message)
+  * Used by [`POST /messages`](api/api-reference/anthropic-messages/create-a-message.md)
 * `AnthropicContainer`: example modified; new property `skills`
-  * Used by [`POST /messages`](https://openrouter.ai/docs/api/api-reference/anthropic-messages/create-a-message)
+  * Used by [`POST /messages`](api/api-reference/anthropic-messages/create-a-message.md)
 * `AnthropicSystemClearAt`: enum property\_added
-  * Used by [`POST /messages`](https://openrouter.ai/docs/api/api-reference/anthropic-messages/create-a-message), [`POST /presets/{slug}/messages`](https://openrouter.ai/docs/api/api-reference/presets/create-a-preset-from-a-messages-request-body)
+  * Used by [`POST /messages`](api/api-reference/anthropic-messages/create-a-message.md), [`POST /presets/{slug}/messages`](api/api-reference/presets/create-a-preset-from-a-messages-request-body.md)
 * `AnthropicThinkingBlockBinding`: enum property\_added
-  * Used by [`POST /messages`](https://openrouter.ai/docs/api/api-reference/anthropic-messages/create-a-message), [`POST /presets/{slug}/messages`](https://openrouter.ai/docs/api/api-reference/presets/create-a-preset-from-a-messages-request-body)
+  * Used by [`POST /messages`](api/api-reference/anthropic-messages/create-a-message.md), [`POST /presets/{slug}/messages`](api/api-reference/presets/create-a-preset-from-a-messages-request-body.md)
 
 **August 31, 2026**
 
@@ -4474,161 +4474,161 @@ Entries on this page are generated automatically from [OpenAPI specification](ap
 
   **4 endpoints using this schema**
 
-  * [`POST /chat/completions`](https://openrouter.ai/docs/api/api-reference/chat/create-a-chat-completion)
-  * [`POST /embeddings`](https://openrouter.ai/docs/api/api-reference/embeddings/submit-an-embedding-request)
-  * [`POST /images`](https://openrouter.ai/docs/api/api-reference/images/generate-an-image)
-  * [`POST /messages`](https://openrouter.ai/docs/api/api-reference/anthropic-messages/create-a-message)
+  * [`POST /chat/completions`](api/api-reference/chat/create-a-chat-completion.md)
+  * [`POST /embeddings`](api/api-reference/embeddings/submit-an-embedding-request.md)
+  * [`POST /images`](api/api-reference/images/generate-an-image.md)
+  * [`POST /messages`](api/api-reference/anthropic-messages/create-a-message.md)
 * `Usage`: example modified
-  * Used by [`POST /responses`](https://openrouter.ai/docs/api/api-reference/responses/create-a-response)
+  * Used by [`POST /responses`](api/api-reference/responses/create-a-response.md)
 * `OutputCustomToolCallItem`: example modified; new property `status`
-  * Used by [`POST /presets/{slug}/responses`](https://openrouter.ai/docs/api/api-reference/presets/create-a-preset-from-a-responses-request-body), [`POST /responses`](https://openrouter.ai/docs/api/api-reference/responses/create-a-response)
+  * Used by [`POST /presets/{slug}/responses`](api/api-reference/presets/create-a-preset-from-a-responses-request-body.md), [`POST /responses`](api/api-reference/responses/create-a-response.md)
 * `OutputItemCustomToolCall`: example modified; new property `status`
-  * Used by [`POST /responses`](https://openrouter.ai/docs/api/api-reference/responses/create-a-response)
+  * Used by [`POST /responses`](api/api-reference/responses/create-a-response.md)
 
 **August 30, 2026**
 
 ## Modified endpoints
 
-* [`POST /analytics/query`](https://openrouter.ai/docs/api/api-reference/analytics/query-analytics-data): description updated; request schema updated
-* [`POST /auth/keys/code`](https://openrouter.ai/docs/api/api-reference/oauth/create-authorization-code): description updated
-* [`POST /keys`](https://openrouter.ai/docs/api/api-reference/api-keys/create-a-new-api-key): description updated
+* [`POST /analytics/query`](api/api-reference/analytics/query-analytics-data.md): description updated; request schema updated
+* [`POST /auth/keys/code`](api/api-reference/oauth/create-authorization-code.md): description updated
+* [`POST /keys`](api/api-reference/api-keys/create-a-new-api-key.md): description updated
 
 **August 28, 2026**
 
 ## Breaking changes
 
 * `PublicEndpoint`: required `supports_tool_choice` property addedNo action needed
-  * Used by [`GET /endpoints/zdr`](https://openrouter.ai/docs/api/api-reference/endpoints/preview-the-impact-of-zdr-on-the-available-endpoints), [`GET /models/{author}/{slug}/endpoints`](https://openrouter.ai/docs/api/api-reference/endpoints/list-all-endpoints-for-a-model)
+  * Used by [`GET /endpoints/zdr`](api/api-reference/endpoints/preview-the-impact-of-zdr-on-the-available-endpoints.md), [`GET /models/{author}/{slug}/endpoints`](api/api-reference/endpoints/list-all-endpoints-for-a-model.md)
 
 ## Modified endpoints
 
-* [`POST /containers/{container_id}/files/{file_id}/promote`](https://openrouter.ai/docs/api/api-reference/containers/promote-a-container-file-into-workspace-documents): description updated; response schema updated
-* [`GET /byok`](https://openrouter.ai/docs/api/api-reference/byok/list-byok-provider-credentials): parameter `provider` updated
-* [`GET /models/user`](https://openrouter.ai/docs/api/api-reference/models/list-models-filtered-by-user-provider-preferences-privacy-settings-and-guardrails): description updated; new parameter `output_modalities`
+* [`POST /containers/{container_id}/files/{file_id}/promote`](api/api-reference/containers/promote-a-container-file-into-workspace-documents.md): description updated; response schema updated
+* [`GET /byok`](api/api-reference/byok/list-byok-provider-credentials.md): parameter `provider` updated
+* [`GET /models/user`](api/api-reference/models/list-models-filtered-by-user-provider-preferences-privacy-settings-and-guardrails.md): description updated; new parameter `output_modalities`
 
 ## New schemas
 
 * `ToolChoiceSupport`
-  * Used by [`GET /endpoints/zdr`](https://openrouter.ai/docs/api/api-reference/endpoints/preview-the-impact-of-zdr-on-the-available-endpoints), [`GET /models/{author}/{slug}/endpoints`](https://openrouter.ai/docs/api/api-reference/endpoints/list-all-endpoints-for-a-model)
+  * Used by [`GET /endpoints/zdr`](api/api-reference/endpoints/preview-the-impact-of-zdr-on-the-available-endpoints.md), [`GET /models/{author}/{slug}/endpoints`](api/api-reference/endpoints/list-all-endpoints-for-a-model.md)
 
 ## Modified schemas
 
 * `PublicEndpoint`: example modified; new property `supports_tool_choice`
-  * Used by [`GET /endpoints/zdr`](https://openrouter.ai/docs/api/api-reference/endpoints/preview-the-impact-of-zdr-on-the-available-endpoints), [`GET /models/{author}/{slug}/endpoints`](https://openrouter.ai/docs/api/api-reference/endpoints/list-all-endpoints-for-a-model)
+  * Used by [`GET /endpoints/zdr`](api/api-reference/endpoints/preview-the-impact-of-zdr-on-the-available-endpoints.md), [`GET /models/{author}/{slug}/endpoints`](api/api-reference/endpoints/list-all-endpoints-for-a-model.md)
 * `BYOKProviderSlug`: enum property\_added
 
   **4 endpoints using this schema**
 
-  * [`GET /byok`](https://openrouter.ai/docs/api/api-reference/byok/list-byok-provider-credentials)
-  * [`GET /byok/{id}`](https://openrouter.ai/docs/api/api-reference/byok/get-a-byok-provider-credential)
-  * [`PATCH /byok/{id}`](https://openrouter.ai/docs/api/api-reference/byok/update-a-byok-provider-credential)
-  * [`POST /byok`](https://openrouter.ai/docs/api/api-reference/byok/create-a-byok-provider-credential)
+  * [`GET /byok`](api/api-reference/byok/list-byok-provider-credentials.md)
+  * [`GET /byok/{id}`](api/api-reference/byok/get-a-byok-provider-credential.md)
+  * [`PATCH /byok/{id}`](api/api-reference/byok/update-a-byok-provider-credential.md)
+  * [`POST /byok`](api/api-reference/byok/create-a-byok-provider-credential.md)
 * `MessagesStartEvent`: property `provider` updated
-  * Used by [`POST /messages`](https://openrouter.ai/docs/api/api-reference/anthropic-messages/create-a-message)
+  * Used by [`POST /messages`](api/api-reference/anthropic-messages/create-a-message.md)
 * `ProviderName`: enum property\_added
 
   **11 endpoints using this schema**
 
-  * [`GET /endpoints/zdr`](https://openrouter.ai/docs/api/api-reference/endpoints/preview-the-impact-of-zdr-on-the-available-endpoints)
-  * [`GET /models/{author}/{slug}/endpoints`](https://openrouter.ai/docs/api/api-reference/endpoints/list-all-endpoints-for-a-model)
-  * [`POST /chat/completions`](https://openrouter.ai/docs/api/api-reference/chat/create-a-chat-completion)
-  * [`POST /embeddings`](https://openrouter.ai/docs/api/api-reference/embeddings/submit-an-embedding-request)
-  * [`POST /images`](https://openrouter.ai/docs/api/api-reference/images/generate-an-image)
-  * [`POST /messages`](https://openrouter.ai/docs/api/api-reference/anthropic-messages/create-a-message)
-  * [`POST /presets/{slug}/chat/completions`](https://openrouter.ai/docs/api/api-reference/presets/create-a-preset-from-a-chat-completions-request-body)
-  * [`POST /presets/{slug}/messages`](https://openrouter.ai/docs/api/api-reference/presets/create-a-preset-from-a-messages-request-body)
-  * [`POST /presets/{slug}/responses`](https://openrouter.ai/docs/api/api-reference/presets/create-a-preset-from-a-responses-request-body)
-  * [`POST /rerank`](https://openrouter.ai/docs/api/api-reference/rerank/submit-a-rerank-request)
-  * [`POST /responses`](https://openrouter.ai/docs/api/api-reference/responses/create-a-response)
+  * [`GET /endpoints/zdr`](api/api-reference/endpoints/preview-the-impact-of-zdr-on-the-available-endpoints.md)
+  * [`GET /models/{author}/{slug}/endpoints`](api/api-reference/endpoints/list-all-endpoints-for-a-model.md)
+  * [`POST /chat/completions`](api/api-reference/chat/create-a-chat-completion.md)
+  * [`POST /embeddings`](api/api-reference/embeddings/submit-an-embedding-request.md)
+  * [`POST /images`](api/api-reference/images/generate-an-image.md)
+  * [`POST /messages`](api/api-reference/anthropic-messages/create-a-message.md)
+  * [`POST /presets/{slug}/chat/completions`](api/api-reference/presets/create-a-preset-from-a-chat-completions-request-body.md)
+  * [`POST /presets/{slug}/messages`](api/api-reference/presets/create-a-preset-from-a-messages-request-body.md)
+  * [`POST /presets/{slug}/responses`](api/api-reference/presets/create-a-preset-from-a-responses-request-body.md)
+  * [`POST /rerank`](api/api-reference/rerank/submit-a-rerank-request.md)
+  * [`POST /responses`](api/api-reference/responses/create-a-response.md)
 * `ProviderOptions`: new property `ollama`
 
   **4 endpoints using this schema**
 
-  * [`POST /audio/speech`](https://openrouter.ai/docs/api/api-reference/tts/create-speech)
-  * [`POST /audio/transcriptions`](https://openrouter.ai/docs/api/api-reference/stt/create-transcription)
-  * [`POST /images`](https://openrouter.ai/docs/api/api-reference/images/generate-an-image)
-  * [`POST /videos`](https://openrouter.ai/docs/api/api-reference/video-generation/submit-a-video-generation-request)
+  * [`POST /audio/speech`](api/api-reference/tts/create-speech.md)
+  * [`POST /audio/transcriptions`](api/api-reference/stt/create-transcription.md)
+  * [`POST /images`](api/api-reference/images/generate-an-image.md)
+  * [`POST /videos`](api/api-reference/video-generation/submit-a-video-generation-request.md)
 * `ProviderResponse`: enum property\_added
-  * Used by [`GET /generation`](https://openrouter.ai/docs/api/api-reference/generations/get-request-&-usage-metadata-for-a-generation)
+  * Used by [`GET /generation`](api/api-reference/generations/get-request-&-usage-metadata-for-a-generation.md)
 * `ProviderOptions`: new property `cosine`
 
   **4 endpoints using this schema**
 
-  * [`POST /audio/speech`](https://openrouter.ai/docs/api/api-reference/tts/create-speech)
-  * [`POST /audio/transcriptions`](https://openrouter.ai/docs/api/api-reference/stt/create-transcription)
-  * [`POST /images`](https://openrouter.ai/docs/api/api-reference/images/generate-an-image)
-  * [`POST /videos`](https://openrouter.ai/docs/api/api-reference/video-generation/submit-a-video-generation-request)
+  * [`POST /audio/speech`](api/api-reference/tts/create-speech.md)
+  * [`POST /audio/transcriptions`](api/api-reference/stt/create-transcription.md)
+  * [`POST /images`](api/api-reference/images/generate-an-image.md)
+  * [`POST /videos`](api/api-reference/video-generation/submit-a-video-generation-request.md)
 
 **August 27, 2026**
 
 ## Modified schemas
 
 * `CreateGuardrailResponse`: example modified
-  * Used by [`POST /guardrails`](https://openrouter.ai/docs/api/api-reference/guardrails/create-a-guardrail)
+  * Used by [`POST /guardrails`](api/api-reference/guardrails/create-a-guardrail.md)
 * `GetGuardrailResponse`: example modified
-  * Used by [`GET /guardrails/{id}`](https://openrouter.ai/docs/api/api-reference/guardrails/get-a-guardrail)
+  * Used by [`GET /guardrails/{id}`](api/api-reference/guardrails/get-a-guardrail.md)
 * `ListGuardrailsResponse`: example modified
-  * Used by [`GET /guardrails`](https://openrouter.ai/docs/api/api-reference/guardrails/list-guardrails)
+  * Used by [`GET /guardrails`](api/api-reference/guardrails/list-guardrails.md)
 * `UpdateGuardrailResponse`: example modified
-  * Used by [`PATCH /guardrails/{id}`](https://openrouter.ai/docs/api/api-reference/guardrails/update-a-guardrail)
+  * Used by [`PATCH /guardrails/{id}`](api/api-reference/guardrails/update-a-guardrail.md)
 
 **August 26, 2026**
 
 ## Breaking changes
 
-* [`GET /containers/{container_id}/files`](https://openrouter.ai/docs/api/api-reference/containers/list-container-files): x-hidden `true` object removedNo action needed
-* [`GET /containers/{container_id}/files/{file_id}`](https://openrouter.ai/docs/api/api-reference/containers/retrieve-a-container-file): x-hidden `true` object removedNo action needed
-* [`GET /containers/{container_id}/files/{file_id}/content`](https://openrouter.ai/docs/api/api-reference/containers/download-container-file-content): x-hidden `true` object removedNo action needed
-* [`POST /containers/{container_id}/files/{file_id}/promote`](https://openrouter.ai/docs/api/api-reference/containers/promote-a-container-file-into-workspace-documents): x-hidden `true` object removedNo action needed
-* [`GET /files`](https://openrouter.ai/docs/api/api-reference/files/list-files): x-hidden `true` object removedNo action needed
-* [`POST /files`](https://openrouter.ai/docs/api/api-reference/files/upload-a-file): x-hidden `true` object removedNo action needed
-* [`DELETE /files/{file_id}`](https://openrouter.ai/docs/api/api-reference/files/delete-a-file): x-hidden `true` object removedNo action needed
-* [`GET /files/{file_id}`](https://openrouter.ai/docs/api/api-reference/files/get-file-metadata): x-hidden `true` object removedNo action needed
-* [`GET /files/{file_id}/content`](https://openrouter.ai/docs/api/api-reference/files/download-file-content): x-hidden `true` object removedNo action needed
+* [`GET /containers/{container_id}/files`](api/api-reference/containers/list-container-files.md): x-hidden `true` object removedNo action needed
+* [`GET /containers/{container_id}/files/{file_id}`](api/api-reference/containers/retrieve-a-container-file.md): x-hidden `true` object removedNo action needed
+* [`GET /containers/{container_id}/files/{file_id}/content`](api/api-reference/containers/download-container-file-content.md): x-hidden `true` object removedNo action needed
+* [`POST /containers/{container_id}/files/{file_id}/promote`](api/api-reference/containers/promote-a-container-file-into-workspace-documents.md): x-hidden `true` object removedNo action needed
+* [`GET /files`](api/api-reference/files/list-files.md): x-hidden `true` object removedNo action needed
+* [`POST /files`](api/api-reference/files/upload-a-file.md): x-hidden `true` object removedNo action needed
+* [`DELETE /files/{file_id}`](api/api-reference/files/delete-a-file.md): x-hidden `true` object removedNo action needed
+* [`GET /files/{file_id}`](api/api-reference/files/get-file-metadata.md): x-hidden `true` object removedNo action needed
+* [`GET /files/{file_id}/content`](api/api-reference/files/download-file-content.md): x-hidden `true` object removedNo action needed
 
 ## Modified endpoints
 
-* [`DELETE /workspaces/{id}`](https://openrouter.ai/docs/api/api-reference/workspaces/delete-a-workspace): description updated
-* [`DELETE /workspaces/{id}`](https://openrouter.ai/docs/api/api-reference/workspaces/delete-a-workspace): new parameter `confirm_default_workspace_deletion`
-* [`DELETE /files/{file_id}`](https://openrouter.ai/docs/api/api-reference/files/delete-a-file): parameter `file_id` updated
-* [`GET /files/{file_id}`](https://openrouter.ai/docs/api/api-reference/files/get-file-metadata): parameter `file_id` updated
-* [`GET /files/{file_id}/content`](https://openrouter.ai/docs/api/api-reference/files/download-file-content): parameter `file_id` updated
+* [`DELETE /workspaces/{id}`](api/api-reference/workspaces/delete-a-workspace.md): description updated
+* [`DELETE /workspaces/{id}`](api/api-reference/workspaces/delete-a-workspace.md): new parameter `confirm_default_workspace_deletion`
+* [`DELETE /files/{file_id}`](api/api-reference/files/delete-a-file.md): parameter `file_id` updated
+* [`GET /files/{file_id}`](api/api-reference/files/get-file-metadata.md): parameter `file_id` updated
+* [`GET /files/{file_id}/content`](api/api-reference/files/download-file-content.md): parameter `file_id` updated
 
 ## Modified schemas
 
 * `ImageGenerationRequest`: new property `user`
-  * Used by [`POST /images`](https://openrouter.ai/docs/api/api-reference/images/generate-an-image)
+  * Used by [`POST /images`](api/api-reference/images/generate-an-image.md)
 * `ShellCallOutputItem`: new property `container_id`; new property `files`
-  * Used by [`POST /presets/{slug}/responses`](https://openrouter.ai/docs/api/api-reference/presets/create-a-preset-from-a-responses-request-body), [`POST /responses`](https://openrouter.ai/docs/api/api-reference/responses/create-a-response)
+  * Used by [`POST /presets/{slug}/responses`](api/api-reference/presets/create-a-preset-from-a-responses-request-body.md), [`POST /responses`](api/api-reference/responses/create-a-response.md)
 * `ContentFilterBuiltinEntry`: description updated
 
   **4 endpoints using this schema**
 
-  * [`GET /guardrails`](https://openrouter.ai/docs/api/api-reference/guardrails/list-guardrails)
-  * [`GET /guardrails/{id}`](https://openrouter.ai/docs/api/api-reference/guardrails/get-a-guardrail)
-  * [`PATCH /guardrails/{id}`](https://openrouter.ai/docs/api/api-reference/guardrails/update-a-guardrail)
-  * [`POST /guardrails`](https://openrouter.ai/docs/api/api-reference/guardrails/create-a-guardrail)
+  * [`GET /guardrails`](api/api-reference/guardrails/list-guardrails.md)
+  * [`GET /guardrails/{id}`](api/api-reference/guardrails/get-a-guardrail.md)
+  * [`PATCH /guardrails/{id}`](api/api-reference/guardrails/update-a-guardrail.md)
+  * [`POST /guardrails`](api/api-reference/guardrails/create-a-guardrail.md)
 * `ContentFilterBuiltinSlug`: enum property\_added
 
   **4 endpoints using this schema**
 
-  * [`GET /guardrails`](https://openrouter.ai/docs/api/api-reference/guardrails/list-guardrails)
-  * [`GET /guardrails/{id}`](https://openrouter.ai/docs/api/api-reference/guardrails/get-a-guardrail)
-  * [`PATCH /guardrails/{id}`](https://openrouter.ai/docs/api/api-reference/guardrails/update-a-guardrail)
-  * [`POST /guardrails`](https://openrouter.ai/docs/api/api-reference/guardrails/create-a-guardrail)
+  * [`GET /guardrails`](api/api-reference/guardrails/list-guardrails.md)
+  * [`GET /guardrails/{id}`](api/api-reference/guardrails/get-a-guardrail.md)
+  * [`PATCH /guardrails/{id}`](api/api-reference/guardrails/update-a-guardrail.md)
+  * [`POST /guardrails`](api/api-reference/guardrails/create-a-guardrail.md)
 
 **August 25, 2026**
 
 ## New endpoints
 
-* [`POST /containers/{container_id}/files/{file_id}/promote`](https://openrouter.ai/docs/api/api-reference/containers/promote-a-container-file-into-workspace-documents): Promote a container file into workspace documents
+* [`POST /containers/{container_id}/files/{file_id}/promote`](api/api-reference/containers/promote-a-container-file-into-workspace-documents.md): Promote a container file into workspace documents
 
 ## New response codes
 
-* [`POST /audio/speech`](https://openrouter.ai/docs/api/api-reference/tts/create-speech): now returns `413`
-* [`POST /audio/transcriptions`](https://openrouter.ai/docs/api/api-reference/stt/create-transcription): now returns `413`
-* [`POST /rerank`](https://openrouter.ai/docs/api/api-reference/rerank/submit-a-rerank-request): now returns `413`
-* [`POST /videos`](https://openrouter.ai/docs/api/api-reference/video-generation/submit-a-video-generation-request): now returns `413`
+* [`POST /audio/speech`](api/api-reference/tts/create-speech.md): now returns `413`
+* [`POST /audio/transcriptions`](api/api-reference/stt/create-transcription.md): now returns `413`
+* [`POST /rerank`](api/api-reference/rerank/submit-a-rerank-request.md): now returns `413`
+* [`POST /videos`](api/api-reference/video-generation/submit-a-video-generation-request.md): now returns `413`
 
 ## New schemas
 
@@ -4636,22 +4636,22 @@ Entries on this page are generated automatically from [OpenAPI specification](ap
 
   **6 endpoints using this schema**
 
-  * [`POST /chat/completions`](https://openrouter.ai/docs/api/api-reference/chat/create-a-chat-completion)
-  * [`POST /messages`](https://openrouter.ai/docs/api/api-reference/anthropic-messages/create-a-message)
-  * [`POST /presets/{slug}/chat/completions`](https://openrouter.ai/docs/api/api-reference/presets/create-a-preset-from-a-chat-completions-request-body)
-  * [`POST /presets/{slug}/messages`](https://openrouter.ai/docs/api/api-reference/presets/create-a-preset-from-a-messages-request-body)
-  * [`POST /presets/{slug}/responses`](https://openrouter.ai/docs/api/api-reference/presets/create-a-preset-from-a-responses-request-body)
-  * [`POST /responses`](https://openrouter.ai/docs/api/api-reference/responses/create-a-response)
+  * [`POST /chat/completions`](api/api-reference/chat/create-a-chat-completion.md)
+  * [`POST /messages`](api/api-reference/anthropic-messages/create-a-message.md)
+  * [`POST /presets/{slug}/chat/completions`](api/api-reference/presets/create-a-preset-from-a-chat-completions-request-body.md)
+  * [`POST /presets/{slug}/messages`](api/api-reference/presets/create-a-preset-from-a-messages-request-body.md)
+  * [`POST /presets/{slug}/responses`](api/api-reference/presets/create-a-preset-from-a-responses-request-body.md)
+  * [`POST /responses`](api/api-reference/responses/create-a-response.md)
 * `ContainerFileIds`
 
   **6 endpoints using this schema**
 
-  * [`POST /chat/completions`](https://openrouter.ai/docs/api/api-reference/chat/create-a-chat-completion)
-  * [`POST /messages`](https://openrouter.ai/docs/api/api-reference/anthropic-messages/create-a-message)
-  * [`POST /presets/{slug}/chat/completions`](https://openrouter.ai/docs/api/api-reference/presets/create-a-preset-from-a-chat-completions-request-body)
-  * [`POST /presets/{slug}/messages`](https://openrouter.ai/docs/api/api-reference/presets/create-a-preset-from-a-messages-request-body)
-  * [`POST /presets/{slug}/responses`](https://openrouter.ai/docs/api/api-reference/presets/create-a-preset-from-a-responses-request-body)
-  * [`POST /responses`](https://openrouter.ai/docs/api/api-reference/responses/create-a-response)
+  * [`POST /chat/completions`](api/api-reference/chat/create-a-chat-completion.md)
+  * [`POST /messages`](api/api-reference/anthropic-messages/create-a-message.md)
+  * [`POST /presets/{slug}/chat/completions`](api/api-reference/presets/create-a-preset-from-a-chat-completions-request-body.md)
+  * [`POST /presets/{slug}/messages`](api/api-reference/presets/create-a-preset-from-a-messages-request-body.md)
+  * [`POST /presets/{slug}/responses`](api/api-reference/presets/create-a-preset-from-a-responses-request-body.md)
+  * [`POST /responses`](api/api-reference/responses/create-a-response.md)
 
 ## Modified schemas
 
@@ -4659,76 +4659,76 @@ Entries on this page are generated automatically from [OpenAPI specification](ap
 
   **6 endpoints using this schema**
 
-  * [`POST /chat/completions`](https://openrouter.ai/docs/api/api-reference/chat/create-a-chat-completion)
-  * [`POST /messages`](https://openrouter.ai/docs/api/api-reference/anthropic-messages/create-a-message)
-  * [`POST /presets/{slug}/chat/completions`](https://openrouter.ai/docs/api/api-reference/presets/create-a-preset-from-a-chat-completions-request-body)
-  * [`POST /presets/{slug}/messages`](https://openrouter.ai/docs/api/api-reference/presets/create-a-preset-from-a-messages-request-body)
-  * [`POST /presets/{slug}/responses`](https://openrouter.ai/docs/api/api-reference/presets/create-a-preset-from-a-responses-request-body)
-  * [`POST /responses`](https://openrouter.ai/docs/api/api-reference/responses/create-a-response)
+  * [`POST /chat/completions`](api/api-reference/chat/create-a-chat-completion.md)
+  * [`POST /messages`](api/api-reference/anthropic-messages/create-a-message.md)
+  * [`POST /presets/{slug}/chat/completions`](api/api-reference/presets/create-a-preset-from-a-chat-completions-request-body.md)
+  * [`POST /presets/{slug}/messages`](api/api-reference/presets/create-a-preset-from-a-messages-request-body.md)
+  * [`POST /presets/{slug}/responses`](api/api-reference/presets/create-a-preset-from-a-responses-request-body.md)
+  * [`POST /responses`](api/api-reference/responses/create-a-response.md)
 * `ContainerReferenceEnvironment`: new property `network_policy`
 
   **6 endpoints using this schema**
 
-  * [`POST /chat/completions`](https://openrouter.ai/docs/api/api-reference/chat/create-a-chat-completion)
-  * [`POST /messages`](https://openrouter.ai/docs/api/api-reference/anthropic-messages/create-a-message)
-  * [`POST /presets/{slug}/chat/completions`](https://openrouter.ai/docs/api/api-reference/presets/create-a-preset-from-a-chat-completions-request-body)
-  * [`POST /presets/{slug}/messages`](https://openrouter.ai/docs/api/api-reference/presets/create-a-preset-from-a-messages-request-body)
-  * [`POST /presets/{slug}/responses`](https://openrouter.ai/docs/api/api-reference/presets/create-a-preset-from-a-responses-request-body)
-  * [`POST /responses`](https://openrouter.ai/docs/api/api-reference/responses/create-a-response)
+  * [`POST /chat/completions`](api/api-reference/chat/create-a-chat-completion.md)
+  * [`POST /messages`](api/api-reference/anthropic-messages/create-a-message.md)
+  * [`POST /presets/{slug}/chat/completions`](api/api-reference/presets/create-a-preset-from-a-chat-completions-request-body.md)
+  * [`POST /presets/{slug}/messages`](api/api-reference/presets/create-a-preset-from-a-messages-request-body.md)
+  * [`POST /presets/{slug}/responses`](api/api-reference/presets/create-a-preset-from-a-responses-request-body.md)
+  * [`POST /responses`](api/api-reference/responses/create-a-response.md)
 * `SandboxSleepAfterSeconds`: description updated
 
   **6 endpoints using this schema**
 
-  * [`POST /chat/completions`](https://openrouter.ai/docs/api/api-reference/chat/create-a-chat-completion)
-  * [`POST /messages`](https://openrouter.ai/docs/api/api-reference/anthropic-messages/create-a-message)
-  * [`POST /presets/{slug}/chat/completions`](https://openrouter.ai/docs/api/api-reference/presets/create-a-preset-from-a-chat-completions-request-body)
-  * [`POST /presets/{slug}/messages`](https://openrouter.ai/docs/api/api-reference/presets/create-a-preset-from-a-messages-request-body)
-  * [`POST /presets/{slug}/responses`](https://openrouter.ai/docs/api/api-reference/presets/create-a-preset-from-a-responses-request-body)
-  * [`POST /responses`](https://openrouter.ai/docs/api/api-reference/responses/create-a-response)
+  * [`POST /chat/completions`](api/api-reference/chat/create-a-chat-completion.md)
+  * [`POST /messages`](api/api-reference/anthropic-messages/create-a-message.md)
+  * [`POST /presets/{slug}/chat/completions`](api/api-reference/presets/create-a-preset-from-a-chat-completions-request-body.md)
+  * [`POST /presets/{slug}/messages`](api/api-reference/presets/create-a-preset-from-a-messages-request-body.md)
+  * [`POST /presets/{slug}/responses`](api/api-reference/presets/create-a-preset-from-a-responses-request-body.md)
+  * [`POST /responses`](api/api-reference/responses/create-a-response.md)
 * `ContainerAutoEnvironment`: new property `file_ids`
 
   **6 endpoints using this schema**
 
-  * [`POST /chat/completions`](https://openrouter.ai/docs/api/api-reference/chat/create-a-chat-completion)
-  * [`POST /messages`](https://openrouter.ai/docs/api/api-reference/anthropic-messages/create-a-message)
-  * [`POST /presets/{slug}/chat/completions`](https://openrouter.ai/docs/api/api-reference/presets/create-a-preset-from-a-chat-completions-request-body)
-  * [`POST /presets/{slug}/messages`](https://openrouter.ai/docs/api/api-reference/presets/create-a-preset-from-a-messages-request-body)
-  * [`POST /presets/{slug}/responses`](https://openrouter.ai/docs/api/api-reference/presets/create-a-preset-from-a-responses-request-body)
-  * [`POST /responses`](https://openrouter.ai/docs/api/api-reference/responses/create-a-response)
+  * [`POST /chat/completions`](api/api-reference/chat/create-a-chat-completion.md)
+  * [`POST /messages`](api/api-reference/anthropic-messages/create-a-message.md)
+  * [`POST /presets/{slug}/chat/completions`](api/api-reference/presets/create-a-preset-from-a-chat-completions-request-body.md)
+  * [`POST /presets/{slug}/messages`](api/api-reference/presets/create-a-preset-from-a-messages-request-body.md)
+  * [`POST /presets/{slug}/responses`](api/api-reference/presets/create-a-preset-from-a-responses-request-body.md)
+  * [`POST /responses`](api/api-reference/responses/create-a-response.md)
 * `ContainerReferenceEnvironment`: new property `file_ids`
 
   **6 endpoints using this schema**
 
-  * [`POST /chat/completions`](https://openrouter.ai/docs/api/api-reference/chat/create-a-chat-completion)
-  * [`POST /messages`](https://openrouter.ai/docs/api/api-reference/anthropic-messages/create-a-message)
-  * [`POST /presets/{slug}/chat/completions`](https://openrouter.ai/docs/api/api-reference/presets/create-a-preset-from-a-chat-completions-request-body)
-  * [`POST /presets/{slug}/messages`](https://openrouter.ai/docs/api/api-reference/presets/create-a-preset-from-a-messages-request-body)
-  * [`POST /presets/{slug}/responses`](https://openrouter.ai/docs/api/api-reference/presets/create-a-preset-from-a-responses-request-body)
-  * [`POST /responses`](https://openrouter.ai/docs/api/api-reference/responses/create-a-response)
+  * [`POST /chat/completions`](api/api-reference/chat/create-a-chat-completion.md)
+  * [`POST /messages`](api/api-reference/anthropic-messages/create-a-message.md)
+  * [`POST /presets/{slug}/chat/completions`](api/api-reference/presets/create-a-preset-from-a-chat-completions-request-body.md)
+  * [`POST /presets/{slug}/messages`](api/api-reference/presets/create-a-preset-from-a-messages-request-body.md)
+  * [`POST /presets/{slug}/responses`](api/api-reference/presets/create-a-preset-from-a-responses-request-body.md)
+  * [`POST /responses`](api/api-reference/responses/create-a-response.md)
 * `PublicEndpoint`: description updated
-  * Used by [`GET /endpoints/zdr`](https://openrouter.ai/docs/api/api-reference/endpoints/preview-the-impact-of-zdr-on-the-available-endpoints), [`GET /models/{author}/{slug}/endpoints`](https://openrouter.ai/docs/api/api-reference/endpoints/list-all-endpoints-for-a-model)
+  * Used by [`GET /endpoints/zdr`](api/api-reference/endpoints/preview-the-impact-of-zdr-on-the-available-endpoints.md), [`GET /models/{author}/{slug}/endpoints`](api/api-reference/endpoints/list-all-endpoints-for-a-model.md)
 * `TopProviderInfo`: description updated
 
   **4 endpoints using this schema**
 
-  * [`GET /embeddings/models`](https://openrouter.ai/docs/api/api-reference/embeddings/list-all-embeddings-models)
-  * [`GET /model/{author}/{slug}`](https://openrouter.ai/docs/api/api-reference/models/get-a-model-by-its-slug)
-  * [`GET /models`](https://openrouter.ai/docs/api/api-reference/models/list-all-models-and-their-properties)
-  * [`GET /models/user`](https://openrouter.ai/docs/api/api-reference/models/list-models-filtered-by-user-provider-preferences-privacy-settings-and-guardrails)
+  * [`GET /embeddings/models`](api/api-reference/embeddings/list-all-embeddings-models.md)
+  * [`GET /model/{author}/{slug}`](api/api-reference/models/get-a-model-by-its-slug.md)
+  * [`GET /models`](api/api-reference/models/list-all-models-and-their-properties.md)
+  * [`GET /models/user`](api/api-reference/models/list-models-filtered-by-user-provider-preferences-privacy-settings-and-guardrails.md)
 * `CreateGuardrailRequest`: description updated
-  * Used by [`POST /guardrails`](https://openrouter.ai/docs/api/api-reference/guardrails/create-a-guardrail)
+  * Used by [`POST /guardrails`](api/api-reference/guardrails/create-a-guardrail.md)
 * `ImagePricingEntry`: enum property\_added
-  * Used by [`GET /images/models/{author}/{slug}/endpoints`](https://openrouter.ai/docs/api/api-reference/images/list-endpoints-for-an-image-model)
+  * Used by [`GET /images/models/{author}/{slug}/endpoints`](api/api-reference/images/list-endpoints-for-an-image-model.md)
 * `FusionPlugin`: description updated
 
   **6 endpoints using this schema**
 
-  * [`POST /chat/completions`](https://openrouter.ai/docs/api/api-reference/chat/create-a-chat-completion)
-  * [`POST /messages`](https://openrouter.ai/docs/api/api-reference/anthropic-messages/create-a-message)
-  * [`POST /presets/{slug}/chat/completions`](https://openrouter.ai/docs/api/api-reference/presets/create-a-preset-from-a-chat-completions-request-body)
-  * [`POST /presets/{slug}/messages`](https://openrouter.ai/docs/api/api-reference/presets/create-a-preset-from-a-messages-request-body)
-  * [`POST /presets/{slug}/responses`](https://openrouter.ai/docs/api/api-reference/presets/create-a-preset-from-a-responses-request-body)
-  * [`POST /responses`](https://openrouter.ai/docs/api/api-reference/responses/create-a-response)
+  * [`POST /chat/completions`](api/api-reference/chat/create-a-chat-completion.md)
+  * [`POST /messages`](api/api-reference/anthropic-messages/create-a-message.md)
+  * [`POST /presets/{slug}/chat/completions`](api/api-reference/presets/create-a-preset-from-a-chat-completions-request-body.md)
+  * [`POST /presets/{slug}/messages`](api/api-reference/presets/create-a-preset-from-a-messages-request-body.md)
+  * [`POST /presets/{slug}/responses`](api/api-reference/presets/create-a-preset-from-a-responses-request-body.md)
+  * [`POST /responses`](api/api-reference/responses/create-a-response.md)
 
 **August 24, 2026**
 
@@ -4740,12 +4740,12 @@ Entries on this page are generated automatically from [OpenAPI specification](ap
 
   **6 endpoints using this schema**
 
-  * [`POST /chat/completions`](https://openrouter.ai/docs/api/api-reference/chat/create-a-chat-completion)
-  * [`POST /messages`](https://openrouter.ai/docs/api/api-reference/anthropic-messages/create-a-message)
-  * [`POST /presets/{slug}/chat/completions`](https://openrouter.ai/docs/api/api-reference/presets/create-a-preset-from-a-chat-completions-request-body)
-  * [`POST /presets/{slug}/messages`](https://openrouter.ai/docs/api/api-reference/presets/create-a-preset-from-a-messages-request-body)
-  * [`POST /presets/{slug}/responses`](https://openrouter.ai/docs/api/api-reference/presets/create-a-preset-from-a-responses-request-body)
-  * [`POST /responses`](https://openrouter.ai/docs/api/api-reference/responses/create-a-response)
+  * [`POST /chat/completions`](api/api-reference/chat/create-a-chat-completion.md)
+  * [`POST /messages`](api/api-reference/anthropic-messages/create-a-message.md)
+  * [`POST /presets/{slug}/chat/completions`](api/api-reference/presets/create-a-preset-from-a-chat-completions-request-body.md)
+  * [`POST /presets/{slug}/messages`](api/api-reference/presets/create-a-preset-from-a-messages-request-body.md)
+  * [`POST /presets/{slug}/responses`](api/api-reference/presets/create-a-preset-from-a-responses-request-body.md)
+  * [`POST /responses`](api/api-reference/responses/create-a-response.md)
 * `/containers/{session_id}/files`: endpoint object removedAction required
   * Use the corresponding `/containers/{container_id}/...` endpoint and pass the canonical `container_id` returned by a bash or shell tool result instead of the original session ID.
 * `/containers/{session_id}/files/{file_id}`: endpoint object removedAction required
@@ -4758,88 +4758,88 @@ Entries on this page are generated automatically from [OpenAPI specification](ap
 
   **4 endpoints using this schema**
 
-  * [`GET /observability/destinations`](https://openrouter.ai/docs/api/api-reference/observability/list-observability-destinations)
-  * [`GET /observability/destinations/{id}`](https://openrouter.ai/docs/api/api-reference/observability/get-an-observability-destination)
-  * [`PATCH /observability/destinations/{id}`](https://openrouter.ai/docs/api/api-reference/observability/update-an-observability-destination)
-  * [`POST /observability/destinations`](https://openrouter.ai/docs/api/api-reference/observability/create-an-observability-destination)
-* [`GET /keys`](https://openrouter.ai/docs/api/api-reference/api-keys/list-api-keys): required `external_user` property addedNo action needed
-* [`POST /keys`](https://openrouter.ai/docs/api/api-reference/api-keys/create-a-new-api-key): required `external_user` property addedAction required
+  * [`GET /observability/destinations`](api/api-reference/observability/list-observability-destinations.md)
+  * [`GET /observability/destinations/{id}`](api/api-reference/observability/get-an-observability-destination.md)
+  * [`PATCH /observability/destinations/{id}`](api/api-reference/observability/update-an-observability-destination.md)
+  * [`POST /observability/destinations`](api/api-reference/observability/create-an-observability-destination.md)
+* [`GET /keys`](api/api-reference/api-keys/list-api-keys.md): required `external_user` property addedNo action needed
+* [`POST /keys`](api/api-reference/api-keys/create-a-new-api-key.md): required `external_user` property addedAction required
   * Connect client-secret callers must include a non-empty `external_user` when creating a key. Management-key callers should continue to omit this Connect-only field.
-* [`GET /keys/{hash}`](https://openrouter.ai/docs/api/api-reference/api-keys/get-a-single-api-key): required `external_user` property addedNo action needed
-* [`PATCH /keys/{hash}`](https://openrouter.ai/docs/api/api-reference/api-keys/update-an-api-key): required `external_user` property addedNo action needed
+* [`GET /keys/{hash}`](api/api-reference/api-keys/get-a-single-api-key.md): required `external_user` property addedNo action needed
+* [`PATCH /keys/{hash}`](api/api-reference/api-keys/update-an-api-key.md): required `external_user` property addedNo action needed
 
 ## New endpoints
 
-* [`GET /containers/{session_id}/files`](https://openrouter.ai/docs/api/api-reference/containers/list-container-files): List container files
-* [`GET /containers/{session_id}/files/{file_id}`](https://openrouter.ai/docs/api/api-reference/containers/retrieve-a-container-file): Retrieve a container file
-* [`GET /containers/{session_id}/files/{file_id}/content`](https://openrouter.ai/docs/api/api-reference/containers/download-container-file-content): Download container file content
-* [`GET /containers/{container_id}/files`](https://openrouter.ai/docs/api/api-reference/containers/list-container-files): List container files
-* [`GET /containers/{container_id}/files/{file_id}`](https://openrouter.ai/docs/api/api-reference/containers/retrieve-a-container-file): Retrieve a container file
-* [`GET /containers/{container_id}/files/{file_id}/content`](https://openrouter.ai/docs/api/api-reference/containers/download-container-file-content): Download container file content
+* [`GET /containers/{session_id}/files`](api/api-reference/containers/list-container-files.md): List container files
+* [`GET /containers/{session_id}/files/{file_id}`](api/api-reference/containers/retrieve-a-container-file.md): Retrieve a container file
+* [`GET /containers/{session_id}/files/{file_id}/content`](api/api-reference/containers/download-container-file-content.md): Download container file content
+* [`GET /containers/{container_id}/files`](api/api-reference/containers/list-container-files.md): List container files
+* [`GET /containers/{container_id}/files/{file_id}`](api/api-reference/containers/retrieve-a-container-file.md): Retrieve a container file
+* [`GET /containers/{container_id}/files/{file_id}/content`](api/api-reference/containers/download-container-file-content.md): Download container file content
 
 ## Modified endpoints
 
-* [`POST /keys`](https://openrouter.ai/docs/api/api-reference/api-keys/create-a-new-api-key): request schema updated
-* [`GET /keys`](https://openrouter.ai/docs/api/api-reference/api-keys/list-api-keys): response schema updated
-* [`POST /keys`](https://openrouter.ai/docs/api/api-reference/api-keys/create-a-new-api-key): description updated; request schema updated; response schema updated
-* [`GET /keys/{hash}`](https://openrouter.ai/docs/api/api-reference/api-keys/get-a-single-api-key): response schema updated
-* [`PATCH /keys/{hash}`](https://openrouter.ai/docs/api/api-reference/api-keys/update-an-api-key): response schema updated
-* [`DELETE /keys/{hash}`](https://openrouter.ai/docs/api/api-reference/api-keys/delete-an-api-key): description updated
-* [`PATCH /keys/{hash}`](https://openrouter.ai/docs/api/api-reference/api-keys/update-an-api-key): description updated
+* [`POST /keys`](api/api-reference/api-keys/create-a-new-api-key.md): request schema updated
+* [`GET /keys`](api/api-reference/api-keys/list-api-keys.md): response schema updated
+* [`POST /keys`](api/api-reference/api-keys/create-a-new-api-key.md): description updated; request schema updated; response schema updated
+* [`GET /keys/{hash}`](api/api-reference/api-keys/get-a-single-api-key.md): response schema updated
+* [`PATCH /keys/{hash}`](api/api-reference/api-keys/update-an-api-key.md): response schema updated
+* [`DELETE /keys/{hash}`](api/api-reference/api-keys/delete-an-api-key.md): description updated
+* [`PATCH /keys/{hash}`](api/api-reference/api-keys/update-an-api-key.md): description updated
 
 ## New schemas
 
 * `ContainerFile`
-  * Used by [`GET /containers/{session_id}/files`](https://openrouter.ai/docs/api/api-reference/containers/list-container-files), [`GET /containers/{session_id}/files/{file_id}`](https://openrouter.ai/docs/api/api-reference/containers/retrieve-a-container-file)
+  * Used by [`GET /containers/{session_id}/files`](api/api-reference/containers/list-container-files.md), [`GET /containers/{session_id}/files/{file_id}`](api/api-reference/containers/retrieve-a-container-file.md)
 * `ContainerFileListResponse`
-  * Used by [`GET /containers/{session_id}/files`](https://openrouter.ai/docs/api/api-reference/containers/list-container-files)
+  * Used by [`GET /containers/{session_id}/files`](api/api-reference/containers/list-container-files.md)
 
 ## Modified schemas
 
 * `ContainerFile`: description updated; example modified
-  * Used by [`GET /containers/{container_id}/files`](https://openrouter.ai/docs/api/api-reference/containers/list-container-files), [`GET /containers/{container_id}/files/{file_id}`](https://openrouter.ai/docs/api/api-reference/containers/retrieve-a-container-file)
+  * Used by [`GET /containers/{container_id}/files`](api/api-reference/containers/list-container-files.md), [`GET /containers/{container_id}/files/{file_id}`](api/api-reference/containers/retrieve-a-container-file.md)
 * `ContainerReferenceEnvironment`: description updated; example modified
 
   **6 endpoints using this schema**
 
-  * [`POST /chat/completions`](https://openrouter.ai/docs/api/api-reference/chat/create-a-chat-completion)
-  * [`POST /messages`](https://openrouter.ai/docs/api/api-reference/anthropic-messages/create-a-message)
-  * [`POST /presets/{slug}/chat/completions`](https://openrouter.ai/docs/api/api-reference/presets/create-a-preset-from-a-chat-completions-request-body)
-  * [`POST /presets/{slug}/messages`](https://openrouter.ai/docs/api/api-reference/presets/create-a-preset-from-a-messages-request-body)
-  * [`POST /presets/{slug}/responses`](https://openrouter.ai/docs/api/api-reference/presets/create-a-preset-from-a-responses-request-body)
-  * [`POST /responses`](https://openrouter.ai/docs/api/api-reference/responses/create-a-response)
+  * [`POST /chat/completions`](api/api-reference/chat/create-a-chat-completion.md)
+  * [`POST /messages`](api/api-reference/anthropic-messages/create-a-message.md)
+  * [`POST /presets/{slug}/chat/completions`](api/api-reference/presets/create-a-preset-from-a-chat-completions-request-body.md)
+  * [`POST /presets/{slug}/messages`](api/api-reference/presets/create-a-preset-from-a-messages-request-body.md)
+  * [`POST /presets/{slug}/responses`](api/api-reference/presets/create-a-preset-from-a-responses-request-body.md)
+  * [`POST /responses`](api/api-reference/responses/create-a-response.md)
 * `MessagesBashToolResultBlock`: new property `container_id`; new property `files`
-  * Used by [`POST /messages`](https://openrouter.ai/docs/api/api-reference/anthropic-messages/create-a-message), [`POST /presets/{slug}/messages`](https://openrouter.ai/docs/api/api-reference/presets/create-a-preset-from-a-messages-request-body)
+  * Used by [`POST /messages`](api/api-reference/anthropic-messages/create-a-message.md), [`POST /presets/{slug}/messages`](api/api-reference/presets/create-a-preset-from-a-messages-request-body.md)
 * `MessagesShellToolResultBlock`: new property `container_id`; new property `files`
-  * Used by [`POST /messages`](https://openrouter.ai/docs/api/api-reference/anthropic-messages/create-a-message), [`POST /presets/{slug}/messages`](https://openrouter.ai/docs/api/api-reference/presets/create-a-preset-from-a-messages-request-body)
+  * Used by [`POST /messages`](api/api-reference/anthropic-messages/create-a-message.md), [`POST /presets/{slug}/messages`](api/api-reference/presets/create-a-preset-from-a-messages-request-body.md)
 * `ORAnthropicBashToolResult`: new property `container_id`; new property `files`
-  * Used by [`POST /messages`](https://openrouter.ai/docs/api/api-reference/anthropic-messages/create-a-message)
+  * Used by [`POST /messages`](api/api-reference/anthropic-messages/create-a-message.md)
 * `ORAnthropicShellToolResult`: new property `container_id`; new property `files`
-  * Used by [`POST /messages`](https://openrouter.ai/docs/api/api-reference/anthropic-messages/create-a-message)
+  * Used by [`POST /messages`](api/api-reference/anthropic-messages/create-a-message.md)
 * `OutputBashServerToolItem`: new property `container_id`; new property `files`
-  * Used by [`POST /presets/{slug}/responses`](https://openrouter.ai/docs/api/api-reference/presets/create-a-preset-from-a-responses-request-body), [`POST /responses`](https://openrouter.ai/docs/api/api-reference/responses/create-a-response)
+  * Used by [`POST /presets/{slug}/responses`](api/api-reference/presets/create-a-preset-from-a-responses-request-body.md), [`POST /responses`](api/api-reference/responses/create-a-response.md)
 * `OutputShellCallOutputItem`: new property `container_id`; new property `files`
-  * Used by [`POST /responses`](https://openrouter.ai/docs/api/api-reference/responses/create-a-response)
+  * Used by [`POST /responses`](api/api-reference/responses/create-a-response.md)
 * `OutputShellServerToolItem`: new property `container_id`; new property `files`
-  * Used by [`POST /presets/{slug}/responses`](https://openrouter.ai/docs/api/api-reference/presets/create-a-preset-from-a-responses-request-body), [`POST /responses`](https://openrouter.ai/docs/api/api-reference/responses/create-a-response)
+  * Used by [`POST /presets/{slug}/responses`](api/api-reference/presets/create-a-preset-from-a-responses-request-body.md), [`POST /responses`](api/api-reference/responses/create-a-response.md)
 * `ObservabilityDatadogDestination`: example modified; property `url` updated
 
   **4 endpoints using this schema**
 
-  * [`GET /observability/destinations`](https://openrouter.ai/docs/api/api-reference/observability/list-observability-destinations)
-  * [`GET /observability/destinations/{id}`](https://openrouter.ai/docs/api/api-reference/observability/get-an-observability-destination)
-  * [`PATCH /observability/destinations/{id}`](https://openrouter.ai/docs/api/api-reference/observability/update-an-observability-destination)
-  * [`POST /observability/destinations`](https://openrouter.ai/docs/api/api-reference/observability/create-an-observability-destination)
+  * [`GET /observability/destinations`](api/api-reference/observability/list-observability-destinations.md)
+  * [`GET /observability/destinations/{id}`](api/api-reference/observability/get-an-observability-destination.md)
+  * [`PATCH /observability/destinations/{id}`](api/api-reference/observability/update-an-observability-destination.md)
+  * [`POST /observability/destinations`](api/api-reference/observability/create-an-observability-destination.md)
 * `PricingOverride`: new property `utc_days`
 
   **6 endpoints using this schema**
 
-  * [`GET /embeddings/models`](https://openrouter.ai/docs/api/api-reference/embeddings/list-all-embeddings-models)
-  * [`GET /endpoints/zdr`](https://openrouter.ai/docs/api/api-reference/endpoints/preview-the-impact-of-zdr-on-the-available-endpoints)
-  * [`GET /model/{author}/{slug}`](https://openrouter.ai/docs/api/api-reference/models/get-a-model-by-its-slug)
-  * [`GET /models`](https://openrouter.ai/docs/api/api-reference/models/list-all-models-and-their-properties)
-  * [`GET /models/user`](https://openrouter.ai/docs/api/api-reference/models/list-models-filtered-by-user-provider-preferences-privacy-settings-and-guardrails)
-  * [`GET /models/{author}/{slug}/endpoints`](https://openrouter.ai/docs/api/api-reference/endpoints/list-all-endpoints-for-a-model)
+  * [`GET /embeddings/models`](api/api-reference/embeddings/list-all-embeddings-models.md)
+  * [`GET /endpoints/zdr`](api/api-reference/endpoints/preview-the-impact-of-zdr-on-the-available-endpoints.md)
+  * [`GET /model/{author}/{slug}`](api/api-reference/models/get-a-model-by-its-slug.md)
+  * [`GET /models`](api/api-reference/models/list-all-models-and-their-properties.md)
+  * [`GET /models/user`](api/api-reference/models/list-models-filtered-by-user-provider-preferences-privacy-settings-and-guardrails.md)
+  * [`GET /models/{author}/{slug}/endpoints`](api/api-reference/endpoints/list-all-endpoints-for-a-model.md)
 
 **August 22, 2026**
 
@@ -4849,96 +4849,96 @@ Entries on this page are generated automatically from [OpenAPI specification](ap
 
   **4 endpoints using this schema**
 
-  * [`POST /messages`](https://openrouter.ai/docs/api/api-reference/anthropic-messages/create-a-message)
-  * [`POST /presets/{slug}/messages`](https://openrouter.ai/docs/api/api-reference/presets/create-a-preset-from-a-messages-request-body)
-  * [`POST /presets/{slug}/responses`](https://openrouter.ai/docs/api/api-reference/presets/create-a-preset-from-a-responses-request-body)
-  * [`POST /responses`](https://openrouter.ai/docs/api/api-reference/responses/create-a-response)
+  * [`POST /messages`](api/api-reference/anthropic-messages/create-a-message.md)
+  * [`POST /presets/{slug}/messages`](api/api-reference/presets/create-a-preset-from-a-messages-request-body.md)
+  * [`POST /presets/{slug}/responses`](api/api-reference/presets/create-a-preset-from-a-responses-request-body.md)
+  * [`POST /responses`](api/api-reference/responses/create-a-response.md)
 * `ToolSearchServerToolConfig`
 
   **4 endpoints using this schema**
 
-  * [`POST /messages`](https://openrouter.ai/docs/api/api-reference/anthropic-messages/create-a-message)
-  * [`POST /presets/{slug}/messages`](https://openrouter.ai/docs/api/api-reference/presets/create-a-preset-from-a-messages-request-body)
-  * [`POST /presets/{slug}/responses`](https://openrouter.ai/docs/api/api-reference/presets/create-a-preset-from-a-responses-request-body)
-  * [`POST /responses`](https://openrouter.ai/docs/api/api-reference/responses/create-a-response)
+  * [`POST /messages`](api/api-reference/anthropic-messages/create-a-message.md)
+  * [`POST /presets/{slug}/messages`](api/api-reference/presets/create-a-preset-from-a-messages-request-body.md)
+  * [`POST /presets/{slug}/responses`](api/api-reference/presets/create-a-preset-from-a-responses-request-body.md)
+  * [`POST /responses`](api/api-reference/responses/create-a-response.md)
 
 ## Modified schemas
 
 * `AdditionalToolsItem`: new union variant added
-  * Used by [`POST /presets/{slug}/responses`](https://openrouter.ai/docs/api/api-reference/presets/create-a-preset-from-a-responses-request-body), [`POST /responses`](https://openrouter.ai/docs/api/api-reference/responses/create-a-response)
+  * Used by [`POST /presets/{slug}/responses`](api/api-reference/presets/create-a-preset-from-a-responses-request-body.md), [`POST /responses`](api/api-reference/responses/create-a-response.md)
 * `MessagesRequest`: new union variant added
-  * Used by [`POST /messages`](https://openrouter.ai/docs/api/api-reference/anthropic-messages/create-a-message), [`POST /presets/{slug}/messages`](https://openrouter.ai/docs/api/api-reference/presets/create-a-preset-from-a-messages-request-body)
+  * Used by [`POST /messages`](api/api-reference/anthropic-messages/create-a-message.md), [`POST /presets/{slug}/messages`](api/api-reference/presets/create-a-preset-from-a-messages-request-body.md)
 * `ResponsesRequest`: new union variant added
-  * Used by [`POST /presets/{slug}/responses`](https://openrouter.ai/docs/api/api-reference/presets/create-a-preset-from-a-responses-request-body), [`POST /responses`](https://openrouter.ai/docs/api/api-reference/responses/create-a-response)
+  * Used by [`POST /presets/{slug}/responses`](api/api-reference/presets/create-a-preset-from-a-responses-request-body.md), [`POST /responses`](api/api-reference/responses/create-a-response.md)
 
 **August 21, 2026**
 
 ## Modified endpoints
 
-* [`POST /byok`](https://openrouter.ai/docs/api/api-reference/byok/create-a-byok-provider-credential): description updated
-* [`PATCH /byok/{id}`](https://openrouter.ai/docs/api/api-reference/byok/update-a-byok-provider-credential): description updated
-* [`GET /byok`](https://openrouter.ai/docs/api/api-reference/byok/list-byok-provider-credentials): parameter `provider` updated
+* [`POST /byok`](api/api-reference/byok/create-a-byok-provider-credential.md): description updated
+* [`PATCH /byok/{id}`](api/api-reference/byok/update-a-byok-provider-credential.md): description updated
+* [`GET /byok`](api/api-reference/byok/list-byok-provider-credentials.md): parameter `provider` updated
 
 ## New response codes
 
-* [`POST /embeddings`](https://openrouter.ai/docs/api/api-reference/embeddings/submit-an-embedding-request): now returns `408`
-* [`POST /embeddings`](https://openrouter.ai/docs/api/api-reference/embeddings/submit-an-embedding-request): now returns `413`
+* [`POST /embeddings`](api/api-reference/embeddings/submit-an-embedding-request.md): now returns `408`
+* [`POST /embeddings`](api/api-reference/embeddings/submit-an-embedding-request.md): now returns `413`
 
 ## Modified schemas
 
 * `CreateBYOKKeyRequest`: new property `allowed_api_key_hashes`
-  * Used by [`POST /byok`](https://openrouter.ai/docs/api/api-reference/byok/create-a-byok-provider-credential)
+  * Used by [`POST /byok`](api/api-reference/byok/create-a-byok-provider-credential.md)
 * `UpdateBYOKKeyRequest`: new property `allowed_api_key_hashes`
-  * Used by [`PATCH /byok/{id}`](https://openrouter.ai/docs/api/api-reference/byok/update-a-byok-provider-credential)
+  * Used by [`PATCH /byok/{id}`](api/api-reference/byok/update-a-byok-provider-credential.md)
 * `BYOKProviderSlug`: enum property\_added
 
   **4 endpoints using this schema**
 
-  * [`GET /byok`](https://openrouter.ai/docs/api/api-reference/byok/list-byok-provider-credentials)
-  * [`GET /byok/{id}`](https://openrouter.ai/docs/api/api-reference/byok/get-a-byok-provider-credential)
-  * [`PATCH /byok/{id}`](https://openrouter.ai/docs/api/api-reference/byok/update-a-byok-provider-credential)
-  * [`POST /byok`](https://openrouter.ai/docs/api/api-reference/byok/create-a-byok-provider-credential)
+  * [`GET /byok`](api/api-reference/byok/list-byok-provider-credentials.md)
+  * [`GET /byok/{id}`](api/api-reference/byok/get-a-byok-provider-credential.md)
+  * [`PATCH /byok/{id}`](api/api-reference/byok/update-a-byok-provider-credential.md)
+  * [`POST /byok`](api/api-reference/byok/create-a-byok-provider-credential.md)
 * `MessagesStartEvent`: property `provider` updated
-  * Used by [`POST /messages`](https://openrouter.ai/docs/api/api-reference/anthropic-messages/create-a-message)
+  * Used by [`POST /messages`](api/api-reference/anthropic-messages/create-a-message.md)
 * `ProviderName`: enum property\_added
 
   **11 endpoints using this schema**
 
-  * [`GET /endpoints/zdr`](https://openrouter.ai/docs/api/api-reference/endpoints/preview-the-impact-of-zdr-on-the-available-endpoints)
-  * [`GET /models/{author}/{slug}/endpoints`](https://openrouter.ai/docs/api/api-reference/endpoints/list-all-endpoints-for-a-model)
-  * [`POST /chat/completions`](https://openrouter.ai/docs/api/api-reference/chat/create-a-chat-completion)
-  * [`POST /embeddings`](https://openrouter.ai/docs/api/api-reference/embeddings/submit-an-embedding-request)
-  * [`POST /images`](https://openrouter.ai/docs/api/api-reference/images/generate-an-image)
-  * [`POST /messages`](https://openrouter.ai/docs/api/api-reference/anthropic-messages/create-a-message)
-  * [`POST /presets/{slug}/chat/completions`](https://openrouter.ai/docs/api/api-reference/presets/create-a-preset-from-a-chat-completions-request-body)
-  * [`POST /presets/{slug}/messages`](https://openrouter.ai/docs/api/api-reference/presets/create-a-preset-from-a-messages-request-body)
-  * [`POST /presets/{slug}/responses`](https://openrouter.ai/docs/api/api-reference/presets/create-a-preset-from-a-responses-request-body)
-  * [`POST /rerank`](https://openrouter.ai/docs/api/api-reference/rerank/submit-a-rerank-request)
-  * [`POST /responses`](https://openrouter.ai/docs/api/api-reference/responses/create-a-response)
+  * [`GET /endpoints/zdr`](api/api-reference/endpoints/preview-the-impact-of-zdr-on-the-available-endpoints.md)
+  * [`GET /models/{author}/{slug}/endpoints`](api/api-reference/endpoints/list-all-endpoints-for-a-model.md)
+  * [`POST /chat/completions`](api/api-reference/chat/create-a-chat-completion.md)
+  * [`POST /embeddings`](api/api-reference/embeddings/submit-an-embedding-request.md)
+  * [`POST /images`](api/api-reference/images/generate-an-image.md)
+  * [`POST /messages`](api/api-reference/anthropic-messages/create-a-message.md)
+  * [`POST /presets/{slug}/chat/completions`](api/api-reference/presets/create-a-preset-from-a-chat-completions-request-body.md)
+  * [`POST /presets/{slug}/messages`](api/api-reference/presets/create-a-preset-from-a-messages-request-body.md)
+  * [`POST /presets/{slug}/responses`](api/api-reference/presets/create-a-preset-from-a-responses-request-body.md)
+  * [`POST /rerank`](api/api-reference/rerank/submit-a-rerank-request.md)
+  * [`POST /responses`](api/api-reference/responses/create-a-response.md)
 * `ProviderOptions`: new property `makora`
 
   **4 endpoints using this schema**
 
-  * [`POST /audio/speech`](https://openrouter.ai/docs/api/api-reference/tts/create-speech)
-  * [`POST /audio/transcriptions`](https://openrouter.ai/docs/api/api-reference/stt/create-transcription)
-  * [`POST /images`](https://openrouter.ai/docs/api/api-reference/images/generate-an-image)
-  * [`POST /videos`](https://openrouter.ai/docs/api/api-reference/video-generation/submit-a-video-generation-request)
+  * [`POST /audio/speech`](api/api-reference/tts/create-speech.md)
+  * [`POST /audio/transcriptions`](api/api-reference/stt/create-transcription.md)
+  * [`POST /images`](api/api-reference/images/generate-an-image.md)
+  * [`POST /videos`](api/api-reference/video-generation/submit-a-video-generation-request.md)
 * `ProviderResponse`: enum property\_added
-  * Used by [`GET /generation`](https://openrouter.ai/docs/api/api-reference/generations/get-request-&-usage-metadata-for-a-generation)
+  * Used by [`GET /generation`](api/api-reference/generations/get-request-&-usage-metadata-for-a-generation.md)
 
 **August 20, 2026**
 
 ## Breaking changes
 
-* [`GET /analytics/meta`](https://openrouter.ai/docs/api/api-reference/analytics/get-available-analytics-metrics-and-dimensions): tags `beta.Analytics` property removedNo action needed
-* [`POST /analytics/query`](https://openrouter.ai/docs/api/api-reference/analytics/query-analytics-data): tags `beta.Analytics` property removedNo action needed
+* [`GET /analytics/meta`](api/api-reference/analytics/get-available-analytics-metrics-and-dimensions.md): tags `beta.Analytics` property removedNo action needed
+* [`POST /analytics/query`](api/api-reference/analytics/query-analytics-data.md): tags `beta.Analytics` property removedNo action needed
 * \$.tags: beta.Analytics object removedNo action needed
 
 ## Modified endpoints
 
-* [`GET /analytics/meta`](https://openrouter.ai/docs/api/api-reference/analytics/get-available-analytics-metrics-and-dimensions): tags property\_added
-* [`POST /analytics/query`](https://openrouter.ai/docs/api/api-reference/analytics/query-analytics-data): tags property\_added
-* [`POST /guardrails`](https://openrouter.ai/docs/api/api-reference/guardrails/create-a-guardrail): description updated
+* [`GET /analytics/meta`](api/api-reference/analytics/get-available-analytics-metrics-and-dimensions.md): tags property\_added
+* [`POST /analytics/query`](api/api-reference/analytics/query-analytics-data.md): tags property\_added
+* [`POST /guardrails`](api/api-reference/guardrails/create-a-guardrail.md): description updated
 
 ## Modified schemas
 
@@ -4946,20 +4946,20 @@ Entries on this page are generated automatically from [OpenAPI specification](ap
 
   **4 endpoints using this schema**
 
-  * [`POST /chat/completions`](https://openrouter.ai/docs/api/api-reference/chat/create-a-chat-completion)
-  * [`POST /presets/{slug}/chat/completions`](https://openrouter.ai/docs/api/api-reference/presets/create-a-preset-from-a-chat-completions-request-body)
-  * [`POST /presets/{slug}/responses`](https://openrouter.ai/docs/api/api-reference/presets/create-a-preset-from-a-responses-request-body)
-  * [`POST /responses`](https://openrouter.ai/docs/api/api-reference/responses/create-a-response)
+  * [`POST /chat/completions`](api/api-reference/chat/create-a-chat-completion.md)
+  * [`POST /presets/{slug}/chat/completions`](api/api-reference/presets/create-a-preset-from-a-chat-completions-request-body.md)
+  * [`POST /presets/{slug}/responses`](api/api-reference/presets/create-a-preset-from-a-responses-request-body.md)
+  * [`POST /responses`](api/api-reference/responses/create-a-response.md)
 * `CreateGuardrailRequest`: description updated
-  * Used by [`POST /guardrails`](https://openrouter.ai/docs/api/api-reference/guardrails/create-a-guardrail)
+  * Used by [`POST /guardrails`](api/api-reference/guardrails/create-a-guardrail.md)
 * `Guardrail`: description updated
 
   **4 endpoints using this schema**
 
-  * [`GET /guardrails`](https://openrouter.ai/docs/api/api-reference/guardrails/list-guardrails)
-  * [`GET /guardrails/{id}`](https://openrouter.ai/docs/api/api-reference/guardrails/get-a-guardrail)
-  * [`PATCH /guardrails/{id}`](https://openrouter.ai/docs/api/api-reference/guardrails/update-a-guardrail)
-  * [`POST /guardrails`](https://openrouter.ai/docs/api/api-reference/guardrails/create-a-guardrail)
+  * [`GET /guardrails`](api/api-reference/guardrails/list-guardrails.md)
+  * [`GET /guardrails/{id}`](api/api-reference/guardrails/get-a-guardrail.md)
+  * [`PATCH /guardrails/{id}`](api/api-reference/guardrails/update-a-guardrail.md)
+  * [`POST /guardrails`](api/api-reference/guardrails/create-a-guardrail.md)
 
 **August 19, 2026**
 
@@ -4973,44 +4973,44 @@ Entries on this page are generated automatically from [OpenAPI specification](ap
 
   **4 endpoints using this schema**
 
-  * [`POST /chat/completions`](https://openrouter.ai/docs/api/api-reference/chat/create-a-chat-completion)
-  * [`POST /presets/{slug}/chat/completions`](https://openrouter.ai/docs/api/api-reference/presets/create-a-preset-from-a-chat-completions-request-body)
-  * [`POST /presets/{slug}/responses`](https://openrouter.ai/docs/api/api-reference/presets/create-a-preset-from-a-responses-request-body)
-  * [`POST /responses`](https://openrouter.ai/docs/api/api-reference/responses/create-a-response)
+  * [`POST /chat/completions`](api/api-reference/chat/create-a-chat-completion.md)
+  * [`POST /presets/{slug}/chat/completions`](api/api-reference/presets/create-a-preset-from-a-chat-completions-request-body.md)
+  * [`POST /presets/{slug}/responses`](api/api-reference/presets/create-a-preset-from-a-responses-request-body.md)
+  * [`POST /responses`](api/api-reference/responses/create-a-response.md)
 * `AdvisorServerToolConfig`: properties `tools` object removedAction required
 
   * Remove `tools` and `max_tool_calls` from advisor tool configuration. Advisors no longer run nested tool-calling loops.
 
   **4 endpoints using this schema**
 
-  * [`POST /chat/completions`](https://openrouter.ai/docs/api/api-reference/chat/create-a-chat-completion)
-  * [`POST /presets/{slug}/chat/completions`](https://openrouter.ai/docs/api/api-reference/presets/create-a-preset-from-a-chat-completions-request-body)
-  * [`POST /presets/{slug}/responses`](https://openrouter.ai/docs/api/api-reference/presets/create-a-preset-from-a-responses-request-body)
-  * [`POST /responses`](https://openrouter.ai/docs/api/api-reference/responses/create-a-response)
+  * [`POST /chat/completions`](api/api-reference/chat/create-a-chat-completion.md)
+  * [`POST /presets/{slug}/chat/completions`](api/api-reference/presets/create-a-preset-from-a-chat-completions-request-body.md)
+  * [`POST /presets/{slug}/responses`](api/api-reference/presets/create-a-preset-from-a-responses-request-body.md)
+  * [`POST /responses`](api/api-reference/responses/create-a-response.md)
 * `VideoModel`: required `creativity` property addedNo action needed
-  * Used by [`GET /videos/models`](https://openrouter.ai/docs/api/api-reference/video-generation/list-all-video-generation-models)
+  * Used by [`GET /videos/models`](api/api-reference/video-generation/list-all-video-generation-models.md)
 * `VideoModel`: required `upscale_factor` property addedNo action needed
-  * Used by [`GET /videos/models`](https://openrouter.ai/docs/api/api-reference/video-generation/list-all-video-generation-models)
+  * Used by [`GET /videos/models`](api/api-reference/video-generation/list-all-video-generation-models.md)
 * `CustomToolCallItem`: properties `call_id` object removedNo action needed
-  * Used by [`POST /presets/{slug}/responses`](https://openrouter.ai/docs/api/api-reference/presets/create-a-preset-from-a-responses-request-body), [`POST /responses`](https://openrouter.ai/docs/api/api-reference/responses/create-a-response)
+  * Used by [`POST /presets/{slug}/responses`](api/api-reference/presets/create-a-preset-from-a-responses-request-body.md), [`POST /responses`](api/api-reference/responses/create-a-response.md)
 * `CustomToolCallItem`: properties `id` object removedNo action needed
-  * Used by [`POST /presets/{slug}/responses`](https://openrouter.ai/docs/api/api-reference/presets/create-a-preset-from-a-responses-request-body), [`POST /responses`](https://openrouter.ai/docs/api/api-reference/responses/create-a-response)
+  * Used by [`POST /presets/{slug}/responses`](api/api-reference/presets/create-a-preset-from-a-responses-request-body.md), [`POST /responses`](api/api-reference/responses/create-a-response.md)
 * `CustomToolCallItem`: properties `input` object removedNo action needed
-  * Used by [`POST /presets/{slug}/responses`](https://openrouter.ai/docs/api/api-reference/presets/create-a-preset-from-a-responses-request-body), [`POST /responses`](https://openrouter.ai/docs/api/api-reference/responses/create-a-response)
+  * Used by [`POST /presets/{slug}/responses`](api/api-reference/presets/create-a-preset-from-a-responses-request-body.md), [`POST /responses`](api/api-reference/responses/create-a-response.md)
 * `CustomToolCallItem`: properties `name` object removedNo action needed
-  * Used by [`POST /presets/{slug}/responses`](https://openrouter.ai/docs/api/api-reference/presets/create-a-preset-from-a-responses-request-body), [`POST /responses`](https://openrouter.ai/docs/api/api-reference/responses/create-a-response)
+  * Used by [`POST /presets/{slug}/responses`](api/api-reference/presets/create-a-preset-from-a-responses-request-body.md), [`POST /responses`](api/api-reference/responses/create-a-response.md)
 * `CustomToolCallItem`: properties `namespace` object removedNo action needed
-  * Used by [`POST /presets/{slug}/responses`](https://openrouter.ai/docs/api/api-reference/presets/create-a-preset-from-a-responses-request-body), [`POST /responses`](https://openrouter.ai/docs/api/api-reference/responses/create-a-response)
+  * Used by [`POST /presets/{slug}/responses`](api/api-reference/presets/create-a-preset-from-a-responses-request-body.md), [`POST /responses`](api/api-reference/responses/create-a-response.md)
 * `CustomToolCallItem`: properties `type` object removedNo action needed
-  * Used by [`POST /presets/{slug}/responses`](https://openrouter.ai/docs/api/api-reference/presets/create-a-preset-from-a-responses-request-body), [`POST /responses`](https://openrouter.ai/docs/api/api-reference/responses/create-a-response)
+  * Used by [`POST /presets/{slug}/responses`](api/api-reference/presets/create-a-preset-from-a-responses-request-body.md), [`POST /responses`](api/api-reference/responses/create-a-response.md)
 * `CustomToolCallItem`: required `call_id` property removedNo action needed
-  * Used by [`POST /presets/{slug}/responses`](https://openrouter.ai/docs/api/api-reference/presets/create-a-preset-from-a-responses-request-body), [`POST /responses`](https://openrouter.ai/docs/api/api-reference/responses/create-a-response)
+  * Used by [`POST /presets/{slug}/responses`](api/api-reference/presets/create-a-preset-from-a-responses-request-body.md), [`POST /responses`](api/api-reference/responses/create-a-response.md)
 * `CustomToolCallItem`: required `input` property removedNo action needed
-  * Used by [`POST /presets/{slug}/responses`](https://openrouter.ai/docs/api/api-reference/presets/create-a-preset-from-a-responses-request-body), [`POST /responses`](https://openrouter.ai/docs/api/api-reference/responses/create-a-response)
+  * Used by [`POST /presets/{slug}/responses`](api/api-reference/presets/create-a-preset-from-a-responses-request-body.md), [`POST /responses`](api/api-reference/responses/create-a-response.md)
 * `CustomToolCallItem`: required `name` property removedNo action needed
-  * Used by [`POST /presets/{slug}/responses`](https://openrouter.ai/docs/api/api-reference/presets/create-a-preset-from-a-responses-request-body), [`POST /responses`](https://openrouter.ai/docs/api/api-reference/responses/create-a-response)
+  * Used by [`POST /presets/{slug}/responses`](api/api-reference/presets/create-a-preset-from-a-responses-request-body.md), [`POST /responses`](api/api-reference/responses/create-a-response.md)
 * `CustomToolCallItem`: required `type` property removedNo action needed
-  * Used by [`POST /presets/{slug}/responses`](https://openrouter.ai/docs/api/api-reference/presets/create-a-preset-from-a-responses-request-body), [`POST /responses`](https://openrouter.ai/docs/api/api-reference/responses/create-a-response)
+  * Used by [`POST /presets/{slug}/responses`](api/api-reference/presets/create-a-preset-from-a-responses-request-body.md), [`POST /responses`](api/api-reference/responses/create-a-response.md)
 
 ## New capabilities
 
@@ -5019,7 +5019,7 @@ Entries on this page are generated automatically from [OpenAPI specification](ap
 ## New schemas
 
 * `FailableToolCallStatus`
-  * Used by [`POST /presets/{slug}/responses`](https://openrouter.ai/docs/api/api-reference/presets/create-a-preset-from-a-responses-request-body), [`POST /responses`](https://openrouter.ai/docs/api/api-reference/responses/create-a-response)
+  * Used by [`POST /presets/{slug}/responses`](api/api-reference/presets/create-a-preset-from-a-responses-request-body.md), [`POST /responses`](api/api-reference/responses/create-a-response.md)
 
 ## Modified schemas
 
@@ -5027,28 +5027,28 @@ Entries on this page are generated automatically from [OpenAPI specification](ap
 
   **4 endpoints using this schema**
 
-  * [`POST /chat/completions`](https://openrouter.ai/docs/api/api-reference/chat/create-a-chat-completion)
-  * [`POST /presets/{slug}/chat/completions`](https://openrouter.ai/docs/api/api-reference/presets/create-a-preset-from-a-chat-completions-request-body)
-  * [`POST /presets/{slug}/responses`](https://openrouter.ai/docs/api/api-reference/presets/create-a-preset-from-a-responses-request-body)
-  * [`POST /responses`](https://openrouter.ai/docs/api/api-reference/responses/create-a-response)
+  * [`POST /chat/completions`](api/api-reference/chat/create-a-chat-completion.md)
+  * [`POST /presets/{slug}/chat/completions`](api/api-reference/presets/create-a-preset-from-a-chat-completions-request-body.md)
+  * [`POST /presets/{slug}/responses`](api/api-reference/presets/create-a-preset-from-a-responses-request-body.md)
+  * [`POST /responses`](api/api-reference/responses/create-a-response.md)
 * `AdvisorServerTool_OpenRouter`: description updated
 
   **4 endpoints using this schema**
 
-  * [`POST /chat/completions`](https://openrouter.ai/docs/api/api-reference/chat/create-a-chat-completion)
-  * [`POST /presets/{slug}/chat/completions`](https://openrouter.ai/docs/api/api-reference/presets/create-a-preset-from-a-chat-completions-request-body)
-  * [`POST /presets/{slug}/responses`](https://openrouter.ai/docs/api/api-reference/presets/create-a-preset-from-a-responses-request-body)
-  * [`POST /responses`](https://openrouter.ai/docs/api/api-reference/responses/create-a-response)
+  * [`POST /chat/completions`](api/api-reference/chat/create-a-chat-completion.md)
+  * [`POST /presets/{slug}/chat/completions`](api/api-reference/presets/create-a-preset-from-a-chat-completions-request-body.md)
+  * [`POST /presets/{slug}/responses`](api/api-reference/presets/create-a-preset-from-a-responses-request-body.md)
+  * [`POST /responses`](api/api-reference/responses/create-a-response.md)
 * `VideoGenerationRequest`: new property `creativity`; new property `upscale_factor`
-  * Used by [`POST /videos`](https://openrouter.ai/docs/api/api-reference/video-generation/submit-a-video-generation-request)
+  * Used by [`POST /videos`](api/api-reference/video-generation/submit-a-video-generation-request.md)
 * `VideoModel`: new property `creativity`; new property `upscale_factor`
-  * Used by [`GET /videos/models`](https://openrouter.ai/docs/api/api-reference/video-generation/list-all-video-generation-models)
+  * Used by [`GET /videos/models`](api/api-reference/video-generation/list-all-video-generation-models.md)
 * `OutputAdvisorServerToolItem`: description updated; \$ref modified
-  * Used by [`POST /presets/{slug}/responses`](https://openrouter.ai/docs/api/api-reference/presets/create-a-preset-from-a-responses-request-body), [`POST /responses`](https://openrouter.ai/docs/api/api-reference/responses/create-a-response)
+  * Used by [`POST /presets/{slug}/responses`](api/api-reference/presets/create-a-preset-from-a-responses-request-body.md), [`POST /responses`](api/api-reference/responses/create-a-response.md)
 * `OutputSubagentServerToolItem`: description updated; \$ref modified
-  * Used by [`POST /presets/{slug}/responses`](https://openrouter.ai/docs/api/api-reference/presets/create-a-preset-from-a-responses-request-body), [`POST /responses`](https://openrouter.ai/docs/api/api-reference/responses/create-a-response)
+  * Used by [`POST /presets/{slug}/responses`](api/api-reference/presets/create-a-preset-from-a-responses-request-body.md), [`POST /responses`](api/api-reference/responses/create-a-response.md)
 * `CustomToolCallItem`: allOf object\_added; type property\_removed
-  * Used by [`POST /presets/{slug}/responses`](https://openrouter.ai/docs/api/api-reference/presets/create-a-preset-from-a-responses-request-body), [`POST /responses`](https://openrouter.ai/docs/api/api-reference/responses/create-a-response)
+  * Used by [`POST /presets/{slug}/responses`](api/api-reference/presets/create-a-preset-from-a-responses-request-body.md), [`POST /responses`](api/api-reference/responses/create-a-response.md)
 
 **August 18, 2026**
 
@@ -5067,10 +5067,10 @@ Entries on this page are generated automatically from [OpenAPI specification](ap
 
   **4 endpoints using this schema**
 
-  * [`POST /audio/speech`](https://openrouter.ai/docs/api/api-reference/tts/create-speech)
-  * [`POST /audio/transcriptions`](https://openrouter.ai/docs/api/api-reference/stt/create-transcription)
-  * [`POST /images`](https://openrouter.ai/docs/api/api-reference/images/generate-an-image)
-  * [`POST /videos`](https://openrouter.ai/docs/api/api-reference/video-generation/submit-a-video-generation-request)
+  * [`POST /audio/speech`](api/api-reference/tts/create-speech.md)
+  * [`POST /audio/transcriptions`](api/api-reference/stt/create-transcription.md)
+  * [`POST /images`](api/api-reference/images/generate-an-image.md)
+  * [`POST /videos`](api/api-reference/video-generation/submit-a-video-generation-request.md)
 
 **August 17, 2026**
 
@@ -5078,77 +5078,77 @@ Entries on this page are generated automatically from [OpenAPI specification](ap
 
 * spec: string modifiedNo action needed
 * `OutputBashServerToolItem`: type `string` modifiedNo action needed
-  * Used by [`POST /presets/{slug}/responses`](https://openrouter.ai/docs/api/api-reference/presets/create-a-preset-from-a-responses-request-body), [`POST /responses`](https://openrouter.ai/docs/api/api-reference/responses/create-a-response)
-* [`POST /presets/{slug}/responses`](https://openrouter.ai/docs/api/api-reference/presets/create-a-preset-from-a-responses-request-body): type `string` modifiedNo action needed
+  * Used by [`POST /presets/{slug}/responses`](api/api-reference/presets/create-a-preset-from-a-responses-request-body.md), [`POST /responses`](api/api-reference/responses/create-a-response.md)
+* [`POST /presets/{slug}/responses`](api/api-reference/presets/create-a-preset-from-a-responses-request-body.md): type `string` modifiedNo action needed
 
 ## Modified endpoints
 
-* [`DELETE /workspaces/{id}`](https://openrouter.ai/docs/api/api-reference/workspaces/delete-a-workspace): description updated
+* [`DELETE /workspaces/{id}`](api/api-reference/workspaces/delete-a-workspace.md): description updated
 
 ## New schemas
 
 * `OutputShellServerToolItem`
-  * Used by [`POST /presets/{slug}/responses`](https://openrouter.ai/docs/api/api-reference/presets/create-a-preset-from-a-responses-request-body), [`POST /responses`](https://openrouter.ai/docs/api/api-reference/responses/create-a-response)
+  * Used by [`POST /presets/{slug}/responses`](api/api-reference/presets/create-a-preset-from-a-responses-request-body.md), [`POST /responses`](api/api-reference/responses/create-a-response.md)
 * `ShellCallOutputContent`
-  * Used by [`POST /presets/{slug}/responses`](https://openrouter.ai/docs/api/api-reference/presets/create-a-preset-from-a-responses-request-body), [`POST /responses`](https://openrouter.ai/docs/api/api-reference/responses/create-a-response)
+  * Used by [`POST /presets/{slug}/responses`](api/api-reference/presets/create-a-preset-from-a-responses-request-body.md), [`POST /responses`](api/api-reference/responses/create-a-response.md)
 
 ## Modified schemas
 
 * `OpenAIResponseFunctionToolCall`: new property `subagent_id`; new property `subagent_items`
-  * Used by [`POST /presets/{slug}/responses`](https://openrouter.ai/docs/api/api-reference/presets/create-a-preset-from-a-responses-request-body), [`POST /responses`](https://openrouter.ai/docs/api/api-reference/responses/create-a-response)
+  * Used by [`POST /presets/{slug}/responses`](api/api-reference/presets/create-a-preset-from-a-responses-request-body.md), [`POST /responses`](api/api-reference/responses/create-a-response.md)
 * `OutputSubagentServerToolItem`: new property `call_id`
-  * Used by [`POST /presets/{slug}/responses`](https://openrouter.ai/docs/api/api-reference/presets/create-a-preset-from-a-responses-request-body), [`POST /responses`](https://openrouter.ai/docs/api/api-reference/responses/create-a-response)
+  * Used by [`POST /presets/{slug}/responses`](api/api-reference/presets/create-a-preset-from-a-responses-request-body.md), [`POST /responses`](api/api-reference/responses/create-a-response.md)
 * `SubagentReasoning`: description updated
 
   **4 endpoints using this schema**
 
-  * [`POST /chat/completions`](https://openrouter.ai/docs/api/api-reference/chat/create-a-chat-completion)
-  * [`POST /presets/{slug}/chat/completions`](https://openrouter.ai/docs/api/api-reference/presets/create-a-preset-from-a-chat-completions-request-body)
-  * [`POST /presets/{slug}/responses`](https://openrouter.ai/docs/api/api-reference/presets/create-a-preset-from-a-responses-request-body)
-  * [`POST /responses`](https://openrouter.ai/docs/api/api-reference/responses/create-a-response)
+  * [`POST /chat/completions`](api/api-reference/chat/create-a-chat-completion.md)
+  * [`POST /presets/{slug}/chat/completions`](api/api-reference/presets/create-a-preset-from-a-chat-completions-request-body.md)
+  * [`POST /presets/{slug}/responses`](api/api-reference/presets/create-a-preset-from-a-responses-request-body.md)
+  * [`POST /responses`](api/api-reference/responses/create-a-response.md)
 * `SubagentServerToolConfig`: new property `inherit_functions`; new property `inherited_function_names`; description updated
 
   **4 endpoints using this schema**
 
-  * [`POST /chat/completions`](https://openrouter.ai/docs/api/api-reference/chat/create-a-chat-completion)
-  * [`POST /presets/{slug}/chat/completions`](https://openrouter.ai/docs/api/api-reference/presets/create-a-preset-from-a-chat-completions-request-body)
-  * [`POST /presets/{slug}/responses`](https://openrouter.ai/docs/api/api-reference/presets/create-a-preset-from-a-responses-request-body)
-  * [`POST /responses`](https://openrouter.ai/docs/api/api-reference/responses/create-a-response)
+  * [`POST /chat/completions`](api/api-reference/chat/create-a-chat-completion.md)
+  * [`POST /presets/{slug}/chat/completions`](api/api-reference/presets/create-a-preset-from-a-chat-completions-request-body.md)
+  * [`POST /presets/{slug}/responses`](api/api-reference/presets/create-a-preset-from-a-responses-request-body.md)
+  * [`POST /responses`](api/api-reference/responses/create-a-response.md)
 * `OutputFilesServerToolItem`: new property `arguments`; new property `call_id`
-  * Used by [`POST /presets/{slug}/responses`](https://openrouter.ai/docs/api/api-reference/presets/create-a-preset-from-a-responses-request-body), [`POST /responses`](https://openrouter.ai/docs/api/api-reference/responses/create-a-response)
+  * Used by [`POST /presets/{slug}/responses`](api/api-reference/presets/create-a-preset-from-a-responses-request-body.md), [`POST /responses`](api/api-reference/responses/create-a-response.md)
 * `OutputItems`: new union variant added
-  * Used by [`POST /responses`](https://openrouter.ai/docs/api/api-reference/responses/create-a-response)
+  * Used by [`POST /responses`](api/api-reference/responses/create-a-response.md)
 * `OutputShellCallItem`: new property `arguments`
-  * Used by [`POST /responses`](https://openrouter.ai/docs/api/api-reference/responses/create-a-response)
+  * Used by [`POST /responses`](api/api-reference/responses/create-a-response.md)
 * `OutputShellCallOutputItem`: \$ref modified
-  * Used by [`POST /responses`](https://openrouter.ai/docs/api/api-reference/responses/create-a-response)
+  * Used by [`POST /responses`](api/api-reference/responses/create-a-response.md)
 * `ShellCallItem`: new property `arguments`
-  * Used by [`POST /presets/{slug}/responses`](https://openrouter.ai/docs/api/api-reference/presets/create-a-preset-from-a-responses-request-body), [`POST /responses`](https://openrouter.ai/docs/api/api-reference/responses/create-a-response)
+  * Used by [`POST /presets/{slug}/responses`](api/api-reference/presets/create-a-preset-from-a-responses-request-body.md), [`POST /responses`](api/api-reference/responses/create-a-response.md)
 * `ShellCallOutputItem`: example modified; \$ref modified
-  * Used by [`POST /presets/{slug}/responses`](https://openrouter.ai/docs/api/api-reference/presets/create-a-preset-from-a-responses-request-body), [`POST /responses`](https://openrouter.ai/docs/api/api-reference/responses/create-a-response)
+  * Used by [`POST /presets/{slug}/responses`](api/api-reference/presets/create-a-preset-from-a-responses-request-body.md), [`POST /responses`](api/api-reference/responses/create-a-response.md)
 * `ProviderOptions`: new property `amazon-bedrock/claude-on-aws`
 
   **4 endpoints using this schema**
 
-  * [`POST /audio/speech`](https://openrouter.ai/docs/api/api-reference/tts/create-speech)
-  * [`POST /audio/transcriptions`](https://openrouter.ai/docs/api/api-reference/stt/create-transcription)
-  * [`POST /images`](https://openrouter.ai/docs/api/api-reference/images/generate-an-image)
-  * [`POST /videos`](https://openrouter.ai/docs/api/api-reference/video-generation/submit-a-video-generation-request)
+  * [`POST /audio/speech`](api/api-reference/tts/create-speech.md)
+  * [`POST /audio/transcriptions`](api/api-reference/stt/create-transcription.md)
+  * [`POST /images`](api/api-reference/images/generate-an-image.md)
+  * [`POST /videos`](api/api-reference/video-generation/submit-a-video-generation-request.md)
 
 **August 14, 2026**
 
 ## Modified endpoints
 
-* [`GET /datasets/app-rankings`](https://openrouter.ai/docs/api/api-reference/datasets/top-apps-by-token-usage): description updated
-* [`GET /datasets/rankings-daily`](https://openrouter.ai/docs/api/api-reference/datasets/daily-token-totals-for-top-50-models): description updated
-* [`GET /datasets/session-cost`](https://openrouter.ai/docs/api/api-reference/datasets/cost-per-session-by-harness-and-model): description updated
+* [`GET /datasets/app-rankings`](api/api-reference/datasets/top-apps-by-token-usage.md): description updated
+* [`GET /datasets/rankings-daily`](api/api-reference/datasets/daily-token-totals-for-top-50-models.md): description updated
+* [`GET /datasets/session-cost`](api/api-reference/datasets/cost-per-session-by-harness-and-model.md): description updated
 
 ## Modified schemas
 
 * `AnthropicRefusalStopDetails`: enum property\_added
-  * Used by [`POST /messages`](https://openrouter.ai/docs/api/api-reference/anthropic-messages/create-a-message)
+  * Used by [`POST /messages`](api/api-reference/anthropic-messages/create-a-message.md)
 * `OutputFusionServerToolItem`: description updated
-  * Used by [`POST /presets/{slug}/responses`](https://openrouter.ai/docs/api/api-reference/presets/create-a-preset-from-a-responses-request-body), [`POST /responses`](https://openrouter.ai/docs/api/api-reference/responses/create-a-response)
+  * Used by [`POST /presets/{slug}/responses`](api/api-reference/presets/create-a-preset-from-a-responses-request-body.md), [`POST /responses`](api/api-reference/responses/create-a-response.md)
 
 **August 13, 2026**
 
@@ -5159,50 +5159,50 @@ Entries on this page are generated automatically from [OpenAPI specification](ap
 
 ## Modified endpoints
 
-* [`GET /generation/content`](https://openrouter.ai/docs/api/api-reference/generations/get-stored-prompt-completion-and-error-content-for-a-generation): response schema updated
-* [`POST /messages`](https://openrouter.ai/docs/api/api-reference/anthropic-messages/create-a-message): response schema updated; description updated
-* [`DELETE /workspaces/{id}`](https://openrouter.ai/docs/api/api-reference/workspaces/delete-a-workspace): description updated
+* [`GET /generation/content`](api/api-reference/generations/get-stored-prompt-completion-and-error-content-for-a-generation.md): response schema updated
+* [`POST /messages`](api/api-reference/anthropic-messages/create-a-message.md): response schema updated; description updated
+* [`DELETE /workspaces/{id}`](api/api-reference/workspaces/delete-a-workspace.md): description updated
 
 ## New schemas
 
 * `AnthropicMessagesErrorResponse`
-  * Used by [`POST /messages`](https://openrouter.ai/docs/api/api-reference/anthropic-messages/create-a-message)
+  * Used by [`POST /messages`](api/api-reference/anthropic-messages/create-a-message.md)
 
 ## Modified schemas
 
 * `ImageGenerationRequest`: description updated
-  * Used by [`POST /images`](https://openrouter.ai/docs/api/api-reference/images/generate-an-image)
+  * Used by [`POST /images`](api/api-reference/images/generate-an-image.md)
 * `WebSearchMode`: description updated
 
   **6 endpoints using this schema**
 
-  * [`POST /chat/completions`](https://openrouter.ai/docs/api/api-reference/chat/create-a-chat-completion)
-  * [`POST /messages`](https://openrouter.ai/docs/api/api-reference/anthropic-messages/create-a-message)
-  * [`POST /presets/{slug}/chat/completions`](https://openrouter.ai/docs/api/api-reference/presets/create-a-preset-from-a-chat-completions-request-body)
-  * [`POST /presets/{slug}/messages`](https://openrouter.ai/docs/api/api-reference/presets/create-a-preset-from-a-messages-request-body)
-  * [`POST /presets/{slug}/responses`](https://openrouter.ai/docs/api/api-reference/presets/create-a-preset-from-a-responses-request-body)
-  * [`POST /responses`](https://openrouter.ai/docs/api/api-reference/responses/create-a-response)
+  * [`POST /chat/completions`](api/api-reference/chat/create-a-chat-completion.md)
+  * [`POST /messages`](api/api-reference/anthropic-messages/create-a-message.md)
+  * [`POST /presets/{slug}/chat/completions`](api/api-reference/presets/create-a-preset-from-a-chat-completions-request-body.md)
+  * [`POST /presets/{slug}/messages`](api/api-reference/presets/create-a-preset-from-a-messages-request-body.md)
+  * [`POST /presets/{slug}/responses`](api/api-reference/presets/create-a-preset-from-a-responses-request-body.md)
+  * [`POST /responses`](api/api-reference/responses/create-a-response.md)
 
 **August 12, 2026**
 
 ## New endpoints
 
-* [`GET /datasets/session-cost`](https://openrouter.ai/docs/api/api-reference/datasets/cost-per-session-by-harness-and-model): Cost per session by harness and model
+* [`GET /datasets/session-cost`](api/api-reference/datasets/cost-per-session-by-harness-and-model.md): Cost per session by harness and model
 
 ## Modified endpoints
 
-* [`GET /models`](https://openrouter.ai/docs/api/api-reference/models/list-all-models-and-their-properties): description updated; parameter `region` updated
-* [`GET /models/user`](https://openrouter.ai/docs/api/api-reference/models/list-models-filtered-by-user-provider-preferences-privacy-settings-and-guardrails): description updated
-* [`DELETE /workspaces/{id}`](https://openrouter.ai/docs/api/api-reference/workspaces/delete-a-workspace): description updated; new parameter `confirm_default_settings_deletion`
+* [`GET /models`](api/api-reference/models/list-all-models-and-their-properties.md): description updated; parameter `region` updated
+* [`GET /models/user`](api/api-reference/models/list-models-filtered-by-user-provider-preferences-privacy-settings-and-guardrails.md): description updated
+* [`DELETE /workspaces/{id}`](api/api-reference/workspaces/delete-a-workspace.md): description updated; new parameter `confirm_default_settings_deletion`
 
 ## New schemas
 
 * `SessionCostItem`
-  * Used by [`GET /datasets/session-cost`](https://openrouter.ai/docs/api/api-reference/datasets/cost-per-session-by-harness-and-model)
+  * Used by [`GET /datasets/session-cost`](api/api-reference/datasets/cost-per-session-by-harness-and-model.md)
 * `SessionCostMeta`
-  * Used by [`GET /datasets/session-cost`](https://openrouter.ai/docs/api/api-reference/datasets/cost-per-session-by-harness-and-model)
+  * Used by [`GET /datasets/session-cost`](api/api-reference/datasets/cost-per-session-by-harness-and-model.md)
 * `SessionCostResponse`
-  * Used by [`GET /datasets/session-cost`](https://openrouter.ai/docs/api/api-reference/datasets/cost-per-session-by-harness-and-model)
+  * Used by [`GET /datasets/session-cost`](api/api-reference/datasets/cost-per-session-by-harness-and-model.md)
 
 ## Modified schemas
 
@@ -5210,118 +5210,118 @@ Entries on this page are generated automatically from [OpenAPI specification](ap
 
   **6 endpoints using this schema**
 
-  * [`POST /chat/completions`](https://openrouter.ai/docs/api/api-reference/chat/create-a-chat-completion)
-  * [`POST /messages`](https://openrouter.ai/docs/api/api-reference/anthropic-messages/create-a-message)
-  * [`POST /presets/{slug}/chat/completions`](https://openrouter.ai/docs/api/api-reference/presets/create-a-preset-from-a-chat-completions-request-body)
-  * [`POST /presets/{slug}/messages`](https://openrouter.ai/docs/api/api-reference/presets/create-a-preset-from-a-messages-request-body)
-  * [`POST /presets/{slug}/responses`](https://openrouter.ai/docs/api/api-reference/presets/create-a-preset-from-a-responses-request-body)
-  * [`POST /responses`](https://openrouter.ai/docs/api/api-reference/responses/create-a-response)
+  * [`POST /chat/completions`](api/api-reference/chat/create-a-chat-completion.md)
+  * [`POST /messages`](api/api-reference/anthropic-messages/create-a-message.md)
+  * [`POST /presets/{slug}/chat/completions`](api/api-reference/presets/create-a-preset-from-a-chat-completions-request-body.md)
+  * [`POST /presets/{slug}/messages`](api/api-reference/presets/create-a-preset-from-a-messages-request-body.md)
+  * [`POST /presets/{slug}/responses`](api/api-reference/presets/create-a-preset-from-a-responses-request-body.md)
+  * [`POST /responses`](api/api-reference/responses/create-a-response.md)
 * `AutoRouterPlugin`: description updated; maxItems property\_added; maxLength property\_added
 
   **6 endpoints using this schema**
 
-  * [`POST /chat/completions`](https://openrouter.ai/docs/api/api-reference/chat/create-a-chat-completion)
-  * [`POST /messages`](https://openrouter.ai/docs/api/api-reference/anthropic-messages/create-a-message)
-  * [`POST /presets/{slug}/chat/completions`](https://openrouter.ai/docs/api/api-reference/presets/create-a-preset-from-a-chat-completions-request-body)
-  * [`POST /presets/{slug}/messages`](https://openrouter.ai/docs/api/api-reference/presets/create-a-preset-from-a-messages-request-body)
-  * [`POST /presets/{slug}/responses`](https://openrouter.ai/docs/api/api-reference/presets/create-a-preset-from-a-responses-request-body)
-  * [`POST /responses`](https://openrouter.ai/docs/api/api-reference/responses/create-a-response)
+  * [`POST /chat/completions`](api/api-reference/chat/create-a-chat-completion.md)
+  * [`POST /messages`](api/api-reference/anthropic-messages/create-a-message.md)
+  * [`POST /presets/{slug}/chat/completions`](api/api-reference/presets/create-a-preset-from-a-chat-completions-request-body.md)
+  * [`POST /presets/{slug}/messages`](api/api-reference/presets/create-a-preset-from-a-messages-request-body.md)
+  * [`POST /presets/{slug}/responses`](api/api-reference/presets/create-a-preset-from-a-responses-request-body.md)
+  * [`POST /responses`](api/api-reference/responses/create-a-response.md)
 
 **August 11, 2026**
 
 ## Breaking changes
 
 * `UnifiedBenchmarksResponse`: discriminator `discriminator` object removedNo action needed
-  * Used by [`GET /benchmarks`](https://openrouter.ai/docs/api/api-reference/benchmarks/list-benchmarks)
+  * Used by [`GET /benchmarks`](api/api-reference/benchmarks/list-benchmarks.md)
 * `GenerationContentData`: required `error` property addedNo action needed
-  * Used by [`GET /generation/content`](https://openrouter.ai/docs/api/api-reference/generations/get-stored-prompt-completion-and-error-content-for-a-generation)
+  * Used by [`GET /generation/content`](api/api-reference/generations/get-stored-prompt-completion-and-error-content-for-a-generation.md)
 
 ## Modified endpoints
 
-* [`GET /benchmarks`](https://openrouter.ai/docs/api/api-reference/benchmarks/list-benchmarks):
+* [`GET /benchmarks`](api/api-reference/benchmarks/list-benchmarks.md):
   * description updated
   * new parameter `benchmark_type`
   * new parameter `include_run_config`
   * new parameter `search_engine`
   * new parameter `search_surface`
   * parameter `task_type` updated
-* [`GET /generation/content`](https://openrouter.ai/docs/api/api-reference/generations/get-stored-prompt-completion-and-error-content-for-a-generation): description updated; response schema updated
-* [`GET /byok`](https://openrouter.ai/docs/api/api-reference/byok/list-byok-provider-credentials): parameter `provider` updated
+* [`GET /generation/content`](api/api-reference/generations/get-stored-prompt-completion-and-error-content-for-a-generation.md): description updated; response schema updated
+* [`GET /byok`](api/api-reference/byok/list-byok-provider-credentials.md): parameter `provider` updated
 
 ## New schemas
 
 * `UnifiedBenchmarksSearchItem`
-  * Used by [`GET /benchmarks`](https://openrouter.ai/docs/api/api-reference/benchmarks/list-benchmarks)
+  * Used by [`GET /benchmarks`](api/api-reference/benchmarks/list-benchmarks.md)
 * `UnifiedBenchmarksSearchRunConfig`
-  * Used by [`GET /benchmarks`](https://openrouter.ai/docs/api/api-reference/benchmarks/list-benchmarks)
+  * Used by [`GET /benchmarks`](api/api-reference/benchmarks/list-benchmarks.md)
 * `GenerationContentError`
-  * Used by [`GET /generation/content`](https://openrouter.ai/docs/api/api-reference/generations/get-stored-prompt-completion-and-error-content-for-a-generation)
+  * Used by [`GET /generation/content`](api/api-reference/generations/get-stored-prompt-completion-and-error-content-for-a-generation.md)
 * `GenerationContentErrorAttempt`
-  * Used by [`GET /generation/content`](https://openrouter.ai/docs/api/api-reference/generations/get-stored-prompt-completion-and-error-content-for-a-generation)
+  * Used by [`GET /generation/content`](api/api-reference/generations/get-stored-prompt-completion-and-error-content-for-a-generation.md)
 
 ## Modified schemas
 
 * `OutputFusionServerToolItem`: description updated
-  * Used by [`POST /presets/{slug}/responses`](https://openrouter.ai/docs/api/api-reference/presets/create-a-preset-from-a-responses-request-body), [`POST /responses`](https://openrouter.ai/docs/api/api-reference/responses/create-a-response)
+  * Used by [`POST /presets/{slug}/responses`](api/api-reference/presets/create-a-preset-from-a-responses-request-body.md), [`POST /responses`](api/api-reference/responses/create-a-response.md)
 * `WebSearchMode`: description updated
 
   **6 endpoints using this schema**
 
-  * [`POST /chat/completions`](https://openrouter.ai/docs/api/api-reference/chat/create-a-chat-completion)
-  * [`POST /messages`](https://openrouter.ai/docs/api/api-reference/anthropic-messages/create-a-message)
-  * [`POST /presets/{slug}/chat/completions`](https://openrouter.ai/docs/api/api-reference/presets/create-a-preset-from-a-chat-completions-request-body)
-  * [`POST /presets/{slug}/messages`](https://openrouter.ai/docs/api/api-reference/presets/create-a-preset-from-a-messages-request-body)
-  * [`POST /presets/{slug}/responses`](https://openrouter.ai/docs/api/api-reference/presets/create-a-preset-from-a-responses-request-body)
-  * [`POST /responses`](https://openrouter.ai/docs/api/api-reference/responses/create-a-response)
+  * [`POST /chat/completions`](api/api-reference/chat/create-a-chat-completion.md)
+  * [`POST /messages`](api/api-reference/anthropic-messages/create-a-message.md)
+  * [`POST /presets/{slug}/chat/completions`](api/api-reference/presets/create-a-preset-from-a-chat-completions-request-body.md)
+  * [`POST /presets/{slug}/messages`](api/api-reference/presets/create-a-preset-from-a-messages-request-body.md)
+  * [`POST /presets/{slug}/responses`](api/api-reference/presets/create-a-preset-from-a-responses-request-body.md)
+  * [`POST /responses`](api/api-reference/responses/create-a-response.md)
 * `MessagesStartEvent`: property `usage` updated
-  * Used by [`POST /messages`](https://openrouter.ai/docs/api/api-reference/anthropic-messages/create-a-message)
+  * Used by [`POST /messages`](api/api-reference/anthropic-messages/create-a-message.md)
 * `UnifiedBenchmarksResponse`: new union variant added
-  * Used by [`GET /benchmarks`](https://openrouter.ai/docs/api/api-reference/benchmarks/list-benchmarks)
+  * Used by [`GET /benchmarks`](api/api-reference/benchmarks/list-benchmarks.md)
 * `GenerationContentData`: description updated; example modified; new property `error`
-  * Used by [`GET /generation/content`](https://openrouter.ai/docs/api/api-reference/generations/get-stored-prompt-completion-and-error-content-for-a-generation)
+  * Used by [`GET /generation/content`](api/api-reference/generations/get-stored-prompt-completion-and-error-content-for-a-generation.md)
 * `GenerationContentResponse`: example modified
-  * Used by [`GET /generation/content`](https://openrouter.ai/docs/api/api-reference/generations/get-stored-prompt-completion-and-error-content-for-a-generation)
+  * Used by [`GET /generation/content`](api/api-reference/generations/get-stored-prompt-completion-and-error-content-for-a-generation.md)
 * `AppRankingsResponse`: example modified
-  * Used by [`GET /datasets/app-rankings`](https://openrouter.ai/docs/api/api-reference/datasets/top-apps-by-token-usage)
+  * Used by [`GET /datasets/app-rankings`](api/api-reference/datasets/top-apps-by-token-usage.md)
 * `RankingsDailyMeta`: example modified
-  * Used by [`GET /datasets/app-rankings`](https://openrouter.ai/docs/api/api-reference/datasets/top-apps-by-token-usage), [`GET /datasets/rankings-daily`](https://openrouter.ai/docs/api/api-reference/datasets/daily-token-totals-for-top-50-models)
+  * Used by [`GET /datasets/app-rankings`](api/api-reference/datasets/top-apps-by-token-usage.md), [`GET /datasets/rankings-daily`](api/api-reference/datasets/daily-token-totals-for-top-50-models.md)
 * `RankingsDailyResponse`: example modified
-  * Used by [`GET /datasets/rankings-daily`](https://openrouter.ai/docs/api/api-reference/datasets/daily-token-totals-for-top-50-models)
+  * Used by [`GET /datasets/rankings-daily`](api/api-reference/datasets/daily-token-totals-for-top-50-models.md)
 * `BYOKProviderSlug`: enum property\_added
 
   **4 endpoints using this schema**
 
-  * [`GET /byok`](https://openrouter.ai/docs/api/api-reference/byok/list-byok-provider-credentials)
-  * [`GET /byok/{id}`](https://openrouter.ai/docs/api/api-reference/byok/get-a-byok-provider-credential)
-  * [`PATCH /byok/{id}`](https://openrouter.ai/docs/api/api-reference/byok/update-a-byok-provider-credential)
-  * [`POST /byok`](https://openrouter.ai/docs/api/api-reference/byok/create-a-byok-provider-credential)
+  * [`GET /byok`](api/api-reference/byok/list-byok-provider-credentials.md)
+  * [`GET /byok/{id}`](api/api-reference/byok/get-a-byok-provider-credential.md)
+  * [`PATCH /byok/{id}`](api/api-reference/byok/update-a-byok-provider-credential.md)
+  * [`POST /byok`](api/api-reference/byok/create-a-byok-provider-credential.md)
 * `MessagesStartEvent`: property `provider` updated
-  * Used by [`POST /messages`](https://openrouter.ai/docs/api/api-reference/anthropic-messages/create-a-message)
+  * Used by [`POST /messages`](api/api-reference/anthropic-messages/create-a-message.md)
 * `ProviderName`: enum property\_added
 
   **11 endpoints using this schema**
 
-  * [`GET /endpoints/zdr`](https://openrouter.ai/docs/api/api-reference/endpoints/preview-the-impact-of-zdr-on-the-available-endpoints)
-  * [`GET /models/{author}/{slug}/endpoints`](https://openrouter.ai/docs/api/api-reference/endpoints/list-all-endpoints-for-a-model)
-  * [`POST /chat/completions`](https://openrouter.ai/docs/api/api-reference/chat/create-a-chat-completion)
-  * [`POST /embeddings`](https://openrouter.ai/docs/api/api-reference/embeddings/submit-an-embedding-request)
-  * [`POST /images`](https://openrouter.ai/docs/api/api-reference/images/generate-an-image)
-  * [`POST /messages`](https://openrouter.ai/docs/api/api-reference/anthropic-messages/create-a-message)
-  * [`POST /presets/{slug}/chat/completions`](https://openrouter.ai/docs/api/api-reference/presets/create-a-preset-from-a-chat-completions-request-body)
-  * [`POST /presets/{slug}/messages`](https://openrouter.ai/docs/api/api-reference/presets/create-a-preset-from-a-messages-request-body)
-  * [`POST /presets/{slug}/responses`](https://openrouter.ai/docs/api/api-reference/presets/create-a-preset-from-a-responses-request-body)
-  * [`POST /rerank`](https://openrouter.ai/docs/api/api-reference/rerank/submit-a-rerank-request)
-  * [`POST /responses`](https://openrouter.ai/docs/api/api-reference/responses/create-a-response)
+  * [`GET /endpoints/zdr`](api/api-reference/endpoints/preview-the-impact-of-zdr-on-the-available-endpoints.md)
+  * [`GET /models/{author}/{slug}/endpoints`](api/api-reference/endpoints/list-all-endpoints-for-a-model.md)
+  * [`POST /chat/completions`](api/api-reference/chat/create-a-chat-completion.md)
+  * [`POST /embeddings`](api/api-reference/embeddings/submit-an-embedding-request.md)
+  * [`POST /images`](api/api-reference/images/generate-an-image.md)
+  * [`POST /messages`](api/api-reference/anthropic-messages/create-a-message.md)
+  * [`POST /presets/{slug}/chat/completions`](api/api-reference/presets/create-a-preset-from-a-chat-completions-request-body.md)
+  * [`POST /presets/{slug}/messages`](api/api-reference/presets/create-a-preset-from-a-messages-request-body.md)
+  * [`POST /presets/{slug}/responses`](api/api-reference/presets/create-a-preset-from-a-responses-request-body.md)
+  * [`POST /rerank`](api/api-reference/rerank/submit-a-rerank-request.md)
+  * [`POST /responses`](api/api-reference/responses/create-a-response.md)
 * `ProviderOptions`: new property `databricks`
 
   **4 endpoints using this schema**
 
-  * [`POST /audio/speech`](https://openrouter.ai/docs/api/api-reference/tts/create-speech)
-  * [`POST /audio/transcriptions`](https://openrouter.ai/docs/api/api-reference/stt/create-transcription)
-  * [`POST /images`](https://openrouter.ai/docs/api/api-reference/images/generate-an-image)
-  * [`POST /videos`](https://openrouter.ai/docs/api/api-reference/video-generation/submit-a-video-generation-request)
+  * [`POST /audio/speech`](api/api-reference/tts/create-speech.md)
+  * [`POST /audio/transcriptions`](api/api-reference/stt/create-transcription.md)
+  * [`POST /images`](api/api-reference/images/generate-an-image.md)
+  * [`POST /videos`](api/api-reference/video-generation/submit-a-video-generation-request.md)
 * `ProviderResponse`: enum property\_added
-  * Used by [`GET /generation`](https://openrouter.ai/docs/api/api-reference/generations/get-request-&-usage-metadata-for-a-generation)
+  * Used by [`GET /generation`](api/api-reference/generations/get-request-&-usage-metadata-for-a-generation.md)
 
 **August 10, 2026**
 
@@ -5329,78 +5329,78 @@ Entries on this page are generated automatically from [OpenAPI specification](ap
 
 * spec: additionalProperties object addedNo action needed
 * `CodeInterpreterCallItem`: properties `code` object removedNo action needed
-  * Used by [`POST /presets/{slug}/responses`](https://openrouter.ai/docs/api/api-reference/presets/create-a-preset-from-a-responses-request-body), [`POST /responses`](https://openrouter.ai/docs/api/api-reference/responses/create-a-response)
+  * Used by [`POST /presets/{slug}/responses`](api/api-reference/presets/create-a-preset-from-a-responses-request-body.md), [`POST /responses`](api/api-reference/responses/create-a-response.md)
 * `CodeInterpreterCallItem`: properties `container_id` object removedNo action needed
-  * Used by [`POST /presets/{slug}/responses`](https://openrouter.ai/docs/api/api-reference/presets/create-a-preset-from-a-responses-request-body), [`POST /responses`](https://openrouter.ai/docs/api/api-reference/responses/create-a-response)
+  * Used by [`POST /presets/{slug}/responses`](api/api-reference/presets/create-a-preset-from-a-responses-request-body.md), [`POST /responses`](api/api-reference/responses/create-a-response.md)
 * `CodeInterpreterCallItem`: properties `id` object removedNo action needed
-  * Used by [`POST /presets/{slug}/responses`](https://openrouter.ai/docs/api/api-reference/presets/create-a-preset-from-a-responses-request-body), [`POST /responses`](https://openrouter.ai/docs/api/api-reference/responses/create-a-response)
+  * Used by [`POST /presets/{slug}/responses`](api/api-reference/presets/create-a-preset-from-a-responses-request-body.md), [`POST /responses`](api/api-reference/responses/create-a-response.md)
 * `CodeInterpreterCallItem`: properties `outputs` object removedNo action needed
-  * Used by [`POST /presets/{slug}/responses`](https://openrouter.ai/docs/api/api-reference/presets/create-a-preset-from-a-responses-request-body), [`POST /responses`](https://openrouter.ai/docs/api/api-reference/responses/create-a-response)
+  * Used by [`POST /presets/{slug}/responses`](api/api-reference/presets/create-a-preset-from-a-responses-request-body.md), [`POST /responses`](api/api-reference/responses/create-a-response.md)
 * `CodeInterpreterCallItem`: properties `status` object removedNo action needed
-  * Used by [`POST /presets/{slug}/responses`](https://openrouter.ai/docs/api/api-reference/presets/create-a-preset-from-a-responses-request-body), [`POST /responses`](https://openrouter.ai/docs/api/api-reference/responses/create-a-response)
+  * Used by [`POST /presets/{slug}/responses`](api/api-reference/presets/create-a-preset-from-a-responses-request-body.md), [`POST /responses`](api/api-reference/responses/create-a-response.md)
 * `CodeInterpreterCallItem`: properties `type` object removedNo action needed
-  * Used by [`POST /presets/{slug}/responses`](https://openrouter.ai/docs/api/api-reference/presets/create-a-preset-from-a-responses-request-body), [`POST /responses`](https://openrouter.ai/docs/api/api-reference/responses/create-a-response)
+  * Used by [`POST /presets/{slug}/responses`](api/api-reference/presets/create-a-preset-from-a-responses-request-body.md), [`POST /responses`](api/api-reference/responses/create-a-response.md)
 * `CodeInterpreterCallItem`: required `code` property removedNo action needed
-  * Used by [`POST /presets/{slug}/responses`](https://openrouter.ai/docs/api/api-reference/presets/create-a-preset-from-a-responses-request-body), [`POST /responses`](https://openrouter.ai/docs/api/api-reference/responses/create-a-response)
+  * Used by [`POST /presets/{slug}/responses`](api/api-reference/presets/create-a-preset-from-a-responses-request-body.md), [`POST /responses`](api/api-reference/responses/create-a-response.md)
 * `CodeInterpreterCallItem`: required `container_id` property removedNo action needed
-  * Used by [`POST /presets/{slug}/responses`](https://openrouter.ai/docs/api/api-reference/presets/create-a-preset-from-a-responses-request-body), [`POST /responses`](https://openrouter.ai/docs/api/api-reference/responses/create-a-response)
+  * Used by [`POST /presets/{slug}/responses`](api/api-reference/presets/create-a-preset-from-a-responses-request-body.md), [`POST /responses`](api/api-reference/responses/create-a-response.md)
 * `CodeInterpreterCallItem`: required `id` property removedNo action needed
-  * Used by [`POST /presets/{slug}/responses`](https://openrouter.ai/docs/api/api-reference/presets/create-a-preset-from-a-responses-request-body), [`POST /responses`](https://openrouter.ai/docs/api/api-reference/responses/create-a-response)
+  * Used by [`POST /presets/{slug}/responses`](api/api-reference/presets/create-a-preset-from-a-responses-request-body.md), [`POST /responses`](api/api-reference/responses/create-a-response.md)
 * `CodeInterpreterCallItem`: required `outputs` property removedNo action needed
-  * Used by [`POST /presets/{slug}/responses`](https://openrouter.ai/docs/api/api-reference/presets/create-a-preset-from-a-responses-request-body), [`POST /responses`](https://openrouter.ai/docs/api/api-reference/responses/create-a-response)
+  * Used by [`POST /presets/{slug}/responses`](api/api-reference/presets/create-a-preset-from-a-responses-request-body.md), [`POST /responses`](api/api-reference/responses/create-a-response.md)
 * `CodeInterpreterCallItem`: required `status` property removedNo action needed
-  * Used by [`POST /presets/{slug}/responses`](https://openrouter.ai/docs/api/api-reference/presets/create-a-preset-from-a-responses-request-body), [`POST /responses`](https://openrouter.ai/docs/api/api-reference/responses/create-a-response)
+  * Used by [`POST /presets/{slug}/responses`](api/api-reference/presets/create-a-preset-from-a-responses-request-body.md), [`POST /responses`](api/api-reference/responses/create-a-response.md)
 * `CodeInterpreterCallItem`: required `type` property removedNo action needed
-  * Used by [`POST /presets/{slug}/responses`](https://openrouter.ai/docs/api/api-reference/presets/create-a-preset-from-a-responses-request-body), [`POST /responses`](https://openrouter.ai/docs/api/api-reference/responses/create-a-response)
+  * Used by [`POST /presets/{slug}/responses`](api/api-reference/presets/create-a-preset-from-a-responses-request-body.md), [`POST /responses`](api/api-reference/responses/create-a-response.md)
 * `OutputItemWebSearchCall`: additionalProperties `additionalProperties` object addedNo action needed
-  * Used by [`POST /presets/{slug}/responses`](https://openrouter.ai/docs/api/api-reference/presets/create-a-preset-from-a-responses-request-body), [`POST /responses`](https://openrouter.ai/docs/api/api-reference/responses/create-a-response)
-* [`POST /presets/{slug}/responses`](https://openrouter.ai/docs/api/api-reference/presets/create-a-preset-from-a-responses-request-body): properties `code` object removedNo action needed
-* [`POST /presets/{slug}/responses`](https://openrouter.ai/docs/api/api-reference/presets/create-a-preset-from-a-responses-request-body): properties `container_id` object removedNo action needed
-* [`POST /presets/{slug}/responses`](https://openrouter.ai/docs/api/api-reference/presets/create-a-preset-from-a-responses-request-body): properties `id` object removedNo action needed
-* [`POST /presets/{slug}/responses`](https://openrouter.ai/docs/api/api-reference/presets/create-a-preset-from-a-responses-request-body): properties `outputs` object removedNo action needed
-* [`POST /presets/{slug}/responses`](https://openrouter.ai/docs/api/api-reference/presets/create-a-preset-from-a-responses-request-body): properties `status` object removedNo action needed
-* [`POST /presets/{slug}/responses`](https://openrouter.ai/docs/api/api-reference/presets/create-a-preset-from-a-responses-request-body): properties `type` object removedNo action needed
-* [`POST /presets/{slug}/responses`](https://openrouter.ai/docs/api/api-reference/presets/create-a-preset-from-a-responses-request-body): required `code` property removedNo action needed
-* [`POST /presets/{slug}/responses`](https://openrouter.ai/docs/api/api-reference/presets/create-a-preset-from-a-responses-request-body): required `container_id` property removedNo action needed
-* [`POST /presets/{slug}/responses`](https://openrouter.ai/docs/api/api-reference/presets/create-a-preset-from-a-responses-request-body): required `id` property removedNo action needed
-* [`POST /presets/{slug}/responses`](https://openrouter.ai/docs/api/api-reference/presets/create-a-preset-from-a-responses-request-body): required `outputs` property removedNo action needed
-* [`POST /presets/{slug}/responses`](https://openrouter.ai/docs/api/api-reference/presets/create-a-preset-from-a-responses-request-body): required `status` property removedNo action needed
-* [`POST /presets/{slug}/responses`](https://openrouter.ai/docs/api/api-reference/presets/create-a-preset-from-a-responses-request-body): required `type` property removedNo action needed
+  * Used by [`POST /presets/{slug}/responses`](api/api-reference/presets/create-a-preset-from-a-responses-request-body.md), [`POST /responses`](api/api-reference/responses/create-a-response.md)
+* [`POST /presets/{slug}/responses`](api/api-reference/presets/create-a-preset-from-a-responses-request-body.md): properties `code` object removedNo action needed
+* [`POST /presets/{slug}/responses`](api/api-reference/presets/create-a-preset-from-a-responses-request-body.md): properties `container_id` object removedNo action needed
+* [`POST /presets/{slug}/responses`](api/api-reference/presets/create-a-preset-from-a-responses-request-body.md): properties `id` object removedNo action needed
+* [`POST /presets/{slug}/responses`](api/api-reference/presets/create-a-preset-from-a-responses-request-body.md): properties `outputs` object removedNo action needed
+* [`POST /presets/{slug}/responses`](api/api-reference/presets/create-a-preset-from-a-responses-request-body.md): properties `status` object removedNo action needed
+* [`POST /presets/{slug}/responses`](api/api-reference/presets/create-a-preset-from-a-responses-request-body.md): properties `type` object removedNo action needed
+* [`POST /presets/{slug}/responses`](api/api-reference/presets/create-a-preset-from-a-responses-request-body.md): required `code` property removedNo action needed
+* [`POST /presets/{slug}/responses`](api/api-reference/presets/create-a-preset-from-a-responses-request-body.md): required `container_id` property removedNo action needed
+* [`POST /presets/{slug}/responses`](api/api-reference/presets/create-a-preset-from-a-responses-request-body.md): required `id` property removedNo action needed
+* [`POST /presets/{slug}/responses`](api/api-reference/presets/create-a-preset-from-a-responses-request-body.md): required `outputs` property removedNo action needed
+* [`POST /presets/{slug}/responses`](api/api-reference/presets/create-a-preset-from-a-responses-request-body.md): required `status` property removedNo action needed
+* [`POST /presets/{slug}/responses`](api/api-reference/presets/create-a-preset-from-a-responses-request-body.md): required `type` property removedNo action needed
 
 ## Modified endpoints
 
-* [`POST /presets/{slug}/responses`](https://openrouter.ai/docs/api/api-reference/presets/create-a-preset-from-a-responses-request-body): request schema updated
+* [`POST /presets/{slug}/responses`](api/api-reference/presets/create-a-preset-from-a-responses-request-body.md): request schema updated
 
 ## New schemas
 
 * `CodeInterpreterCallCodeDeltaEvent`
-  * Used by [`POST /responses`](https://openrouter.ai/docs/api/api-reference/responses/create-a-response)
+  * Used by [`POST /responses`](api/api-reference/responses/create-a-response.md)
 * `CodeInterpreterCallCodeDoneEvent`
-  * Used by [`POST /responses`](https://openrouter.ai/docs/api/api-reference/responses/create-a-response)
+  * Used by [`POST /responses`](api/api-reference/responses/create-a-response.md)
 * `CodeInterpreterCallCompletedEvent`
-  * Used by [`POST /responses`](https://openrouter.ai/docs/api/api-reference/responses/create-a-response)
+  * Used by [`POST /responses`](api/api-reference/responses/create-a-response.md)
 * `CodeInterpreterCallInProgressEvent`
-  * Used by [`POST /responses`](https://openrouter.ai/docs/api/api-reference/responses/create-a-response)
+  * Used by [`POST /responses`](api/api-reference/responses/create-a-response.md)
 * `CodeInterpreterCallInterpretingEvent`
-  * Used by [`POST /responses`](https://openrouter.ai/docs/api/api-reference/responses/create-a-response)
+  * Used by [`POST /responses`](api/api-reference/responses/create-a-response.md)
 * `CodeInterpreterFileOutput`
-  * Used by [`POST /presets/{slug}/responses`](https://openrouter.ai/docs/api/api-reference/presets/create-a-preset-from-a-responses-request-body), [`POST /responses`](https://openrouter.ai/docs/api/api-reference/responses/create-a-response)
+  * Used by [`POST /presets/{slug}/responses`](api/api-reference/presets/create-a-preset-from-a-responses-request-body.md), [`POST /responses`](api/api-reference/responses/create-a-response.md)
 * `CodeInterpreterImageOutput`
-  * Used by [`POST /presets/{slug}/responses`](https://openrouter.ai/docs/api/api-reference/presets/create-a-preset-from-a-responses-request-body), [`POST /responses`](https://openrouter.ai/docs/api/api-reference/responses/create-a-response)
+  * Used by [`POST /presets/{slug}/responses`](api/api-reference/presets/create-a-preset-from-a-responses-request-body.md), [`POST /responses`](api/api-reference/responses/create-a-response.md)
 * `CodeInterpreterLogsOutput`
-  * Used by [`POST /presets/{slug}/responses`](https://openrouter.ai/docs/api/api-reference/presets/create-a-preset-from-a-responses-request-body), [`POST /responses`](https://openrouter.ai/docs/api/api-reference/responses/create-a-response)
+  * Used by [`POST /presets/{slug}/responses`](api/api-reference/presets/create-a-preset-from-a-responses-request-body.md), [`POST /responses`](api/api-reference/responses/create-a-response.md)
 * `OpenAIResponsesCodeInterpreterCallCodeDelta`
-  * Used by [`POST /responses`](https://openrouter.ai/docs/api/api-reference/responses/create-a-response)
+  * Used by [`POST /responses`](api/api-reference/responses/create-a-response.md)
 * `OpenAIResponsesCodeInterpreterCallCodeDone`
-  * Used by [`POST /responses`](https://openrouter.ai/docs/api/api-reference/responses/create-a-response)
+  * Used by [`POST /responses`](api/api-reference/responses/create-a-response.md)
 * `OpenAIResponsesCodeInterpreterCallCompleted`
-  * Used by [`POST /responses`](https://openrouter.ai/docs/api/api-reference/responses/create-a-response)
+  * Used by [`POST /responses`](api/api-reference/responses/create-a-response.md)
 * `OpenAIResponsesCodeInterpreterCallInProgress`
-  * Used by [`POST /responses`](https://openrouter.ai/docs/api/api-reference/responses/create-a-response)
+  * Used by [`POST /responses`](api/api-reference/responses/create-a-response.md)
 * `OpenAIResponsesCodeInterpreterCallInterpreting`
-  * Used by [`POST /responses`](https://openrouter.ai/docs/api/api-reference/responses/create-a-response)
+  * Used by [`POST /responses`](api/api-reference/responses/create-a-response.md)
 * `OutputItemCodeInterpreterCall`
-  * Used by [`POST /presets/{slug}/responses`](https://openrouter.ai/docs/api/api-reference/presets/create-a-preset-from-a-responses-request-body), [`POST /responses`](https://openrouter.ai/docs/api/api-reference/responses/create-a-response)
+  * Used by [`POST /presets/{slug}/responses`](api/api-reference/presets/create-a-preset-from-a-responses-request-body.md), [`POST /responses`](api/api-reference/responses/create-a-response.md)
 
 ## Modified schemas
 
@@ -5408,32 +5408,32 @@ Entries on this page are generated automatically from [OpenAPI specification](ap
 
   **6 endpoints using this schema**
 
-  * [`POST /chat/completions`](https://openrouter.ai/docs/api/api-reference/chat/create-a-chat-completion)
-  * [`POST /messages`](https://openrouter.ai/docs/api/api-reference/anthropic-messages/create-a-message)
-  * [`POST /presets/{slug}/chat/completions`](https://openrouter.ai/docs/api/api-reference/presets/create-a-preset-from-a-chat-completions-request-body)
-  * [`POST /presets/{slug}/messages`](https://openrouter.ai/docs/api/api-reference/presets/create-a-preset-from-a-messages-request-body)
-  * [`POST /presets/{slug}/responses`](https://openrouter.ai/docs/api/api-reference/presets/create-a-preset-from-a-responses-request-body)
-  * [`POST /responses`](https://openrouter.ai/docs/api/api-reference/responses/create-a-response)
+  * [`POST /chat/completions`](api/api-reference/chat/create-a-chat-completion.md)
+  * [`POST /messages`](api/api-reference/anthropic-messages/create-a-message.md)
+  * [`POST /presets/{slug}/chat/completions`](api/api-reference/presets/create-a-preset-from-a-chat-completions-request-body.md)
+  * [`POST /presets/{slug}/messages`](api/api-reference/presets/create-a-preset-from-a-messages-request-body.md)
+  * [`POST /presets/{slug}/responses`](api/api-reference/presets/create-a-preset-from-a-responses-request-body.md)
+  * [`POST /responses`](api/api-reference/responses/create-a-response.md)
 * `AutoRouterPlugin`: example modified; description updated
 
   **6 endpoints using this schema**
 
-  * [`POST /chat/completions`](https://openrouter.ai/docs/api/api-reference/chat/create-a-chat-completion)
-  * [`POST /messages`](https://openrouter.ai/docs/api/api-reference/anthropic-messages/create-a-message)
-  * [`POST /presets/{slug}/chat/completions`](https://openrouter.ai/docs/api/api-reference/presets/create-a-preset-from-a-chat-completions-request-body)
-  * [`POST /presets/{slug}/messages`](https://openrouter.ai/docs/api/api-reference/presets/create-a-preset-from-a-messages-request-body)
-  * [`POST /presets/{slug}/responses`](https://openrouter.ai/docs/api/api-reference/presets/create-a-preset-from-a-responses-request-body)
-  * [`POST /responses`](https://openrouter.ai/docs/api/api-reference/responses/create-a-response)
+  * [`POST /chat/completions`](api/api-reference/chat/create-a-chat-completion.md)
+  * [`POST /messages`](api/api-reference/anthropic-messages/create-a-message.md)
+  * [`POST /presets/{slug}/chat/completions`](api/api-reference/presets/create-a-preset-from-a-chat-completions-request-body.md)
+  * [`POST /presets/{slug}/messages`](api/api-reference/presets/create-a-preset-from-a-messages-request-body.md)
+  * [`POST /presets/{slug}/responses`](api/api-reference/presets/create-a-preset-from-a-responses-request-body.md)
+  * [`POST /responses`](api/api-reference/responses/create-a-response.md)
 * `BaseResponsesResult`: new union variant added
-  * Used by [`POST /responses`](https://openrouter.ai/docs/api/api-reference/responses/create-a-response)
+  * Used by [`POST /responses`](api/api-reference/responses/create-a-response.md)
 * `CodeInterpreterCallItem`: allOf object\_added; type property\_removed
-  * Used by [`POST /presets/{slug}/responses`](https://openrouter.ai/docs/api/api-reference/presets/create-a-preset-from-a-responses-request-body), [`POST /responses`](https://openrouter.ai/docs/api/api-reference/responses/create-a-response)
+  * Used by [`POST /presets/{slug}/responses`](api/api-reference/presets/create-a-preset-from-a-responses-request-body.md), [`POST /responses`](api/api-reference/responses/create-a-response.md)
 * `OutputItemAddedEvent`: new union variant added
-  * Used by [`POST /responses`](https://openrouter.ai/docs/api/api-reference/responses/create-a-response)
+  * Used by [`POST /responses`](api/api-reference/responses/create-a-response.md)
 * `OutputItemDoneEvent`: new union variant added
-  * Used by [`POST /responses`](https://openrouter.ai/docs/api/api-reference/responses/create-a-response)
+  * Used by [`POST /responses`](api/api-reference/responses/create-a-response.md)
 * `StreamEvents`: new union variant added
-  * Used by [`POST /responses`](https://openrouter.ai/docs/api/api-reference/responses/create-a-response)
+  * Used by [`POST /responses`](api/api-reference/responses/create-a-response.md)
 
 **August 9, 2026**
 
@@ -5443,25 +5443,25 @@ Entries on this page are generated automatically from [OpenAPI specification](ap
 
   **4 endpoints using this schema**
 
-  * [`POST /chat/completions`](https://openrouter.ai/docs/api/api-reference/chat/create-a-chat-completion)
-  * [`POST /presets/{slug}/chat/completions`](https://openrouter.ai/docs/api/api-reference/presets/create-a-preset-from-a-chat-completions-request-body)
-  * [`POST /presets/{slug}/responses`](https://openrouter.ai/docs/api/api-reference/presets/create-a-preset-from-a-responses-request-body)
-  * [`POST /responses`](https://openrouter.ai/docs/api/api-reference/responses/create-a-response)
+  * [`POST /chat/completions`](api/api-reference/chat/create-a-chat-completion.md)
+  * [`POST /presets/{slug}/chat/completions`](api/api-reference/presets/create-a-preset-from-a-chat-completions-request-body.md)
+  * [`POST /presets/{slug}/responses`](api/api-reference/presets/create-a-preset-from-a-responses-request-body.md)
+  * [`POST /responses`](api/api-reference/responses/create-a-response.md)
 
 **August 8, 2026**
 
 ## Modified schemas
 
 * `VideoModel`: enum property\_added
-  * Used by [`GET /videos/models`](https://openrouter.ai/docs/api/api-reference/video-generation/list-all-video-generation-models)
+  * Used by [`GET /videos/models`](api/api-reference/video-generation/list-all-video-generation-models.md)
 * `FusionServerToolConfig`: description updated
 
   **4 endpoints using this schema**
 
-  * [`POST /chat/completions`](https://openrouter.ai/docs/api/api-reference/chat/create-a-chat-completion)
-  * [`POST /presets/{slug}/chat/completions`](https://openrouter.ai/docs/api/api-reference/presets/create-a-preset-from-a-chat-completions-request-body)
-  * [`POST /presets/{slug}/responses`](https://openrouter.ai/docs/api/api-reference/presets/create-a-preset-from-a-responses-request-body)
-  * [`POST /responses`](https://openrouter.ai/docs/api/api-reference/responses/create-a-response)
+  * [`POST /chat/completions`](api/api-reference/chat/create-a-chat-completion.md)
+  * [`POST /presets/{slug}/chat/completions`](api/api-reference/presets/create-a-preset-from-a-chat-completions-request-body.md)
+  * [`POST /presets/{slug}/responses`](api/api-reference/presets/create-a-preset-from-a-responses-request-body.md)
+  * [`POST /responses`](api/api-reference/responses/create-a-response.md)
 
 **August 7, 2026**
 
@@ -5473,444 +5473,444 @@ Entries on this page are generated automatically from [OpenAPI specification](ap
 
   **4 endpoints using this schema**
 
-  * [`GET /byok`](https://openrouter.ai/docs/api/api-reference/byok/list-byok-provider-credentials)
-  * [`GET /byok/{id}`](https://openrouter.ai/docs/api/api-reference/byok/get-a-byok-provider-credential)
-  * [`PATCH /byok/{id}`](https://openrouter.ai/docs/api/api-reference/byok/update-a-byok-provider-credential)
-  * [`POST /byok`](https://openrouter.ai/docs/api/api-reference/byok/create-a-byok-provider-credential)
+  * [`GET /byok`](api/api-reference/byok/list-byok-provider-credentials.md)
+  * [`GET /byok/{id}`](api/api-reference/byok/get-a-byok-provider-credential.md)
+  * [`PATCH /byok/{id}`](api/api-reference/byok/update-a-byok-provider-credential.md)
+  * [`POST /byok`](api/api-reference/byok/create-a-byok-provider-credential.md)
 * `Guardrail`: type `string` modifiedAction required
 
   * Allow `workspace_id` to be `null` in guardrail responses. A null value identifies an unscoped legacy guardrail; it does not mean the default workspace or every workspace.
 
   **4 endpoints using this schema**
 
-  * [`GET /guardrails`](https://openrouter.ai/docs/api/api-reference/guardrails/list-guardrails)
-  * [`GET /guardrails/{id}`](https://openrouter.ai/docs/api/api-reference/guardrails/get-a-guardrail)
-  * [`PATCH /guardrails/{id}`](https://openrouter.ai/docs/api/api-reference/guardrails/update-a-guardrail)
-  * [`POST /guardrails`](https://openrouter.ai/docs/api/api-reference/guardrails/create-a-guardrail)
+  * [`GET /guardrails`](api/api-reference/guardrails/list-guardrails.md)
+  * [`GET /guardrails/{id}`](api/api-reference/guardrails/get-a-guardrail.md)
+  * [`PATCH /guardrails/{id}`](api/api-reference/guardrails/update-a-guardrail.md)
+  * [`POST /guardrails`](api/api-reference/guardrails/create-a-guardrail.md)
 * `ObservabilityArizeDestination`: required `broadcast_generation_cost` property addedNo action needed
 
   **4 endpoints using this schema**
 
-  * [`GET /observability/destinations`](https://openrouter.ai/docs/api/api-reference/observability/list-observability-destinations)
-  * [`GET /observability/destinations/{id}`](https://openrouter.ai/docs/api/api-reference/observability/get-an-observability-destination)
-  * [`PATCH /observability/destinations/{id}`](https://openrouter.ai/docs/api/api-reference/observability/update-an-observability-destination)
-  * [`POST /observability/destinations`](https://openrouter.ai/docs/api/api-reference/observability/create-an-observability-destination)
+  * [`GET /observability/destinations`](api/api-reference/observability/list-observability-destinations.md)
+  * [`GET /observability/destinations/{id}`](api/api-reference/observability/get-an-observability-destination.md)
+  * [`PATCH /observability/destinations/{id}`](api/api-reference/observability/update-an-observability-destination.md)
+  * [`POST /observability/destinations`](api/api-reference/observability/create-an-observability-destination.md)
 * `ObservabilityArizeDestination`: required `broadcast_generation_identity` property addedNo action needed
 
   **4 endpoints using this schema**
 
-  * [`GET /observability/destinations`](https://openrouter.ai/docs/api/api-reference/observability/list-observability-destinations)
-  * [`GET /observability/destinations/{id}`](https://openrouter.ai/docs/api/api-reference/observability/get-an-observability-destination)
-  * [`PATCH /observability/destinations/{id}`](https://openrouter.ai/docs/api/api-reference/observability/update-an-observability-destination)
-  * [`POST /observability/destinations`](https://openrouter.ai/docs/api/api-reference/observability/create-an-observability-destination)
+  * [`GET /observability/destinations`](api/api-reference/observability/list-observability-destinations.md)
+  * [`GET /observability/destinations/{id}`](api/api-reference/observability/get-an-observability-destination.md)
+  * [`PATCH /observability/destinations/{id}`](api/api-reference/observability/update-an-observability-destination.md)
+  * [`POST /observability/destinations`](api/api-reference/observability/create-an-observability-destination.md)
 * `ObservabilityArizeDestination`: required `broadcast_generation_request_context` property addedNo action needed
 
   **4 endpoints using this schema**
 
-  * [`GET /observability/destinations`](https://openrouter.ai/docs/api/api-reference/observability/list-observability-destinations)
-  * [`GET /observability/destinations/{id}`](https://openrouter.ai/docs/api/api-reference/observability/get-an-observability-destination)
-  * [`PATCH /observability/destinations/{id}`](https://openrouter.ai/docs/api/api-reference/observability/update-an-observability-destination)
-  * [`POST /observability/destinations`](https://openrouter.ai/docs/api/api-reference/observability/create-an-observability-destination)
+  * [`GET /observability/destinations`](api/api-reference/observability/list-observability-destinations.md)
+  * [`GET /observability/destinations/{id}`](api/api-reference/observability/get-an-observability-destination.md)
+  * [`PATCH /observability/destinations/{id}`](api/api-reference/observability/update-an-observability-destination.md)
+  * [`POST /observability/destinations`](api/api-reference/observability/create-an-observability-destination.md)
 * `ObservabilityBraintrustDestination`: required `broadcast_generation_cost` property addedNo action needed
 
   **4 endpoints using this schema**
 
-  * [`GET /observability/destinations`](https://openrouter.ai/docs/api/api-reference/observability/list-observability-destinations)
-  * [`GET /observability/destinations/{id}`](https://openrouter.ai/docs/api/api-reference/observability/get-an-observability-destination)
-  * [`PATCH /observability/destinations/{id}`](https://openrouter.ai/docs/api/api-reference/observability/update-an-observability-destination)
-  * [`POST /observability/destinations`](https://openrouter.ai/docs/api/api-reference/observability/create-an-observability-destination)
+  * [`GET /observability/destinations`](api/api-reference/observability/list-observability-destinations.md)
+  * [`GET /observability/destinations/{id}`](api/api-reference/observability/get-an-observability-destination.md)
+  * [`PATCH /observability/destinations/{id}`](api/api-reference/observability/update-an-observability-destination.md)
+  * [`POST /observability/destinations`](api/api-reference/observability/create-an-observability-destination.md)
 * `ObservabilityBraintrustDestination`: required `broadcast_generation_identity` property addedNo action needed
 
   **4 endpoints using this schema**
 
-  * [`GET /observability/destinations`](https://openrouter.ai/docs/api/api-reference/observability/list-observability-destinations)
-  * [`GET /observability/destinations/{id}`](https://openrouter.ai/docs/api/api-reference/observability/get-an-observability-destination)
-  * [`PATCH /observability/destinations/{id}`](https://openrouter.ai/docs/api/api-reference/observability/update-an-observability-destination)
-  * [`POST /observability/destinations`](https://openrouter.ai/docs/api/api-reference/observability/create-an-observability-destination)
+  * [`GET /observability/destinations`](api/api-reference/observability/list-observability-destinations.md)
+  * [`GET /observability/destinations/{id}`](api/api-reference/observability/get-an-observability-destination.md)
+  * [`PATCH /observability/destinations/{id}`](api/api-reference/observability/update-an-observability-destination.md)
+  * [`POST /observability/destinations`](api/api-reference/observability/create-an-observability-destination.md)
 * `ObservabilityBraintrustDestination`: required `broadcast_generation_request_context` property addedNo action needed
 
   **4 endpoints using this schema**
 
-  * [`GET /observability/destinations`](https://openrouter.ai/docs/api/api-reference/observability/list-observability-destinations)
-  * [`GET /observability/destinations/{id}`](https://openrouter.ai/docs/api/api-reference/observability/get-an-observability-destination)
-  * [`PATCH /observability/destinations/{id}`](https://openrouter.ai/docs/api/api-reference/observability/update-an-observability-destination)
-  * [`POST /observability/destinations`](https://openrouter.ai/docs/api/api-reference/observability/create-an-observability-destination)
+  * [`GET /observability/destinations`](api/api-reference/observability/list-observability-destinations.md)
+  * [`GET /observability/destinations/{id}`](api/api-reference/observability/get-an-observability-destination.md)
+  * [`PATCH /observability/destinations/{id}`](api/api-reference/observability/update-an-observability-destination.md)
+  * [`POST /observability/destinations`](api/api-reference/observability/create-an-observability-destination.md)
 * `ObservabilityClickhouseDestination`: required `broadcast_generation_cost` property addedNo action needed
 
   **4 endpoints using this schema**
 
-  * [`GET /observability/destinations`](https://openrouter.ai/docs/api/api-reference/observability/list-observability-destinations)
-  * [`GET /observability/destinations/{id}`](https://openrouter.ai/docs/api/api-reference/observability/get-an-observability-destination)
-  * [`PATCH /observability/destinations/{id}`](https://openrouter.ai/docs/api/api-reference/observability/update-an-observability-destination)
-  * [`POST /observability/destinations`](https://openrouter.ai/docs/api/api-reference/observability/create-an-observability-destination)
+  * [`GET /observability/destinations`](api/api-reference/observability/list-observability-destinations.md)
+  * [`GET /observability/destinations/{id}`](api/api-reference/observability/get-an-observability-destination.md)
+  * [`PATCH /observability/destinations/{id}`](api/api-reference/observability/update-an-observability-destination.md)
+  * [`POST /observability/destinations`](api/api-reference/observability/create-an-observability-destination.md)
 * `ObservabilityClickhouseDestination`: required `broadcast_generation_identity` property addedNo action needed
 
   **4 endpoints using this schema**
 
-  * [`GET /observability/destinations`](https://openrouter.ai/docs/api/api-reference/observability/list-observability-destinations)
-  * [`GET /observability/destinations/{id}`](https://openrouter.ai/docs/api/api-reference/observability/get-an-observability-destination)
-  * [`PATCH /observability/destinations/{id}`](https://openrouter.ai/docs/api/api-reference/observability/update-an-observability-destination)
-  * [`POST /observability/destinations`](https://openrouter.ai/docs/api/api-reference/observability/create-an-observability-destination)
+  * [`GET /observability/destinations`](api/api-reference/observability/list-observability-destinations.md)
+  * [`GET /observability/destinations/{id}`](api/api-reference/observability/get-an-observability-destination.md)
+  * [`PATCH /observability/destinations/{id}`](api/api-reference/observability/update-an-observability-destination.md)
+  * [`POST /observability/destinations`](api/api-reference/observability/create-an-observability-destination.md)
 * `ObservabilityClickhouseDestination`: required `broadcast_generation_request_context` property addedNo action needed
 
   **4 endpoints using this schema**
 
-  * [`GET /observability/destinations`](https://openrouter.ai/docs/api/api-reference/observability/list-observability-destinations)
-  * [`GET /observability/destinations/{id}`](https://openrouter.ai/docs/api/api-reference/observability/get-an-observability-destination)
-  * [`PATCH /observability/destinations/{id}`](https://openrouter.ai/docs/api/api-reference/observability/update-an-observability-destination)
-  * [`POST /observability/destinations`](https://openrouter.ai/docs/api/api-reference/observability/create-an-observability-destination)
+  * [`GET /observability/destinations`](api/api-reference/observability/list-observability-destinations.md)
+  * [`GET /observability/destinations/{id}`](api/api-reference/observability/get-an-observability-destination.md)
+  * [`PATCH /observability/destinations/{id}`](api/api-reference/observability/update-an-observability-destination.md)
+  * [`POST /observability/destinations`](api/api-reference/observability/create-an-observability-destination.md)
 * `ObservabilityDatadogDestination`: required `broadcast_generation_cost` property addedNo action needed
 
   **4 endpoints using this schema**
 
-  * [`GET /observability/destinations`](https://openrouter.ai/docs/api/api-reference/observability/list-observability-destinations)
-  * [`GET /observability/destinations/{id}`](https://openrouter.ai/docs/api/api-reference/observability/get-an-observability-destination)
-  * [`PATCH /observability/destinations/{id}`](https://openrouter.ai/docs/api/api-reference/observability/update-an-observability-destination)
-  * [`POST /observability/destinations`](https://openrouter.ai/docs/api/api-reference/observability/create-an-observability-destination)
+  * [`GET /observability/destinations`](api/api-reference/observability/list-observability-destinations.md)
+  * [`GET /observability/destinations/{id}`](api/api-reference/observability/get-an-observability-destination.md)
+  * [`PATCH /observability/destinations/{id}`](api/api-reference/observability/update-an-observability-destination.md)
+  * [`POST /observability/destinations`](api/api-reference/observability/create-an-observability-destination.md)
 * `ObservabilityDatadogDestination`: required `broadcast_generation_identity` property addedNo action needed
 
   **4 endpoints using this schema**
 
-  * [`GET /observability/destinations`](https://openrouter.ai/docs/api/api-reference/observability/list-observability-destinations)
-  * [`GET /observability/destinations/{id}`](https://openrouter.ai/docs/api/api-reference/observability/get-an-observability-destination)
-  * [`PATCH /observability/destinations/{id}`](https://openrouter.ai/docs/api/api-reference/observability/update-an-observability-destination)
-  * [`POST /observability/destinations`](https://openrouter.ai/docs/api/api-reference/observability/create-an-observability-destination)
+  * [`GET /observability/destinations`](api/api-reference/observability/list-observability-destinations.md)
+  * [`GET /observability/destinations/{id}`](api/api-reference/observability/get-an-observability-destination.md)
+  * [`PATCH /observability/destinations/{id}`](api/api-reference/observability/update-an-observability-destination.md)
+  * [`POST /observability/destinations`](api/api-reference/observability/create-an-observability-destination.md)
 * `ObservabilityDatadogDestination`: required `broadcast_generation_request_context` property addedNo action needed
 
   **4 endpoints using this schema**
 
-  * [`GET /observability/destinations`](https://openrouter.ai/docs/api/api-reference/observability/list-observability-destinations)
-  * [`GET /observability/destinations/{id}`](https://openrouter.ai/docs/api/api-reference/observability/get-an-observability-destination)
-  * [`PATCH /observability/destinations/{id}`](https://openrouter.ai/docs/api/api-reference/observability/update-an-observability-destination)
-  * [`POST /observability/destinations`](https://openrouter.ai/docs/api/api-reference/observability/create-an-observability-destination)
+  * [`GET /observability/destinations`](api/api-reference/observability/list-observability-destinations.md)
+  * [`GET /observability/destinations/{id}`](api/api-reference/observability/get-an-observability-destination.md)
+  * [`PATCH /observability/destinations/{id}`](api/api-reference/observability/update-an-observability-destination.md)
+  * [`POST /observability/destinations`](api/api-reference/observability/create-an-observability-destination.md)
 * `ObservabilityGrafanaDestination`: required `broadcast_generation_cost` property addedNo action needed
 
   **4 endpoints using this schema**
 
-  * [`GET /observability/destinations`](https://openrouter.ai/docs/api/api-reference/observability/list-observability-destinations)
-  * [`GET /observability/destinations/{id}`](https://openrouter.ai/docs/api/api-reference/observability/get-an-observability-destination)
-  * [`PATCH /observability/destinations/{id}`](https://openrouter.ai/docs/api/api-reference/observability/update-an-observability-destination)
-  * [`POST /observability/destinations`](https://openrouter.ai/docs/api/api-reference/observability/create-an-observability-destination)
+  * [`GET /observability/destinations`](api/api-reference/observability/list-observability-destinations.md)
+  * [`GET /observability/destinations/{id}`](api/api-reference/observability/get-an-observability-destination.md)
+  * [`PATCH /observability/destinations/{id}`](api/api-reference/observability/update-an-observability-destination.md)
+  * [`POST /observability/destinations`](api/api-reference/observability/create-an-observability-destination.md)
 * `ObservabilityGrafanaDestination`: required `broadcast_generation_identity` property addedNo action needed
 
   **4 endpoints using this schema**
 
-  * [`GET /observability/destinations`](https://openrouter.ai/docs/api/api-reference/observability/list-observability-destinations)
-  * [`GET /observability/destinations/{id}`](https://openrouter.ai/docs/api/api-reference/observability/get-an-observability-destination)
-  * [`PATCH /observability/destinations/{id}`](https://openrouter.ai/docs/api/api-reference/observability/update-an-observability-destination)
-  * [`POST /observability/destinations`](https://openrouter.ai/docs/api/api-reference/observability/create-an-observability-destination)
+  * [`GET /observability/destinations`](api/api-reference/observability/list-observability-destinations.md)
+  * [`GET /observability/destinations/{id}`](api/api-reference/observability/get-an-observability-destination.md)
+  * [`PATCH /observability/destinations/{id}`](api/api-reference/observability/update-an-observability-destination.md)
+  * [`POST /observability/destinations`](api/api-reference/observability/create-an-observability-destination.md)
 * `ObservabilityGrafanaDestination`: required `broadcast_generation_request_context` property addedNo action needed
 
   **4 endpoints using this schema**
 
-  * [`GET /observability/destinations`](https://openrouter.ai/docs/api/api-reference/observability/list-observability-destinations)
-  * [`GET /observability/destinations/{id}`](https://openrouter.ai/docs/api/api-reference/observability/get-an-observability-destination)
-  * [`PATCH /observability/destinations/{id}`](https://openrouter.ai/docs/api/api-reference/observability/update-an-observability-destination)
-  * [`POST /observability/destinations`](https://openrouter.ai/docs/api/api-reference/observability/create-an-observability-destination)
+  * [`GET /observability/destinations`](api/api-reference/observability/list-observability-destinations.md)
+  * [`GET /observability/destinations/{id}`](api/api-reference/observability/get-an-observability-destination.md)
+  * [`PATCH /observability/destinations/{id}`](api/api-reference/observability/update-an-observability-destination.md)
+  * [`POST /observability/destinations`](api/api-reference/observability/create-an-observability-destination.md)
 * `ObservabilityLangfuseDestination`: required `broadcast_generation_cost` property addedNo action needed
 
   **4 endpoints using this schema**
 
-  * [`GET /observability/destinations`](https://openrouter.ai/docs/api/api-reference/observability/list-observability-destinations)
-  * [`GET /observability/destinations/{id}`](https://openrouter.ai/docs/api/api-reference/observability/get-an-observability-destination)
-  * [`PATCH /observability/destinations/{id}`](https://openrouter.ai/docs/api/api-reference/observability/update-an-observability-destination)
-  * [`POST /observability/destinations`](https://openrouter.ai/docs/api/api-reference/observability/create-an-observability-destination)
+  * [`GET /observability/destinations`](api/api-reference/observability/list-observability-destinations.md)
+  * [`GET /observability/destinations/{id}`](api/api-reference/observability/get-an-observability-destination.md)
+  * [`PATCH /observability/destinations/{id}`](api/api-reference/observability/update-an-observability-destination.md)
+  * [`POST /observability/destinations`](api/api-reference/observability/create-an-observability-destination.md)
 * `ObservabilityLangfuseDestination`: required `broadcast_generation_identity` property addedNo action needed
 
   **4 endpoints using this schema**
 
-  * [`GET /observability/destinations`](https://openrouter.ai/docs/api/api-reference/observability/list-observability-destinations)
-  * [`GET /observability/destinations/{id}`](https://openrouter.ai/docs/api/api-reference/observability/get-an-observability-destination)
-  * [`PATCH /observability/destinations/{id}`](https://openrouter.ai/docs/api/api-reference/observability/update-an-observability-destination)
-  * [`POST /observability/destinations`](https://openrouter.ai/docs/api/api-reference/observability/create-an-observability-destination)
+  * [`GET /observability/destinations`](api/api-reference/observability/list-observability-destinations.md)
+  * [`GET /observability/destinations/{id}`](api/api-reference/observability/get-an-observability-destination.md)
+  * [`PATCH /observability/destinations/{id}`](api/api-reference/observability/update-an-observability-destination.md)
+  * [`POST /observability/destinations`](api/api-reference/observability/create-an-observability-destination.md)
 * `ObservabilityLangfuseDestination`: required `broadcast_generation_request_context` property addedNo action needed
 
   **4 endpoints using this schema**
 
-  * [`GET /observability/destinations`](https://openrouter.ai/docs/api/api-reference/observability/list-observability-destinations)
-  * [`GET /observability/destinations/{id}`](https://openrouter.ai/docs/api/api-reference/observability/get-an-observability-destination)
-  * [`PATCH /observability/destinations/{id}`](https://openrouter.ai/docs/api/api-reference/observability/update-an-observability-destination)
-  * [`POST /observability/destinations`](https://openrouter.ai/docs/api/api-reference/observability/create-an-observability-destination)
+  * [`GET /observability/destinations`](api/api-reference/observability/list-observability-destinations.md)
+  * [`GET /observability/destinations/{id}`](api/api-reference/observability/get-an-observability-destination.md)
+  * [`PATCH /observability/destinations/{id}`](api/api-reference/observability/update-an-observability-destination.md)
+  * [`POST /observability/destinations`](api/api-reference/observability/create-an-observability-destination.md)
 * `ObservabilityLangsmithDestination`: required `broadcast_generation_cost` property addedNo action needed
 
   **4 endpoints using this schema**
 
-  * [`GET /observability/destinations`](https://openrouter.ai/docs/api/api-reference/observability/list-observability-destinations)
-  * [`GET /observability/destinations/{id}`](https://openrouter.ai/docs/api/api-reference/observability/get-an-observability-destination)
-  * [`PATCH /observability/destinations/{id}`](https://openrouter.ai/docs/api/api-reference/observability/update-an-observability-destination)
-  * [`POST /observability/destinations`](https://openrouter.ai/docs/api/api-reference/observability/create-an-observability-destination)
+  * [`GET /observability/destinations`](api/api-reference/observability/list-observability-destinations.md)
+  * [`GET /observability/destinations/{id}`](api/api-reference/observability/get-an-observability-destination.md)
+  * [`PATCH /observability/destinations/{id}`](api/api-reference/observability/update-an-observability-destination.md)
+  * [`POST /observability/destinations`](api/api-reference/observability/create-an-observability-destination.md)
 * `ObservabilityLangsmithDestination`: required `broadcast_generation_identity` property addedNo action needed
 
   **4 endpoints using this schema**
 
-  * [`GET /observability/destinations`](https://openrouter.ai/docs/api/api-reference/observability/list-observability-destinations)
-  * [`GET /observability/destinations/{id}`](https://openrouter.ai/docs/api/api-reference/observability/get-an-observability-destination)
-  * [`PATCH /observability/destinations/{id}`](https://openrouter.ai/docs/api/api-reference/observability/update-an-observability-destination)
-  * [`POST /observability/destinations`](https://openrouter.ai/docs/api/api-reference/observability/create-an-observability-destination)
+  * [`GET /observability/destinations`](api/api-reference/observability/list-observability-destinations.md)
+  * [`GET /observability/destinations/{id}`](api/api-reference/observability/get-an-observability-destination.md)
+  * [`PATCH /observability/destinations/{id}`](api/api-reference/observability/update-an-observability-destination.md)
+  * [`POST /observability/destinations`](api/api-reference/observability/create-an-observability-destination.md)
 * `ObservabilityLangsmithDestination`: required `broadcast_generation_request_context` property addedNo action needed
 
   **4 endpoints using this schema**
 
-  * [`GET /observability/destinations`](https://openrouter.ai/docs/api/api-reference/observability/list-observability-destinations)
-  * [`GET /observability/destinations/{id}`](https://openrouter.ai/docs/api/api-reference/observability/get-an-observability-destination)
-  * [`PATCH /observability/destinations/{id}`](https://openrouter.ai/docs/api/api-reference/observability/update-an-observability-destination)
-  * [`POST /observability/destinations`](https://openrouter.ai/docs/api/api-reference/observability/create-an-observability-destination)
+  * [`GET /observability/destinations`](api/api-reference/observability/list-observability-destinations.md)
+  * [`GET /observability/destinations/{id}`](api/api-reference/observability/get-an-observability-destination.md)
+  * [`PATCH /observability/destinations/{id}`](api/api-reference/observability/update-an-observability-destination.md)
+  * [`POST /observability/destinations`](api/api-reference/observability/create-an-observability-destination.md)
 * `ObservabilityNewrelicDestination`: required `broadcast_generation_cost` property addedNo action needed
 
   **4 endpoints using this schema**
 
-  * [`GET /observability/destinations`](https://openrouter.ai/docs/api/api-reference/observability/list-observability-destinations)
-  * [`GET /observability/destinations/{id}`](https://openrouter.ai/docs/api/api-reference/observability/get-an-observability-destination)
-  * [`PATCH /observability/destinations/{id}`](https://openrouter.ai/docs/api/api-reference/observability/update-an-observability-destination)
-  * [`POST /observability/destinations`](https://openrouter.ai/docs/api/api-reference/observability/create-an-observability-destination)
+  * [`GET /observability/destinations`](api/api-reference/observability/list-observability-destinations.md)
+  * [`GET /observability/destinations/{id}`](api/api-reference/observability/get-an-observability-destination.md)
+  * [`PATCH /observability/destinations/{id}`](api/api-reference/observability/update-an-observability-destination.md)
+  * [`POST /observability/destinations`](api/api-reference/observability/create-an-observability-destination.md)
 * `ObservabilityNewrelicDestination`: required `broadcast_generation_identity` property addedNo action needed
 
   **4 endpoints using this schema**
 
-  * [`GET /observability/destinations`](https://openrouter.ai/docs/api/api-reference/observability/list-observability-destinations)
-  * [`GET /observability/destinations/{id}`](https://openrouter.ai/docs/api/api-reference/observability/get-an-observability-destination)
-  * [`PATCH /observability/destinations/{id}`](https://openrouter.ai/docs/api/api-reference/observability/update-an-observability-destination)
-  * [`POST /observability/destinations`](https://openrouter.ai/docs/api/api-reference/observability/create-an-observability-destination)
+  * [`GET /observability/destinations`](api/api-reference/observability/list-observability-destinations.md)
+  * [`GET /observability/destinations/{id}`](api/api-reference/observability/get-an-observability-destination.md)
+  * [`PATCH /observability/destinations/{id}`](api/api-reference/observability/update-an-observability-destination.md)
+  * [`POST /observability/destinations`](api/api-reference/observability/create-an-observability-destination.md)
 * `ObservabilityNewrelicDestination`: required `broadcast_generation_request_context` property addedNo action needed
 
   **4 endpoints using this schema**
 
-  * [`GET /observability/destinations`](https://openrouter.ai/docs/api/api-reference/observability/list-observability-destinations)
-  * [`GET /observability/destinations/{id}`](https://openrouter.ai/docs/api/api-reference/observability/get-an-observability-destination)
-  * [`PATCH /observability/destinations/{id}`](https://openrouter.ai/docs/api/api-reference/observability/update-an-observability-destination)
-  * [`POST /observability/destinations`](https://openrouter.ai/docs/api/api-reference/observability/create-an-observability-destination)
+  * [`GET /observability/destinations`](api/api-reference/observability/list-observability-destinations.md)
+  * [`GET /observability/destinations/{id}`](api/api-reference/observability/get-an-observability-destination.md)
+  * [`PATCH /observability/destinations/{id}`](api/api-reference/observability/update-an-observability-destination.md)
+  * [`POST /observability/destinations`](api/api-reference/observability/create-an-observability-destination.md)
 * `ObservabilityOpikDestination`: required `broadcast_generation_cost` property addedNo action needed
 
   **4 endpoints using this schema**
 
-  * [`GET /observability/destinations`](https://openrouter.ai/docs/api/api-reference/observability/list-observability-destinations)
-  * [`GET /observability/destinations/{id}`](https://openrouter.ai/docs/api/api-reference/observability/get-an-observability-destination)
-  * [`PATCH /observability/destinations/{id}`](https://openrouter.ai/docs/api/api-reference/observability/update-an-observability-destination)
-  * [`POST /observability/destinations`](https://openrouter.ai/docs/api/api-reference/observability/create-an-observability-destination)
+  * [`GET /observability/destinations`](api/api-reference/observability/list-observability-destinations.md)
+  * [`GET /observability/destinations/{id}`](api/api-reference/observability/get-an-observability-destination.md)
+  * [`PATCH /observability/destinations/{id}`](api/api-reference/observability/update-an-observability-destination.md)
+  * [`POST /observability/destinations`](api/api-reference/observability/create-an-observability-destination.md)
 * `ObservabilityOpikDestination`: required `broadcast_generation_identity` property addedNo action needed
 
   **4 endpoints using this schema**
 
-  * [`GET /observability/destinations`](https://openrouter.ai/docs/api/api-reference/observability/list-observability-destinations)
-  * [`GET /observability/destinations/{id}`](https://openrouter.ai/docs/api/api-reference/observability/get-an-observability-destination)
-  * [`PATCH /observability/destinations/{id}`](https://openrouter.ai/docs/api/api-reference/observability/update-an-observability-destination)
-  * [`POST /observability/destinations`](https://openrouter.ai/docs/api/api-reference/observability/create-an-observability-destination)
+  * [`GET /observability/destinations`](api/api-reference/observability/list-observability-destinations.md)
+  * [`GET /observability/destinations/{id}`](api/api-reference/observability/get-an-observability-destination.md)
+  * [`PATCH /observability/destinations/{id}`](api/api-reference/observability/update-an-observability-destination.md)
+  * [`POST /observability/destinations`](api/api-reference/observability/create-an-observability-destination.md)
 * `ObservabilityOpikDestination`: required `broadcast_generation_request_context` property addedNo action needed
 
   **4 endpoints using this schema**
 
-  * [`GET /observability/destinations`](https://openrouter.ai/docs/api/api-reference/observability/list-observability-destinations)
-  * [`GET /observability/destinations/{id}`](https://openrouter.ai/docs/api/api-reference/observability/get-an-observability-destination)
-  * [`PATCH /observability/destinations/{id}`](https://openrouter.ai/docs/api/api-reference/observability/update-an-observability-destination)
-  * [`POST /observability/destinations`](https://openrouter.ai/docs/api/api-reference/observability/create-an-observability-destination)
+  * [`GET /observability/destinations`](api/api-reference/observability/list-observability-destinations.md)
+  * [`GET /observability/destinations/{id}`](api/api-reference/observability/get-an-observability-destination.md)
+  * [`PATCH /observability/destinations/{id}`](api/api-reference/observability/update-an-observability-destination.md)
+  * [`POST /observability/destinations`](api/api-reference/observability/create-an-observability-destination.md)
 * `ObservabilityOtelCollectorDestination`: required `broadcast_generation_cost` property addedNo action needed
 
   **4 endpoints using this schema**
 
-  * [`GET /observability/destinations`](https://openrouter.ai/docs/api/api-reference/observability/list-observability-destinations)
-  * [`GET /observability/destinations/{id}`](https://openrouter.ai/docs/api/api-reference/observability/get-an-observability-destination)
-  * [`PATCH /observability/destinations/{id}`](https://openrouter.ai/docs/api/api-reference/observability/update-an-observability-destination)
-  * [`POST /observability/destinations`](https://openrouter.ai/docs/api/api-reference/observability/create-an-observability-destination)
+  * [`GET /observability/destinations`](api/api-reference/observability/list-observability-destinations.md)
+  * [`GET /observability/destinations/{id}`](api/api-reference/observability/get-an-observability-destination.md)
+  * [`PATCH /observability/destinations/{id}`](api/api-reference/observability/update-an-observability-destination.md)
+  * [`POST /observability/destinations`](api/api-reference/observability/create-an-observability-destination.md)
 * `ObservabilityOtelCollectorDestination`: required `broadcast_generation_identity` property addedNo action needed
 
   **4 endpoints using this schema**
 
-  * [`GET /observability/destinations`](https://openrouter.ai/docs/api/api-reference/observability/list-observability-destinations)
-  * [`GET /observability/destinations/{id}`](https://openrouter.ai/docs/api/api-reference/observability/get-an-observability-destination)
-  * [`PATCH /observability/destinations/{id}`](https://openrouter.ai/docs/api/api-reference/observability/update-an-observability-destination)
-  * [`POST /observability/destinations`](https://openrouter.ai/docs/api/api-reference/observability/create-an-observability-destination)
+  * [`GET /observability/destinations`](api/api-reference/observability/list-observability-destinations.md)
+  * [`GET /observability/destinations/{id}`](api/api-reference/observability/get-an-observability-destination.md)
+  * [`PATCH /observability/destinations/{id}`](api/api-reference/observability/update-an-observability-destination.md)
+  * [`POST /observability/destinations`](api/api-reference/observability/create-an-observability-destination.md)
 * `ObservabilityOtelCollectorDestination`: required `broadcast_generation_request_context` property addedNo action needed
 
   **4 endpoints using this schema**
 
-  * [`GET /observability/destinations`](https://openrouter.ai/docs/api/api-reference/observability/list-observability-destinations)
-  * [`GET /observability/destinations/{id}`](https://openrouter.ai/docs/api/api-reference/observability/get-an-observability-destination)
-  * [`PATCH /observability/destinations/{id}`](https://openrouter.ai/docs/api/api-reference/observability/update-an-observability-destination)
-  * [`POST /observability/destinations`](https://openrouter.ai/docs/api/api-reference/observability/create-an-observability-destination)
+  * [`GET /observability/destinations`](api/api-reference/observability/list-observability-destinations.md)
+  * [`GET /observability/destinations/{id}`](api/api-reference/observability/get-an-observability-destination.md)
+  * [`PATCH /observability/destinations/{id}`](api/api-reference/observability/update-an-observability-destination.md)
+  * [`POST /observability/destinations`](api/api-reference/observability/create-an-observability-destination.md)
 * `ObservabilityPosthogDestination`: required `broadcast_generation_cost` property addedNo action needed
 
   **4 endpoints using this schema**
 
-  * [`GET /observability/destinations`](https://openrouter.ai/docs/api/api-reference/observability/list-observability-destinations)
-  * [`GET /observability/destinations/{id}`](https://openrouter.ai/docs/api/api-reference/observability/get-an-observability-destination)
-  * [`PATCH /observability/destinations/{id}`](https://openrouter.ai/docs/api/api-reference/observability/update-an-observability-destination)
-  * [`POST /observability/destinations`](https://openrouter.ai/docs/api/api-reference/observability/create-an-observability-destination)
+  * [`GET /observability/destinations`](api/api-reference/observability/list-observability-destinations.md)
+  * [`GET /observability/destinations/{id}`](api/api-reference/observability/get-an-observability-destination.md)
+  * [`PATCH /observability/destinations/{id}`](api/api-reference/observability/update-an-observability-destination.md)
+  * [`POST /observability/destinations`](api/api-reference/observability/create-an-observability-destination.md)
 * `ObservabilityPosthogDestination`: required `broadcast_generation_identity` property addedNo action needed
 
   **4 endpoints using this schema**
 
-  * [`GET /observability/destinations`](https://openrouter.ai/docs/api/api-reference/observability/list-observability-destinations)
-  * [`GET /observability/destinations/{id}`](https://openrouter.ai/docs/api/api-reference/observability/get-an-observability-destination)
-  * [`PATCH /observability/destinations/{id}`](https://openrouter.ai/docs/api/api-reference/observability/update-an-observability-destination)
-  * [`POST /observability/destinations`](https://openrouter.ai/docs/api/api-reference/observability/create-an-observability-destination)
+  * [`GET /observability/destinations`](api/api-reference/observability/list-observability-destinations.md)
+  * [`GET /observability/destinations/{id}`](api/api-reference/observability/get-an-observability-destination.md)
+  * [`PATCH /observability/destinations/{id}`](api/api-reference/observability/update-an-observability-destination.md)
+  * [`POST /observability/destinations`](api/api-reference/observability/create-an-observability-destination.md)
 * `ObservabilityPosthogDestination`: required `broadcast_generation_request_context` property addedNo action needed
 
   **4 endpoints using this schema**
 
-  * [`GET /observability/destinations`](https://openrouter.ai/docs/api/api-reference/observability/list-observability-destinations)
-  * [`GET /observability/destinations/{id}`](https://openrouter.ai/docs/api/api-reference/observability/get-an-observability-destination)
-  * [`PATCH /observability/destinations/{id}`](https://openrouter.ai/docs/api/api-reference/observability/update-an-observability-destination)
-  * [`POST /observability/destinations`](https://openrouter.ai/docs/api/api-reference/observability/create-an-observability-destination)
+  * [`GET /observability/destinations`](api/api-reference/observability/list-observability-destinations.md)
+  * [`GET /observability/destinations/{id}`](api/api-reference/observability/get-an-observability-destination.md)
+  * [`PATCH /observability/destinations/{id}`](api/api-reference/observability/update-an-observability-destination.md)
+  * [`POST /observability/destinations`](api/api-reference/observability/create-an-observability-destination.md)
 * `ObservabilityRampDestination`: required `broadcast_generation_cost` property addedNo action needed
 
   **4 endpoints using this schema**
 
-  * [`GET /observability/destinations`](https://openrouter.ai/docs/api/api-reference/observability/list-observability-destinations)
-  * [`GET /observability/destinations/{id}`](https://openrouter.ai/docs/api/api-reference/observability/get-an-observability-destination)
-  * [`PATCH /observability/destinations/{id}`](https://openrouter.ai/docs/api/api-reference/observability/update-an-observability-destination)
-  * [`POST /observability/destinations`](https://openrouter.ai/docs/api/api-reference/observability/create-an-observability-destination)
+  * [`GET /observability/destinations`](api/api-reference/observability/list-observability-destinations.md)
+  * [`GET /observability/destinations/{id}`](api/api-reference/observability/get-an-observability-destination.md)
+  * [`PATCH /observability/destinations/{id}`](api/api-reference/observability/update-an-observability-destination.md)
+  * [`POST /observability/destinations`](api/api-reference/observability/create-an-observability-destination.md)
 * `ObservabilityRampDestination`: required `broadcast_generation_identity` property addedNo action needed
 
   **4 endpoints using this schema**
 
-  * [`GET /observability/destinations`](https://openrouter.ai/docs/api/api-reference/observability/list-observability-destinations)
-  * [`GET /observability/destinations/{id}`](https://openrouter.ai/docs/api/api-reference/observability/get-an-observability-destination)
-  * [`PATCH /observability/destinations/{id}`](https://openrouter.ai/docs/api/api-reference/observability/update-an-observability-destination)
-  * [`POST /observability/destinations`](https://openrouter.ai/docs/api/api-reference/observability/create-an-observability-destination)
+  * [`GET /observability/destinations`](api/api-reference/observability/list-observability-destinations.md)
+  * [`GET /observability/destinations/{id}`](api/api-reference/observability/get-an-observability-destination.md)
+  * [`PATCH /observability/destinations/{id}`](api/api-reference/observability/update-an-observability-destination.md)
+  * [`POST /observability/destinations`](api/api-reference/observability/create-an-observability-destination.md)
 * `ObservabilityRampDestination`: required `broadcast_generation_request_context` property addedNo action needed
 
   **4 endpoints using this schema**
 
-  * [`GET /observability/destinations`](https://openrouter.ai/docs/api/api-reference/observability/list-observability-destinations)
-  * [`GET /observability/destinations/{id}`](https://openrouter.ai/docs/api/api-reference/observability/get-an-observability-destination)
-  * [`PATCH /observability/destinations/{id}`](https://openrouter.ai/docs/api/api-reference/observability/update-an-observability-destination)
-  * [`POST /observability/destinations`](https://openrouter.ai/docs/api/api-reference/observability/create-an-observability-destination)
+  * [`GET /observability/destinations`](api/api-reference/observability/list-observability-destinations.md)
+  * [`GET /observability/destinations/{id}`](api/api-reference/observability/get-an-observability-destination.md)
+  * [`PATCH /observability/destinations/{id}`](api/api-reference/observability/update-an-observability-destination.md)
+  * [`POST /observability/destinations`](api/api-reference/observability/create-an-observability-destination.md)
 * `ObservabilityS3Destination`: required `broadcast_generation_cost` property addedNo action needed
 
   **4 endpoints using this schema**
 
-  * [`GET /observability/destinations`](https://openrouter.ai/docs/api/api-reference/observability/list-observability-destinations)
-  * [`GET /observability/destinations/{id}`](https://openrouter.ai/docs/api/api-reference/observability/get-an-observability-destination)
-  * [`PATCH /observability/destinations/{id}`](https://openrouter.ai/docs/api/api-reference/observability/update-an-observability-destination)
-  * [`POST /observability/destinations`](https://openrouter.ai/docs/api/api-reference/observability/create-an-observability-destination)
+  * [`GET /observability/destinations`](api/api-reference/observability/list-observability-destinations.md)
+  * [`GET /observability/destinations/{id}`](api/api-reference/observability/get-an-observability-destination.md)
+  * [`PATCH /observability/destinations/{id}`](api/api-reference/observability/update-an-observability-destination.md)
+  * [`POST /observability/destinations`](api/api-reference/observability/create-an-observability-destination.md)
 * `ObservabilityS3Destination`: required `broadcast_generation_identity` property addedNo action needed
 
   **4 endpoints using this schema**
 
-  * [`GET /observability/destinations`](https://openrouter.ai/docs/api/api-reference/observability/list-observability-destinations)
-  * [`GET /observability/destinations/{id}`](https://openrouter.ai/docs/api/api-reference/observability/get-an-observability-destination)
-  * [`PATCH /observability/destinations/{id}`](https://openrouter.ai/docs/api/api-reference/observability/update-an-observability-destination)
-  * [`POST /observability/destinations`](https://openrouter.ai/docs/api/api-reference/observability/create-an-observability-destination)
+  * [`GET /observability/destinations`](api/api-reference/observability/list-observability-destinations.md)
+  * [`GET /observability/destinations/{id}`](api/api-reference/observability/get-an-observability-destination.md)
+  * [`PATCH /observability/destinations/{id}`](api/api-reference/observability/update-an-observability-destination.md)
+  * [`POST /observability/destinations`](api/api-reference/observability/create-an-observability-destination.md)
 * `ObservabilityS3Destination`: required `broadcast_generation_request_context` property addedNo action needed
 
   **4 endpoints using this schema**
 
-  * [`GET /observability/destinations`](https://openrouter.ai/docs/api/api-reference/observability/list-observability-destinations)
-  * [`GET /observability/destinations/{id}`](https://openrouter.ai/docs/api/api-reference/observability/get-an-observability-destination)
-  * [`PATCH /observability/destinations/{id}`](https://openrouter.ai/docs/api/api-reference/observability/update-an-observability-destination)
-  * [`POST /observability/destinations`](https://openrouter.ai/docs/api/api-reference/observability/create-an-observability-destination)
+  * [`GET /observability/destinations`](api/api-reference/observability/list-observability-destinations.md)
+  * [`GET /observability/destinations/{id}`](api/api-reference/observability/get-an-observability-destination.md)
+  * [`PATCH /observability/destinations/{id}`](api/api-reference/observability/update-an-observability-destination.md)
+  * [`POST /observability/destinations`](api/api-reference/observability/create-an-observability-destination.md)
 * `ObservabilitySentryDestination`: required `broadcast_generation_cost` property addedNo action needed
 
   **4 endpoints using this schema**
 
-  * [`GET /observability/destinations`](https://openrouter.ai/docs/api/api-reference/observability/list-observability-destinations)
-  * [`GET /observability/destinations/{id}`](https://openrouter.ai/docs/api/api-reference/observability/get-an-observability-destination)
-  * [`PATCH /observability/destinations/{id}`](https://openrouter.ai/docs/api/api-reference/observability/update-an-observability-destination)
-  * [`POST /observability/destinations`](https://openrouter.ai/docs/api/api-reference/observability/create-an-observability-destination)
+  * [`GET /observability/destinations`](api/api-reference/observability/list-observability-destinations.md)
+  * [`GET /observability/destinations/{id}`](api/api-reference/observability/get-an-observability-destination.md)
+  * [`PATCH /observability/destinations/{id}`](api/api-reference/observability/update-an-observability-destination.md)
+  * [`POST /observability/destinations`](api/api-reference/observability/create-an-observability-destination.md)
 * `ObservabilitySentryDestination`: required `broadcast_generation_identity` property addedNo action needed
 
   **4 endpoints using this schema**
 
-  * [`GET /observability/destinations`](https://openrouter.ai/docs/api/api-reference/observability/list-observability-destinations)
-  * [`GET /observability/destinations/{id}`](https://openrouter.ai/docs/api/api-reference/observability/get-an-observability-destination)
-  * [`PATCH /observability/destinations/{id}`](https://openrouter.ai/docs/api/api-reference/observability/update-an-observability-destination)
-  * [`POST /observability/destinations`](https://openrouter.ai/docs/api/api-reference/observability/create-an-observability-destination)
+  * [`GET /observability/destinations`](api/api-reference/observability/list-observability-destinations.md)
+  * [`GET /observability/destinations/{id}`](api/api-reference/observability/get-an-observability-destination.md)
+  * [`PATCH /observability/destinations/{id}`](api/api-reference/observability/update-an-observability-destination.md)
+  * [`POST /observability/destinations`](api/api-reference/observability/create-an-observability-destination.md)
 * `ObservabilitySentryDestination`: required `broadcast_generation_request_context` property addedNo action needed
 
   **4 endpoints using this schema**
 
-  * [`GET /observability/destinations`](https://openrouter.ai/docs/api/api-reference/observability/list-observability-destinations)
-  * [`GET /observability/destinations/{id}`](https://openrouter.ai/docs/api/api-reference/observability/get-an-observability-destination)
-  * [`PATCH /observability/destinations/{id}`](https://openrouter.ai/docs/api/api-reference/observability/update-an-observability-destination)
-  * [`POST /observability/destinations`](https://openrouter.ai/docs/api/api-reference/observability/create-an-observability-destination)
+  * [`GET /observability/destinations`](api/api-reference/observability/list-observability-destinations.md)
+  * [`GET /observability/destinations/{id}`](api/api-reference/observability/get-an-observability-destination.md)
+  * [`PATCH /observability/destinations/{id}`](api/api-reference/observability/update-an-observability-destination.md)
+  * [`POST /observability/destinations`](api/api-reference/observability/create-an-observability-destination.md)
 * `ObservabilitySnowflakeDestination`: required `broadcast_generation_cost` property addedNo action needed
 
   **4 endpoints using this schema**
 
-  * [`GET /observability/destinations`](https://openrouter.ai/docs/api/api-reference/observability/list-observability-destinations)
-  * [`GET /observability/destinations/{id}`](https://openrouter.ai/docs/api/api-reference/observability/get-an-observability-destination)
-  * [`PATCH /observability/destinations/{id}`](https://openrouter.ai/docs/api/api-reference/observability/update-an-observability-destination)
-  * [`POST /observability/destinations`](https://openrouter.ai/docs/api/api-reference/observability/create-an-observability-destination)
+  * [`GET /observability/destinations`](api/api-reference/observability/list-observability-destinations.md)
+  * [`GET /observability/destinations/{id}`](api/api-reference/observability/get-an-observability-destination.md)
+  * [`PATCH /observability/destinations/{id}`](api/api-reference/observability/update-an-observability-destination.md)
+  * [`POST /observability/destinations`](api/api-reference/observability/create-an-observability-destination.md)
 * `ObservabilitySnowflakeDestination`: required `broadcast_generation_identity` property addedNo action needed
 
   **4 endpoints using this schema**
 
-  * [`GET /observability/destinations`](https://openrouter.ai/docs/api/api-reference/observability/list-observability-destinations)
-  * [`GET /observability/destinations/{id}`](https://openrouter.ai/docs/api/api-reference/observability/get-an-observability-destination)
-  * [`PATCH /observability/destinations/{id}`](https://openrouter.ai/docs/api/api-reference/observability/update-an-observability-destination)
-  * [`POST /observability/destinations`](https://openrouter.ai/docs/api/api-reference/observability/create-an-observability-destination)
+  * [`GET /observability/destinations`](api/api-reference/observability/list-observability-destinations.md)
+  * [`GET /observability/destinations/{id}`](api/api-reference/observability/get-an-observability-destination.md)
+  * [`PATCH /observability/destinations/{id}`](api/api-reference/observability/update-an-observability-destination.md)
+  * [`POST /observability/destinations`](api/api-reference/observability/create-an-observability-destination.md)
 * `ObservabilitySnowflakeDestination`: required `broadcast_generation_request_context` property addedNo action needed
 
   **4 endpoints using this schema**
 
-  * [`GET /observability/destinations`](https://openrouter.ai/docs/api/api-reference/observability/list-observability-destinations)
-  * [`GET /observability/destinations/{id}`](https://openrouter.ai/docs/api/api-reference/observability/get-an-observability-destination)
-  * [`PATCH /observability/destinations/{id}`](https://openrouter.ai/docs/api/api-reference/observability/update-an-observability-destination)
-  * [`POST /observability/destinations`](https://openrouter.ai/docs/api/api-reference/observability/create-an-observability-destination)
+  * [`GET /observability/destinations`](api/api-reference/observability/list-observability-destinations.md)
+  * [`GET /observability/destinations/{id}`](api/api-reference/observability/get-an-observability-destination.md)
+  * [`PATCH /observability/destinations/{id}`](api/api-reference/observability/update-an-observability-destination.md)
+  * [`POST /observability/destinations`](api/api-reference/observability/create-an-observability-destination.md)
 * `ObservabilityWeaveDestination`: required `broadcast_generation_cost` property addedNo action needed
 
   **4 endpoints using this schema**
 
-  * [`GET /observability/destinations`](https://openrouter.ai/docs/api/api-reference/observability/list-observability-destinations)
-  * [`GET /observability/destinations/{id}`](https://openrouter.ai/docs/api/api-reference/observability/get-an-observability-destination)
-  * [`PATCH /observability/destinations/{id}`](https://openrouter.ai/docs/api/api-reference/observability/update-an-observability-destination)
-  * [`POST /observability/destinations`](https://openrouter.ai/docs/api/api-reference/observability/create-an-observability-destination)
+  * [`GET /observability/destinations`](api/api-reference/observability/list-observability-destinations.md)
+  * [`GET /observability/destinations/{id}`](api/api-reference/observability/get-an-observability-destination.md)
+  * [`PATCH /observability/destinations/{id}`](api/api-reference/observability/update-an-observability-destination.md)
+  * [`POST /observability/destinations`](api/api-reference/observability/create-an-observability-destination.md)
 * `ObservabilityWeaveDestination`: required `broadcast_generation_identity` property addedNo action needed
 
   **4 endpoints using this schema**
 
-  * [`GET /observability/destinations`](https://openrouter.ai/docs/api/api-reference/observability/list-observability-destinations)
-  * [`GET /observability/destinations/{id}`](https://openrouter.ai/docs/api/api-reference/observability/get-an-observability-destination)
-  * [`PATCH /observability/destinations/{id}`](https://openrouter.ai/docs/api/api-reference/observability/update-an-observability-destination)
-  * [`POST /observability/destinations`](https://openrouter.ai/docs/api/api-reference/observability/create-an-observability-destination)
+  * [`GET /observability/destinations`](api/api-reference/observability/list-observability-destinations.md)
+  * [`GET /observability/destinations/{id}`](api/api-reference/observability/get-an-observability-destination.md)
+  * [`PATCH /observability/destinations/{id}`](api/api-reference/observability/update-an-observability-destination.md)
+  * [`POST /observability/destinations`](api/api-reference/observability/create-an-observability-destination.md)
 * `ObservabilityWeaveDestination`: required `broadcast_generation_request_context` property addedNo action needed
 
   **4 endpoints using this schema**
 
-  * [`GET /observability/destinations`](https://openrouter.ai/docs/api/api-reference/observability/list-observability-destinations)
-  * [`GET /observability/destinations/{id}`](https://openrouter.ai/docs/api/api-reference/observability/get-an-observability-destination)
-  * [`PATCH /observability/destinations/{id}`](https://openrouter.ai/docs/api/api-reference/observability/update-an-observability-destination)
-  * [`POST /observability/destinations`](https://openrouter.ai/docs/api/api-reference/observability/create-an-observability-destination)
+  * [`GET /observability/destinations`](api/api-reference/observability/list-observability-destinations.md)
+  * [`GET /observability/destinations/{id}`](api/api-reference/observability/get-an-observability-destination.md)
+  * [`PATCH /observability/destinations/{id}`](api/api-reference/observability/update-an-observability-destination.md)
+  * [`POST /observability/destinations`](api/api-reference/observability/create-an-observability-destination.md)
 * `ObservabilityWebhookDestination`: required `broadcast_generation_cost` property addedNo action needed
 
   **4 endpoints using this schema**
 
-  * [`GET /observability/destinations`](https://openrouter.ai/docs/api/api-reference/observability/list-observability-destinations)
-  * [`GET /observability/destinations/{id}`](https://openrouter.ai/docs/api/api-reference/observability/get-an-observability-destination)
-  * [`PATCH /observability/destinations/{id}`](https://openrouter.ai/docs/api/api-reference/observability/update-an-observability-destination)
-  * [`POST /observability/destinations`](https://openrouter.ai/docs/api/api-reference/observability/create-an-observability-destination)
+  * [`GET /observability/destinations`](api/api-reference/observability/list-observability-destinations.md)
+  * [`GET /observability/destinations/{id}`](api/api-reference/observability/get-an-observability-destination.md)
+  * [`PATCH /observability/destinations/{id}`](api/api-reference/observability/update-an-observability-destination.md)
+  * [`POST /observability/destinations`](api/api-reference/observability/create-an-observability-destination.md)
 * `ObservabilityWebhookDestination`: required `broadcast_generation_identity` property addedNo action needed
 
   **4 endpoints using this schema**
 
-  * [`GET /observability/destinations`](https://openrouter.ai/docs/api/api-reference/observability/list-observability-destinations)
-  * [`GET /observability/destinations/{id}`](https://openrouter.ai/docs/api/api-reference/observability/get-an-observability-destination)
-  * [`PATCH /observability/destinations/{id}`](https://openrouter.ai/docs/api/api-reference/observability/update-an-observability-destination)
-  * [`POST /observability/destinations`](https://openrouter.ai/docs/api/api-reference/observability/create-an-observability-destination)
+  * [`GET /observability/destinations`](api/api-reference/observability/list-observability-destinations.md)
+  * [`GET /observability/destinations/{id}`](api/api-reference/observability/get-an-observability-destination.md)
+  * [`PATCH /observability/destinations/{id}`](api/api-reference/observability/update-an-observability-destination.md)
+  * [`POST /observability/destinations`](api/api-reference/observability/create-an-observability-destination.md)
 * `ObservabilityWebhookDestination`: required `broadcast_generation_request_context` property addedNo action needed
 
   **4 endpoints using this schema**
 
-  * [`GET /observability/destinations`](https://openrouter.ai/docs/api/api-reference/observability/list-observability-destinations)
-  * [`GET /observability/destinations/{id}`](https://openrouter.ai/docs/api/api-reference/observability/get-an-observability-destination)
-  * [`PATCH /observability/destinations/{id}`](https://openrouter.ai/docs/api/api-reference/observability/update-an-observability-destination)
-  * [`POST /observability/destinations`](https://openrouter.ai/docs/api/api-reference/observability/create-an-observability-destination)
-* [`GET /observability/destinations`](https://openrouter.ai/docs/api/api-reference/observability/list-observability-destinations): required `broadcast_generation_cost` property addedNo action needed
-* [`GET /observability/destinations`](https://openrouter.ai/docs/api/api-reference/observability/list-observability-destinations): required `broadcast_generation_identity` property addedNo action needed
-* [`GET /observability/destinations`](https://openrouter.ai/docs/api/api-reference/observability/list-observability-destinations): required `broadcast_generation_request_context` property addedNo action needed
+  * [`GET /observability/destinations`](api/api-reference/observability/list-observability-destinations.md)
+  * [`GET /observability/destinations/{id}`](api/api-reference/observability/get-an-observability-destination.md)
+  * [`PATCH /observability/destinations/{id}`](api/api-reference/observability/update-an-observability-destination.md)
+  * [`POST /observability/destinations`](api/api-reference/observability/create-an-observability-destination.md)
+* [`GET /observability/destinations`](api/api-reference/observability/list-observability-destinations.md): required `broadcast_generation_cost` property addedNo action needed
+* [`GET /observability/destinations`](api/api-reference/observability/list-observability-destinations.md): required `broadcast_generation_identity` property addedNo action needed
+* [`GET /observability/destinations`](api/api-reference/observability/list-observability-destinations.md): required `broadcast_generation_request_context` property addedNo action needed
 
 ## Modified endpoints
 
-* [`GET /byok`](https://openrouter.ai/docs/api/api-reference/byok/list-byok-provider-credentials): description updated
-* [`POST /byok`](https://openrouter.ai/docs/api/api-reference/byok/create-a-byok-provider-credential): description updated
-* [`GET /observability/destinations`](https://openrouter.ai/docs/api/api-reference/observability/list-observability-destinations): response schema updated
-* [`POST /observability/destinations`](https://openrouter.ai/docs/api/api-reference/observability/create-an-observability-destination): response schema updated
-* [`GET /observability/destinations/{id}`](https://openrouter.ai/docs/api/api-reference/observability/get-an-observability-destination): response schema updated
-* [`PATCH /observability/destinations/{id}`](https://openrouter.ai/docs/api/api-reference/observability/update-an-observability-destination): response schema updated
+* [`GET /byok`](api/api-reference/byok/list-byok-provider-credentials.md): description updated
+* [`POST /byok`](api/api-reference/byok/create-a-byok-provider-credential.md): description updated
+* [`GET /observability/destinations`](api/api-reference/observability/list-observability-destinations.md): response schema updated
+* [`POST /observability/destinations`](api/api-reference/observability/create-an-observability-destination.md): response schema updated
+* [`GET /observability/destinations/{id}`](api/api-reference/observability/get-an-observability-destination.md): response schema updated
+* [`PATCH /observability/destinations/{id}`](api/api-reference/observability/update-an-observability-destination.md): response schema updated
 
 ## New response codes
 
-* [`PATCH /observability/destinations/{id}`](https://openrouter.ai/docs/api/api-reference/observability/update-an-observability-destination): now returns `403`
+* [`PATCH /observability/destinations/{id}`](api/api-reference/observability/update-an-observability-destination.md): now returns `403`
 
 ## New schemas
 
@@ -5918,12 +5918,12 @@ Entries on this page are generated automatically from [OpenAPI specification](ap
 
   **6 endpoints using this schema**
 
-  * [`POST /chat/completions`](https://openrouter.ai/docs/api/api-reference/chat/create-a-chat-completion)
-  * [`POST /messages`](https://openrouter.ai/docs/api/api-reference/anthropic-messages/create-a-message)
-  * [`POST /presets/{slug}/chat/completions`](https://openrouter.ai/docs/api/api-reference/presets/create-a-preset-from-a-chat-completions-request-body)
-  * [`POST /presets/{slug}/messages`](https://openrouter.ai/docs/api/api-reference/presets/create-a-preset-from-a-messages-request-body)
-  * [`POST /presets/{slug}/responses`](https://openrouter.ai/docs/api/api-reference/presets/create-a-preset-from-a-responses-request-body)
-  * [`POST /responses`](https://openrouter.ai/docs/api/api-reference/responses/create-a-response)
+  * [`POST /chat/completions`](api/api-reference/chat/create-a-chat-completion.md)
+  * [`POST /messages`](api/api-reference/anthropic-messages/create-a-message.md)
+  * [`POST /presets/{slug}/chat/completions`](api/api-reference/presets/create-a-preset-from-a-chat-completions-request-body.md)
+  * [`POST /presets/{slug}/messages`](api/api-reference/presets/create-a-preset-from-a-messages-request-body.md)
+  * [`POST /presets/{slug}/responses`](api/api-reference/presets/create-a-preset-from-a-responses-request-body.md)
+  * [`POST /responses`](api/api-reference/responses/create-a-response.md)
 
 ## Modified schemas
 
@@ -5931,48 +5931,48 @@ Entries on this page are generated automatically from [OpenAPI specification](ap
 
   **4 endpoints using this schema**
 
-  * [`GET /byok`](https://openrouter.ai/docs/api/api-reference/byok/list-byok-provider-credentials)
-  * [`GET /byok/{id}`](https://openrouter.ai/docs/api/api-reference/byok/get-a-byok-provider-credential)
-  * [`PATCH /byok/{id}`](https://openrouter.ai/docs/api/api-reference/byok/update-a-byok-provider-credential)
-  * [`POST /byok`](https://openrouter.ai/docs/api/api-reference/byok/create-a-byok-provider-credential)
+  * [`GET /byok`](api/api-reference/byok/list-byok-provider-credentials.md)
+  * [`GET /byok/{id}`](api/api-reference/byok/get-a-byok-provider-credential.md)
+  * [`PATCH /byok/{id}`](api/api-reference/byok/update-a-byok-provider-credential.md)
+  * [`POST /byok`](api/api-reference/byok/create-a-byok-provider-credential.md)
 * `CreateBYOKKeyRequest`: description updated
-  * Used by [`POST /byok`](https://openrouter.ai/docs/api/api-reference/byok/create-a-byok-provider-credential)
+  * Used by [`POST /byok`](api/api-reference/byok/create-a-byok-provider-credential.md)
 * `CreateGuardrailRequest`: description updated
-  * Used by [`POST /guardrails`](https://openrouter.ai/docs/api/api-reference/guardrails/create-a-guardrail)
+  * Used by [`POST /guardrails`](api/api-reference/guardrails/create-a-guardrail.md)
 * `CreateObservabilityDestinationRequest`: new property `broadcast_generation_cost`; new property `broadcast_generation_identity`; new property `broadcast_generation_request_context`
-  * Used by [`POST /observability/destinations`](https://openrouter.ai/docs/api/api-reference/observability/create-an-observability-destination)
+  * Used by [`POST /observability/destinations`](api/api-reference/observability/create-an-observability-destination.md)
 * `CreateObservabilityDestinationResponse`: example modified
-  * Used by [`POST /observability/destinations`](https://openrouter.ai/docs/api/api-reference/observability/create-an-observability-destination)
+  * Used by [`POST /observability/destinations`](api/api-reference/observability/create-an-observability-destination.md)
 * `FusionPlugin`: description updated
 
   **6 endpoints using this schema**
 
-  * [`POST /chat/completions`](https://openrouter.ai/docs/api/api-reference/chat/create-a-chat-completion)
-  * [`POST /messages`](https://openrouter.ai/docs/api/api-reference/anthropic-messages/create-a-message)
-  * [`POST /presets/{slug}/chat/completions`](https://openrouter.ai/docs/api/api-reference/presets/create-a-preset-from-a-chat-completions-request-body)
-  * [`POST /presets/{slug}/messages`](https://openrouter.ai/docs/api/api-reference/presets/create-a-preset-from-a-messages-request-body)
-  * [`POST /presets/{slug}/responses`](https://openrouter.ai/docs/api/api-reference/presets/create-a-preset-from-a-responses-request-body)
-  * [`POST /responses`](https://openrouter.ai/docs/api/api-reference/responses/create-a-response)
+  * [`POST /chat/completions`](api/api-reference/chat/create-a-chat-completion.md)
+  * [`POST /messages`](api/api-reference/anthropic-messages/create-a-message.md)
+  * [`POST /presets/{slug}/chat/completions`](api/api-reference/presets/create-a-preset-from-a-chat-completions-request-body.md)
+  * [`POST /presets/{slug}/messages`](api/api-reference/presets/create-a-preset-from-a-messages-request-body.md)
+  * [`POST /presets/{slug}/responses`](api/api-reference/presets/create-a-preset-from-a-responses-request-body.md)
+  * [`POST /responses`](api/api-reference/responses/create-a-response.md)
 * `FusionServerToolConfig`: description updated
 
   **4 endpoints using this schema**
 
-  * [`POST /chat/completions`](https://openrouter.ai/docs/api/api-reference/chat/create-a-chat-completion)
-  * [`POST /presets/{slug}/chat/completions`](https://openrouter.ai/docs/api/api-reference/presets/create-a-preset-from-a-chat-completions-request-body)
-  * [`POST /presets/{slug}/responses`](https://openrouter.ai/docs/api/api-reference/presets/create-a-preset-from-a-responses-request-body)
-  * [`POST /responses`](https://openrouter.ai/docs/api/api-reference/responses/create-a-response)
+  * [`POST /chat/completions`](api/api-reference/chat/create-a-chat-completion.md)
+  * [`POST /presets/{slug}/chat/completions`](api/api-reference/presets/create-a-preset-from-a-chat-completions-request-body.md)
+  * [`POST /presets/{slug}/responses`](api/api-reference/presets/create-a-preset-from-a-responses-request-body.md)
+  * [`POST /responses`](api/api-reference/responses/create-a-response.md)
 * `GetObservabilityDestinationResponse`: example modified
-  * Used by [`GET /observability/destinations/{id}`](https://openrouter.ai/docs/api/api-reference/observability/get-an-observability-destination)
+  * Used by [`GET /observability/destinations/{id}`](api/api-reference/observability/get-an-observability-destination.md)
 * `Guardrail`: description updated
 
   **4 endpoints using this schema**
 
-  * [`GET /guardrails`](https://openrouter.ai/docs/api/api-reference/guardrails/list-guardrails)
-  * [`GET /guardrails/{id}`](https://openrouter.ai/docs/api/api-reference/guardrails/get-a-guardrail)
-  * [`PATCH /guardrails/{id}`](https://openrouter.ai/docs/api/api-reference/guardrails/update-a-guardrail)
-  * [`POST /guardrails`](https://openrouter.ai/docs/api/api-reference/guardrails/create-a-guardrail)
+  * [`GET /guardrails`](api/api-reference/guardrails/list-guardrails.md)
+  * [`GET /guardrails/{id}`](api/api-reference/guardrails/get-a-guardrail.md)
+  * [`PATCH /guardrails/{id}`](api/api-reference/guardrails/update-a-guardrail.md)
+  * [`POST /guardrails`](api/api-reference/guardrails/create-a-guardrail.md)
 * `ListObservabilityDestinationsResponse`: example modified
-  * Used by [`GET /observability/destinations`](https://openrouter.ai/docs/api/api-reference/observability/list-observability-destinations)
+  * Used by [`GET /observability/destinations`](api/api-reference/observability/list-observability-destinations.md)
 * `ObservabilityArizeDestination`:
 
   * example modified
@@ -5982,10 +5982,10 @@ Entries on this page are generated automatically from [OpenAPI specification](ap
 
   **4 endpoints using this schema**
 
-  * [`GET /observability/destinations`](https://openrouter.ai/docs/api/api-reference/observability/list-observability-destinations)
-  * [`GET /observability/destinations/{id}`](https://openrouter.ai/docs/api/api-reference/observability/get-an-observability-destination)
-  * [`PATCH /observability/destinations/{id}`](https://openrouter.ai/docs/api/api-reference/observability/update-an-observability-destination)
-  * [`POST /observability/destinations`](https://openrouter.ai/docs/api/api-reference/observability/create-an-observability-destination)
+  * [`GET /observability/destinations`](api/api-reference/observability/list-observability-destinations.md)
+  * [`GET /observability/destinations/{id}`](api/api-reference/observability/get-an-observability-destination.md)
+  * [`PATCH /observability/destinations/{id}`](api/api-reference/observability/update-an-observability-destination.md)
+  * [`POST /observability/destinations`](api/api-reference/observability/create-an-observability-destination.md)
 * `ObservabilityBraintrustDestination`:
 
   * example modified
@@ -5995,10 +5995,10 @@ Entries on this page are generated automatically from [OpenAPI specification](ap
 
   **4 endpoints using this schema**
 
-  * [`GET /observability/destinations`](https://openrouter.ai/docs/api/api-reference/observability/list-observability-destinations)
-  * [`GET /observability/destinations/{id}`](https://openrouter.ai/docs/api/api-reference/observability/get-an-observability-destination)
-  * [`PATCH /observability/destinations/{id}`](https://openrouter.ai/docs/api/api-reference/observability/update-an-observability-destination)
-  * [`POST /observability/destinations`](https://openrouter.ai/docs/api/api-reference/observability/create-an-observability-destination)
+  * [`GET /observability/destinations`](api/api-reference/observability/list-observability-destinations.md)
+  * [`GET /observability/destinations/{id}`](api/api-reference/observability/get-an-observability-destination.md)
+  * [`PATCH /observability/destinations/{id}`](api/api-reference/observability/update-an-observability-destination.md)
+  * [`POST /observability/destinations`](api/api-reference/observability/create-an-observability-destination.md)
 * `ObservabilityClickhouseDestination`:
 
   * example modified
@@ -6008,10 +6008,10 @@ Entries on this page are generated automatically from [OpenAPI specification](ap
 
   **4 endpoints using this schema**
 
-  * [`GET /observability/destinations`](https://openrouter.ai/docs/api/api-reference/observability/list-observability-destinations)
-  * [`GET /observability/destinations/{id}`](https://openrouter.ai/docs/api/api-reference/observability/get-an-observability-destination)
-  * [`PATCH /observability/destinations/{id}`](https://openrouter.ai/docs/api/api-reference/observability/update-an-observability-destination)
-  * [`POST /observability/destinations`](https://openrouter.ai/docs/api/api-reference/observability/create-an-observability-destination)
+  * [`GET /observability/destinations`](api/api-reference/observability/list-observability-destinations.md)
+  * [`GET /observability/destinations/{id}`](api/api-reference/observability/get-an-observability-destination.md)
+  * [`PATCH /observability/destinations/{id}`](api/api-reference/observability/update-an-observability-destination.md)
+  * [`POST /observability/destinations`](api/api-reference/observability/create-an-observability-destination.md)
 * `ObservabilityDatadogDestination`:
 
   * example modified
@@ -6021,18 +6021,18 @@ Entries on this page are generated automatically from [OpenAPI specification](ap
 
   **4 endpoints using this schema**
 
-  * [`GET /observability/destinations`](https://openrouter.ai/docs/api/api-reference/observability/list-observability-destinations)
-  * [`GET /observability/destinations/{id}`](https://openrouter.ai/docs/api/api-reference/observability/get-an-observability-destination)
-  * [`PATCH /observability/destinations/{id}`](https://openrouter.ai/docs/api/api-reference/observability/update-an-observability-destination)
-  * [`POST /observability/destinations`](https://openrouter.ai/docs/api/api-reference/observability/create-an-observability-destination)
+  * [`GET /observability/destinations`](api/api-reference/observability/list-observability-destinations.md)
+  * [`GET /observability/destinations/{id}`](api/api-reference/observability/get-an-observability-destination.md)
+  * [`PATCH /observability/destinations/{id}`](api/api-reference/observability/update-an-observability-destination.md)
+  * [`POST /observability/destinations`](api/api-reference/observability/create-an-observability-destination.md)
 * `ObservabilityDestination`: example modified
 
   **4 endpoints using this schema**
 
-  * [`GET /observability/destinations`](https://openrouter.ai/docs/api/api-reference/observability/list-observability-destinations)
-  * [`GET /observability/destinations/{id}`](https://openrouter.ai/docs/api/api-reference/observability/get-an-observability-destination)
-  * [`PATCH /observability/destinations/{id}`](https://openrouter.ai/docs/api/api-reference/observability/update-an-observability-destination)
-  * [`POST /observability/destinations`](https://openrouter.ai/docs/api/api-reference/observability/create-an-observability-destination)
+  * [`GET /observability/destinations`](api/api-reference/observability/list-observability-destinations.md)
+  * [`GET /observability/destinations/{id}`](api/api-reference/observability/get-an-observability-destination.md)
+  * [`PATCH /observability/destinations/{id}`](api/api-reference/observability/update-an-observability-destination.md)
+  * [`POST /observability/destinations`](api/api-reference/observability/create-an-observability-destination.md)
 * `ObservabilityGrafanaDestination`:
 
   * example modified
@@ -6042,10 +6042,10 @@ Entries on this page are generated automatically from [OpenAPI specification](ap
 
   **4 endpoints using this schema**
 
-  * [`GET /observability/destinations`](https://openrouter.ai/docs/api/api-reference/observability/list-observability-destinations)
-  * [`GET /observability/destinations/{id}`](https://openrouter.ai/docs/api/api-reference/observability/get-an-observability-destination)
-  * [`PATCH /observability/destinations/{id}`](https://openrouter.ai/docs/api/api-reference/observability/update-an-observability-destination)
-  * [`POST /observability/destinations`](https://openrouter.ai/docs/api/api-reference/observability/create-an-observability-destination)
+  * [`GET /observability/destinations`](api/api-reference/observability/list-observability-destinations.md)
+  * [`GET /observability/destinations/{id}`](api/api-reference/observability/get-an-observability-destination.md)
+  * [`PATCH /observability/destinations/{id}`](api/api-reference/observability/update-an-observability-destination.md)
+  * [`POST /observability/destinations`](api/api-reference/observability/create-an-observability-destination.md)
 * `ObservabilityLangfuseDestination`:
 
   * example modified
@@ -6055,10 +6055,10 @@ Entries on this page are generated automatically from [OpenAPI specification](ap
 
   **4 endpoints using this schema**
 
-  * [`GET /observability/destinations`](https://openrouter.ai/docs/api/api-reference/observability/list-observability-destinations)
-  * [`GET /observability/destinations/{id}`](https://openrouter.ai/docs/api/api-reference/observability/get-an-observability-destination)
-  * [`PATCH /observability/destinations/{id}`](https://openrouter.ai/docs/api/api-reference/observability/update-an-observability-destination)
-  * [`POST /observability/destinations`](https://openrouter.ai/docs/api/api-reference/observability/create-an-observability-destination)
+  * [`GET /observability/destinations`](api/api-reference/observability/list-observability-destinations.md)
+  * [`GET /observability/destinations/{id}`](api/api-reference/observability/get-an-observability-destination.md)
+  * [`PATCH /observability/destinations/{id}`](api/api-reference/observability/update-an-observability-destination.md)
+  * [`POST /observability/destinations`](api/api-reference/observability/create-an-observability-destination.md)
 * `ObservabilityLangsmithDestination`:
 
   * example modified
@@ -6068,10 +6068,10 @@ Entries on this page are generated automatically from [OpenAPI specification](ap
 
   **4 endpoints using this schema**
 
-  * [`GET /observability/destinations`](https://openrouter.ai/docs/api/api-reference/observability/list-observability-destinations)
-  * [`GET /observability/destinations/{id}`](https://openrouter.ai/docs/api/api-reference/observability/get-an-observability-destination)
-  * [`PATCH /observability/destinations/{id}`](https://openrouter.ai/docs/api/api-reference/observability/update-an-observability-destination)
-  * [`POST /observability/destinations`](https://openrouter.ai/docs/api/api-reference/observability/create-an-observability-destination)
+  * [`GET /observability/destinations`](api/api-reference/observability/list-observability-destinations.md)
+  * [`GET /observability/destinations/{id}`](api/api-reference/observability/get-an-observability-destination.md)
+  * [`PATCH /observability/destinations/{id}`](api/api-reference/observability/update-an-observability-destination.md)
+  * [`POST /observability/destinations`](api/api-reference/observability/create-an-observability-destination.md)
 * `ObservabilityNewrelicDestination`:
 
   * example modified
@@ -6081,10 +6081,10 @@ Entries on this page are generated automatically from [OpenAPI specification](ap
 
   **4 endpoints using this schema**
 
-  * [`GET /observability/destinations`](https://openrouter.ai/docs/api/api-reference/observability/list-observability-destinations)
-  * [`GET /observability/destinations/{id}`](https://openrouter.ai/docs/api/api-reference/observability/get-an-observability-destination)
-  * [`PATCH /observability/destinations/{id}`](https://openrouter.ai/docs/api/api-reference/observability/update-an-observability-destination)
-  * [`POST /observability/destinations`](https://openrouter.ai/docs/api/api-reference/observability/create-an-observability-destination)
+  * [`GET /observability/destinations`](api/api-reference/observability/list-observability-destinations.md)
+  * [`GET /observability/destinations/{id}`](api/api-reference/observability/get-an-observability-destination.md)
+  * [`PATCH /observability/destinations/{id}`](api/api-reference/observability/update-an-observability-destination.md)
+  * [`POST /observability/destinations`](api/api-reference/observability/create-an-observability-destination.md)
 * `ObservabilityOpikDestination`:
 
   * example modified
@@ -6094,10 +6094,10 @@ Entries on this page are generated automatically from [OpenAPI specification](ap
 
   **4 endpoints using this schema**
 
-  * [`GET /observability/destinations`](https://openrouter.ai/docs/api/api-reference/observability/list-observability-destinations)
-  * [`GET /observability/destinations/{id}`](https://openrouter.ai/docs/api/api-reference/observability/get-an-observability-destination)
-  * [`PATCH /observability/destinations/{id}`](https://openrouter.ai/docs/api/api-reference/observability/update-an-observability-destination)
-  * [`POST /observability/destinations`](https://openrouter.ai/docs/api/api-reference/observability/create-an-observability-destination)
+  * [`GET /observability/destinations`](api/api-reference/observability/list-observability-destinations.md)
+  * [`GET /observability/destinations/{id}`](api/api-reference/observability/get-an-observability-destination.md)
+  * [`PATCH /observability/destinations/{id}`](api/api-reference/observability/update-an-observability-destination.md)
+  * [`POST /observability/destinations`](api/api-reference/observability/create-an-observability-destination.md)
 * `ObservabilityOtelCollectorDestination`:
 
   * example modified
@@ -6107,10 +6107,10 @@ Entries on this page are generated automatically from [OpenAPI specification](ap
 
   **4 endpoints using this schema**
 
-  * [`GET /observability/destinations`](https://openrouter.ai/docs/api/api-reference/observability/list-observability-destinations)
-  * [`GET /observability/destinations/{id}`](https://openrouter.ai/docs/api/api-reference/observability/get-an-observability-destination)
-  * [`PATCH /observability/destinations/{id}`](https://openrouter.ai/docs/api/api-reference/observability/update-an-observability-destination)
-  * [`POST /observability/destinations`](https://openrouter.ai/docs/api/api-reference/observability/create-an-observability-destination)
+  * [`GET /observability/destinations`](api/api-reference/observability/list-observability-destinations.md)
+  * [`GET /observability/destinations/{id}`](api/api-reference/observability/get-an-observability-destination.md)
+  * [`PATCH /observability/destinations/{id}`](api/api-reference/observability/update-an-observability-destination.md)
+  * [`POST /observability/destinations`](api/api-reference/observability/create-an-observability-destination.md)
 * `ObservabilityPosthogDestination`:
 
   * example modified
@@ -6120,10 +6120,10 @@ Entries on this page are generated automatically from [OpenAPI specification](ap
 
   **4 endpoints using this schema**
 
-  * [`GET /observability/destinations`](https://openrouter.ai/docs/api/api-reference/observability/list-observability-destinations)
-  * [`GET /observability/destinations/{id}`](https://openrouter.ai/docs/api/api-reference/observability/get-an-observability-destination)
-  * [`PATCH /observability/destinations/{id}`](https://openrouter.ai/docs/api/api-reference/observability/update-an-observability-destination)
-  * [`POST /observability/destinations`](https://openrouter.ai/docs/api/api-reference/observability/create-an-observability-destination)
+  * [`GET /observability/destinations`](api/api-reference/observability/list-observability-destinations.md)
+  * [`GET /observability/destinations/{id}`](api/api-reference/observability/get-an-observability-destination.md)
+  * [`PATCH /observability/destinations/{id}`](api/api-reference/observability/update-an-observability-destination.md)
+  * [`POST /observability/destinations`](api/api-reference/observability/create-an-observability-destination.md)
 * `ObservabilityRampDestination`:
 
   * example modified
@@ -6133,10 +6133,10 @@ Entries on this page are generated automatically from [OpenAPI specification](ap
 
   **4 endpoints using this schema**
 
-  * [`GET /observability/destinations`](https://openrouter.ai/docs/api/api-reference/observability/list-observability-destinations)
-  * [`GET /observability/destinations/{id}`](https://openrouter.ai/docs/api/api-reference/observability/get-an-observability-destination)
-  * [`PATCH /observability/destinations/{id}`](https://openrouter.ai/docs/api/api-reference/observability/update-an-observability-destination)
-  * [`POST /observability/destinations`](https://openrouter.ai/docs/api/api-reference/observability/create-an-observability-destination)
+  * [`GET /observability/destinations`](api/api-reference/observability/list-observability-destinations.md)
+  * [`GET /observability/destinations/{id}`](api/api-reference/observability/get-an-observability-destination.md)
+  * [`PATCH /observability/destinations/{id}`](api/api-reference/observability/update-an-observability-destination.md)
+  * [`POST /observability/destinations`](api/api-reference/observability/create-an-observability-destination.md)
 * `ObservabilityS3Destination`:
 
   * example modified
@@ -6146,10 +6146,10 @@ Entries on this page are generated automatically from [OpenAPI specification](ap
 
   **4 endpoints using this schema**
 
-  * [`GET /observability/destinations`](https://openrouter.ai/docs/api/api-reference/observability/list-observability-destinations)
-  * [`GET /observability/destinations/{id}`](https://openrouter.ai/docs/api/api-reference/observability/get-an-observability-destination)
-  * [`PATCH /observability/destinations/{id}`](https://openrouter.ai/docs/api/api-reference/observability/update-an-observability-destination)
-  * [`POST /observability/destinations`](https://openrouter.ai/docs/api/api-reference/observability/create-an-observability-destination)
+  * [`GET /observability/destinations`](api/api-reference/observability/list-observability-destinations.md)
+  * [`GET /observability/destinations/{id}`](api/api-reference/observability/get-an-observability-destination.md)
+  * [`PATCH /observability/destinations/{id}`](api/api-reference/observability/update-an-observability-destination.md)
+  * [`POST /observability/destinations`](api/api-reference/observability/create-an-observability-destination.md)
 * `ObservabilitySentryDestination`:
 
   * example modified
@@ -6159,10 +6159,10 @@ Entries on this page are generated automatically from [OpenAPI specification](ap
 
   **4 endpoints using this schema**
 
-  * [`GET /observability/destinations`](https://openrouter.ai/docs/api/api-reference/observability/list-observability-destinations)
-  * [`GET /observability/destinations/{id}`](https://openrouter.ai/docs/api/api-reference/observability/get-an-observability-destination)
-  * [`PATCH /observability/destinations/{id}`](https://openrouter.ai/docs/api/api-reference/observability/update-an-observability-destination)
-  * [`POST /observability/destinations`](https://openrouter.ai/docs/api/api-reference/observability/create-an-observability-destination)
+  * [`GET /observability/destinations`](api/api-reference/observability/list-observability-destinations.md)
+  * [`GET /observability/destinations/{id}`](api/api-reference/observability/get-an-observability-destination.md)
+  * [`PATCH /observability/destinations/{id}`](api/api-reference/observability/update-an-observability-destination.md)
+  * [`POST /observability/destinations`](api/api-reference/observability/create-an-observability-destination.md)
 * `ObservabilitySnowflakeDestination`:
 
   * example modified
@@ -6172,10 +6172,10 @@ Entries on this page are generated automatically from [OpenAPI specification](ap
 
   **4 endpoints using this schema**
 
-  * [`GET /observability/destinations`](https://openrouter.ai/docs/api/api-reference/observability/list-observability-destinations)
-  * [`GET /observability/destinations/{id}`](https://openrouter.ai/docs/api/api-reference/observability/get-an-observability-destination)
-  * [`PATCH /observability/destinations/{id}`](https://openrouter.ai/docs/api/api-reference/observability/update-an-observability-destination)
-  * [`POST /observability/destinations`](https://openrouter.ai/docs/api/api-reference/observability/create-an-observability-destination)
+  * [`GET /observability/destinations`](api/api-reference/observability/list-observability-destinations.md)
+  * [`GET /observability/destinations/{id}`](api/api-reference/observability/get-an-observability-destination.md)
+  * [`PATCH /observability/destinations/{id}`](api/api-reference/observability/update-an-observability-destination.md)
+  * [`POST /observability/destinations`](api/api-reference/observability/create-an-observability-destination.md)
 * `ObservabilityWeaveDestination`:
 
   * example modified
@@ -6185,10 +6185,10 @@ Entries on this page are generated automatically from [OpenAPI specification](ap
 
   **4 endpoints using this schema**
 
-  * [`GET /observability/destinations`](https://openrouter.ai/docs/api/api-reference/observability/list-observability-destinations)
-  * [`GET /observability/destinations/{id}`](https://openrouter.ai/docs/api/api-reference/observability/get-an-observability-destination)
-  * [`PATCH /observability/destinations/{id}`](https://openrouter.ai/docs/api/api-reference/observability/update-an-observability-destination)
-  * [`POST /observability/destinations`](https://openrouter.ai/docs/api/api-reference/observability/create-an-observability-destination)
+  * [`GET /observability/destinations`](api/api-reference/observability/list-observability-destinations.md)
+  * [`GET /observability/destinations/{id}`](api/api-reference/observability/get-an-observability-destination.md)
+  * [`PATCH /observability/destinations/{id}`](api/api-reference/observability/update-an-observability-destination.md)
+  * [`POST /observability/destinations`](api/api-reference/observability/create-an-observability-destination.md)
 * `ObservabilityWebhookDestination`:
 
   * example modified
@@ -6198,54 +6198,54 @@ Entries on this page are generated automatically from [OpenAPI specification](ap
 
   **4 endpoints using this schema**
 
-  * [`GET /observability/destinations`](https://openrouter.ai/docs/api/api-reference/observability/list-observability-destinations)
-  * [`GET /observability/destinations/{id}`](https://openrouter.ai/docs/api/api-reference/observability/get-an-observability-destination)
-  * [`PATCH /observability/destinations/{id}`](https://openrouter.ai/docs/api/api-reference/observability/update-an-observability-destination)
-  * [`POST /observability/destinations`](https://openrouter.ai/docs/api/api-reference/observability/create-an-observability-destination)
+  * [`GET /observability/destinations`](api/api-reference/observability/list-observability-destinations.md)
+  * [`GET /observability/destinations/{id}`](api/api-reference/observability/get-an-observability-destination.md)
+  * [`PATCH /observability/destinations/{id}`](api/api-reference/observability/update-an-observability-destination.md)
+  * [`POST /observability/destinations`](api/api-reference/observability/create-an-observability-destination.md)
 * `UpdateObservabilityDestinationRequest`: new property `broadcast_generation_cost`; new property `broadcast_generation_identity`; new property `broadcast_generation_request_context`
-  * Used by [`PATCH /observability/destinations/{id}`](https://openrouter.ai/docs/api/api-reference/observability/update-an-observability-destination)
+  * Used by [`PATCH /observability/destinations/{id}`](api/api-reference/observability/update-an-observability-destination.md)
 * `UpdateObservabilityDestinationResponse`: example modified
-  * Used by [`PATCH /observability/destinations/{id}`](https://openrouter.ai/docs/api/api-reference/observability/update-an-observability-destination)
+  * Used by [`PATCH /observability/destinations/{id}`](api/api-reference/observability/update-an-observability-destination.md)
 * `ChatWebSearchShorthand`: new property `mode`
-  * Used by [`POST /chat/completions`](https://openrouter.ai/docs/api/api-reference/chat/create-a-chat-completion), [`POST /presets/{slug}/chat/completions`](https://openrouter.ai/docs/api/api-reference/presets/create-a-preset-from-a-chat-completions-request-body)
+  * Used by [`POST /chat/completions`](api/api-reference/chat/create-a-chat-completion.md), [`POST /presets/{slug}/chat/completions`](api/api-reference/presets/create-a-preset-from-a-chat-completions-request-body.md)
 * `InputReference`: description updated
-  * Used by [`POST /videos`](https://openrouter.ai/docs/api/api-reference/video-generation/submit-a-video-generation-request)
+  * Used by [`POST /videos`](api/api-reference/video-generation/submit-a-video-generation-request.md)
 * `Legacy_WebSearchServerTool`: new property `mode`
-  * Used by [`POST /presets/{slug}/responses`](https://openrouter.ai/docs/api/api-reference/presets/create-a-preset-from-a-responses-request-body), [`POST /responses`](https://openrouter.ai/docs/api/api-reference/responses/create-a-response)
+  * Used by [`POST /presets/{slug}/responses`](api/api-reference/presets/create-a-preset-from-a-responses-request-body.md), [`POST /responses`](api/api-reference/responses/create-a-response.md)
 * `Preview_20250311_WebSearchServerTool`: new property `mode`
-  * Used by [`POST /presets/{slug}/responses`](https://openrouter.ai/docs/api/api-reference/presets/create-a-preset-from-a-responses-request-body), [`POST /responses`](https://openrouter.ai/docs/api/api-reference/responses/create-a-response)
+  * Used by [`POST /presets/{slug}/responses`](api/api-reference/presets/create-a-preset-from-a-responses-request-body.md), [`POST /responses`](api/api-reference/responses/create-a-response.md)
 * `Preview_WebSearchServerTool`: new property `mode`
-  * Used by [`POST /presets/{slug}/responses`](https://openrouter.ai/docs/api/api-reference/presets/create-a-preset-from-a-responses-request-body), [`POST /responses`](https://openrouter.ai/docs/api/api-reference/responses/create-a-response)
+  * Used by [`POST /presets/{slug}/responses`](api/api-reference/presets/create-a-preset-from-a-responses-request-body.md), [`POST /responses`](api/api-reference/responses/create-a-response.md)
 * `VideoGenerationRequest`: description updated
-  * Used by [`POST /videos`](https://openrouter.ai/docs/api/api-reference/video-generation/submit-a-video-generation-request)
+  * Used by [`POST /videos`](api/api-reference/video-generation/submit-a-video-generation-request.md)
 * `WebSearchConfig`: new property `mode`
 
   **4 endpoints using this schema**
 
-  * [`POST /chat/completions`](https://openrouter.ai/docs/api/api-reference/chat/create-a-chat-completion)
-  * [`POST /messages`](https://openrouter.ai/docs/api/api-reference/anthropic-messages/create-a-message)
-  * [`POST /presets/{slug}/chat/completions`](https://openrouter.ai/docs/api/api-reference/presets/create-a-preset-from-a-chat-completions-request-body)
-  * [`POST /presets/{slug}/messages`](https://openrouter.ai/docs/api/api-reference/presets/create-a-preset-from-a-messages-request-body)
+  * [`POST /chat/completions`](api/api-reference/chat/create-a-chat-completion.md)
+  * [`POST /messages`](api/api-reference/anthropic-messages/create-a-message.md)
+  * [`POST /presets/{slug}/chat/completions`](api/api-reference/presets/create-a-preset-from-a-chat-completions-request-body.md)
+  * [`POST /presets/{slug}/messages`](api/api-reference/presets/create-a-preset-from-a-messages-request-body.md)
 * `WebSearchPlugin`: new property `mode`
 
   **6 endpoints using this schema**
 
-  * [`POST /chat/completions`](https://openrouter.ai/docs/api/api-reference/chat/create-a-chat-completion)
-  * [`POST /messages`](https://openrouter.ai/docs/api/api-reference/anthropic-messages/create-a-message)
-  * [`POST /presets/{slug}/chat/completions`](https://openrouter.ai/docs/api/api-reference/presets/create-a-preset-from-a-chat-completions-request-body)
-  * [`POST /presets/{slug}/messages`](https://openrouter.ai/docs/api/api-reference/presets/create-a-preset-from-a-messages-request-body)
-  * [`POST /presets/{slug}/responses`](https://openrouter.ai/docs/api/api-reference/presets/create-a-preset-from-a-responses-request-body)
-  * [`POST /responses`](https://openrouter.ai/docs/api/api-reference/responses/create-a-response)
+  * [`POST /chat/completions`](api/api-reference/chat/create-a-chat-completion.md)
+  * [`POST /messages`](api/api-reference/anthropic-messages/create-a-message.md)
+  * [`POST /presets/{slug}/chat/completions`](api/api-reference/presets/create-a-preset-from-a-chat-completions-request-body.md)
+  * [`POST /presets/{slug}/messages`](api/api-reference/presets/create-a-preset-from-a-messages-request-body.md)
+  * [`POST /presets/{slug}/responses`](api/api-reference/presets/create-a-preset-from-a-responses-request-body.md)
+  * [`POST /responses`](api/api-reference/responses/create-a-response.md)
 * `WebSearchServerTool`: new property `mode`
-  * Used by [`POST /presets/{slug}/responses`](https://openrouter.ai/docs/api/api-reference/presets/create-a-preset-from-a-responses-request-body), [`POST /responses`](https://openrouter.ai/docs/api/api-reference/responses/create-a-response)
+  * Used by [`POST /presets/{slug}/responses`](api/api-reference/presets/create-a-preset-from-a-responses-request-body.md), [`POST /responses`](api/api-reference/responses/create-a-response.md)
 * `WebSearchServerToolConfig`: new property `mode`
-  * Used by [`POST /presets/{slug}/responses`](https://openrouter.ai/docs/api/api-reference/presets/create-a-preset-from-a-responses-request-body), [`POST /responses`](https://openrouter.ai/docs/api/api-reference/responses/create-a-response)
+  * Used by [`POST /presets/{slug}/responses`](api/api-reference/presets/create-a-preset-from-a-responses-request-body.md), [`POST /responses`](api/api-reference/responses/create-a-response.md)
 
 **August 5, 2026**
 
 ## Modified endpoints
 
-* [`POST /files`](https://openrouter.ai/docs/api/api-reference/files/upload-a-file): description updated
+* [`POST /files`](api/api-reference/files/upload-a-file.md): description updated
 
 ## Modified schemas
 
@@ -6253,10 +6253,10 @@ Entries on this page are generated automatically from [OpenAPI specification](ap
 
   **4 endpoints using this schema**
 
-  * [`POST /chat/completions`](https://openrouter.ai/docs/api/api-reference/chat/create-a-chat-completion)
-  * [`POST /presets/{slug}/chat/completions`](https://openrouter.ai/docs/api/api-reference/presets/create-a-preset-from-a-chat-completions-request-body)
-  * [`POST /presets/{slug}/responses`](https://openrouter.ai/docs/api/api-reference/presets/create-a-preset-from-a-responses-request-body)
-  * [`POST /responses`](https://openrouter.ai/docs/api/api-reference/responses/create-a-response)
+  * [`POST /chat/completions`](api/api-reference/chat/create-a-chat-completion.md)
+  * [`POST /presets/{slug}/chat/completions`](api/api-reference/presets/create-a-preset-from-a-chat-completions-request-body.md)
+  * [`POST /presets/{slug}/responses`](api/api-reference/presets/create-a-preset-from-a-responses-request-body.md)
+  * [`POST /responses`](api/api-reference/responses/create-a-response.md)
 
 **August 4, 2026**
 
@@ -6266,20 +6266,20 @@ Entries on this page are generated automatically from [OpenAPI specification](ap
 
 ## New response codes
 
-* [`DELETE /workspaces/{id}/budgets/{interval}`](https://openrouter.ai/docs/api/api-reference/workspaces/delete-a-workspace-budget): now returns `400`
+* [`DELETE /workspaces/{id}/budgets/{interval}`](api/api-reference/workspaces/delete-a-workspace-budget.md): now returns `400`
 
 ## New schemas
 
 * `GetWorkspaceBudgetResponse`
-  * Used by [`GET /workspaces/{id}/budgets/{interval}`](https://openrouter.ai/docs/api/api-reference/workspaces/get-a-workspace-budget)
+  * Used by [`GET /workspaces/{id}/budgets/{interval}`](api/api-reference/workspaces/get-a-workspace-budget.md)
 * `MessagesBashToolResultBlock`
-  * Used by [`POST /messages`](https://openrouter.ai/docs/api/api-reference/anthropic-messages/create-a-message), [`POST /presets/{slug}/messages`](https://openrouter.ai/docs/api/api-reference/presets/create-a-preset-from-a-messages-request-body)
+  * Used by [`POST /messages`](api/api-reference/anthropic-messages/create-a-message.md), [`POST /presets/{slug}/messages`](api/api-reference/presets/create-a-preset-from-a-messages-request-body.md)
 * `MessagesShellToolResultBlock`
-  * Used by [`POST /messages`](https://openrouter.ai/docs/api/api-reference/anthropic-messages/create-a-message), [`POST /presets/{slug}/messages`](https://openrouter.ai/docs/api/api-reference/presets/create-a-preset-from-a-messages-request-body)
+  * Used by [`POST /messages`](api/api-reference/anthropic-messages/create-a-message.md), [`POST /presets/{slug}/messages`](api/api-reference/presets/create-a-preset-from-a-messages-request-body.md)
 * `ORAnthropicBashToolResult`
-  * Used by [`POST /messages`](https://openrouter.ai/docs/api/api-reference/anthropic-messages/create-a-message)
+  * Used by [`POST /messages`](api/api-reference/anthropic-messages/create-a-message.md)
 * `ORAnthropicShellToolResult`
-  * Used by [`POST /messages`](https://openrouter.ai/docs/api/api-reference/anthropic-messages/create-a-message)
+  * Used by [`POST /messages`](api/api-reference/anthropic-messages/create-a-message.md)
 
 ## Modified schemas
 
@@ -6287,16 +6287,16 @@ Entries on this page are generated automatically from [OpenAPI specification](ap
 
   **4 endpoints using this schema**
 
-  * [`GET /observability/destinations`](https://openrouter.ai/docs/api/api-reference/observability/list-observability-destinations)
-  * [`GET /observability/destinations/{id}`](https://openrouter.ai/docs/api/api-reference/observability/get-an-observability-destination)
-  * [`PATCH /observability/destinations/{id}`](https://openrouter.ai/docs/api/api-reference/observability/update-an-observability-destination)
-  * [`POST /observability/destinations`](https://openrouter.ai/docs/api/api-reference/observability/create-an-observability-destination)
+  * [`GET /observability/destinations`](api/api-reference/observability/list-observability-destinations.md)
+  * [`GET /observability/destinations/{id}`](api/api-reference/observability/get-an-observability-destination.md)
+  * [`PATCH /observability/destinations/{id}`](api/api-reference/observability/update-an-observability-destination.md)
+  * [`POST /observability/destinations`](api/api-reference/observability/create-an-observability-destination.md)
 * `MessagesContentBlockStartEvent`: new union variant added
-  * Used by [`POST /messages`](https://openrouter.ai/docs/api/api-reference/anthropic-messages/create-a-message)
+  * Used by [`POST /messages`](api/api-reference/anthropic-messages/create-a-message.md)
 * `MessagesRequest`: new union variant added
-  * Used by [`POST /messages`](https://openrouter.ai/docs/api/api-reference/anthropic-messages/create-a-message), [`POST /presets/{slug}/messages`](https://openrouter.ai/docs/api/api-reference/presets/create-a-preset-from-a-messages-request-body)
+  * Used by [`POST /messages`](api/api-reference/anthropic-messages/create-a-message.md), [`POST /presets/{slug}/messages`](api/api-reference/presets/create-a-preset-from-a-messages-request-body.md)
 * `ORAnthropicContentBlock`: new union variant added
-  * Used by [`POST /messages`](https://openrouter.ai/docs/api/api-reference/anthropic-messages/create-a-message)
+  * Used by [`POST /messages`](api/api-reference/anthropic-messages/create-a-message.md)
 
 **August 3, 2026**
 
@@ -6304,46 +6304,46 @@ Entries on this page are generated automatically from [OpenAPI specification](ap
 
 * `GenerationResponse`: required `workspace_id` property addedNo action needed
   * No action required for existing consumers. Generation responses now include `workspace_id`, the ID of the workspace the generation belongs to.
-  * Used by [`GET /generation`](https://openrouter.ai/docs/api/api-reference/generations/get-request-&-usage-metadata-for-a-generation)
+  * Used by [`GET /generation`](api/api-reference/generations/get-request-&-usage-metadata-for-a-generation.md)
 
 ## Modified endpoints
 
-* [`GET /activity`](https://openrouter.ai/docs/api/api-reference/analytics/get-user-activity-grouped-by-endpoint):
+* [`GET /activity`](api/api-reference/analytics/get-user-activity-grouped-by-endpoint.md):
   * x-speakeasy-max-method-params object\_added
   * description updated
   * new parameter `group_by`
   * new parameter `workspace_id`
 * [`POST /analytics/query`](https://openrouter.ai/docs/api/api-reference/betaanalytics/query-analytics-data): description updated
-* [`GET /endpoints/zdr`](https://openrouter.ai/docs/api/api-reference/endpoints/preview-the-impact-of-zdr-on-the-available-endpoints): response schema updated
+* [`GET /endpoints/zdr`](api/api-reference/endpoints/preview-the-impact-of-zdr-on-the-available-endpoints.md): response schema updated
 
 ## New schemas
 
 * `SpeechInputReference`
-  * Used by [`POST /audio/speech`](https://openrouter.ai/docs/api/api-reference/tts/create-speech)
+  * Used by [`POST /audio/speech`](api/api-reference/tts/create-speech.md)
 * `SpeechInputReferenceAudio`
-  * Used by [`POST /audio/speech`](https://openrouter.ai/docs/api/api-reference/tts/create-speech)
+  * Used by [`POST /audio/speech`](api/api-reference/tts/create-speech.md)
 * `SpeechInputReferenceAudioInput`
-  * Used by [`POST /audio/speech`](https://openrouter.ai/docs/api/api-reference/tts/create-speech)
+  * Used by [`POST /audio/speech`](api/api-reference/tts/create-speech.md)
 * `SpeechInputReferenceText`
-  * Used by [`POST /audio/speech`](https://openrouter.ai/docs/api/api-reference/tts/create-speech)
+  * Used by [`POST /audio/speech`](api/api-reference/tts/create-speech.md)
 
 ## Modified schemas
 
 * `ActivityItem`: new property `workspace_id`
-  * Used by [`GET /activity`](https://openrouter.ai/docs/api/api-reference/analytics/get-user-activity-grouped-by-endpoint)
+  * Used by [`GET /activity`](api/api-reference/analytics/get-user-activity-grouped-by-endpoint.md)
 * `GenerationResponse`: example modified; new property `workspace_id`
-  * Used by [`GET /generation`](https://openrouter.ai/docs/api/api-reference/generations/get-request-&-usage-metadata-for-a-generation)
+  * Used by [`GET /generation`](api/api-reference/generations/get-request-&-usage-metadata-for-a-generation.md)
 * `PublicEndpoint`: example modified; new property `supports_voice_cloning`
-  * Used by [`GET /endpoints/zdr`](https://openrouter.ai/docs/api/api-reference/endpoints/preview-the-impact-of-zdr-on-the-available-endpoints), [`GET /models/{author}/{slug}/endpoints`](https://openrouter.ai/docs/api/api-reference/endpoints/list-all-endpoints-for-a-model)
+  * Used by [`GET /endpoints/zdr`](api/api-reference/endpoints/preview-the-impact-of-zdr-on-the-available-endpoints.md), [`GET /models/{author}/{slug}/endpoints`](api/api-reference/endpoints/list-all-endpoints-for-a-model.md)
 * `SpeechRequest`: new property `input_references`
-  * Used by [`POST /audio/speech`](https://openrouter.ai/docs/api/api-reference/tts/create-speech)
+  * Used by [`POST /audio/speech`](api/api-reference/tts/create-speech.md)
 
 **August 1, 2026**
 
 ## Modified endpoints
 
-* [`GET /guardrails/{id}`](https://openrouter.ai/docs/api/api-reference/guardrails/get-a-guardrail): description updated
-* [`PATCH /guardrails/{id}`](https://openrouter.ai/docs/api/api-reference/guardrails/update-a-guardrail): description updated
+* [`GET /guardrails/{id}`](api/api-reference/guardrails/get-a-guardrail.md): description updated
+* [`PATCH /guardrails/{id}`](api/api-reference/guardrails/update-a-guardrail.md): description updated
 
 ## Modified schemas
 
@@ -6351,10 +6351,10 @@ Entries on this page are generated automatically from [OpenAPI specification](ap
 
   **4 endpoints using this schema**
 
-  * [`GET /workspaces`](https://openrouter.ai/docs/api/api-reference/workspaces/list-workspaces)
-  * [`GET /workspaces/{id}`](https://openrouter.ai/docs/api/api-reference/workspaces/get-a-workspace)
-  * [`PATCH /workspaces/{id}`](https://openrouter.ai/docs/api/api-reference/workspaces/update-a-workspace)
-  * [`POST /workspaces`](https://openrouter.ai/docs/api/api-reference/workspaces/create-a-workspace)
+  * [`GET /workspaces`](api/api-reference/workspaces/list-workspaces.md)
+  * [`GET /workspaces/{id}`](api/api-reference/workspaces/get-a-workspace.md)
+  * [`PATCH /workspaces/{id}`](api/api-reference/workspaces/update-a-workspace.md)
+  * [`POST /workspaces`](api/api-reference/workspaces/create-a-workspace.md)
 
 **July 31, 2026**
 
@@ -6364,99 +6364,99 @@ Entries on this page are generated automatically from [OpenAPI specification](ap
 
 * `SpeechRequest`: required `voice` property removedNo action needed
   * No action required for existing consumers. `voice` is now optional; requests that send it are unaffected.
-  * Used by [`POST /audio/speech`](https://openrouter.ai/docs/api/api-reference/tts/create-speech)
+  * Used by [`POST /audio/speech`](api/api-reference/tts/create-speech.md)
 
 ## New endpoints
 
-* [`GET /scim/group-mappings`](https://openrouter.ai/docs/api/api-reference/scim/list-scim-group-mappings): List SCIM group mappings
-* [`POST /scim/group-mappings`](https://openrouter.ai/docs/api/api-reference/scim/create-a-scim-group-mapping): Create a SCIM group mapping
-* [`GET /scim/group-mappings/{id}`](https://openrouter.ai/docs/api/api-reference/scim/get-a-scim-group-mapping): Get a SCIM group mapping
-* [`PATCH /scim/group-mappings/{id}`](https://openrouter.ai/docs/api/api-reference/scim/update-a-scim-group-mapping): Update a SCIM group mapping
-* [`DELETE /scim/group-mappings/{id}`](https://openrouter.ai/docs/api/api-reference/scim/delete-a-scim-group-mapping): Delete a SCIM group mapping
-* [`GET /scim/groups`](https://openrouter.ai/docs/api/api-reference/scim/list-scim-groups): List SCIM groups
+* [`GET /scim/group-mappings`](api/api-reference/scim/list-scim-group-mappings.md): List SCIM group mappings
+* [`POST /scim/group-mappings`](api/api-reference/scim/create-a-scim-group-mapping.md): Create a SCIM group mapping
+* [`GET /scim/group-mappings/{id}`](api/api-reference/scim/get-a-scim-group-mapping.md): Get a SCIM group mapping
+* [`PATCH /scim/group-mappings/{id}`](api/api-reference/scim/update-a-scim-group-mapping.md): Update a SCIM group mapping
+* [`DELETE /scim/group-mappings/{id}`](api/api-reference/scim/delete-a-scim-group-mapping.md): Delete a SCIM group mapping
+* [`GET /scim/groups`](api/api-reference/scim/list-scim-groups.md): List SCIM groups
 
 ## Modified endpoints
 
-* [`GET /byok`](https://openrouter.ai/docs/api/api-reference/byok/list-byok-provider-credentials): parameter `provider` updated
+* [`GET /byok`](api/api-reference/byok/list-byok-provider-credentials.md): parameter `provider` updated
 
 ## New schemas
 
 * `CreateScimGroupMappingRequest`
-  * Used by [`POST /scim/group-mappings`](https://openrouter.ai/docs/api/api-reference/scim/create-a-scim-group-mapping)
+  * Used by [`POST /scim/group-mappings`](api/api-reference/scim/create-a-scim-group-mapping.md)
 * `CreateScimGroupMappingResponse`
-  * Used by [`POST /scim/group-mappings`](https://openrouter.ai/docs/api/api-reference/scim/create-a-scim-group-mapping)
+  * Used by [`POST /scim/group-mappings`](api/api-reference/scim/create-a-scim-group-mapping.md)
 * `DeleteScimGroupMappingResponse`
-  * Used by [`DELETE /scim/group-mappings/{id}`](https://openrouter.ai/docs/api/api-reference/scim/delete-a-scim-group-mapping)
+  * Used by [`DELETE /scim/group-mappings/{id}`](api/api-reference/scim/delete-a-scim-group-mapping.md)
 * `GetScimGroupMappingResponse`
-  * Used by [`GET /scim/group-mappings/{id}`](https://openrouter.ai/docs/api/api-reference/scim/get-a-scim-group-mapping)
+  * Used by [`GET /scim/group-mappings/{id}`](api/api-reference/scim/get-a-scim-group-mapping.md)
 * `ListScimGroupMappingsResponse`
-  * Used by [`GET /scim/group-mappings`](https://openrouter.ai/docs/api/api-reference/scim/list-scim-group-mappings)
+  * Used by [`GET /scim/group-mappings`](api/api-reference/scim/list-scim-group-mappings.md)
 * `ListScimGroupsResponse`
-  * Used by [`GET /scim/groups`](https://openrouter.ai/docs/api/api-reference/scim/list-scim-groups)
+  * Used by [`GET /scim/groups`](api/api-reference/scim/list-scim-groups.md)
 * `ScimGroup`
-  * Used by [`GET /scim/groups`](https://openrouter.ai/docs/api/api-reference/scim/list-scim-groups)
+  * Used by [`GET /scim/groups`](api/api-reference/scim/list-scim-groups.md)
 * `ScimGroupMapping`
 
   **4 endpoints using this schema**
 
-  * [`GET /scim/group-mappings`](https://openrouter.ai/docs/api/api-reference/scim/list-scim-group-mappings)
-  * [`GET /scim/group-mappings/{id}`](https://openrouter.ai/docs/api/api-reference/scim/get-a-scim-group-mapping)
-  * [`PATCH /scim/group-mappings/{id}`](https://openrouter.ai/docs/api/api-reference/scim/update-a-scim-group-mapping)
-  * [`POST /scim/group-mappings`](https://openrouter.ai/docs/api/api-reference/scim/create-a-scim-group-mapping)
+  * [`GET /scim/group-mappings`](api/api-reference/scim/list-scim-group-mappings.md)
+  * [`GET /scim/group-mappings/{id}`](api/api-reference/scim/get-a-scim-group-mapping.md)
+  * [`PATCH /scim/group-mappings/{id}`](api/api-reference/scim/update-a-scim-group-mapping.md)
+  * [`POST /scim/group-mappings`](api/api-reference/scim/create-a-scim-group-mapping.md)
 * `UpdateScimGroupMappingRequest`
-  * Used by [`PATCH /scim/group-mappings/{id}`](https://openrouter.ai/docs/api/api-reference/scim/update-a-scim-group-mapping)
+  * Used by [`PATCH /scim/group-mappings/{id}`](api/api-reference/scim/update-a-scim-group-mapping.md)
 * `UpdateScimGroupMappingResponse`
-  * Used by [`PATCH /scim/group-mappings/{id}`](https://openrouter.ai/docs/api/api-reference/scim/update-a-scim-group-mapping)
+  * Used by [`PATCH /scim/group-mappings/{id}`](api/api-reference/scim/update-a-scim-group-mapping.md)
 
 ## Modified schemas
 
 * `VideoGenerationRequest`: enum property\_added
-  * Used by [`POST /videos`](https://openrouter.ai/docs/api/api-reference/video-generation/submit-a-video-generation-request)
+  * Used by [`POST /videos`](api/api-reference/video-generation/submit-a-video-generation-request.md)
 * `VideoModel`: enum property\_added
-  * Used by [`GET /videos/models`](https://openrouter.ai/docs/api/api-reference/video-generation/list-all-video-generation-models)
+  * Used by [`GET /videos/models`](api/api-reference/video-generation/list-all-video-generation-models.md)
 * `SpeechRequest`: minLength property\_added
-  * Used by [`POST /audio/speech`](https://openrouter.ai/docs/api/api-reference/tts/create-speech)
+  * Used by [`POST /audio/speech`](api/api-reference/tts/create-speech.md)
 * `BYOKProviderSlug`: enum property\_added
 
   **4 endpoints using this schema**
 
-  * [`GET /byok`](https://openrouter.ai/docs/api/api-reference/byok/list-byok-provider-credentials)
-  * [`GET /byok/{id}`](https://openrouter.ai/docs/api/api-reference/byok/get-a-byok-provider-credential)
-  * [`PATCH /byok/{id}`](https://openrouter.ai/docs/api/api-reference/byok/update-a-byok-provider-credential)
-  * [`POST /byok`](https://openrouter.ai/docs/api/api-reference/byok/create-a-byok-provider-credential)
+  * [`GET /byok`](api/api-reference/byok/list-byok-provider-credentials.md)
+  * [`GET /byok/{id}`](api/api-reference/byok/get-a-byok-provider-credential.md)
+  * [`PATCH /byok/{id}`](api/api-reference/byok/update-a-byok-provider-credential.md)
+  * [`POST /byok`](api/api-reference/byok/create-a-byok-provider-credential.md)
 * `MessagesStartEvent`: property `provider` updated
-  * Used by [`POST /messages`](https://openrouter.ai/docs/api/api-reference/anthropic-messages/create-a-message)
+  * Used by [`POST /messages`](api/api-reference/anthropic-messages/create-a-message.md)
 * `ProviderName`: enum property\_added
 
   **11 endpoints using this schema**
 
-  * [`GET /endpoints/zdr`](https://openrouter.ai/docs/api/api-reference/endpoints/preview-the-impact-of-zdr-on-the-available-endpoints)
-  * [`GET /models/{author}/{slug}/endpoints`](https://openrouter.ai/docs/api/api-reference/endpoints/list-all-endpoints-for-a-model)
-  * [`POST /chat/completions`](https://openrouter.ai/docs/api/api-reference/chat/create-a-chat-completion)
-  * [`POST /embeddings`](https://openrouter.ai/docs/api/api-reference/embeddings/submit-an-embedding-request)
-  * [`POST /images`](https://openrouter.ai/docs/api/api-reference/images/generate-an-image)
-  * [`POST /messages`](https://openrouter.ai/docs/api/api-reference/anthropic-messages/create-a-message)
-  * [`POST /presets/{slug}/chat/completions`](https://openrouter.ai/docs/api/api-reference/presets/create-a-preset-from-a-chat-completions-request-body)
-  * [`POST /presets/{slug}/messages`](https://openrouter.ai/docs/api/api-reference/presets/create-a-preset-from-a-messages-request-body)
-  * [`POST /presets/{slug}/responses`](https://openrouter.ai/docs/api/api-reference/presets/create-a-preset-from-a-responses-request-body)
-  * [`POST /rerank`](https://openrouter.ai/docs/api/api-reference/rerank/submit-a-rerank-request)
-  * [`POST /responses`](https://openrouter.ai/docs/api/api-reference/responses/create-a-response)
+  * [`GET /endpoints/zdr`](api/api-reference/endpoints/preview-the-impact-of-zdr-on-the-available-endpoints.md)
+  * [`GET /models/{author}/{slug}/endpoints`](api/api-reference/endpoints/list-all-endpoints-for-a-model.md)
+  * [`POST /chat/completions`](api/api-reference/chat/create-a-chat-completion.md)
+  * [`POST /embeddings`](api/api-reference/embeddings/submit-an-embedding-request.md)
+  * [`POST /images`](api/api-reference/images/generate-an-image.md)
+  * [`POST /messages`](api/api-reference/anthropic-messages/create-a-message.md)
+  * [`POST /presets/{slug}/chat/completions`](api/api-reference/presets/create-a-preset-from-a-chat-completions-request-body.md)
+  * [`POST /presets/{slug}/messages`](api/api-reference/presets/create-a-preset-from-a-messages-request-body.md)
+  * [`POST /presets/{slug}/responses`](api/api-reference/presets/create-a-preset-from-a-responses-request-body.md)
+  * [`POST /rerank`](api/api-reference/rerank/submit-a-rerank-request.md)
+  * [`POST /responses`](api/api-reference/responses/create-a-response.md)
 * `ProviderOptions`: new property `thinkingmachines`
 
   **4 endpoints using this schema**
 
-  * [`POST /audio/speech`](https://openrouter.ai/docs/api/api-reference/tts/create-speech)
-  * [`POST /audio/transcriptions`](https://openrouter.ai/docs/api/api-reference/stt/create-transcription)
-  * [`POST /images`](https://openrouter.ai/docs/api/api-reference/images/generate-an-image)
-  * [`POST /videos`](https://openrouter.ai/docs/api/api-reference/video-generation/submit-a-video-generation-request)
+  * [`POST /audio/speech`](api/api-reference/tts/create-speech.md)
+  * [`POST /audio/transcriptions`](api/api-reference/stt/create-transcription.md)
+  * [`POST /images`](api/api-reference/images/generate-an-image.md)
+  * [`POST /videos`](api/api-reference/video-generation/submit-a-video-generation-request.md)
 * `ProviderResponse`: enum property\_added
-  * Used by [`GET /generation`](https://openrouter.ai/docs/api/api-reference/generations/get-request-&-usage-metadata-for-a-generation)
+  * Used by [`GET /generation`](api/api-reference/generations/get-request-&-usage-metadata-for-a-generation.md)
 * `ChatRequest`: description updated; enum property\_added
-  * Used by [`POST /chat/completions`](https://openrouter.ai/docs/api/api-reference/chat/create-a-chat-completion), [`POST /presets/{slug}/chat/completions`](https://openrouter.ai/docs/api/api-reference/presets/create-a-preset-from-a-chat-completions-request-body)
+  * Used by [`POST /chat/completions`](api/api-reference/chat/create-a-chat-completion.md), [`POST /presets/{slug}/chat/completions`](api/api-reference/presets/create-a-preset-from-a-chat-completions-request-body.md)
 * `ResponsesErrorField`: enum property\_added
-  * Used by [`POST /responses`](https://openrouter.ai/docs/api/api-reference/responses/create-a-response)
+  * Used by [`POST /responses`](api/api-reference/responses/create-a-response.md)
 * `ResponsesRequest`: description updated; enum property\_added
-  * Used by [`POST /presets/{slug}/responses`](https://openrouter.ai/docs/api/api-reference/presets/create-a-preset-from-a-responses-request-body), [`POST /responses`](https://openrouter.ai/docs/api/api-reference/responses/create-a-response)
+  * Used by [`POST /presets/{slug}/responses`](api/api-reference/presets/create-a-preset-from-a-responses-request-body.md), [`POST /responses`](api/api-reference/responses/create-a-response.md)
 
 **July 29, 2026**
 
@@ -6465,188 +6465,188 @@ Entries on this page are generated automatically from [OpenAPI specification](ap
 * `FileMetadata`: schema object removedNo action needed
 * `FileDeleteResponse`: discriminator `discriminator` object addedAction required
   * HTTP clients: no change. Requests without a vendor SDK still get the OpenRouter shape (`_shape: "openrouter"`) with the same fields as before. Typed SDK clients: this response type is now a union discriminated by `_shape`. In the TypeScript SDK, the field is named `shape`, so check `shape === "openrouter"` before reading OpenRouter fields such as `id` and `type`.
-  * Used by [`DELETE /files/{file_id}`](https://openrouter.ai/docs/api/api-reference/files/delete-a-file)
+  * Used by [`DELETE /files/{file_id}`](api/api-reference/files/delete-a-file.md)
 * `FileDeleteResponse`: properties `id` object removedNo action needed
-  * Used by [`DELETE /files/{file_id}`](https://openrouter.ai/docs/api/api-reference/files/delete-a-file)
+  * Used by [`DELETE /files/{file_id}`](api/api-reference/files/delete-a-file.md)
 * `FileDeleteResponse`: properties `type` object removedNo action needed
-  * Used by [`DELETE /files/{file_id}`](https://openrouter.ai/docs/api/api-reference/files/delete-a-file)
+  * Used by [`DELETE /files/{file_id}`](api/api-reference/files/delete-a-file.md)
 * `FileDeleteResponse`: required `id` property removedNo action needed
-  * Used by [`DELETE /files/{file_id}`](https://openrouter.ai/docs/api/api-reference/files/delete-a-file)
+  * Used by [`DELETE /files/{file_id}`](api/api-reference/files/delete-a-file.md)
 * `FileDeleteResponse`: required `type` property removedNo action needed
-  * Used by [`DELETE /files/{file_id}`](https://openrouter.ai/docs/api/api-reference/files/delete-a-file)
+  * Used by [`DELETE /files/{file_id}`](api/api-reference/files/delete-a-file.md)
 * `FileListResponse`: discriminator `discriminator` object addedAction required
   * HTTP clients: no change. Requests without a vendor SDK still get the OpenRouter shape (`_shape: "openrouter"`) with the same fields as before. Typed SDK clients: this response type is now a union discriminated by `_shape`. In the TypeScript SDK, the field is named `shape`, so check `shape === "openrouter"` before reading OpenRouter fields such as `cursor`.
-  * Used by [`GET /files`](https://openrouter.ai/docs/api/api-reference/files/list-files)
+  * Used by [`GET /files`](api/api-reference/files/list-files.md)
 * `FileListResponse`: properties `cursor` object removedNo action needed
-  * Used by [`GET /files`](https://openrouter.ai/docs/api/api-reference/files/list-files)
+  * Used by [`GET /files`](api/api-reference/files/list-files.md)
 * `FileListResponse`: properties `data` object removedNo action needed
-  * Used by [`GET /files`](https://openrouter.ai/docs/api/api-reference/files/list-files)
+  * Used by [`GET /files`](api/api-reference/files/list-files.md)
 * `FileListResponse`: properties `first_id` object removedNo action needed
-  * Used by [`GET /files`](https://openrouter.ai/docs/api/api-reference/files/list-files)
+  * Used by [`GET /files`](api/api-reference/files/list-files.md)
 * `FileListResponse`: properties `has_more` object removedNo action needed
-  * Used by [`GET /files`](https://openrouter.ai/docs/api/api-reference/files/list-files)
+  * Used by [`GET /files`](api/api-reference/files/list-files.md)
 * `FileListResponse`: properties `last_id` object removedNo action needed
-  * Used by [`GET /files`](https://openrouter.ai/docs/api/api-reference/files/list-files)
+  * Used by [`GET /files`](api/api-reference/files/list-files.md)
 * `FileListResponse`: required `cursor` property removedNo action needed
-  * Used by [`GET /files`](https://openrouter.ai/docs/api/api-reference/files/list-files)
+  * Used by [`GET /files`](api/api-reference/files/list-files.md)
 * `FileListResponse`: required `data` property removedNo action needed
-  * Used by [`GET /files`](https://openrouter.ai/docs/api/api-reference/files/list-files)
+  * Used by [`GET /files`](api/api-reference/files/list-files.md)
 * `FileListResponse`: required `first_id` property removedNo action needed
-  * Used by [`GET /files`](https://openrouter.ai/docs/api/api-reference/files/list-files)
+  * Used by [`GET /files`](api/api-reference/files/list-files.md)
 * `FileListResponse`: required `has_more` property removedNo action needed
-  * Used by [`GET /files`](https://openrouter.ai/docs/api/api-reference/files/list-files)
+  * Used by [`GET /files`](api/api-reference/files/list-files.md)
 * `FileListResponse`: required `last_id` property removedNo action needed
-  * Used by [`GET /files`](https://openrouter.ai/docs/api/api-reference/files/list-files)
+  * Used by [`GET /files`](api/api-reference/files/list-files.md)
 
 ## Modified endpoints
 
-* [`GET /benchmarks`](https://openrouter.ai/docs/api/api-reference/benchmarks/list-benchmarks): description updated; parameter `source` updated; response schema updated
-* [`GET /files`](https://openrouter.ai/docs/api/api-reference/files/list-files):
+* [`GET /benchmarks`](api/api-reference/benchmarks/list-benchmarks.md): description updated; parameter `source` updated; response schema updated
+* [`GET /files`](api/api-reference/files/list-files.md):
   * new parameter `after`
   * new parameter `after_id`
   * new parameter `before_id`
   * new parameter `order`
   * new parameter `provider`
-* [`POST /files`](https://openrouter.ai/docs/api/api-reference/files/upload-a-file): new parameter `provider`; response schema updated
-* [`DELETE /files/{file_id}`](https://openrouter.ai/docs/api/api-reference/files/delete-a-file): new parameter `provider`
-* [`GET /files/{file_id}`](https://openrouter.ai/docs/api/api-reference/files/get-file-metadata): new parameter `provider`; response schema updated
-* [`GET /files/{file_id}/content`](https://openrouter.ai/docs/api/api-reference/files/download-file-content): new parameter `provider`
-* [`GET /workspaces`](https://openrouter.ai/docs/api/api-reference/workspaces/list-workspaces): response schema updated
-* [`POST /workspaces`](https://openrouter.ai/docs/api/api-reference/workspaces/create-a-workspace): response schema updated
-* [`GET /workspaces/{id}`](https://openrouter.ai/docs/api/api-reference/workspaces/get-a-workspace): response schema updated
-* [`PATCH /workspaces/{id}`](https://openrouter.ai/docs/api/api-reference/workspaces/update-a-workspace): response schema updated
-* [`GET /workspaces/{id}/budgets`](https://openrouter.ai/docs/api/api-reference/workspaces/list-workspace-budgets): response schema updated
-* [`PUT /workspaces/{id}/budgets/{interval}`](https://openrouter.ai/docs/api/api-reference/workspaces/create-or-update-a-workspace-budget): description updated; request schema updated; response schema updated
+* [`POST /files`](api/api-reference/files/upload-a-file.md): new parameter `provider`; response schema updated
+* [`DELETE /files/{file_id}`](api/api-reference/files/delete-a-file.md): new parameter `provider`
+* [`GET /files/{file_id}`](api/api-reference/files/get-file-metadata.md): new parameter `provider`; response schema updated
+* [`GET /files/{file_id}/content`](api/api-reference/files/download-file-content.md): new parameter `provider`
+* [`GET /workspaces`](api/api-reference/workspaces/list-workspaces.md): response schema updated
+* [`POST /workspaces`](api/api-reference/workspaces/create-a-workspace.md): response schema updated
+* [`GET /workspaces/{id}`](api/api-reference/workspaces/get-a-workspace.md): response schema updated
+* [`PATCH /workspaces/{id}`](api/api-reference/workspaces/update-a-workspace.md): response schema updated
+* [`GET /workspaces/{id}/budgets`](api/api-reference/workspaces/list-workspace-budgets.md): response schema updated
+* [`PUT /workspaces/{id}/budgets/{interval}`](api/api-reference/workspaces/create-or-update-a-workspace-budget.md): description updated; request schema updated; response schema updated
 
 ## New response codes
 
-* [`GET /files`](https://openrouter.ai/docs/api/api-reference/files/list-files): now returns `403`
-* [`GET /files`](https://openrouter.ai/docs/api/api-reference/files/list-files): now returns `502`
-* [`GET /files`](https://openrouter.ai/docs/api/api-reference/files/list-files): now returns `503`
-* [`POST /files`](https://openrouter.ai/docs/api/api-reference/files/upload-a-file): now returns `502`
-* [`POST /files`](https://openrouter.ai/docs/api/api-reference/files/upload-a-file): now returns `503`
-* [`DELETE /files/{file_id}`](https://openrouter.ai/docs/api/api-reference/files/delete-a-file): now returns `403`
-* [`DELETE /files/{file_id}`](https://openrouter.ai/docs/api/api-reference/files/delete-a-file): now returns `502`
-* [`DELETE /files/{file_id}`](https://openrouter.ai/docs/api/api-reference/files/delete-a-file): now returns `503`
-* [`GET /files/{file_id}`](https://openrouter.ai/docs/api/api-reference/files/get-file-metadata): now returns `403`
-* [`GET /files/{file_id}`](https://openrouter.ai/docs/api/api-reference/files/get-file-metadata): now returns `502`
-* [`GET /files/{file_id}`](https://openrouter.ai/docs/api/api-reference/files/get-file-metadata): now returns `503`
-* [`GET /files/{file_id}/content`](https://openrouter.ai/docs/api/api-reference/files/download-file-content): now returns `403`
-* [`GET /files/{file_id}/content`](https://openrouter.ai/docs/api/api-reference/files/download-file-content): now returns `502`
-* [`GET /files/{file_id}/content`](https://openrouter.ai/docs/api/api-reference/files/download-file-content): now returns `503`
+* [`GET /files`](api/api-reference/files/list-files.md): now returns `403`
+* [`GET /files`](api/api-reference/files/list-files.md): now returns `502`
+* [`GET /files`](api/api-reference/files/list-files.md): now returns `503`
+* [`POST /files`](api/api-reference/files/upload-a-file.md): now returns `502`
+* [`POST /files`](api/api-reference/files/upload-a-file.md): now returns `503`
+* [`DELETE /files/{file_id}`](api/api-reference/files/delete-a-file.md): now returns `403`
+* [`DELETE /files/{file_id}`](api/api-reference/files/delete-a-file.md): now returns `502`
+* [`DELETE /files/{file_id}`](api/api-reference/files/delete-a-file.md): now returns `503`
+* [`GET /files/{file_id}`](api/api-reference/files/get-file-metadata.md): now returns `403`
+* [`GET /files/{file_id}`](api/api-reference/files/get-file-metadata.md): now returns `502`
+* [`GET /files/{file_id}`](api/api-reference/files/get-file-metadata.md): now returns `503`
+* [`GET /files/{file_id}/content`](api/api-reference/files/download-file-content.md): now returns `403`
+* [`GET /files/{file_id}/content`](api/api-reference/files/download-file-content.md): now returns `502`
+* [`GET /files/{file_id}/content`](api/api-reference/files/download-file-content.md): now returns `503`
 
 ## New schemas
 
 * `UnifiedBenchmarksORItem`
-  * Used by [`GET /benchmarks`](https://openrouter.ai/docs/api/api-reference/benchmarks/list-benchmarks)
+  * Used by [`GET /benchmarks`](api/api-reference/benchmarks/list-benchmarks.md)
 * `AnthropicFile`
-  * Used by [`GET /files`](https://openrouter.ai/docs/api/api-reference/files/list-files), [`GET /files/{file_id}`](https://openrouter.ai/docs/api/api-reference/files/get-file-metadata), [`POST /files`](https://openrouter.ai/docs/api/api-reference/files/upload-a-file)
+  * Used by [`GET /files`](api/api-reference/files/list-files.md), [`GET /files/{file_id}`](api/api-reference/files/get-file-metadata.md), [`POST /files`](api/api-reference/files/upload-a-file.md)
 * `AnthropicFileDeleted`
-  * Used by [`DELETE /files/{file_id}`](https://openrouter.ai/docs/api/api-reference/files/delete-a-file)
+  * Used by [`DELETE /files/{file_id}`](api/api-reference/files/delete-a-file.md)
 * `AnthropicFileList`
-  * Used by [`GET /files`](https://openrouter.ai/docs/api/api-reference/files/list-files)
+  * Used by [`GET /files`](api/api-reference/files/list-files.md)
 * `FileProvider`
 
   **5 endpoints using this schema**
 
-  * [`DELETE /files/{file_id}`](https://openrouter.ai/docs/api/api-reference/files/delete-a-file)
-  * [`GET /files`](https://openrouter.ai/docs/api/api-reference/files/list-files)
-  * [`GET /files/{file_id}`](https://openrouter.ai/docs/api/api-reference/files/get-file-metadata)
-  * [`GET /files/{file_id}/content`](https://openrouter.ai/docs/api/api-reference/files/download-file-content)
-  * [`POST /files`](https://openrouter.ai/docs/api/api-reference/files/upload-a-file)
+  * [`DELETE /files/{file_id}`](api/api-reference/files/delete-a-file.md)
+  * [`GET /files`](api/api-reference/files/list-files.md)
+  * [`GET /files/{file_id}`](api/api-reference/files/get-file-metadata.md)
+  * [`GET /files/{file_id}/content`](api/api-reference/files/download-file-content.md)
+  * [`POST /files`](api/api-reference/files/upload-a-file.md)
 * `FileResponse`
-  * Used by [`GET /files/{file_id}`](https://openrouter.ai/docs/api/api-reference/files/get-file-metadata), [`POST /files`](https://openrouter.ai/docs/api/api-reference/files/upload-a-file)
+  * Used by [`GET /files/{file_id}`](api/api-reference/files/get-file-metadata.md), [`POST /files`](api/api-reference/files/upload-a-file.md)
 * `OpenAIFile`
-  * Used by [`GET /files`](https://openrouter.ai/docs/api/api-reference/files/list-files), [`GET /files/{file_id}`](https://openrouter.ai/docs/api/api-reference/files/get-file-metadata), [`POST /files`](https://openrouter.ai/docs/api/api-reference/files/upload-a-file)
+  * Used by [`GET /files`](api/api-reference/files/list-files.md), [`GET /files/{file_id}`](api/api-reference/files/get-file-metadata.md), [`POST /files`](api/api-reference/files/upload-a-file.md)
 * `OpenAIFileDeleted`
-  * Used by [`DELETE /files/{file_id}`](https://openrouter.ai/docs/api/api-reference/files/delete-a-file)
+  * Used by [`DELETE /files/{file_id}`](api/api-reference/files/delete-a-file.md)
 * `OpenAIFileList`
-  * Used by [`GET /files`](https://openrouter.ai/docs/api/api-reference/files/list-files)
+  * Used by [`GET /files`](api/api-reference/files/list-files.md)
 * `OpenRouterFile`
-  * Used by [`GET /files`](https://openrouter.ai/docs/api/api-reference/files/list-files), [`GET /files/{file_id}`](https://openrouter.ai/docs/api/api-reference/files/get-file-metadata), [`POST /files`](https://openrouter.ai/docs/api/api-reference/files/upload-a-file)
+  * Used by [`GET /files`](api/api-reference/files/list-files.md), [`GET /files/{file_id}`](api/api-reference/files/get-file-metadata.md), [`POST /files`](api/api-reference/files/upload-a-file.md)
 * `OpenRouterFileDeleted`
-  * Used by [`DELETE /files/{file_id}`](https://openrouter.ai/docs/api/api-reference/files/delete-a-file)
+  * Used by [`DELETE /files/{file_id}`](api/api-reference/files/delete-a-file.md)
 * `OpenRouterFileList`
-  * Used by [`GET /files`](https://openrouter.ai/docs/api/api-reference/files/list-files)
+  * Used by [`GET /files`](api/api-reference/files/list-files.md)
 * `ModelAliasTarget`
 
   **4 endpoints using this schema**
 
-  * [`GET /embeddings/models`](https://openrouter.ai/docs/api/api-reference/embeddings/list-all-embeddings-models)
-  * [`GET /model/{author}/{slug}`](https://openrouter.ai/docs/api/api-reference/models/get-a-model-by-its-slug)
-  * [`GET /models`](https://openrouter.ai/docs/api/api-reference/models/list-all-models-and-their-properties)
-  * [`GET /models/user`](https://openrouter.ai/docs/api/api-reference/models/list-models-filtered-by-user-provider-preferences-privacy-settings-and-guardrails)
+  * [`GET /embeddings/models`](api/api-reference/embeddings/list-all-embeddings-models.md)
+  * [`GET /model/{author}/{slug}`](api/api-reference/models/get-a-model-by-its-slug.md)
+  * [`GET /models`](api/api-reference/models/list-all-models-and-their-properties.md)
+  * [`GET /models/user`](api/api-reference/models/list-models-filtered-by-user-provider-preferences-privacy-settings-and-guardrails.md)
 
 ## Modified schemas
 
 * `UnifiedBenchmarksMeta`: enum property\_added
-  * Used by [`GET /benchmarks`](https://openrouter.ai/docs/api/api-reference/benchmarks/list-benchmarks)
+  * Used by [`GET /benchmarks`](api/api-reference/benchmarks/list-benchmarks.md)
 * `UnifiedBenchmarksResponse`: example modified; new union variant added
-  * Used by [`GET /benchmarks`](https://openrouter.ai/docs/api/api-reference/benchmarks/list-benchmarks)
+  * Used by [`GET /benchmarks`](api/api-reference/benchmarks/list-benchmarks.md)
 * `FileDeleteResponse`:
   * description updated
   * example modified
   * new union variant added
   * type property\_removed
-  * Used by [`DELETE /files/{file_id}`](https://openrouter.ai/docs/api/api-reference/files/delete-a-file)
+  * Used by [`DELETE /files/{file_id}`](api/api-reference/files/delete-a-file.md)
 * `FileListResponse`:
   * description updated
   * example modified
   * new union variant added
   * type property\_removed
-  * Used by [`GET /files`](https://openrouter.ai/docs/api/api-reference/files/list-files)
+  * Used by [`GET /files`](api/api-reference/files/list-files.md)
 * `CreateWorkspaceResponse`: example modified
-  * Used by [`POST /workspaces`](https://openrouter.ai/docs/api/api-reference/workspaces/create-a-workspace)
+  * Used by [`POST /workspaces`](api/api-reference/workspaces/create-a-workspace.md)
 * `GetWorkspaceResponse`: example modified
-  * Used by [`GET /workspaces/{id}`](https://openrouter.ai/docs/api/api-reference/workspaces/get-a-workspace)
+  * Used by [`GET /workspaces/{id}`](api/api-reference/workspaces/get-a-workspace.md)
 * `ListWorkspaceBudgetsResponse`: example modified; new property `include_byok_in_budgets`
-  * Used by [`GET /workspaces/{id}/budgets`](https://openrouter.ai/docs/api/api-reference/workspaces/list-workspace-budgets)
+  * Used by [`GET /workspaces/{id}/budgets`](api/api-reference/workspaces/list-workspace-budgets.md)
 * `ListWorkspacesResponse`: example modified
-  * Used by [`GET /workspaces`](https://openrouter.ai/docs/api/api-reference/workspaces/list-workspaces)
+  * Used by [`GET /workspaces`](api/api-reference/workspaces/list-workspaces.md)
 * `Model`: new property `alias_target`
 
   **4 endpoints using this schema**
 
-  * [`GET /embeddings/models`](https://openrouter.ai/docs/api/api-reference/embeddings/list-all-embeddings-models)
-  * [`GET /model/{author}/{slug}`](https://openrouter.ai/docs/api/api-reference/models/get-a-model-by-its-slug)
-  * [`GET /models`](https://openrouter.ai/docs/api/api-reference/models/list-all-models-and-their-properties)
-  * [`GET /models/user`](https://openrouter.ai/docs/api/api-reference/models/list-models-filtered-by-user-provider-preferences-privacy-settings-and-guardrails)
+  * [`GET /embeddings/models`](api/api-reference/embeddings/list-all-embeddings-models.md)
+  * [`GET /model/{author}/{slug}`](api/api-reference/models/get-a-model-by-its-slug.md)
+  * [`GET /models`](api/api-reference/models/list-all-models-and-their-properties.md)
+  * [`GET /models/user`](api/api-reference/models/list-models-filtered-by-user-provider-preferences-privacy-settings-and-guardrails.md)
 * `UpdateWorkspaceResponse`: example modified
-  * Used by [`PATCH /workspaces/{id}`](https://openrouter.ai/docs/api/api-reference/workspaces/update-a-workspace)
+  * Used by [`PATCH /workspaces/{id}`](api/api-reference/workspaces/update-a-workspace.md)
 * `UpsertWorkspaceBudgetRequest`: example modified; new property `include_byok_in_budgets`
-  * Used by [`PUT /workspaces/{id}/budgets/{interval}`](https://openrouter.ai/docs/api/api-reference/workspaces/create-or-update-a-workspace-budget)
+  * Used by [`PUT /workspaces/{id}/budgets/{interval}`](api/api-reference/workspaces/create-or-update-a-workspace-budget.md)
 * `UpsertWorkspaceBudgetResponse`: example modified; new property `include_byok_in_budgets`
-  * Used by [`PUT /workspaces/{id}/budgets/{interval}`](https://openrouter.ai/docs/api/api-reference/workspaces/create-or-update-a-workspace-budget)
+  * Used by [`PUT /workspaces/{id}/budgets/{interval}`](api/api-reference/workspaces/create-or-update-a-workspace-budget.md)
 * `Workspace`: example modified; new property `include_byok_in_budgets`
 
   **4 endpoints using this schema**
 
-  * [`GET /workspaces`](https://openrouter.ai/docs/api/api-reference/workspaces/list-workspaces)
-  * [`GET /workspaces/{id}`](https://openrouter.ai/docs/api/api-reference/workspaces/get-a-workspace)
-  * [`PATCH /workspaces/{id}`](https://openrouter.ai/docs/api/api-reference/workspaces/update-a-workspace)
-  * [`POST /workspaces`](https://openrouter.ai/docs/api/api-reference/workspaces/create-a-workspace)
+  * [`GET /workspaces`](api/api-reference/workspaces/list-workspaces.md)
+  * [`GET /workspaces/{id}`](api/api-reference/workspaces/get-a-workspace.md)
+  * [`PATCH /workspaces/{id}`](api/api-reference/workspaces/update-a-workspace.md)
+  * [`POST /workspaces`](api/api-reference/workspaces/create-a-workspace.md)
 * `AutoBetaRouterPlugin`: example modified; new property `excluded_models`
 
   **6 endpoints using this schema**
 
-  * [`POST /chat/completions`](https://openrouter.ai/docs/api/api-reference/chat/create-a-chat-completion)
-  * [`POST /messages`](https://openrouter.ai/docs/api/api-reference/anthropic-messages/create-a-message)
-  * [`POST /presets/{slug}/chat/completions`](https://openrouter.ai/docs/api/api-reference/presets/create-a-preset-from-a-chat-completions-request-body)
-  * [`POST /presets/{slug}/messages`](https://openrouter.ai/docs/api/api-reference/presets/create-a-preset-from-a-messages-request-body)
-  * [`POST /presets/{slug}/responses`](https://openrouter.ai/docs/api/api-reference/presets/create-a-preset-from-a-responses-request-body)
-  * [`POST /responses`](https://openrouter.ai/docs/api/api-reference/responses/create-a-response)
+  * [`POST /chat/completions`](api/api-reference/chat/create-a-chat-completion.md)
+  * [`POST /messages`](api/api-reference/anthropic-messages/create-a-message.md)
+  * [`POST /presets/{slug}/chat/completions`](api/api-reference/presets/create-a-preset-from-a-chat-completions-request-body.md)
+  * [`POST /presets/{slug}/messages`](api/api-reference/presets/create-a-preset-from-a-messages-request-body.md)
+  * [`POST /presets/{slug}/responses`](api/api-reference/presets/create-a-preset-from-a-responses-request-body.md)
+  * [`POST /responses`](api/api-reference/responses/create-a-response.md)
 * `AutoRouterPlugin`: example modified; new property `excluded_models`
 
   **6 endpoints using this schema**
 
-  * [`POST /chat/completions`](https://openrouter.ai/docs/api/api-reference/chat/create-a-chat-completion)
-  * [`POST /messages`](https://openrouter.ai/docs/api/api-reference/anthropic-messages/create-a-message)
-  * [`POST /presets/{slug}/chat/completions`](https://openrouter.ai/docs/api/api-reference/presets/create-a-preset-from-a-chat-completions-request-body)
-  * [`POST /presets/{slug}/messages`](https://openrouter.ai/docs/api/api-reference/presets/create-a-preset-from-a-messages-request-body)
-  * [`POST /presets/{slug}/responses`](https://openrouter.ai/docs/api/api-reference/presets/create-a-preset-from-a-responses-request-body)
-  * [`POST /responses`](https://openrouter.ai/docs/api/api-reference/responses/create-a-response)
+  * [`POST /chat/completions`](api/api-reference/chat/create-a-chat-completion.md)
+  * [`POST /messages`](api/api-reference/anthropic-messages/create-a-message.md)
+  * [`POST /presets/{slug}/chat/completions`](api/api-reference/presets/create-a-preset-from-a-chat-completions-request-body.md)
+  * [`POST /presets/{slug}/messages`](api/api-reference/presets/create-a-preset-from-a-messages-request-body.md)
+  * [`POST /presets/{slug}/responses`](api/api-reference/presets/create-a-preset-from-a-responses-request-body.md)
+  * [`POST /responses`](api/api-reference/responses/create-a-response.md)
 * `VideoModel`: enum property\_added
-  * Used by [`GET /videos/models`](https://openrouter.ai/docs/api/api-reference/video-generation/list-all-video-generation-models)
+  * Used by [`GET /videos/models`](api/api-reference/video-generation/list-all-video-generation-models.md)
 
 **July 28, 2026**
 
@@ -6654,86 +6654,86 @@ Entries on this page are generated automatically from [OpenAPI specification](ap
 
 * `FusionCallAnalysisInProgressEvent`: required `analyst_model` property addedNo action needed
   * **No action required for existing consumers.** `analyst_model` replaces `judge_model` in this streaming event; `judge_model` is retained as a deprecated alias that always carries the same value.
-  * Used by [`POST /responses`](https://openrouter.ai/docs/api/api-reference/responses/create-a-response)
+  * Used by [`POST /responses`](api/api-reference/responses/create-a-response.md)
 * \$.tags: responses object removedNo action needed
   * **No action required.** The `responses` OpenAPI tag was renamed to `Responses` for consistent Title Case across the API Reference. This is a documentation-grouping change only: `POST /api/v1/responses` and its schemas are unchanged, SDK namespaces are unchanged (`client.responses.send()` in TypeScript and Python, `Sdk.Responses.Send()` in Go), and endpoint documentation URLs are unchanged.
 
 ## Modified endpoints
 
-* [`GET /files`](https://openrouter.ai/docs/api/api-reference/files/list-files): parameter `cursor` updated; response schema updated
-* [`POST /files`](https://openrouter.ai/docs/api/api-reference/files/upload-a-file): response schema updated
-* [`DELETE /files/{file_id}`](https://openrouter.ai/docs/api/api-reference/files/delete-a-file): parameter `file_id` updated; response schema updated
-* [`GET /files/{file_id}`](https://openrouter.ai/docs/api/api-reference/files/get-file-metadata): parameter `file_id` updated; response schema updated
-* [`GET /files/{file_id}/content`](https://openrouter.ai/docs/api/api-reference/files/download-file-content): parameter `file_id` updated
+* [`GET /files`](api/api-reference/files/list-files.md): parameter `cursor` updated; response schema updated
+* [`POST /files`](api/api-reference/files/upload-a-file.md): response schema updated
+* [`DELETE /files/{file_id}`](api/api-reference/files/delete-a-file.md): parameter `file_id` updated; response schema updated
+* [`GET /files/{file_id}`](api/api-reference/files/get-file-metadata.md): parameter `file_id` updated; response schema updated
+* [`GET /files/{file_id}/content`](api/api-reference/files/download-file-content.md): parameter `file_id` updated
 
 ## Modified schemas
 
 * `FusionAnalysisResult`: description updated
-  * Used by [`POST /presets/{slug}/responses`](https://openrouter.ai/docs/api/api-reference/presets/create-a-preset-from-a-responses-request-body), [`POST /responses`](https://openrouter.ai/docs/api/api-reference/responses/create-a-response)
+  * Used by [`POST /presets/{slug}/responses`](api/api-reference/presets/create-a-preset-from-a-responses-request-body.md), [`POST /responses`](api/api-reference/responses/create-a-response.md)
 * `FusionCallAnalysisCompletedEvent`: description updated
-  * Used by [`POST /responses`](https://openrouter.ai/docs/api/api-reference/responses/create-a-response)
+  * Used by [`POST /responses`](api/api-reference/responses/create-a-response.md)
 * `FusionCallAnalysisInProgressEvent`:
   * description updated
   * example modified
   * new property `analyst_model`
   * property `judge_model` deprecated (alias of `analyst_model`, kept for existing consumers)
-  * Used by [`POST /responses`](https://openrouter.ai/docs/api/api-reference/responses/create-a-response)
+  * Used by [`POST /responses`](api/api-reference/responses/create-a-response.md)
 * `FusionPlugin`: description updated
 
   **6 endpoints using this schema**
 
-  * [`POST /chat/completions`](https://openrouter.ai/docs/api/api-reference/chat/create-a-chat-completion)
-  * [`POST /messages`](https://openrouter.ai/docs/api/api-reference/anthropic-messages/create-a-message)
-  * [`POST /presets/{slug}/chat/completions`](https://openrouter.ai/docs/api/api-reference/presets/create-a-preset-from-a-chat-completions-request-body)
-  * [`POST /presets/{slug}/messages`](https://openrouter.ai/docs/api/api-reference/presets/create-a-preset-from-a-messages-request-body)
-  * [`POST /presets/{slug}/responses`](https://openrouter.ai/docs/api/api-reference/presets/create-a-preset-from-a-responses-request-body)
-  * [`POST /responses`](https://openrouter.ai/docs/api/api-reference/responses/create-a-response)
+  * [`POST /chat/completions`](api/api-reference/chat/create-a-chat-completion.md)
+  * [`POST /messages`](api/api-reference/anthropic-messages/create-a-message.md)
+  * [`POST /presets/{slug}/chat/completions`](api/api-reference/presets/create-a-preset-from-a-chat-completions-request-body.md)
+  * [`POST /presets/{slug}/messages`](api/api-reference/presets/create-a-preset-from-a-messages-request-body.md)
+  * [`POST /presets/{slug}/responses`](api/api-reference/presets/create-a-preset-from-a-responses-request-body.md)
+  * [`POST /responses`](api/api-reference/responses/create-a-response.md)
 * `FusionServerToolConfig`: description updated; property `effort` updated; property `max_tokens` updated
 
   **4 endpoints using this schema**
 
-  * [`POST /chat/completions`](https://openrouter.ai/docs/api/api-reference/chat/create-a-chat-completion)
-  * [`POST /presets/{slug}/chat/completions`](https://openrouter.ai/docs/api/api-reference/presets/create-a-preset-from-a-chat-completions-request-body)
-  * [`POST /presets/{slug}/responses`](https://openrouter.ai/docs/api/api-reference/presets/create-a-preset-from-a-responses-request-body)
-  * [`POST /responses`](https://openrouter.ai/docs/api/api-reference/responses/create-a-response)
+  * [`POST /chat/completions`](api/api-reference/chat/create-a-chat-completion.md)
+  * [`POST /presets/{slug}/chat/completions`](api/api-reference/presets/create-a-preset-from-a-chat-completions-request-body.md)
+  * [`POST /presets/{slug}/responses`](api/api-reference/presets/create-a-preset-from-a-responses-request-body.md)
+  * [`POST /responses`](api/api-reference/responses/create-a-response.md)
 * `FusionServerTool_OpenRouter`: description updated
 
   **4 endpoints using this schema**
 
-  * [`POST /chat/completions`](https://openrouter.ai/docs/api/api-reference/chat/create-a-chat-completion)
-  * [`POST /presets/{slug}/chat/completions`](https://openrouter.ai/docs/api/api-reference/presets/create-a-preset-from-a-chat-completions-request-body)
-  * [`POST /presets/{slug}/responses`](https://openrouter.ai/docs/api/api-reference/presets/create-a-preset-from-a-responses-request-body)
-  * [`POST /responses`](https://openrouter.ai/docs/api/api-reference/responses/create-a-response)
+  * [`POST /chat/completions`](api/api-reference/chat/create-a-chat-completion.md)
+  * [`POST /presets/{slug}/chat/completions`](api/api-reference/presets/create-a-preset-from-a-chat-completions-request-body.md)
+  * [`POST /presets/{slug}/responses`](api/api-reference/presets/create-a-preset-from-a-responses-request-body.md)
+  * [`POST /responses`](api/api-reference/responses/create-a-response.md)
 * `FusionSource`: description updated
-  * Used by [`POST /presets/{slug}/responses`](https://openrouter.ai/docs/api/api-reference/presets/create-a-preset-from-a-responses-request-body), [`POST /responses`](https://openrouter.ai/docs/api/api-reference/responses/create-a-response)
+  * Used by [`POST /presets/{slug}/responses`](api/api-reference/presets/create-a-preset-from-a-responses-request-body.md), [`POST /responses`](api/api-reference/responses/create-a-response.md)
 * `OutputFusionServerToolItem`: description updated
-  * Used by [`POST /presets/{slug}/responses`](https://openrouter.ai/docs/api/api-reference/presets/create-a-preset-from-a-responses-request-body), [`POST /responses`](https://openrouter.ai/docs/api/api-reference/responses/create-a-response)
+  * Used by [`POST /presets/{slug}/responses`](api/api-reference/presets/create-a-preset-from-a-responses-request-body.md), [`POST /responses`](api/api-reference/responses/create-a-response.md)
 * `ChatWebSearchShorthand`: description updated
-  * Used by [`POST /chat/completions`](https://openrouter.ai/docs/api/api-reference/chat/create-a-chat-completion), [`POST /presets/{slug}/chat/completions`](https://openrouter.ai/docs/api/api-reference/presets/create-a-preset-from-a-chat-completions-request-body)
+  * Used by [`POST /chat/completions`](api/api-reference/chat/create-a-chat-completion.md), [`POST /presets/{slug}/chat/completions`](api/api-reference/presets/create-a-preset-from-a-chat-completions-request-body.md)
 * `WebSearchConfig`: description updated
 
   **4 endpoints using this schema**
 
-  * [`POST /chat/completions`](https://openrouter.ai/docs/api/api-reference/chat/create-a-chat-completion)
-  * [`POST /messages`](https://openrouter.ai/docs/api/api-reference/anthropic-messages/create-a-message)
-  * [`POST /presets/{slug}/chat/completions`](https://openrouter.ai/docs/api/api-reference/presets/create-a-preset-from-a-chat-completions-request-body)
-  * [`POST /presets/{slug}/messages`](https://openrouter.ai/docs/api/api-reference/presets/create-a-preset-from-a-messages-request-body)
+  * [`POST /chat/completions`](api/api-reference/chat/create-a-chat-completion.md)
+  * [`POST /messages`](api/api-reference/anthropic-messages/create-a-message.md)
+  * [`POST /presets/{slug}/chat/completions`](api/api-reference/presets/create-a-preset-from-a-chat-completions-request-body.md)
+  * [`POST /presets/{slug}/messages`](api/api-reference/presets/create-a-preset-from-a-messages-request-body.md)
 * `WebSearchDomainFilter`: example modified; new property `blocked_domains`
-  * Used by [`POST /presets/{slug}/responses`](https://openrouter.ai/docs/api/api-reference/presets/create-a-preset-from-a-responses-request-body), [`POST /responses`](https://openrouter.ai/docs/api/api-reference/responses/create-a-response)
+  * Used by [`POST /presets/{slug}/responses`](api/api-reference/presets/create-a-preset-from-a-responses-request-body.md), [`POST /responses`](api/api-reference/responses/create-a-response.md)
 * `WebSearchServerToolConfig`: description updated
-  * Used by [`POST /presets/{slug}/responses`](https://openrouter.ai/docs/api/api-reference/presets/create-a-preset-from-a-responses-request-body), [`POST /responses`](https://openrouter.ai/docs/api/api-reference/responses/create-a-response)
+  * Used by [`POST /presets/{slug}/responses`](api/api-reference/presets/create-a-preset-from-a-responses-request-body.md), [`POST /responses`](api/api-reference/responses/create-a-response.md)
 * `AnthropicFileDocumentSource`: example modified
-  * Used by [`POST /messages`](https://openrouter.ai/docs/api/api-reference/anthropic-messages/create-a-message), [`POST /presets/{slug}/messages`](https://openrouter.ai/docs/api/api-reference/presets/create-a-preset-from-a-messages-request-body)
+  * Used by [`POST /messages`](api/api-reference/anthropic-messages/create-a-message.md), [`POST /presets/{slug}/messages`](api/api-reference/presets/create-a-preset-from-a-messages-request-body.md)
 * `FileDeleteResponse`: example modified
-  * Used by [`DELETE /files/{file_id}`](https://openrouter.ai/docs/api/api-reference/files/delete-a-file)
+  * Used by [`DELETE /files/{file_id}`](api/api-reference/files/delete-a-file.md)
 * `FileListResponse`: example modified
-  * Used by [`GET /files`](https://openrouter.ai/docs/api/api-reference/files/list-files)
+  * Used by [`GET /files`](api/api-reference/files/list-files.md)
 * `FileMetadata`: example modified
-  * Used by [`GET /files`](https://openrouter.ai/docs/api/api-reference/files/list-files), [`GET /files/{file_id}`](https://openrouter.ai/docs/api/api-reference/files/get-file-metadata), [`POST /files`](https://openrouter.ai/docs/api/api-reference/files/upload-a-file)
+  * Used by [`GET /files`](api/api-reference/files/list-files.md), [`GET /files/{file_id}`](api/api-reference/files/get-file-metadata.md), [`POST /files`](api/api-reference/files/upload-a-file.md)
 * `GenerationResponse`: property `data_region` updated
-  * Used by [`GET /generation`](https://openrouter.ai/docs/api/api-reference/generations/get-request-&-usage-metadata-for-a-generation)
+  * Used by [`GET /generation`](api/api-reference/generations/get-request-&-usage-metadata-for-a-generation.md)
 * `CreateGuardrailRequest`: new property `enable_free_model_publication`; new property `enable_free_model_training`; new property `enable_paid_model_training`
-  * Used by [`POST /guardrails`](https://openrouter.ai/docs/api/api-reference/guardrails/create-a-guardrail)
+  * Used by [`POST /guardrails`](api/api-reference/guardrails/create-a-guardrail.md)
 * `Guardrail`:
 
   * example modified
@@ -6743,12 +6743,12 @@ Entries on this page are generated automatically from [OpenAPI specification](ap
 
   **4 endpoints using this schema**
 
-  * [`GET /guardrails`](https://openrouter.ai/docs/api/api-reference/guardrails/list-guardrails)
-  * [`GET /guardrails/{id}`](https://openrouter.ai/docs/api/api-reference/guardrails/get-a-guardrail)
-  * [`PATCH /guardrails/{id}`](https://openrouter.ai/docs/api/api-reference/guardrails/update-a-guardrail)
-  * [`POST /guardrails`](https://openrouter.ai/docs/api/api-reference/guardrails/create-a-guardrail)
+  * [`GET /guardrails`](api/api-reference/guardrails/list-guardrails.md)
+  * [`GET /guardrails/{id}`](api/api-reference/guardrails/get-a-guardrail.md)
+  * [`PATCH /guardrails/{id}`](api/api-reference/guardrails/update-a-guardrail.md)
+  * [`POST /guardrails`](api/api-reference/guardrails/create-a-guardrail.md)
 * `UpdateGuardrailRequest`: new property `enable_free_model_publication`; new property `enable_free_model_training`; new property `enable_paid_model_training`
-  * Used by [`PATCH /guardrails/{id}`](https://openrouter.ai/docs/api/api-reference/guardrails/update-a-guardrail)
+  * Used by [`PATCH /guardrails/{id}`](api/api-reference/guardrails/update-a-guardrail.md)
 * `AutoBetaRouterPlugin`:
 
   * example modified
@@ -6758,12 +6758,12 @@ Entries on this page are generated automatically from [OpenAPI specification](ap
 
   **6 endpoints using this schema**
 
-  * [`POST /chat/completions`](https://openrouter.ai/docs/api/api-reference/chat/create-a-chat-completion)
-  * [`POST /messages`](https://openrouter.ai/docs/api/api-reference/anthropic-messages/create-a-message)
-  * [`POST /presets/{slug}/chat/completions`](https://openrouter.ai/docs/api/api-reference/presets/create-a-preset-from-a-chat-completions-request-body)
-  * [`POST /presets/{slug}/messages`](https://openrouter.ai/docs/api/api-reference/presets/create-a-preset-from-a-messages-request-body)
-  * [`POST /presets/{slug}/responses`](https://openrouter.ai/docs/api/api-reference/presets/create-a-preset-from-a-responses-request-body)
-  * [`POST /responses`](https://openrouter.ai/docs/api/api-reference/responses/create-a-response)
+  * [`POST /chat/completions`](api/api-reference/chat/create-a-chat-completion.md)
+  * [`POST /messages`](api/api-reference/anthropic-messages/create-a-message.md)
+  * [`POST /presets/{slug}/chat/completions`](api/api-reference/presets/create-a-preset-from-a-chat-completions-request-body.md)
+  * [`POST /presets/{slug}/messages`](api/api-reference/presets/create-a-preset-from-a-messages-request-body.md)
+  * [`POST /presets/{slug}/responses`](api/api-reference/presets/create-a-preset-from-a-responses-request-body.md)
+  * [`POST /responses`](api/api-reference/responses/create-a-response.md)
 * `AutoRouterPlugin`:
 
   * example modified
@@ -6773,18 +6773,18 @@ Entries on this page are generated automatically from [OpenAPI specification](ap
 
   **6 endpoints using this schema**
 
-  * [`POST /chat/completions`](https://openrouter.ai/docs/api/api-reference/chat/create-a-chat-completion)
-  * [`POST /messages`](https://openrouter.ai/docs/api/api-reference/anthropic-messages/create-a-message)
-  * [`POST /presets/{slug}/chat/completions`](https://openrouter.ai/docs/api/api-reference/presets/create-a-preset-from-a-chat-completions-request-body)
-  * [`POST /presets/{slug}/messages`](https://openrouter.ai/docs/api/api-reference/presets/create-a-preset-from-a-messages-request-body)
-  * [`POST /presets/{slug}/responses`](https://openrouter.ai/docs/api/api-reference/presets/create-a-preset-from-a-responses-request-body)
-  * [`POST /responses`](https://openrouter.ai/docs/api/api-reference/responses/create-a-response)
+  * [`POST /chat/completions`](api/api-reference/chat/create-a-chat-completion.md)
+  * [`POST /messages`](api/api-reference/anthropic-messages/create-a-message.md)
+  * [`POST /presets/{slug}/chat/completions`](api/api-reference/presets/create-a-preset-from-a-chat-completions-request-body.md)
+  * [`POST /presets/{slug}/messages`](api/api-reference/presets/create-a-preset-from-a-messages-request-body.md)
+  * [`POST /presets/{slug}/responses`](api/api-reference/presets/create-a-preset-from-a-responses-request-body.md)
+  * [`POST /responses`](api/api-reference/responses/create-a-response.md)
 
 **July 27, 2026**
 
 ## Modified endpoints
 
-* [`POST /embeddings`](https://openrouter.ai/docs/api/api-reference/embeddings/submit-an-embedding-request): request schema updated
+* [`POST /embeddings`](api/api-reference/embeddings/submit-an-embedding-request.md): request schema updated
 
 ## Modified schemas
 
@@ -6792,30 +6792,30 @@ Entries on this page are generated automatically from [OpenAPI specification](ap
 
   **10 endpoints using this schema**
 
-  * [`GET /endpoints/zdr`](https://openrouter.ai/docs/api/api-reference/endpoints/preview-the-impact-of-zdr-on-the-available-endpoints)
-  * [`GET /models/{author}/{slug}/endpoints`](https://openrouter.ai/docs/api/api-reference/endpoints/list-all-endpoints-for-a-model)
-  * [`POST /chat/completions`](https://openrouter.ai/docs/api/api-reference/chat/create-a-chat-completion)
-  * [`POST /embeddings`](https://openrouter.ai/docs/api/api-reference/embeddings/submit-an-embedding-request)
-  * [`POST /messages`](https://openrouter.ai/docs/api/api-reference/anthropic-messages/create-a-message)
-  * [`POST /presets/{slug}/chat/completions`](https://openrouter.ai/docs/api/api-reference/presets/create-a-preset-from-a-chat-completions-request-body)
-  * [`POST /presets/{slug}/messages`](https://openrouter.ai/docs/api/api-reference/presets/create-a-preset-from-a-messages-request-body)
-  * [`POST /presets/{slug}/responses`](https://openrouter.ai/docs/api/api-reference/presets/create-a-preset-from-a-responses-request-body)
-  * [`POST /rerank`](https://openrouter.ai/docs/api/api-reference/rerank/submit-a-rerank-request)
-  * [`POST /responses`](https://openrouter.ai/docs/api/api-reference/responses/create-a-response)
+  * [`GET /endpoints/zdr`](api/api-reference/endpoints/preview-the-impact-of-zdr-on-the-available-endpoints.md)
+  * [`GET /models/{author}/{slug}/endpoints`](api/api-reference/endpoints/list-all-endpoints-for-a-model.md)
+  * [`POST /chat/completions`](api/api-reference/chat/create-a-chat-completion.md)
+  * [`POST /embeddings`](api/api-reference/embeddings/submit-an-embedding-request.md)
+  * [`POST /messages`](api/api-reference/anthropic-messages/create-a-message.md)
+  * [`POST /presets/{slug}/chat/completions`](api/api-reference/presets/create-a-preset-from-a-chat-completions-request-body.md)
+  * [`POST /presets/{slug}/messages`](api/api-reference/presets/create-a-preset-from-a-messages-request-body.md)
+  * [`POST /presets/{slug}/responses`](api/api-reference/presets/create-a-preset-from-a-responses-request-body.md)
+  * [`POST /rerank`](api/api-reference/rerank/submit-a-rerank-request.md)
+  * [`POST /responses`](api/api-reference/responses/create-a-response.md)
 * `ReasoningFormat`: enum property\_added
 
   **4 endpoints using this schema**
 
-  * [`POST /chat/completions`](https://openrouter.ai/docs/api/api-reference/chat/create-a-chat-completion)
-  * [`POST /presets/{slug}/chat/completions`](https://openrouter.ai/docs/api/api-reference/presets/create-a-preset-from-a-chat-completions-request-body)
-  * [`POST /presets/{slug}/responses`](https://openrouter.ai/docs/api/api-reference/presets/create-a-preset-from-a-responses-request-body)
-  * [`POST /responses`](https://openrouter.ai/docs/api/api-reference/responses/create-a-response)
+  * [`POST /chat/completions`](api/api-reference/chat/create-a-chat-completion.md)
+  * [`POST /presets/{slug}/chat/completions`](api/api-reference/presets/create-a-preset-from-a-chat-completions-request-body.md)
+  * [`POST /presets/{slug}/responses`](api/api-reference/presets/create-a-preset-from-a-responses-request-body.md)
+  * [`POST /responses`](api/api-reference/responses/create-a-response.md)
 
 **July 25, 2026**
 
 ## Breaking changes
 
-* [`POST /responses`](https://openrouter.ai/docs/api/api-reference/responses/create-a-response): tags `beta.responses` property removedNo action needed
+* [`POST /responses`](api/api-reference/responses/create-a-response.md): tags `beta.responses` property removedNo action needed
   * **Migration: no action for HTTP clients.** The Responses API is now GA. `beta.responses` was an OpenAPI grouping tag and SDK namespace, never a URL. `POST /api/v1/responses` and its request and response schemas are unchanged, so raw HTTP callers and OpenAI-compatible clients (including the OpenAI Agents SDK) need no changes. The endpoint now appears under **Responses** instead of **Beta responses** in the API Reference.
   * **Migration for SDK users: optional until sunset.** The canonical namespace is now `responses`, with `client.responses.send()` (TypeScript, Python) and `client.Responses.Send()` (Go). The `beta.responses` namespace, and TypeScript's `betaResponsesSend` standalone function, keep working as deprecated aliases; their removal will be announced here with a sunset date before it ships.
 * \$.tags: beta.responses object removedNo action needed
@@ -6823,114 +6823,114 @@ Entries on this page are generated automatically from [OpenAPI specification](ap
 
 ## Modified endpoints
 
-* [`POST /responses`](https://openrouter.ai/docs/api/api-reference/responses/create-a-response): tags property\_added
-* [`GET /byok`](https://openrouter.ai/docs/api/api-reference/byok/list-byok-provider-credentials): parameter `provider` updated
+* [`POST /responses`](api/api-reference/responses/create-a-response.md): tags property\_added
+* [`GET /byok`](api/api-reference/byok/list-byok-provider-credentials.md): parameter `provider` updated
 
 ## Modified schemas
 
 * `MessagesStartEvent`: property `provider` updated
-  * Used by [`POST /messages`](https://openrouter.ai/docs/api/api-reference/anthropic-messages/create-a-message)
+  * Used by [`POST /messages`](api/api-reference/anthropic-messages/create-a-message.md)
 * `ProviderName`: enum property\_added
 
   **11 endpoints using this schema**
 
-  * [`GET /endpoints/zdr`](https://openrouter.ai/docs/api/api-reference/endpoints/preview-the-impact-of-zdr-on-the-available-endpoints)
-  * [`GET /models/{author}/{slug}/endpoints`](https://openrouter.ai/docs/api/api-reference/endpoints/list-all-endpoints-for-a-model)
-  * [`POST /chat/completions`](https://openrouter.ai/docs/api/api-reference/chat/create-a-chat-completion)
-  * [`POST /embeddings`](https://openrouter.ai/docs/api/api-reference/embeddings/submit-an-embedding-request)
-  * [`POST /images`](https://openrouter.ai/docs/api/api-reference/images/generate-an-image)
-  * [`POST /messages`](https://openrouter.ai/docs/api/api-reference/anthropic-messages/create-a-message)
-  * [`POST /presets/{slug}/chat/completions`](https://openrouter.ai/docs/api/api-reference/presets/create-a-preset-from-a-chat-completions-request-body)
-  * [`POST /presets/{slug}/messages`](https://openrouter.ai/docs/api/api-reference/presets/create-a-preset-from-a-messages-request-body)
-  * [`POST /presets/{slug}/responses`](https://openrouter.ai/docs/api/api-reference/presets/create-a-preset-from-a-responses-request-body)
-  * [`POST /rerank`](https://openrouter.ai/docs/api/api-reference/rerank/submit-a-rerank-request)
-  * [`POST /responses`](https://openrouter.ai/docs/api/api-reference/responses/create-a-response)
+  * [`GET /endpoints/zdr`](api/api-reference/endpoints/preview-the-impact-of-zdr-on-the-available-endpoints.md)
+  * [`GET /models/{author}/{slug}/endpoints`](api/api-reference/endpoints/list-all-endpoints-for-a-model.md)
+  * [`POST /chat/completions`](api/api-reference/chat/create-a-chat-completion.md)
+  * [`POST /embeddings`](api/api-reference/embeddings/submit-an-embedding-request.md)
+  * [`POST /images`](api/api-reference/images/generate-an-image.md)
+  * [`POST /messages`](api/api-reference/anthropic-messages/create-a-message.md)
+  * [`POST /presets/{slug}/chat/completions`](api/api-reference/presets/create-a-preset-from-a-chat-completions-request-body.md)
+  * [`POST /presets/{slug}/messages`](api/api-reference/presets/create-a-preset-from-a-messages-request-body.md)
+  * [`POST /presets/{slug}/responses`](api/api-reference/presets/create-a-preset-from-a-responses-request-body.md)
+  * [`POST /rerank`](api/api-reference/rerank/submit-a-rerank-request.md)
+  * [`POST /responses`](api/api-reference/responses/create-a-response.md)
 * `ProviderOptions`: new property `claude-on-aws`
 
   **4 endpoints using this schema**
 
-  * [`POST /audio/speech`](https://openrouter.ai/docs/api/api-reference/tts/create-speech)
-  * [`POST /audio/transcriptions`](https://openrouter.ai/docs/api/api-reference/stt/create-transcription)
-  * [`POST /images`](https://openrouter.ai/docs/api/api-reference/images/generate-an-image)
-  * [`POST /videos`](https://openrouter.ai/docs/api/api-reference/video-generation/submit-a-video-generation-request)
+  * [`POST /audio/speech`](api/api-reference/tts/create-speech.md)
+  * [`POST /audio/transcriptions`](api/api-reference/stt/create-transcription.md)
+  * [`POST /images`](api/api-reference/images/generate-an-image.md)
+  * [`POST /videos`](api/api-reference/video-generation/submit-a-video-generation-request.md)
 * `ProviderResponse`: enum property\_added
-  * Used by [`GET /generation`](https://openrouter.ai/docs/api/api-reference/generations/get-request-&-usage-metadata-for-a-generation)
+  * Used by [`GET /generation`](api/api-reference/generations/get-request-&-usage-metadata-for-a-generation.md)
 * `BYOKProviderSlug`: enum property\_added
 
   **4 endpoints using this schema**
 
-  * [`GET /byok`](https://openrouter.ai/docs/api/api-reference/byok/list-byok-provider-credentials)
-  * [`GET /byok/{id}`](https://openrouter.ai/docs/api/api-reference/byok/get-a-byok-provider-credential)
-  * [`PATCH /byok/{id}`](https://openrouter.ai/docs/api/api-reference/byok/update-a-byok-provider-credential)
-  * [`POST /byok`](https://openrouter.ai/docs/api/api-reference/byok/create-a-byok-provider-credential)
+  * [`GET /byok`](api/api-reference/byok/list-byok-provider-credentials.md)
+  * [`GET /byok/{id}`](api/api-reference/byok/get-a-byok-provider-credential.md)
+  * [`PATCH /byok/{id}`](api/api-reference/byok/update-a-byok-provider-credential.md)
+  * [`POST /byok`](api/api-reference/byok/create-a-byok-provider-credential.md)
 
 **July 24, 2026**
 
 ## Modified schemas
 
 * `MessagesStartEvent`: property `provider` updated
-  * Used by [`POST /messages`](https://openrouter.ai/docs/api/api-reference/anthropic-messages/create-a-message)
+  * Used by [`POST /messages`](api/api-reference/anthropic-messages/create-a-message.md)
 * `ProviderName`: enum property\_added
 
   **11 endpoints using this schema**
 
-  * [`GET /endpoints/zdr`](https://openrouter.ai/docs/api/api-reference/endpoints/preview-the-impact-of-zdr-on-the-available-endpoints)
-  * [`GET /models/{author}/{slug}/endpoints`](https://openrouter.ai/docs/api/api-reference/endpoints/list-all-endpoints-for-a-model)
-  * [`POST /chat/completions`](https://openrouter.ai/docs/api/api-reference/chat/create-a-chat-completion)
-  * [`POST /embeddings`](https://openrouter.ai/docs/api/api-reference/embeddings/submit-an-embedding-request)
-  * [`POST /images`](https://openrouter.ai/docs/api/api-reference/images/generate-an-image)
-  * [`POST /messages`](https://openrouter.ai/docs/api/api-reference/anthropic-messages/create-a-message)
-  * [`POST /presets/{slug}/chat/completions`](https://openrouter.ai/docs/api/api-reference/presets/create-a-preset-from-a-chat-completions-request-body)
-  * [`POST /presets/{slug}/messages`](https://openrouter.ai/docs/api/api-reference/presets/create-a-preset-from-a-messages-request-body)
-  * [`POST /presets/{slug}/responses`](https://openrouter.ai/docs/api/api-reference/presets/create-a-preset-from-a-responses-request-body)
-  * [`POST /rerank`](https://openrouter.ai/docs/api/api-reference/rerank/submit-a-rerank-request)
-  * [`POST /responses`](https://openrouter.ai/docs/api/api-reference/responses/create-a-response)
+  * [`GET /endpoints/zdr`](api/api-reference/endpoints/preview-the-impact-of-zdr-on-the-available-endpoints.md)
+  * [`GET /models/{author}/{slug}/endpoints`](api/api-reference/endpoints/list-all-endpoints-for-a-model.md)
+  * [`POST /chat/completions`](api/api-reference/chat/create-a-chat-completion.md)
+  * [`POST /embeddings`](api/api-reference/embeddings/submit-an-embedding-request.md)
+  * [`POST /images`](api/api-reference/images/generate-an-image.md)
+  * [`POST /messages`](api/api-reference/anthropic-messages/create-a-message.md)
+  * [`POST /presets/{slug}/chat/completions`](api/api-reference/presets/create-a-preset-from-a-chat-completions-request-body.md)
+  * [`POST /presets/{slug}/messages`](api/api-reference/presets/create-a-preset-from-a-messages-request-body.md)
+  * [`POST /presets/{slug}/responses`](api/api-reference/presets/create-a-preset-from-a-responses-request-body.md)
+  * [`POST /rerank`](api/api-reference/rerank/submit-a-rerank-request.md)
+  * [`POST /responses`](api/api-reference/responses/create-a-response.md)
 * `ProviderOptions`: new property `voyageai`
 
   **4 endpoints using this schema**
 
-  * [`POST /audio/speech`](https://openrouter.ai/docs/api/api-reference/tts/create-speech)
-  * [`POST /audio/transcriptions`](https://openrouter.ai/docs/api/api-reference/stt/create-transcription)
-  * [`POST /images`](https://openrouter.ai/docs/api/api-reference/images/generate-an-image)
-  * [`POST /videos`](https://openrouter.ai/docs/api/api-reference/video-generation/submit-a-video-generation-request)
+  * [`POST /audio/speech`](api/api-reference/tts/create-speech.md)
+  * [`POST /audio/transcriptions`](api/api-reference/stt/create-transcription.md)
+  * [`POST /images`](api/api-reference/images/generate-an-image.md)
+  * [`POST /videos`](api/api-reference/video-generation/submit-a-video-generation-request.md)
 * `ProviderResponse`: enum property\_added
-  * Used by [`GET /generation`](https://openrouter.ai/docs/api/api-reference/generations/get-request-&-usage-metadata-for-a-generation)
+  * Used by [`GET /generation`](api/api-reference/generations/get-request-&-usage-metadata-for-a-generation.md)
 * `AnthropicCompactionBlock`: new property `encrypted_content`
-  * Used by [`POST /messages`](https://openrouter.ai/docs/api/api-reference/anthropic-messages/create-a-message)
+  * Used by [`POST /messages`](api/api-reference/anthropic-messages/create-a-message.md)
 * `MessagesToolAdditionBlock`: new property `cache_control`; new union variant added; type property\_removed
   * `tool` widened from a single `tool_reference` object to a union of `tool_reference`, `mcp_tool_reference` (`name` + `server_name`) and `mcp_toolset_reference` (`server_name`). The `tool_reference` variant is unchanged, so existing `{ "type": "tool_reference", "name": "…" }` payloads stay valid. The `name` and `type` properties moved into that variant rather than being removed.
-  * Used by [`POST /messages`](https://openrouter.ai/docs/api/api-reference/anthropic-messages/create-a-message), [`POST /presets/{slug}/messages`](https://openrouter.ai/docs/api/api-reference/presets/create-a-preset-from-a-messages-request-body)
+  * Used by [`POST /messages`](api/api-reference/anthropic-messages/create-a-message.md), [`POST /presets/{slug}/messages`](api/api-reference/presets/create-a-preset-from-a-messages-request-body.md)
 * `MessagesToolRemovalBlock`: new property `cache_control`; new union variant added; type property\_removed
   * `tool` widened the same way as `MessagesToolAdditionBlock`; existing `tool_reference` payloads stay valid.
-  * Used by [`POST /messages`](https://openrouter.ai/docs/api/api-reference/anthropic-messages/create-a-message), [`POST /presets/{slug}/messages`](https://openrouter.ai/docs/api/api-reference/presets/create-a-preset-from-a-messages-request-body)
+  * Used by [`POST /messages`](api/api-reference/anthropic-messages/create-a-message.md), [`POST /presets/{slug}/messages`](api/api-reference/presets/create-a-preset-from-a-messages-request-body.md)
 * `ORAnthropicStopReason`: enum property\_added
-  * Used by [`POST /messages`](https://openrouter.ai/docs/api/api-reference/anthropic-messages/create-a-message)
+  * Used by [`POST /messages`](api/api-reference/anthropic-messages/create-a-message.md)
 
 **July 8, 2026**
 
 ## New schemas
 
 * `ImageGenTextChunkEvent`
-  * Used by [`POST /images`](https://openrouter.ai/docs/api/api-reference/images/generate-an-image)
+  * Used by [`POST /images`](api/api-reference/images/generate-an-image.md)
 
 ## Modified schemas
 
 * `ImageStreamingResponse`: new union variant added
-  * Used by [`POST /images`](https://openrouter.ai/docs/api/api-reference/images/generate-an-image)
+  * Used by [`POST /images`](api/api-reference/images/generate-an-image.md)
 
 **July 7, 2026**
 
 ## Modified endpoints
 
-* [`POST /audio/transcriptions`](https://openrouter.ai/docs/api/api-reference/stt/create-transcription): description updated; request body now accepts `multipart/form-data`
-* [`GET /datasets/rankings-daily`](https://openrouter.ai/docs/api/api-reference/datasets/daily-token-totals-for-top-50-models):
+* [`POST /audio/transcriptions`](api/api-reference/stt/create-transcription.md): description updated; request body now accepts `multipart/form-data`
+* [`GET /datasets/rankings-daily`](api/api-reference/datasets/daily-token-totals-for-top-50-models.md):
   * description updated
   * new parameter `category`
   * new parameter `context_bucket`
   * new parameter `language_type`
   * new parameter `modality`
   * new parameter `period`
-* [`GET /models`](https://openrouter.ai/docs/api/api-reference/models/list-all-models-and-their-properties):
+* [`GET /models`](api/api-reference/models/list-all-models-and-their-properties.md):
   * new parameter `max_age_days`
   * new parameter `max_agentic_index`
   * new parameter `max_coding_index`
@@ -6948,50 +6948,50 @@ Entries on this page are generated automatically from [OpenAPI specification](ap
 
 ## New response codes
 
-* [`POST /images`](https://openrouter.ai/docs/api/api-reference/images/generate-an-image): now returns `413`
+* [`POST /images`](api/api-reference/images/generate-an-image.md): now returns `413`
 
 ## New schemas
 
 * `STTSegment`
-  * Used by [`POST /audio/transcriptions`](https://openrouter.ai/docs/api/api-reference/stt/create-transcription)
+  * Used by [`POST /audio/transcriptions`](api/api-reference/stt/create-transcription.md)
 * `STTTimestampGranularity`
-  * Used by [`POST /audio/transcriptions`](https://openrouter.ai/docs/api/api-reference/stt/create-transcription)
+  * Used by [`POST /audio/transcriptions`](api/api-reference/stt/create-transcription.md)
 * `STTWord`
-  * Used by [`POST /audio/transcriptions`](https://openrouter.ai/docs/api/api-reference/stt/create-transcription)
+  * Used by [`POST /audio/transcriptions`](api/api-reference/stt/create-transcription.md)
 
 ## Modified schemas
 
 * `ChatFunctionTool`: new union variant added
-  * Used by [`POST /chat/completions`](https://openrouter.ai/docs/api/api-reference/chat/create-a-chat-completion), [`POST /presets/{slug}/chat/completions`](https://openrouter.ai/docs/api/api-reference/presets/create-a-preset-from-a-chat-completions-request-body)
+  * Used by [`POST /chat/completions`](api/api-reference/chat/create-a-chat-completion.md), [`POST /presets/{slug}/chat/completions`](api/api-reference/presets/create-a-preset-from-a-chat-completions-request-body.md)
 * `FusionServerToolConfig`: description updated
 
   **4 endpoints using this schema**
 
-  * [`POST /chat/completions`](https://openrouter.ai/docs/api/api-reference/chat/create-a-chat-completion)
-  * [`POST /presets/{slug}/chat/completions`](https://openrouter.ai/docs/api/api-reference/presets/create-a-preset-from-a-chat-completions-request-body)
-  * [`POST /presets/{slug}/responses`](https://openrouter.ai/docs/api/api-reference/presets/create-a-preset-from-a-responses-request-body)
-  * [`POST /responses`](https://openrouter.ai/docs/api/api-reference/responses/create-a-response)
+  * [`POST /chat/completions`](api/api-reference/chat/create-a-chat-completion.md)
+  * [`POST /presets/{slug}/chat/completions`](api/api-reference/presets/create-a-preset-from-a-chat-completions-request-body.md)
+  * [`POST /presets/{slug}/responses`](api/api-reference/presets/create-a-preset-from-a-responses-request-body.md)
+  * [`POST /responses`](api/api-reference/responses/create-a-response.md)
 * `ImageGenCompletedEvent`: description updated; example modified
-  * Used by [`POST /images`](https://openrouter.ai/docs/api/api-reference/images/generate-an-image)
+  * Used by [`POST /images`](api/api-reference/images/generate-an-image.md)
 * `ImageGenerationResponse`: property `media_type` updated
-  * Used by [`POST /images`](https://openrouter.ai/docs/api/api-reference/images/generate-an-image)
+  * Used by [`POST /images`](api/api-reference/images/generate-an-image.md)
 * `STTRequest`: new property `response_format`; new property `timestamp_granularities`
-  * Used by [`POST /audio/transcriptions`](https://openrouter.ai/docs/api/api-reference/stt/create-transcription)
+  * Used by [`POST /audio/transcriptions`](api/api-reference/stt/create-transcription.md)
 * `STTResponse`:
   * new property `duration`
   * new property `language`
   * new property `segments`
   * new property `task`
   * new property `words`
-  * Used by [`POST /audio/transcriptions`](https://openrouter.ai/docs/api/api-reference/stt/create-transcription)
+  * Used by [`POST /audio/transcriptions`](api/api-reference/stt/create-transcription.md)
 
 **July 3, 2026**
 
 ## New endpoints
 
-* [`GET /workspaces/{id}/members`](https://openrouter.ai/docs/api/api-reference/workspaces/list-workspace-members): List workspace members
+* [`GET /workspaces/{id}/members`](api/api-reference/workspaces/list-workspace-members.md): List workspace members
 
 ## New schemas
 
 * `ListWorkspaceMembersResponse`
-  * Used by [`GET /workspaces/{id}/members`](https://openrouter.ai/docs/api/api-reference/workspaces/list-workspace-members)
+  * Used by [`GET /workspaces/{id}/members`](api/api-reference/workspaces/list-workspace-members.md)

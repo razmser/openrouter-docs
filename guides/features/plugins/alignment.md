@@ -155,7 +155,7 @@ OpenRouter runs the check on its own servers, between the provider and your appl
 
 After a blocked message with a retry left, OpenRouter calls the same model at the same provider again. The new call appends a user message with the blocked message, the broken rules, and the line `Write the reply again so that it follows every rule.`. With no retry left, OpenRouter returns an error ([Errors](#errors)). OpenRouter makes at most `max_retries` retries per model call.
 
-A server tool result that OpenRouter delivers to your application is part of the message, and the evaluator checks it. Examples are the panel responses and analysis of [`openrouter:fusion`](https://openrouter.ai/docs/guides/features/server-tools/fusion) and an image of [`openrouter:image_generation`](https://openrouter.ai/docs/guides/features/server-tools/image-generation). The evaluator skips server tool results that OpenRouter keeps on the server.
+A server tool result that OpenRouter delivers to your application is part of the message, and the evaluator checks it. Examples are the panel responses and analysis of [`openrouter:fusion`](../server-tools/fusion.md) and an image of [`openrouter:image_generation`](../server-tools/image-generation.md). The evaluator skips server tool results that OpenRouter keeps on the server.
 
 ## Configuration
 
@@ -199,7 +199,7 @@ OpenRouter rejects a request with the plugin in three cases, in both modes. The 
 
 ## Examples
 
-Each example shows a request body for the Responses API and the response body OpenRouter returned. The response bodies omit the [`reasoning`](https://openrouter.ai/docs/api_reference/responses/reasoning) items of `output` and the `*_details` and cost fields of `usage`. The examples reuse the system message and the rules of the [Quickstart](#quickstart) unless they say otherwise.
+Each example shows a request body for the Responses API and the response body OpenRouter returned. The response bodies omit the [`reasoning`](../../../api_reference/responses/reasoning.md) items of `output` and the `*_details` and cost fields of `usage`. The examples reuse the system message and the rules of the [Quickstart](#quickstart) unless they say otherwise.
 
 ### Retry of a blocked message
 

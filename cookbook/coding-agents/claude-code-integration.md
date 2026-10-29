@@ -222,11 +222,11 @@ Gateway model discovery is opt-in. Set `CLAUDE_CODE_ENABLE_GATEWAY_MODEL_DISCOVE
 
 Anthropic's fast mode provides up to 2.5x faster output at premium pricing. **Fast mode is only available on Claude Opus 4.6, Claude Opus 4.7, Claude Opus 4.8, and Claude Opus 5** — no other Anthropic models support it.
 
-On OpenRouter, fast mode is a [`fast` service tier endpoint](https://openrouter.ai/docs/guides/features/service-tiers#fast-mode) on the regular model, like any other provider's priority tier. With [`anthropic/claude-opus-5`](https://openrouter.ai/anthropic/claude-opus-5), [`anthropic/claude-opus-4.8`](https://openrouter.ai/anthropic/claude-opus-4.8), [`anthropic/claude-opus-4.7`](https://openrouter.ai/anthropic/claude-opus-4.7), or [`anthropic/claude-opus-4.6`](https://openrouter.ai/anthropic/claude-opus-4.6), there are three ways to request it (see [How Routing Works](../../guides/features/service-tiers.md#how-routing-works) for the full semantics):
+On OpenRouter, fast mode is a [`fast` service tier endpoint](../../guides/features/service-tiers.md#fast-mode) on the regular model, like any other provider's priority tier. With [`anthropic/claude-opus-5`](https://openrouter.ai/anthropic/claude-opus-5), [`anthropic/claude-opus-4.8`](https://openrouter.ai/anthropic/claude-opus-4.8), [`anthropic/claude-opus-4.7`](https://openrouter.ai/anthropic/claude-opus-4.7), or [`anthropic/claude-opus-4.6`](https://openrouter.ai/anthropic/claude-opus-4.6), there are three ways to request it (see [How Routing Works](../../guides/features/service-tiers.md#how-routing-works) for the full semantics):
 
 1. Send `speed: "fast"`, `service_tier: "fast"`, or `service_tier: "priority"` — the three spellings are fully interchangeable on all APIs. The fast tier endpoint is tried first, with fallback to standard endpoints (billed at their standard rates).
-2. Use the [`:nitro`](https://openrouter.ai/docs/guides/routing/model-variants/nitro) variant (e.g. `anthropic/claude-opus-5:nitro`) — the fast tier endpoint becomes eligible and serves when it wins the throughput sort.
-3. Pin the tier endpoint slug in [`provider.order` or `provider.only`](https://openrouter.ai/docs/guides/routing/provider-selection), e.g. `"provider": { "only": ["anthropic/fast"] }`.
+2. Use the [`:nitro`](../../guides/routing/model-variants/nitro.md) variant (e.g. `anthropic/claude-opus-5:nitro`) — the fast tier endpoint becomes eligible and serves when it wins the throughput sort.
+3. Pin the tier endpoint slug in [`provider.order` or `provider.only`](../../guides/routing/provider-selection.md), e.g. `"provider": { "only": ["anthropic/fast"] }`.
 
 The required beta header is injected automatically whenever the fast tier endpoint serves the request.
 

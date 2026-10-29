@@ -14,7 +14,7 @@
 
 ## When to use it
 
-Reach for `@openrouter/mcp` when you want to plug an existing MCP server (Linear, GitHub, an internal tool server) into an Agent SDK loop without hand-rolling the protocol. It complements your own [`tool()`](https://openrouter.ai/docs/agent-sdk/call-model/tools) definitions. MCP tools and locally-defined tools can live in the same `tools` array, and the SDK keeps the two apart with a `source` discriminant so your typed tool results stay typed.
+Reach for `@openrouter/mcp` when you want to plug an existing MCP server (Linear, GitHub, an internal tool server) into an Agent SDK loop without hand-rolling the protocol. It complements your own [`tool()`](tools.md) definitions. MCP tools and locally-defined tools can live in the same `tools` array, and the SDK keeps the two apart with a `source` discriminant so your typed tool results stay typed.
 
 If you only need a hosted MCP server for your editor or coding assistant, see the [OpenRouter MCP server guide](../../guides/overview/mcp-server.md) instead.
 

@@ -38,7 +38,7 @@ The most direct way to use OpenRouter. Send standard HTTP requests to the `/api/
 
 > [!NOTE]
 >
-> The examples below use `~openai/gpt-sol-latest`, a [latest alias](guides/routing/routers/latest-resolution.md) that always resolves to the newest model in the OpenAI GPT Sol family, so your code keeps using the freshest version without redeploying. You can substitute any model slug here. Browse the full catalog at [openrouter.ai/models](https://openrouter.ai/models), or list every available slug programmatically via the [`GET /api/v1/models`](https://openrouter.ai/docs/api/api-reference/models/list-all-models-and-their-properties) endpoint.
+> The examples below use `~openai/gpt-sol-latest`, a [latest alias](guides/routing/routers/latest-resolution.md) that always resolves to the newest model in the OpenAI GPT Sol family, so your code keeps using the freshest version without redeploying. You can substitute any model slug here. Browse the full catalog at [openrouter.ai/models](https://openrouter.ai/models), or list every available slug programmatically via the [`GET /api/v1/models`](api/api-reference/models/list-all-models-and-their-properties.md) endpoint.
 
 ```python title="Python" lines theme={null}
 import requests

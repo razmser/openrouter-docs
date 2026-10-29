@@ -433,7 +433,7 @@ Saved values apply to both `openrouter/auto` and `openrouter/auto-beta`.
 
 You pay the standard rate for whichever model is selected. There is no additional fee for using the Auto Router.
 
-To cap what a request may cost, [`provider.max_price`](https://openrouter.ai/docs/guides/routing/provider-selection#max-price) still applies: it filters the endpoints of whichever models the router resolves.
+To cap what a request may cost, [`provider.max_price`](../provider-selection.md#max-price) still applies: it filters the endpoints of whichever models the router resolves.
 
 ## Use Cases
 
