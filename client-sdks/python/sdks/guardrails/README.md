@@ -1,0 +1,758 @@
+> ## Documentation Index
+> Fetch the complete documentation index at: https://openrouter.ai/docs/llms.txt
+> Use this file to discover all available pages before exploring further.
+
+# Guardrails
+
+> Guardrails endpoints
+
+## Overview
+
+Guardrails endpoints
+
+### Available Operations
+
+* [list](#list) - List guardrails
+* [create](#create) - Create a guardrail
+* [delete](#delete) - Delete a guardrail
+* [get](#get) - Get a guardrail
+* [update](#update) - Update a guardrail
+* [list\_guardrail\_key\_assignments](#list_guardrail_key_assignments) - List key assignments for a guardrail
+* [bulk\_assign\_keys](#bulk_assign_keys) - Bulk assign keys to a guardrail
+* [bulk\_unassign\_keys](#bulk_unassign_keys) - Bulk unassign keys from a guardrail
+* [list\_guardrail\_member\_assignments](#list_guardrail_member_assignments) - List member assignments for a guardrail
+* [bulk\_assign\_members](#bulk_assign_members) - Bulk assign members to a guardrail
+* [bulk\_unassign\_members](#bulk_unassign_members) - Bulk unassign members from a guardrail
+* [list\_key\_assignments](#list_key_assignments) - List all key assignments
+* [list\_member\_assignments](#list_member_assignments) - List all member assignments
+
+## list
+
+List all guardrails for the authenticated user. [Management key](https://openrouter.ai/docs/client-sdks/python/docs/guides/overview/auth/management-api-keys) required.
+
+### Example Usage
+
+```python theme={null}
+from openrouter import OpenRouter
+import os
+
+
+with OpenRouter(
+    http_referer="<value>",
+    x_open_router_title="<value>",
+    x_open_router_categories="<value>",
+    api_key=os.getenv("OPENROUTER_API_KEY", ""),
+) as open_router:
+
+    res = open_router.guardrails.list(offset=0, limit=50)
+
+    while res is not None:
+        # Handle items
+
+        res = res.next()
+
+```
+
+### Parameters
+
+| Parameter | Type | Required | Description | Example |
+| - | - | - | - | - |
+| `http_referer` | *Optional\[str]* | ➖ | The app identifier should be your app's URL and is used as the primary identifier for rankings. This is used to track API usage per application.  | |
+| `x_open_router_title` | *Optional\[str]* | ➖ | The app display name allows you to customize how your app appears in OpenRouter's dashboard.  | |
+| `x_open_router_categories` | *Optional\[str]* | ➖ | Comma-separated list of app categories (e.g. "cli-agent,cloud-agent"). Used for marketplace rankings.  | |
+| `offset` | *OptionalNullable\[int]* | ➖ | Number of records to skip for pagination | 0 |
+| `limit` | *Optional\[int]* | ➖ | Maximum number of records to return (max 100) | 50 |
+| `workspace_id` | *Optional\[str]* | ➖ | Filter guardrails by workspace ID. By default, guardrails in the default workspace are returned. | 0df9e665-d932-5740-b2c7-b52af166bc11 |
+| `retries` | [Optional\[utils.RetryConfig\]](https://openrouter.ai/docs/client-sdks/python/models/utils/retryconfig.mdx) | ➖ | Configuration to override the default retry behavior of the client. | |
+
+### Response
+
+**[operations.ListGuardrailsResponse](https://openrouter.ai/docs/client-sdks/python/operations/listguardrailsresponse.mdx)**
+
+### Errors
+
+| Error Type | Status Code | Content Type |
+| - | - | - |
+| errors.BadRequestResponseError | 400 | application/json |
+| errors.UnauthorizedResponseError | 401 | application/json |
+| errors.ForbiddenResponseError | 403 | application/json |
+| errors.InternalServerResponseError | 500 | application/json |
+| errors.OpenRouterDefaultError | 4XX, 5XX | \*/\* |
+
+## create
+
+Create a new guardrail for the authenticated user. A newly created guardrail enforces nothing until it is assigned to API keys or organization members; `workspace_id` places the guardrail in a workspace but does not apply it to that workspace's traffic. To restrict all traffic in a workspace, update the workspace's default guardrail instead. Set `allowed_data_regions` to enforce [In-Region Routing](https://openrouter.ai/docs/client-sdks/python/docs/guides/features/in-region-routing#enforcing-in-region-routing-with-guardrails): governed requests must arrive through one of the listed OpenRouter domains and are rejected with a 403 otherwise. [Management key](https://openrouter.ai/docs/client-sdks/python/docs/guides/overview/auth/management-api-keys) required.
+
+### Example Usage
+
+```python theme={null}
+from openrouter import OpenRouter
+import os
+
+
+with OpenRouter(
+    http_referer="<value>",
+    x_open_router_title="<value>",
+    x_open_router_categories="<value>",
+    api_key=os.getenv("OPENROUTER_API_KEY", ""),
+) as open_router:
+
+    res = open_router.guardrails.create(name="My New Guardrail", allowed_data_regions=[
+        "europe",
+    ], allowed_models=None, allowed_providers=[
+        "openai",
+        "anthropic",
+        "deepseek",
+    ], description="A guardrail for limiting API usage", enforce_zdr_anthropic=True, enforce_zdr_google=False, enforce_zdr_openai=True, enforce_zdr_other=False, enforce_zdr_xai=False, ignored_models=None, ignored_providers=None, limit_usd=50.0, reset_interval="monthly")
+
+    # Handle response
+    print(res)
+
+```
+
+### Parameters
+
+| Parameter | Type | Required | Description | Example |
+| - | - | - | - | - |
+| `name` | *str* | ✔️ | Name for the new guardrail | My New Guardrail |
+| `http_referer` | *Optional\[str]* | ➖ | The app identifier should be your app's URL and is used as the primary identifier for rankings. This is used to track API usage per application.  | |
+| `x_open_router_title` | *Optional\[str]* | ➖ | The app display name allows you to customize how your app appears in OpenRouter's dashboard.  | |
+| `x_open_router_categories` | *Optional\[str]* | ➖ | Comma-separated list of app categories (e.g. "cli-agent,cloud-agent"). Used for marketplace rankings.  | |
+| `allow_safety_retention_google` | *OptionalNullable\[bool]* | ➖ | Whether ZDR-only requests to google/\* models may use endpoints that may retain prompts for safety monitoring. false allows only zero-retention endpoints. A guardrail can only be more restrictive than the account setting. Inherits the account setting when not provided. | true |
+| `allow_safety_retention_other` | *OptionalNullable\[bool]* | ➖ | Whether ZDR-only requests to models outside the named providers (for example open-weight models on Vertex) may use endpoints that may retain prompts for safety monitoring. false allows only zero-retention endpoints. A guardrail can only be more restrictive than the account setting. Inherits the account setting when not provided. | true |
+| `allowed_data_regions` | List\[[components.GuardrailDataRegion](https://openrouter.ai/docs/client-sdks/python/components/guardraildataregion.mdx)] | ➖ | Data regions through which requests governed by this guardrail must arrive. `global` is [https://openrouter.ai](https://openrouter.ai), `europe` is [https://eu.openrouter.ai](https://eu.openrouter.ai), and `us` is [https://us.openrouter.ai](https://us.openrouter.ai). Requests arriving through any other region are rejected. `null` leaves the ingress region unrestricted. When several guardrails apply (workspace default, member, API key), the effective regions are the intersection of every non-null value. An empty array is rejected. | \[ "europe" ] |
+| `allowed_models` | List\[*str*] | ➖ | Array of model identifiers (slug or canonical\_slug accepted) | \[ "openai/gpt-5.2", "anthropic/claude-4.5-opus-20251124", "deepseek/deepseek-r1-0528:free" ] |
+| `allowed_providers` | List\[*str*] | ➖ | List of allowed provider IDs | \[ "openai", "anthropic", "deepseek" ] |
+| `content_filter_builtins` | List\[[components.ContentFilterBuiltinEntryInput](https://openrouter.ai/docs/client-sdks/python/components/contentfilterbuiltinentryinput.mdx)] | ➖ | Builtin content filters to apply. Every builtin slug supports "block", "redact", and the detect-only "flag" action. | \[ \{ "action": "block", "slug": "regex-prompt-injection" } ] |
+| `content_filters` | List\[[components.ContentFilterEntry](https://openrouter.ai/docs/client-sdks/python/components/contentfilterentry.mdx)] | ➖ | Custom regex content filters to apply to request messages | \[ \{ "action": "redact", "label": "\[API\_KEY]", "pattern": "\b(sk-\[a-zA-Z0-9]\{48})\b" } ] |
+| `description` | *OptionalNullable\[str]* | ➖ | Description of the guardrail | A guardrail for limiting API usage |
+| `enable_free_model_publication` | *OptionalNullable\[bool]* | ➖ | Whether this guardrail allows free endpoints that publish prompts. | false |
+| `enable_free_model_training` | *OptionalNullable\[bool]* | ➖ | Whether this guardrail allows free endpoints that train on request data. | true |
+| `enable_paid_model_training` | *OptionalNullable\[bool]* | ➖ | Whether this guardrail allows paid endpoints that train on request data. | true |
+| `enforce_first_party_harness_models` | *OptionalNullable\[bool]* | ➖ | Whether coding harnesses list only their vendor's own models: Codex lists OpenAI models and Claude Code and Claude Desktop list Anthropic models. Affects only the model list those harnesses request from GET /models; a model the client names directly is still routed. Any true across the workspace default, member, and API key guardrails applies. | false |
+| `enforce_zdr` | *OptionalNullable\[bool]* | ➖ | ⚠️ **DEPRECATED**: This will be removed in a future release, please migrate away from it as soon as possible. Deprecated. Use enforce\_zdr\_anthropic, enforce\_zdr\_openai, enforce\_zdr\_google, enforce\_zdr\_xai, and enforce\_zdr\_other instead. When provided, its value is copied into any of those per-provider fields that are not explicitly specified on the request. | false |
+| `enforce_zdr_anthropic` | *OptionalNullable\[bool]* | ➖ | Whether to enforce zero data retention for Anthropic models. Falls back to enforce\_zdr when not provided. | false |
+| `enforce_zdr_google` | *OptionalNullable\[bool]* | ➖ | Whether to enforce zero data retention for Google models. Falls back to enforce\_zdr when not provided. | false |
+| `enforce_zdr_openai` | *OptionalNullable\[bool]* | ➖ | Whether to enforce zero data retention for OpenAI models. Falls back to enforce\_zdr when not provided. | false |
+| `enforce_zdr_other` | *OptionalNullable\[bool]* | ➖ | Whether to enforce zero data retention for models that are not from Anthropic, OpenAI, Google, or xAI. Falls back to enforce\_zdr when not provided. | false |
+| `enforce_zdr_xai` | *OptionalNullable\[bool]* | ➖ | Whether to enforce zero data retention for xAI models. Falls back to enforce\_zdr when not provided. | false |
+| `ignored_models` | List\[*str*] | ➖ | Array of model identifiers to exclude from routing (slug or canonical\_slug accepted) | \[ "openai/gpt-4o-mini" ] |
+| `ignored_providers` | List\[*str*] | ➖ | List of provider IDs to exclude from routing | \[ "azure" ] |
+| `include_byok_in_budgets` | *Optional\[bool]* | ➖ | Whether BYOK (bring-your-own-key) inference spend counts toward this guardrail's limit\_usd, in addition to OpenRouter credit spend. Defaults to false. | false |
+| `limit_usd` | *OptionalNullable\[float]* | ➖ | Spending limit in USD. Must be provided together with `reset_interval`: a request that sets only one of the two is rejected with a 400. | 50 |
+| `reset_interval` | [OptionalNullable\[components.GuardrailInterval\]](https://openrouter.ai/docs/client-sdks/python/components/guardrailinterval.mdx) | ➖ | Interval at which the limit resets (daily, weekly, monthly) | monthly |
+| `workspace_id` | *Optional\[str]* | ➖ | The workspace to create the guardrail in. When omitted, the guardrail is created in the default workspace; if that default has been deleted, the request returns a 400 and you must pass `workspace_id` explicitly. This only places the guardrail in the workspace; the created guardrail enforces nothing for that workspace's traffic until it is assigned to API keys or members. To restrict all traffic in a workspace, update the workspace's default guardrail instead. | 0df9e665-d932-5740-b2c7-b52af166bc11 |
+| `retries` | [Optional\[utils.RetryConfig\]](https://openrouter.ai/docs/client-sdks/python/models/utils/retryconfig.mdx) | ➖ | Configuration to override the default retry behavior of the client. | |
+
+### Response
+
+**[components.CreateGuardrailResponse](https://openrouter.ai/docs/client-sdks/python/components/createguardrailresponse.mdx)**
+
+### Errors
+
+| Error Type | Status Code | Content Type |
+| - | - | - |
+| errors.BadRequestResponseError | 400 | application/json |
+| errors.UnauthorizedResponseError | 401 | application/json |
+| errors.ForbiddenResponseError | 403 | application/json |
+| errors.InternalServerResponseError | 500 | application/json |
+| errors.OpenRouterDefaultError | 4XX, 5XX | \*/\* |
+
+## delete
+
+Delete an existing guardrail. [Management key](https://openrouter.ai/docs/client-sdks/python/docs/guides/overview/auth/management-api-keys) required.
+
+### Example Usage
+
+```python theme={null}
+from openrouter import OpenRouter
+import os
+
+
+with OpenRouter(
+    http_referer="<value>",
+    x_open_router_title="<value>",
+    x_open_router_categories="<value>",
+    api_key=os.getenv("OPENROUTER_API_KEY", ""),
+) as open_router:
+
+    res = open_router.guardrails.delete(id="550e8400-e29b-41d4-a716-446655440000")
+
+    # Handle response
+    print(res)
+
+```
+
+### Parameters
+
+| Parameter | Type | Required | Description | Example |
+| - | - | - | - | - |
+| `id` | *str* | ✔️ | The unique identifier of the guardrail to delete | 550e8400-e29b-41d4-a716-446655440000 |
+| `http_referer` | *Optional\[str]* | ➖ | The app identifier should be your app's URL and is used as the primary identifier for rankings. This is used to track API usage per application.  | |
+| `x_open_router_title` | *Optional\[str]* | ➖ | The app display name allows you to customize how your app appears in OpenRouter's dashboard.  | |
+| `x_open_router_categories` | *Optional\[str]* | ➖ | Comma-separated list of app categories (e.g. "cli-agent,cloud-agent"). Used for marketplace rankings.  | |
+| `retries` | [Optional\[utils.RetryConfig\]](https://openrouter.ai/docs/client-sdks/python/models/utils/retryconfig.mdx) | ➖ | Configuration to override the default retry behavior of the client. | |
+
+### Response
+
+**[components.DeleteGuardrailResponse](https://openrouter.ai/docs/client-sdks/python/components/deleteguardrailresponse.mdx)**
+
+### Errors
+
+| Error Type | Status Code | Content Type |
+| - | - | - |
+| errors.UnauthorizedResponseError | 401 | application/json |
+| errors.ForbiddenResponseError | 403 | application/json |
+| errors.NotFoundResponseError | 404 | application/json |
+| errors.InternalServerResponseError | 500 | application/json |
+| errors.OpenRouterDefaultError | 4XX, 5XX | \*/\* |
+
+## get
+
+Get a single guardrail by ID. [Management key](https://openrouter.ai/docs/client-sdks/python/docs/guides/overview/auth/management-api-keys) required.
+
+### Example Usage
+
+```python theme={null}
+from openrouter import OpenRouter
+import os
+
+
+with OpenRouter(
+    http_referer="<value>",
+    x_open_router_title="<value>",
+    x_open_router_categories="<value>",
+    api_key=os.getenv("OPENROUTER_API_KEY", ""),
+) as open_router:
+
+    res = open_router.guardrails.get(id="550e8400-e29b-41d4-a716-446655440000")
+
+    # Handle response
+    print(res)
+
+```
+
+### Parameters
+
+| Parameter | Type | Required | Description | Example |
+| - | - | - | - | - |
+| `id` | *str* | ✔️ | The unique identifier of the guardrail to retrieve | 550e8400-e29b-41d4-a716-446655440000 |
+| `http_referer` | *Optional\[str]* | ➖ | The app identifier should be your app's URL and is used as the primary identifier for rankings. This is used to track API usage per application.  | |
+| `x_open_router_title` | *Optional\[str]* | ➖ | The app display name allows you to customize how your app appears in OpenRouter's dashboard.  | |
+| `x_open_router_categories` | *Optional\[str]* | ➖ | Comma-separated list of app categories (e.g. "cli-agent,cloud-agent"). Used for marketplace rankings.  | |
+| `retries` | [Optional\[utils.RetryConfig\]](https://openrouter.ai/docs/client-sdks/python/models/utils/retryconfig.mdx) | ➖ | Configuration to override the default retry behavior of the client. | |
+
+### Response
+
+**[components.GetGuardrailResponse](https://openrouter.ai/docs/client-sdks/python/components/getguardrailresponse.mdx)**
+
+### Errors
+
+| Error Type | Status Code | Content Type |
+| - | - | - |
+| errors.UnauthorizedResponseError | 401 | application/json |
+| errors.ForbiddenResponseError | 403 | application/json |
+| errors.NotFoundResponseError | 404 | application/json |
+| errors.InternalServerResponseError | 500 | application/json |
+| errors.OpenRouterDefaultError | 4XX, 5XX | \*/\* |
+
+## update
+
+Update an existing guardrail, or materialize an unconfigured workspace default guardrail. Collection fields use replace semantics: send the full desired set on every update. [Management key](https://openrouter.ai/docs/client-sdks/python/docs/guides/overview/auth/management-api-keys) required.
+
+### Example Usage
+
+```python theme={null}
+from openrouter import OpenRouter
+import os
+
+
+with OpenRouter(
+    http_referer="<value>",
+    x_open_router_title="<value>",
+    x_open_router_categories="<value>",
+    api_key=os.getenv("OPENROUTER_API_KEY", ""),
+) as open_router:
+
+    res = open_router.guardrails.update(id="550e8400-e29b-41d4-a716-446655440000", description="Updated description", limit_usd=75.0, name="Updated Guardrail Name", reset_interval="weekly")
+
+    # Handle response
+    print(res)
+
+```
+
+### Parameters
+
+| Parameter | Type | Required | Description | Example |
+| - | - | - | - | - |
+| `id` | *str* | ✔️ | The unique identifier of the guardrail to update | 550e8400-e29b-41d4-a716-446655440000 |
+| `http_referer` | *Optional\[str]* | ➖ | The app identifier should be your app's URL and is used as the primary identifier for rankings. This is used to track API usage per application.  | |
+| `x_open_router_title` | *Optional\[str]* | ➖ | The app display name allows you to customize how your app appears in OpenRouter's dashboard.  | |
+| `x_open_router_categories` | *Optional\[str]* | ➖ | Comma-separated list of app categories (e.g. "cli-agent,cloud-agent"). Used for marketplace rankings.  | |
+| `allow_safety_retention_google` | *OptionalNullable\[bool]* | ➖ | Whether ZDR-only requests to google/\* models may use endpoints that may retain prompts for safety monitoring. false allows only zero-retention endpoints. A guardrail can only be more restrictive than the account setting. Inherits the account setting when not provided. | false |
+| `allow_safety_retention_other` | *OptionalNullable\[bool]* | ➖ | Whether ZDR-only requests to models outside the named providers (for example open-weight models on Vertex) may use endpoints that may retain prompts for safety monitoring. false allows only zero-retention endpoints. A guardrail can only be more restrictive than the account setting. Inherits the account setting when not provided. | false |
+| `allowed_data_regions` | List\[[components.GuardrailDataRegion](https://openrouter.ai/docs/client-sdks/python/components/guardraildataregion.mdx)] | ➖ | Data regions through which requests governed by this guardrail must arrive. `global` is [https://openrouter.ai](https://openrouter.ai), `europe` is [https://eu.openrouter.ai](https://eu.openrouter.ai), and `us` is [https://us.openrouter.ai](https://us.openrouter.ai). Requests arriving through any other region are rejected. `null` leaves the ingress region unrestricted. When several guardrails apply (workspace default, member, API key), the effective regions are the intersection of every non-null value. An empty array is rejected. | \[ "europe" ] |
+| `allowed_models` | List\[*str*] | ➖ | Array of model identifiers (slug or canonical\_slug accepted) | \[ "openai/gpt-5.2" ] |
+| `allowed_providers` | List\[*str*] | ➖ | New list of allowed provider IDs | \[ "openai", "anthropic", "deepseek" ] |
+| `content_filter_builtins` | List\[[components.ContentFilterBuiltinEntryInput](https://openrouter.ai/docs/client-sdks/python/components/contentfilterbuiltinentryinput.mdx)] | ➖ | Builtin content filters to apply. Set to null to remove. Every builtin slug supports "block", "redact", and the detect-only "flag" action. | \[ \{ "action": "block", "slug": "regex-prompt-injection" } ] |
+| `content_filters` | List\[[components.ContentFilterEntry](https://openrouter.ai/docs/client-sdks/python/components/contentfilterentry.mdx)] | ➖ | Custom regex content filters to apply. Set to null to remove. | null |
+| `description` | *OptionalNullable\[str]* | ➖ | New description for the guardrail | Updated description |
+| `enable_free_model_publication` | *OptionalNullable\[bool]* | ➖ | Whether this guardrail allows free endpoints that publish prompts. | false |
+| `enable_free_model_training` | *OptionalNullable\[bool]* | ➖ | Whether this guardrail allows free endpoints that train on request data. | true |
+| `enable_paid_model_training` | *OptionalNullable\[bool]* | ➖ | Whether this guardrail allows paid endpoints that train on request data. | true |
+| `enforce_first_party_harness_models` | *OptionalNullable\[bool]* | ➖ | Whether coding harnesses list only their vendor's own models: Codex lists OpenAI models and Claude Code and Claude Desktop list Anthropic models. Affects only the model list those harnesses request from GET /models; a model the client names directly is still routed. Any true across the workspace default, member, and API key guardrails applies. | true |
+| `enforce_zdr` | *OptionalNullable\[bool]* | ➖ | ⚠️ **DEPRECATED**: This will be removed in a future release, please migrate away from it as soon as possible. Deprecated. Use enforce\_zdr\_anthropic, enforce\_zdr\_openai, enforce\_zdr\_google, enforce\_zdr\_xai, and enforce\_zdr\_other instead. When provided, its value is copied into any of those per-provider fields that are not explicitly specified on the request. | true |
+| `enforce_zdr_anthropic` | *OptionalNullable\[bool]* | ➖ | Whether to enforce zero data retention for Anthropic models. Falls back to enforce\_zdr when not provided. | true |
+| `enforce_zdr_google` | *OptionalNullable\[bool]* | ➖ | Whether to enforce zero data retention for Google models. Falls back to enforce\_zdr when not provided. | true |
+| `enforce_zdr_openai` | *OptionalNullable\[bool]* | ➖ | Whether to enforce zero data retention for OpenAI models. Falls back to enforce\_zdr when not provided. | true |
+| `enforce_zdr_other` | *OptionalNullable\[bool]* | ➖ | Whether to enforce zero data retention for models that are not from Anthropic, OpenAI, Google, or xAI. Falls back to enforce\_zdr when not provided. | true |
+| `enforce_zdr_xai` | *OptionalNullable\[bool]* | ➖ | Whether to enforce zero data retention for xAI models. Falls back to enforce\_zdr when not provided. | true |
+| `ignored_models` | List\[*str*] | ➖ | Array of model identifiers to exclude from routing (slug or canonical\_slug accepted) | \[ "openai/gpt-4o-mini" ] |
+| `ignored_providers` | List\[*str*] | ➖ | List of provider IDs to exclude from routing | \[ "azure" ] |
+| `include_byok_in_budgets` | *Optional\[bool]* | ➖ | Whether BYOK (bring-your-own-key) inference spend counts toward this guardrail's limit\_usd, in addition to OpenRouter credit spend. Omit to leave unchanged. | true |
+| `limit_usd` | *OptionalNullable\[float]* | ➖ | New spending limit in USD | 75 |
+| `name` | *Optional\[str]* | ➖ | New name for the guardrail | Updated Guardrail Name |
+| `reset_interval` | [OptionalNullable\[components.GuardrailInterval\]](https://openrouter.ai/docs/client-sdks/python/components/guardrailinterval.mdx) | ➖ | Interval at which the limit resets (daily, weekly, monthly) | monthly |
+| `retries` | [Optional\[utils.RetryConfig\]](https://openrouter.ai/docs/client-sdks/python/models/utils/retryconfig.mdx) | ➖ | Configuration to override the default retry behavior of the client. | |
+
+### Response
+
+**[components.UpdateGuardrailResponse](https://openrouter.ai/docs/client-sdks/python/components/updateguardrailresponse.mdx)**
+
+### Errors
+
+| Error Type | Status Code | Content Type |
+| - | - | - |
+| errors.BadRequestResponseError | 400 | application/json |
+| errors.UnauthorizedResponseError | 401 | application/json |
+| errors.ForbiddenResponseError | 403 | application/json |
+| errors.NotFoundResponseError | 404 | application/json |
+| errors.ConflictResponseError | 409 | application/json |
+| errors.InternalServerResponseError | 500 | application/json |
+| errors.OpenRouterDefaultError | 4XX, 5XX | \*/\* |
+
+## list\_guardrail\_key\_assignments
+
+List all API key assignments for a specific guardrail. [Management key](https://openrouter.ai/docs/client-sdks/python/docs/guides/overview/auth/management-api-keys) required.
+
+### Example Usage
+
+```python theme={null}
+from openrouter import OpenRouter
+import os
+
+
+with OpenRouter(
+    http_referer="<value>",
+    x_open_router_title="<value>",
+    x_open_router_categories="<value>",
+    api_key=os.getenv("OPENROUTER_API_KEY", ""),
+) as open_router:
+
+    res = open_router.guardrails.list_guardrail_key_assignments(id="550e8400-e29b-41d4-a716-446655440000", offset=0, limit=50)
+
+    while res is not None:
+        # Handle items
+
+        res = res.next()
+
+```
+
+### Parameters
+
+| Parameter | Type | Required | Description | Example |
+| - | - | - | - | - |
+| `id` | *str* | ✔️ | The unique identifier of the guardrail | 550e8400-e29b-41d4-a716-446655440000 |
+| `http_referer` | *Optional\[str]* | ➖ | The app identifier should be your app's URL and is used as the primary identifier for rankings. This is used to track API usage per application.  | |
+| `x_open_router_title` | *Optional\[str]* | ➖ | The app display name allows you to customize how your app appears in OpenRouter's dashboard.  | |
+| `x_open_router_categories` | *Optional\[str]* | ➖ | Comma-separated list of app categories (e.g. "cli-agent,cloud-agent"). Used for marketplace rankings.  | |
+| `offset` | *OptionalNullable\[int]* | ➖ | Number of records to skip for pagination | 0 |
+| `limit` | *Optional\[int]* | ➖ | Maximum number of records to return (max 100) | 50 |
+| `retries` | [Optional\[utils.RetryConfig\]](https://openrouter.ai/docs/client-sdks/python/models/utils/retryconfig.mdx) | ➖ | Configuration to override the default retry behavior of the client. | |
+
+### Response
+
+**[operations.ListGuardrailKeyAssignmentsResponse](https://openrouter.ai/docs/client-sdks/python/operations/listguardrailkeyassignmentsresponse.mdx)**
+
+### Errors
+
+| Error Type | Status Code | Content Type |
+| - | - | - |
+| errors.UnauthorizedResponseError | 401 | application/json |
+| errors.ForbiddenResponseError | 403 | application/json |
+| errors.NotFoundResponseError | 404 | application/json |
+| errors.InternalServerResponseError | 500 | application/json |
+| errors.OpenRouterDefaultError | 4XX, 5XX | \*/\* |
+
+## bulk\_assign\_keys
+
+Assign multiple API keys to a specific guardrail. A key may hold at most one guardrail; assigning replaces any existing assignment. [Management key](https://openrouter.ai/docs/client-sdks/python/docs/guides/overview/auth/management-api-keys) required.
+
+### Example Usage
+
+```python theme={null}
+from openrouter import OpenRouter
+import os
+
+
+with OpenRouter(
+    http_referer="<value>",
+    x_open_router_title="<value>",
+    x_open_router_categories="<value>",
+    api_key=os.getenv("OPENROUTER_API_KEY", ""),
+) as open_router:
+
+    res = open_router.guardrails.bulk_assign_keys(id="550e8400-e29b-41d4-a716-446655440000", key_hashes=[
+        "c56454edb818d6b14bc0d61c46025f1450b0f4012d12304ab40aacb519fcbc93",
+    ])
+
+    # Handle response
+    print(res)
+
+```
+
+### Parameters
+
+| Parameter | Type | Required | Description | Example |
+| - | - | - | - | - |
+| `id` | *str* | ✔️ | The unique identifier of the guardrail | 550e8400-e29b-41d4-a716-446655440000 |
+| `key_hashes` | List\[*str*] | ✔️ | Array of API key hashes to assign to the guardrail | \[ "c56454edb818d6b14bc0d61c46025f1450b0f4012d12304ab40aacb519fcbc93" ] |
+| `http_referer` | *Optional\[str]* | ➖ | The app identifier should be your app's URL and is used as the primary identifier for rankings. This is used to track API usage per application.  | |
+| `x_open_router_title` | *Optional\[str]* | ➖ | The app display name allows you to customize how your app appears in OpenRouter's dashboard.  | |
+| `x_open_router_categories` | *Optional\[str]* | ➖ | Comma-separated list of app categories (e.g. "cli-agent,cloud-agent"). Used for marketplace rankings.  | |
+| `retries` | [Optional\[utils.RetryConfig\]](https://openrouter.ai/docs/client-sdks/python/models/utils/retryconfig.mdx) | ➖ | Configuration to override the default retry behavior of the client. | |
+
+### Response
+
+**[components.BulkAssignKeysResponse](https://openrouter.ai/docs/client-sdks/python/components/bulkassignkeysresponse.mdx)**
+
+### Errors
+
+| Error Type | Status Code | Content Type |
+| - | - | - |
+| errors.BadRequestResponseError | 400 | application/json |
+| errors.UnauthorizedResponseError | 401 | application/json |
+| errors.ForbiddenResponseError | 403 | application/json |
+| errors.NotFoundResponseError | 404 | application/json |
+| errors.InternalServerResponseError | 500 | application/json |
+| errors.OpenRouterDefaultError | 4XX, 5XX | \*/\* |
+
+## bulk\_unassign\_keys
+
+Unassign multiple API keys from a specific guardrail. [Management key](https://openrouter.ai/docs/client-sdks/python/docs/guides/overview/auth/management-api-keys) required.
+
+### Example Usage
+
+```python theme={null}
+from openrouter import OpenRouter
+import os
+
+
+with OpenRouter(
+    http_referer="<value>",
+    x_open_router_title="<value>",
+    x_open_router_categories="<value>",
+    api_key=os.getenv("OPENROUTER_API_KEY", ""),
+) as open_router:
+
+    res = open_router.guardrails.bulk_unassign_keys(id="550e8400-e29b-41d4-a716-446655440000", key_hashes=[
+        "c56454edb818d6b14bc0d61c46025f1450b0f4012d12304ab40aacb519fcbc93",
+    ])
+
+    # Handle response
+    print(res)
+
+```
+
+### Parameters
+
+| Parameter | Type | Required | Description | Example |
+| - | - | - | - | - |
+| `id` | *str* | ✔️ | The unique identifier of the guardrail | 550e8400-e29b-41d4-a716-446655440000 |
+| `key_hashes` | List\[*str*] | ✔️ | Array of API key hashes to unassign from the guardrail | \[ "c56454edb818d6b14bc0d61c46025f1450b0f4012d12304ab40aacb519fcbc93" ] |
+| `http_referer` | *Optional\[str]* | ➖ | The app identifier should be your app's URL and is used as the primary identifier for rankings. This is used to track API usage per application.  | |
+| `x_open_router_title` | *Optional\[str]* | ➖ | The app display name allows you to customize how your app appears in OpenRouter's dashboard.  | |
+| `x_open_router_categories` | *Optional\[str]* | ➖ | Comma-separated list of app categories (e.g. "cli-agent,cloud-agent"). Used for marketplace rankings.  | |
+| `retries` | [Optional\[utils.RetryConfig\]](https://openrouter.ai/docs/client-sdks/python/models/utils/retryconfig.mdx) | ➖ | Configuration to override the default retry behavior of the client. | |
+
+### Response
+
+**[components.BulkUnassignKeysResponse](https://openrouter.ai/docs/client-sdks/python/components/bulkunassignkeysresponse.mdx)**
+
+### Errors
+
+| Error Type | Status Code | Content Type |
+| - | - | - |
+| errors.BadRequestResponseError | 400 | application/json |
+| errors.UnauthorizedResponseError | 401 | application/json |
+| errors.ForbiddenResponseError | 403 | application/json |
+| errors.NotFoundResponseError | 404 | application/json |
+| errors.InternalServerResponseError | 500 | application/json |
+| errors.OpenRouterDefaultError | 4XX, 5XX | \*/\* |
+
+## list\_guardrail\_member\_assignments
+
+List all organization member assignments for a specific guardrail. [Management key](https://openrouter.ai/docs/client-sdks/python/docs/guides/overview/auth/management-api-keys) required.
+
+### Example Usage
+
+```python theme={null}
+from openrouter import OpenRouter
+import os
+
+
+with OpenRouter(
+    http_referer="<value>",
+    x_open_router_title="<value>",
+    x_open_router_categories="<value>",
+    api_key=os.getenv("OPENROUTER_API_KEY", ""),
+) as open_router:
+
+    res = open_router.guardrails.list_guardrail_member_assignments(id="550e8400-e29b-41d4-a716-446655440000", offset=0, limit=50)
+
+    while res is not None:
+        # Handle items
+
+        res = res.next()
+
+```
+
+### Parameters
+
+| Parameter | Type | Required | Description | Example |
+| - | - | - | - | - |
+| `id` | *str* | ✔️ | The unique identifier of the guardrail | 550e8400-e29b-41d4-a716-446655440000 |
+| `http_referer` | *Optional\[str]* | ➖ | The app identifier should be your app's URL and is used as the primary identifier for rankings. This is used to track API usage per application.  | |
+| `x_open_router_title` | *Optional\[str]* | ➖ | The app display name allows you to customize how your app appears in OpenRouter's dashboard.  | |
+| `x_open_router_categories` | *Optional\[str]* | ➖ | Comma-separated list of app categories (e.g. "cli-agent,cloud-agent"). Used for marketplace rankings.  | |
+| `offset` | *OptionalNullable\[int]* | ➖ | Number of records to skip for pagination | 0 |
+| `limit` | *Optional\[int]* | ➖ | Maximum number of records to return (max 100) | 50 |
+| `retries` | [Optional\[utils.RetryConfig\]](https://openrouter.ai/docs/client-sdks/python/models/utils/retryconfig.mdx) | ➖ | Configuration to override the default retry behavior of the client. | |
+
+### Response
+
+**[operations.ListGuardrailMemberAssignmentsResponse](https://openrouter.ai/docs/client-sdks/python/operations/listguardrailmemberassignmentsresponse.mdx)**
+
+### Errors
+
+| Error Type | Status Code | Content Type |
+| - | - | - |
+| errors.UnauthorizedResponseError | 401 | application/json |
+| errors.ForbiddenResponseError | 403 | application/json |
+| errors.NotFoundResponseError | 404 | application/json |
+| errors.InternalServerResponseError | 500 | application/json |
+| errors.OpenRouterDefaultError | 4XX, 5XX | \*/\* |
+
+## bulk\_assign\_members
+
+Assign multiple organization members to a specific guardrail. [Management key](https://openrouter.ai/docs/client-sdks/python/docs/guides/overview/auth/management-api-keys) required.
+
+### Example Usage
+
+```python theme={null}
+from openrouter import OpenRouter
+import os
+
+
+with OpenRouter(
+    http_referer="<value>",
+    x_open_router_title="<value>",
+    x_open_router_categories="<value>",
+    api_key=os.getenv("OPENROUTER_API_KEY", ""),
+) as open_router:
+
+    res = open_router.guardrails.bulk_assign_members(id="550e8400-e29b-41d4-a716-446655440000", member_user_ids=[
+        "user_abc123",
+        "user_def456",
+    ])
+
+    # Handle response
+    print(res)
+
+```
+
+### Parameters
+
+| Parameter | Type | Required | Description | Example |
+| - | - | - | - | - |
+| `id` | *str* | ✔️ | The unique identifier of the guardrail | 550e8400-e29b-41d4-a716-446655440000 |
+| `member_user_ids` | List\[*str*] | ✔️ | Array of member user IDs to assign to the guardrail | \[ "user\_abc123", "user\_def456" ] |
+| `http_referer` | *Optional\[str]* | ➖ | The app identifier should be your app's URL and is used as the primary identifier for rankings. This is used to track API usage per application.  | |
+| `x_open_router_title` | *Optional\[str]* | ➖ | The app display name allows you to customize how your app appears in OpenRouter's dashboard.  | |
+| `x_open_router_categories` | *Optional\[str]* | ➖ | Comma-separated list of app categories (e.g. "cli-agent,cloud-agent"). Used for marketplace rankings.  | |
+| `retries` | [Optional\[utils.RetryConfig\]](https://openrouter.ai/docs/client-sdks/python/models/utils/retryconfig.mdx) | ➖ | Configuration to override the default retry behavior of the client. | |
+
+### Response
+
+**[components.BulkAssignMembersResponse](https://openrouter.ai/docs/client-sdks/python/components/bulkassignmembersresponse.mdx)**
+
+### Errors
+
+| Error Type | Status Code | Content Type |
+| - | - | - |
+| errors.BadRequestResponseError | 400 | application/json |
+| errors.UnauthorizedResponseError | 401 | application/json |
+| errors.ForbiddenResponseError | 403 | application/json |
+| errors.NotFoundResponseError | 404 | application/json |
+| errors.InternalServerResponseError | 500 | application/json |
+| errors.OpenRouterDefaultError | 4XX, 5XX | \*/\* |
+
+## bulk\_unassign\_members
+
+Unassign multiple organization members from a specific guardrail. [Management key](https://openrouter.ai/docs/client-sdks/python/docs/guides/overview/auth/management-api-keys) required.
+
+### Example Usage
+
+```python theme={null}
+from openrouter import OpenRouter
+import os
+
+
+with OpenRouter(
+    http_referer="<value>",
+    x_open_router_title="<value>",
+    x_open_router_categories="<value>",
+    api_key=os.getenv("OPENROUTER_API_KEY", ""),
+) as open_router:
+
+    res = open_router.guardrails.bulk_unassign_members(id="550e8400-e29b-41d4-a716-446655440000", member_user_ids=[
+        "user_abc123",
+        "user_def456",
+    ])
+
+    # Handle response
+    print(res)
+
+```
+
+### Parameters
+
+| Parameter | Type | Required | Description | Example |
+| - | - | - | - | - |
+| `id` | *str* | ✔️ | The unique identifier of the guardrail | 550e8400-e29b-41d4-a716-446655440000 |
+| `member_user_ids` | List\[*str*] | ✔️ | Array of member user IDs to unassign from the guardrail | \[ "user\_abc123", "user\_def456" ] |
+| `http_referer` | *Optional\[str]* | ➖ | The app identifier should be your app's URL and is used as the primary identifier for rankings. This is used to track API usage per application.  | |
+| `x_open_router_title` | *Optional\[str]* | ➖ | The app display name allows you to customize how your app appears in OpenRouter's dashboard.  | |
+| `x_open_router_categories` | *Optional\[str]* | ➖ | Comma-separated list of app categories (e.g. "cli-agent,cloud-agent"). Used for marketplace rankings.  | |
+| `retries` | [Optional\[utils.RetryConfig\]](https://openrouter.ai/docs/client-sdks/python/models/utils/retryconfig.mdx) | ➖ | Configuration to override the default retry behavior of the client. | |
+
+### Response
+
+**[components.BulkUnassignMembersResponse](https://openrouter.ai/docs/client-sdks/python/components/bulkunassignmembersresponse.mdx)**
+
+### Errors
+
+| Error Type | Status Code | Content Type |
+| - | - | - |
+| errors.BadRequestResponseError | 400 | application/json |
+| errors.UnauthorizedResponseError | 401 | application/json |
+| errors.ForbiddenResponseError | 403 | application/json |
+| errors.NotFoundResponseError | 404 | application/json |
+| errors.InternalServerResponseError | 500 | application/json |
+| errors.OpenRouterDefaultError | 4XX, 5XX | \*/\* |
+
+## list\_key\_assignments
+
+List all API key guardrail assignments for the authenticated user. [Management key](https://openrouter.ai/docs/client-sdks/python/docs/guides/overview/auth/management-api-keys) required.
+
+### Example Usage
+
+```python theme={null}
+from openrouter import OpenRouter
+import os
+
+
+with OpenRouter(
+    http_referer="<value>",
+    x_open_router_title="<value>",
+    x_open_router_categories="<value>",
+    api_key=os.getenv("OPENROUTER_API_KEY", ""),
+) as open_router:
+
+    res = open_router.guardrails.list_key_assignments(offset=0, limit=50)
+
+    while res is not None:
+        # Handle items
+
+        res = res.next()
+
+```
+
+### Parameters
+
+| Parameter | Type | Required | Description | Example |
+| - | - | - | - | - |
+| `http_referer` | *Optional\[str]* | ➖ | The app identifier should be your app's URL and is used as the primary identifier for rankings. This is used to track API usage per application.  | |
+| `x_open_router_title` | *Optional\[str]* | ➖ | The app display name allows you to customize how your app appears in OpenRouter's dashboard.  | |
+| `x_open_router_categories` | *Optional\[str]* | ➖ | Comma-separated list of app categories (e.g. "cli-agent,cloud-agent"). Used for marketplace rankings.  | |
+| `offset` | *OptionalNullable\[int]* | ➖ | Number of records to skip for pagination | 0 |
+| `limit` | *Optional\[int]* | ➖ | Maximum number of records to return (max 100) | 50 |
+| `retries` | [Optional\[utils.RetryConfig\]](https://openrouter.ai/docs/client-sdks/python/models/utils/retryconfig.mdx) | ➖ | Configuration to override the default retry behavior of the client. | |
+
+### Response
+
+**[operations.ListKeyAssignmentsResponse](https://openrouter.ai/docs/client-sdks/python/operations/listkeyassignmentsresponse.mdx)**
+
+### Errors
+
+| Error Type | Status Code | Content Type |
+| - | - | - |
+| errors.BadRequestResponseError | 400 | application/json |
+| errors.UnauthorizedResponseError | 401 | application/json |
+| errors.ForbiddenResponseError | 403 | application/json |
+| errors.NotFoundResponseError | 404 | application/json |
+| errors.InternalServerResponseError | 500 | application/json |
+| errors.OpenRouterDefaultError | 4XX, 5XX | \*/\* |
+
+## list\_member\_assignments
+
+List all organization member guardrail assignments for the authenticated user. [Management key](https://openrouter.ai/docs/client-sdks/python/docs/guides/overview/auth/management-api-keys) required.
+
+### Example Usage
+
+```python theme={null}
+from openrouter import OpenRouter
+import os
+
+
+with OpenRouter(
+    http_referer="<value>",
+    x_open_router_title="<value>",
+    x_open_router_categories="<value>",
+    api_key=os.getenv("OPENROUTER_API_KEY", ""),
+) as open_router:
+
+    res = open_router.guardrails.list_member_assignments(offset=0, limit=50)
+
+    while res is not None:
+        # Handle items
+
+        res = res.next()
+
+```
+
+### Parameters
+
+| Parameter | Type | Required | Description | Example |
+| - | - | - | - | - |
+| `http_referer` | *Optional\[str]* | ➖ | The app identifier should be your app's URL and is used as the primary identifier for rankings. This is used to track API usage per application.  | |
+| `x_open_router_title` | *Optional\[str]* | ➖ | The app display name allows you to customize how your app appears in OpenRouter's dashboard.  | |
+| `x_open_router_categories` | *Optional\[str]* | ➖ | Comma-separated list of app categories (e.g. "cli-agent,cloud-agent"). Used for marketplace rankings.  | |
+| `offset` | *OptionalNullable\[int]* | ➖ | Number of records to skip for pagination | 0 |
+| `limit` | *Optional\[int]* | ➖ | Maximum number of records to return (max 100) | 50 |
+| `retries` | [Optional\[utils.RetryConfig\]](https://openrouter.ai/docs/client-sdks/python/models/utils/retryconfig.mdx) | ➖ | Configuration to override the default retry behavior of the client. | |
+
+### Response
+
+**[operations.ListMemberAssignmentsResponse](https://openrouter.ai/docs/client-sdks/python/operations/listmemberassignmentsresponse.mdx)**
+
+### Errors
+
+| Error Type | Status Code | Content Type |
+| - | - | - |
+| errors.BadRequestResponseError | 400 | application/json |
+| errors.UnauthorizedResponseError | 401 | application/json |
+| errors.ForbiddenResponseError | 403 | application/json |
+| errors.NotFoundResponseError | 404 | application/json |
+| errors.InternalServerResponseError | 500 | application/json |
+| errors.OpenRouterDefaultError | 4XX, 5XX | \*/\* |

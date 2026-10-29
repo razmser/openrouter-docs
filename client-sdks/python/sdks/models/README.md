@@ -1,0 +1,259 @@
+> ## Documentation Index
+> Fetch the complete documentation index at: https://openrouter.ai/docs/llms.txt
+> Use this file to discover all available pages before exploring further.
+
+# Models
+
+> Model information endpoints
+
+## Overview
+
+Model information endpoints
+
+### Available Operations
+
+* [get](#get) - Get a model by its slug
+* [list](#list) - List all models and their properties
+* [count](#count) - Get total count of available models
+* [list\_for\_user](#list_for_user) - List models filtered by user provider preferences, privacy settings, and guardrails
+
+## get
+
+Returns full details for a single model identified by its author and slug (e.g. openai/gpt-4). Supports variant suffixes (e.g. openai/gpt-4:free) and resolves known slug aliases.
+
+### Example Usage
+
+```python theme={null}
+from openrouter import OpenRouter
+import os
+
+
+with OpenRouter(
+    http_referer="<value>",
+    x_open_router_title="<value>",
+    x_open_router_categories="<value>",
+    api_key=os.getenv("OPENROUTER_API_KEY", ""),
+) as open_router:
+
+    res = open_router.models.get(author="openai", slug="gpt-4")
+
+    # Handle response
+    print(res)
+
+```
+
+### Parameters
+
+| Parameter | Type | Required | Description | Example |
+| - | - | - | - | - |
+| `author` | *str* | ✔️ | The author/organization of the model | openai |
+| `slug` | *str* | ✔️ | The model slug, optionally including a variant suffix (e.g. gpt-4 or gpt-4:free) | gpt-4 |
+| `http_referer` | *Optional\[str]* | ➖ | The app identifier should be your app's URL and is used as the primary identifier for rankings. This is used to track API usage per application.  | |
+| `x_open_router_title` | *Optional\[str]* | ➖ | The app display name allows you to customize how your app appears in OpenRouter's dashboard.  | |
+| `x_open_router_categories` | *Optional\[str]* | ➖ | Comma-separated list of app categories (e.g. "cli-agent,cloud-agent"). Used for marketplace rankings.  | |
+| `retries` | [Optional\[utils.RetryConfig\]](https://openrouter.ai/docs/client-sdks/python/models/utils/retryconfig.mdx) | ➖ | Configuration to override the default retry behavior of the client. | |
+
+### Response
+
+**[components.ModelResponse](https://openrouter.ai/docs/client-sdks/python/components/modelresponse.mdx)**
+
+### Errors
+
+| Error Type | Status Code | Content Type |
+| - | - | - |
+| errors.ForbiddenResponseError | 403 | application/json |
+| errors.NotFoundResponseError | 404 | application/json |
+| errors.InternalServerResponseError | 500 | application/json |
+| errors.OpenRouterDefaultError | 4XX, 5XX | \*/\* |
+
+## list
+
+List all models and their properties
+
+### Example Usage
+
+```python theme={null}
+from openrouter import OpenRouter
+import os
+
+
+with OpenRouter(
+    http_referer="<value>",
+    x_open_router_title="<value>",
+    x_open_router_categories="<value>",
+    api_key=os.getenv("OPENROUTER_API_KEY", ""),
+) as open_router:
+
+    res = open_router.models.list(offset=0, limit=500)
+
+    while res is not None:
+        # Handle items
+
+        res = res.next()
+
+```
+
+### Parameters
+
+| Parameter | Type | Required | Description | Example |
+| - | - | - | - | - |
+| `http_referer` | *Optional\[str]* | ➖ | The app identifier should be your app's URL and is used as the primary identifier for rankings. This is used to track API usage per application.  | |
+| `x_open_router_title` | *Optional\[str]* | ➖ | The app display name allows you to customize how your app appears in OpenRouter's dashboard.  | |
+| `x_open_router_categories` | *Optional\[str]* | ➖ | Comma-separated list of app categories (e.g. "cli-agent,cloud-agent"). Used for marketplace rankings.  | |
+| `offset` | *OptionalNullable\[int]* | ➖ | Number of records to skip for pagination. When both offset and limit are omitted, the full list is returned | 0 |
+| `limit` | *Optional\[int]* | ➖ | Maximum number of records to return (max 1000). When both offset and limit are omitted, the full list is returned | 500 |
+| `category` | [Optional\[operations.GetModelsCategory\]](https://openrouter.ai/docs/client-sdks/python/operations/getmodelscategory.mdx) | ➖ | Filter models by use case category | programming |
+| `supported_parameters` | *Optional\[str]* | ➖ | Filter models by supported parameter (comma-separated) | temperature |
+| `output_modalities` | *Optional\[str]* | ➖ | Filter models by output modality. Accepts a comma-separated list of modalities (text, image, embeddings, audio, video, rerank, decisions, speech, transcription) or "all" to include all models. Defaults to "text". | text |
+| `sort` | [Optional\[operations.GetModelsSort\]](https://openrouter.ai/docs/client-sdks/python/operations/getmodelssort.mdx) | ➖ | Sort the returned models server-side. Prefer this over fetching the full list and sorting client-side. Options: pricing-low-to-high, pricing-high-to-low (average prompt/completion price), context-high-to-low (context length), throughput-high-to-low, latency-low-to-high (recent median performance), most-popular, top-weekly (tokens processed in the last week), newest (creation date), intelligence-high-to-low, coding-high-to-low, agentic-high-to-low (Artificial Analysis indices), design-arena-elo-high-to-low (best Design Arena ELO across arenas). Models without a score for the chosen benchmark are placed last. When omitted, the existing default ordering is preserved. | newest |
+| `q` | *Optional\[str]* | ➖ | Free-text search by model name or slug. | gpt-4 |
+| `input_modalities` | *Optional\[str]* | ➖ | Filter models by input modality. Comma-separated list of: text, image, audio, file. | text,image |
+| `context` | *Optional\[int]* | ➖ | Minimum context length (tokens). Models with smaller context are excluded. | 128000 |
+| `min_price` | *OptionalNullable\[float]* | ➖ | Minimum prompt price in \$/M tokens. | 0 |
+| `max_price` | *OptionalNullable\[float]* | ➖ | Maximum prompt price in \$/M tokens. | 10 |
+| `arch` | *Optional\[str]* | ➖ | Filter models by architecture/model family (e.g. GPT, Claude, Gemini, Llama). | GPT |
+| `model_authors` | *Optional\[str]* | ➖ | Filter models by the organization that created the model. Comma-separated list of author slugs. | openai,anthropic |
+| `providers` | *Optional\[str]* | ➖ | Filter models by hosting provider. Comma-separated list of provider names. | OpenAI,Anthropic |
+| `distillable` | [Optional\[operations.Distillable\]](https://openrouter.ai/docs/client-sdks/python/operations/distillable.mdx) | ➖ | Filter by distillation capability. "true" returns only distillable models, "false" excludes them. | true |
+| `zdr` | [Optional\[operations.Zdr\]](https://openrouter.ai/docs/client-sdks/python/operations/zdr.mdx) | ➖ | When set to "true", return only models with zero data retention endpoints. | true |
+| `region` | [Optional\[operations.Region\]](https://openrouter.ai/docs/client-sdks/python/operations/region.mdx) | ➖ | Filter to models with endpoints in the given data region ("eu" or "us"). | eu |
+| `min_output_price` | *OptionalNullable\[float]* | ➖ | Minimum completion (output) price in \$/M tokens. | 0 |
+| `max_output_price` | *OptionalNullable\[float]* | ➖ | Maximum completion (output) price in \$/M tokens. | 10 |
+| `min_age_days` | *OptionalNullable\[int]* | ➖ | Minimum model age in days since its creation date. | 0 |
+| `max_age_days` | *OptionalNullable\[int]* | ➖ | Maximum model age in days since its creation date. | 90 |
+| `min_intelligence_index` | *OptionalNullable\[float]* | ➖ | Minimum Artificial Analysis intelligence index. | 50 |
+| `max_intelligence_index` | *OptionalNullable\[float]* | ➖ | Maximum Artificial Analysis intelligence index. | 100 |
+| `min_coding_index` | *OptionalNullable\[float]* | ➖ | Minimum Artificial Analysis coding index. | 50 |
+| `max_coding_index` | *OptionalNullable\[float]* | ➖ | Maximum Artificial Analysis coding index. | 100 |
+| `min_agentic_index` | *OptionalNullable\[float]* | ➖ | Minimum Artificial Analysis agentic index. | 50 |
+| `max_agentic_index` | *OptionalNullable\[float]* | ➖ | Maximum Artificial Analysis agentic index. | 100 |
+| `min_tool_success_rate` | *OptionalNullable\[float]* | ➖ | Minimum tool-calling success rate, as a fraction in \[0, 1] (e.g. 0.9 = 90% of requests finishing with a tool\_calls finish reason). | 0.9 |
+| `max_tool_success_rate` | *OptionalNullable\[float]* | ➖ | Maximum tool-calling success rate, as a fraction in \[0, 1]. | 1 |
+| `retries` | [Optional\[utils.RetryConfig\]](https://openrouter.ai/docs/client-sdks/python/models/utils/retryconfig.mdx) | ➖ | Configuration to override the default retry behavior of the client. | |
+
+### Response
+
+**[operations.GetModelsResponse](https://openrouter.ai/docs/client-sdks/python/operations/getmodelsresponse.mdx)**
+
+### Errors
+
+| Error Type | Status Code | Content Type |
+| - | - | - |
+| errors.BadRequestResponseError | 400 | application/json |
+| errors.UnauthorizedResponseError | 401 | application/json |
+| errors.ForbiddenResponseError | 403 | application/json |
+| errors.NotFoundResponseError | 404 | application/json |
+| errors.RequestTimeoutResponseError | 408 | application/json |
+| errors.ConflictResponseError | 409 | application/json |
+| errors.TooManyRequestsResponseError | 429 | application/json |
+| errors.InternalServerResponseError | 500 | application/json |
+| errors.ServiceUnavailableResponseError | 503 | application/json |
+| errors.OpenRouterDefaultError | 4XX, 5XX | \*/\* |
+
+## count
+
+Get total count of available models
+
+### Example Usage
+
+```python theme={null}
+from openrouter import OpenRouter
+import os
+
+
+with OpenRouter(
+    http_referer="<value>",
+    x_open_router_title="<value>",
+    x_open_router_categories="<value>",
+    api_key=os.getenv("OPENROUTER_API_KEY", ""),
+) as open_router:
+
+    res = open_router.models.count()
+
+    # Handle response
+    print(res)
+
+```
+
+### Parameters
+
+| Parameter | Type | Required | Description | Example |
+| - | - | - | - | - |
+| `http_referer` | *Optional\[str]* | ➖ | The app identifier should be your app's URL and is used as the primary identifier for rankings. This is used to track API usage per application.  | |
+| `x_open_router_title` | *Optional\[str]* | ➖ | The app display name allows you to customize how your app appears in OpenRouter's dashboard.  | |
+| `x_open_router_categories` | *Optional\[str]* | ➖ | Comma-separated list of app categories (e.g. "cli-agent,cloud-agent"). Used for marketplace rankings.  | |
+| `output_modalities` | *Optional\[str]* | ➖ | Filter models by output modality. Accepts a comma-separated list of modalities (text, image, embeddings, audio, video, rerank, decisions, speech, transcription) or "all" to include all models. Defaults to "text". | text |
+| `retries` | [Optional\[utils.RetryConfig\]](https://openrouter.ai/docs/client-sdks/python/models/utils/retryconfig.mdx) | ➖ | Configuration to override the default retry behavior of the client. | |
+
+### Response
+
+**[components.ModelsCountResponse](https://openrouter.ai/docs/client-sdks/python/components/modelscountresponse.mdx)**
+
+### Errors
+
+| Error Type | Status Code | Content Type |
+| - | - | - |
+| errors.BadRequestResponseError | 400 | application/json |
+| errors.ForbiddenResponseError | 403 | application/json |
+| errors.InternalServerResponseError | 500 | application/json |
+| errors.OpenRouterDefaultError | 4XX, 5XX | \*/\* |
+
+## list\_for\_user
+
+List models filtered by user provider preferences, [privacy settings](../../../../guides/privacy/provider-logging.md), and [guardrails](../../../../guides/features/guardrails.md). Returns text-output models by default; pass `output_modalities` (a comma-separated list of `text`, `image`, `embeddings`, `audio`, `video`, `rerank`, `speech`, `transcription`, or `all`) to include other modalities. If requesting through a regional hostname, the results will be filtered to models that satisfy in-region routing for that region.
+
+### Example Usage
+
+```python theme={null}
+from openrouter import OpenRouter, operations
+import os
+
+
+with OpenRouter(
+    http_referer="<value>",
+    x_open_router_title="<value>",
+    x_open_router_categories="<value>",
+) as open_router:
+
+    res = open_router.models.list_for_user(security=operations.ListModelsUserSecurity(
+        bearer=os.getenv("OPENROUTER_BEARER", ""),
+    ), offset=0, limit=500)
+
+    while res is not None:
+        # Handle items
+
+        res = res.next()
+
+```
+
+### Parameters
+
+| Parameter | Type | Required | Description | Example |
+| - | - | - | - | - |
+| `security` | [operations.ListModelsUserSecurity](https://openrouter.ai/docs/client-sdks/python/operations/listmodelsusersecurity.mdx) | ✔️ | N/A | |
+| `http_referer` | *Optional\[str]* | ➖ | The app identifier should be your app's URL and is used as the primary identifier for rankings. This is used to track API usage per application.  | |
+| `x_open_router_title` | *Optional\[str]* | ➖ | The app display name allows you to customize how your app appears in OpenRouter's dashboard.  | |
+| `x_open_router_categories` | *Optional\[str]* | ➖ | Comma-separated list of app categories (e.g. "cli-agent,cloud-agent"). Used for marketplace rankings.  | |
+| `offset` | *OptionalNullable\[int]* | ➖ | Number of records to skip for pagination. When both offset and limit are omitted, the full list is returned | 0 |
+| `limit` | *Optional\[int]* | ➖ | Maximum number of records to return (max 1000). When both offset and limit are omitted, the full list is returned | 500 |
+| `output_modalities` | *Optional\[str]* | ➖ | Filter models by output modality. Accepts a comma-separated list of modalities (text, image, embeddings, audio, video, rerank, decisions, speech, transcription) or "all" to include all models. Defaults to "text". | text |
+| `sort` | [Optional\[operations.ListModelsUserSort\]](https://openrouter.ai/docs/client-sdks/python/operations/listmodelsusersort.mdx) | ➖ | Sort the returned models server-side. Prefer this over fetching the full list and sorting client-side. Options: pricing-low-to-high, pricing-high-to-low (average prompt/completion price), context-high-to-low (context length), throughput-high-to-low, latency-low-to-high (recent median performance), most-popular, top-weekly (tokens processed in the last week), newest (creation date), intelligence-high-to-low, coding-high-to-low, agentic-high-to-low (Artificial Analysis indices), design-arena-elo-high-to-low (best Design Arena ELO across arenas). Models without a score for the chosen benchmark are placed last. When omitted, the existing default ordering is preserved. | newest |
+| `retries` | [Optional\[utils.RetryConfig\]](https://openrouter.ai/docs/client-sdks/python/models/utils/retryconfig.mdx) | ➖ | Configuration to override the default retry behavior of the client. | |
+
+### Response
+
+**[operations.ListModelsUserResponse](https://openrouter.ai/docs/client-sdks/python/operations/listmodelsuserresponse.mdx)**
+
+### Errors
+
+| Error Type | Status Code | Content Type |
+| - | - | - |
+| errors.UnauthorizedResponseError | 401 | application/json |
+| errors.ForbiddenResponseError | 403 | application/json |
+| errors.NotFoundResponseError | 404 | application/json |
+| errors.RequestTimeoutResponseError | 408 | application/json |
+| errors.ConflictResponseError | 409 | application/json |
+| errors.TooManyRequestsResponseError | 429 | application/json |
+| errors.InternalServerResponseError | 500 | application/json |
+| errors.ServiceUnavailableResponseError | 503 | application/json |
+| errors.OpenRouterDefaultError | 4XX, 5XX | \*/\* |

@@ -1,0 +1,254 @@
+> ## Documentation Index
+> Fetch the complete documentation index at: https://openrouter.ai/docs/llms.txt
+> Use this file to discover all available pages before exploring further.
+
+# Video Generation
+
+> Video Generation endpoints
+
+## Overview
+
+Video Generation endpoints
+
+### Available Operations
+
+* [Generate](#generate) - Submit a video generation request
+* [GetGeneration](#getgeneration) - Poll video generation status
+* [GetVideoContent](#getvideocontent) - Download generated video content
+* [ListVideosModels](#listvideosmodels) - List all video generation models
+
+## Generate
+
+Submits a video generation request and returns a polling URL to check status
+
+### Example Usage
+
+```go theme={null}
+package main
+
+import(
+	"context"
+	"os"
+	openrouter "github.com/OpenRouterTeam/go-sdk"
+	"github.com/OpenRouterTeam/go-sdk/models/components"
+	"log"
+)
+
+func main() {
+    ctx := context.Background()
+
+    s := openrouter.New(
+        openrouter.WithSecurity(os.Getenv("OPENROUTER_API_KEY")),
+    )
+
+    res, err := s.VideoGeneration.Generate(ctx, components.VideoGenerationRequest{
+        AspectRatio: components.VideoGenerationRequestAspectRatioOneHundredAndSixtyNine.ToPointer(),
+        Duration: openrouter.Pointer[int64](8),
+        Model: "google/veo-3.1",
+        Prompt: openrouter.Pointer("A serene mountain landscape at sunset"),
+        Resolution: components.VideoGenerationRequestResolutionSevenHundredAndTwentyp.ToPointer(),
+    })
+    if err != nil {
+        log.Fatal(err)
+    }
+    if res != nil {
+        // handle response
+    }
+}
+```
+
+### Parameters
+
+| Parameter | Type | Required | Description |
+| - | - | - | - |
+| `ctx` | [context.Context](https://pkg.go.dev/context#Context) | ✔️ | The context to use for the request. |
+| `request` | [components.VideoGenerationRequest](https://openrouter.ai/docs/client-sdks/go/models/components/videogenerationrequest.mdx) | ✔️ | The request object to use for the request. |
+| `opts` | \[][operations.Option](https://openrouter.ai/docs/client-sdks/go/models/operations/option.mdx) | ➖ | The options for this request. |
+
+### Response
+
+**[\*components.VideoGenerationResponse](https://openrouter.ai/docs/client-sdks/go/models/components/videogenerationresponse.mdx), error**
+
+### Errors
+
+| Error Type | Status Code | Content Type |
+| - | - | - |
+| sdkerrors.BadRequestResponseError | 400 | application/json |
+| sdkerrors.UnauthorizedResponseError | 401 | application/json |
+| sdkerrors.PaymentRequiredResponseError | 402 | application/json |
+| sdkerrors.ForbiddenResponseError | 403 | application/json |
+| sdkerrors.NotFoundResponseError | 404 | application/json |
+| sdkerrors.PayloadTooLargeResponseError | 413 | application/json |
+| sdkerrors.TooManyRequestsResponseError | 429 | application/json |
+| sdkerrors.ClientClosedRequestResponseError | 499 | application/json |
+| sdkerrors.InternalServerResponseError | 500 | application/json |
+| sdkerrors.ServiceUnavailableResponseError | 503 | application/json |
+| sdkerrors.APIError | 4XX, 5XX | \*/\* |
+
+## GetGeneration
+
+Returns job status and content URLs when completed
+
+### Example Usage
+
+```go theme={null}
+package main
+
+import(
+	"context"
+	"os"
+	openrouter "github.com/OpenRouterTeam/go-sdk"
+	"log"
+)
+
+func main() {
+    ctx := context.Background()
+
+    s := openrouter.New(
+        openrouter.WithSecurity(os.Getenv("OPENROUTER_API_KEY")),
+    )
+
+    res, err := s.VideoGeneration.GetGeneration(ctx, "job-abc123")
+    if err != nil {
+        log.Fatal(err)
+    }
+    if res != nil {
+        // handle response
+    }
+}
+```
+
+### Parameters
+
+| Parameter | Type | Required | Description | Example |
+| - | - | - | - | - |
+| `ctx` | [context.Context](https://pkg.go.dev/context#Context) | ✔️ | The context to use for the request. | |
+| `jobID` | `string` | ✔️ | N/A | job-abc123 |
+| `opts` | \[][operations.Option](https://openrouter.ai/docs/client-sdks/go/models/operations/option.mdx) | ➖ | The options for this request. | |
+
+### Response
+
+**[\*components.VideoGenerationResponse](https://openrouter.ai/docs/client-sdks/go/models/components/videogenerationresponse.mdx), error**
+
+### Errors
+
+| Error Type | Status Code | Content Type |
+| - | - | - |
+| sdkerrors.UnauthorizedResponseError | 401 | application/json |
+| sdkerrors.ForbiddenResponseError | 403 | application/json |
+| sdkerrors.NotFoundResponseError | 404 | application/json |
+| sdkerrors.InternalServerResponseError | 500 | application/json |
+| sdkerrors.APIError | 4XX, 5XX | \*/\* |
+
+## GetVideoContent
+
+Streams the generated video content from the upstream provider
+
+### Example Usage
+
+```go theme={null}
+package main
+
+import(
+	"context"
+	"os"
+	openrouter "github.com/OpenRouterTeam/go-sdk"
+	"github.com/OpenRouterTeam/go-sdk/optionalnullable"
+	"log"
+)
+
+func main() {
+    ctx := context.Background()
+
+    s := openrouter.New(
+        openrouter.WithSecurity(os.Getenv("OPENROUTER_API_KEY")),
+    )
+
+    res, err := s.VideoGeneration.GetVideoContent(ctx, "job-abc123", optionalnullable.From(openrouter.Pointer[int64](0)))
+    if err != nil {
+        log.Fatal(err)
+    }
+    if res != nil {
+        // handle response
+    }
+}
+```
+
+### Parameters
+
+| Parameter | Type | Required | Description | Example |
+| - | - | - | - | - |
+| `ctx` | [context.Context](https://pkg.go.dev/context#Context) | ✔️ | The context to use for the request. | |
+| `jobID` | `string` | ✔️ | N/A | job-abc123 |
+| `index` | optionalnullable.OptionalNullable\[`int64`] | ➖ | N/A | 0 |
+| `opts` | \[][operations.Option](https://openrouter.ai/docs/client-sdks/go/models/operations/option.mdx) | ➖ | The options for this request. | |
+
+### Response
+
+**[io.ReadCloser](https://openrouter.ai/docs/client-sdks/go/.mdx), error**
+
+### Errors
+
+| Error Type | Status Code | Content Type |
+| - | - | - |
+| sdkerrors.BadRequestResponseError | 400 | application/json |
+| sdkerrors.UnauthorizedResponseError | 401 | application/json |
+| sdkerrors.ForbiddenResponseError | 403 | application/json |
+| sdkerrors.NotFoundResponseError | 404 | application/json |
+| sdkerrors.ConflictResponseError | 409 | application/json |
+| sdkerrors.GoneResponseError | 410 | application/json |
+| sdkerrors.InternalServerResponseError | 500 | application/json |
+| sdkerrors.BadGatewayResponseError | 502 | application/json |
+| sdkerrors.APIError | 4XX, 5XX | \*/\* |
+
+## ListVideosModels
+
+Returns a list of all available video generation models and their properties
+
+### Example Usage
+
+```go theme={null}
+package main
+
+import(
+	"context"
+	"os"
+	openrouter "github.com/OpenRouterTeam/go-sdk"
+	"log"
+)
+
+func main() {
+    ctx := context.Background()
+
+    s := openrouter.New(
+        openrouter.WithSecurity(os.Getenv("OPENROUTER_API_KEY")),
+    )
+
+    res, err := s.VideoGeneration.ListVideosModels(ctx)
+    if err != nil {
+        log.Fatal(err)
+    }
+    if res != nil {
+        // handle response
+    }
+}
+```
+
+### Parameters
+
+| Parameter | Type | Required | Description |
+| - | - | - | - |
+| `ctx` | [context.Context](https://pkg.go.dev/context#Context) | ✔️ | The context to use for the request. |
+| `opts` | \[][operations.Option](https://openrouter.ai/docs/client-sdks/go/models/operations/option.mdx) | ➖ | The options for this request. |
+
+### Response
+
+**[\*components.VideoModelsListResponse](https://openrouter.ai/docs/client-sdks/go/models/components/videomodelslistresponse.mdx), error**
+
+### Errors
+
+| Error Type | Status Code | Content Type |
+| - | - | - |
+| sdkerrors.BadRequestResponseError | 400 | application/json |
+| sdkerrors.InternalServerResponseError | 500 | application/json |
+| sdkerrors.APIError | 4XX, 5XX | \*/\* |

@@ -1,0 +1,202 @@
+> ## Documentation Index
+> Fetch the complete documentation index at: https://openrouter.ai/docs/llms.txt
+> Use this file to discover all available pages before exploring further.
+
+# Generations
+
+> Generation history endpoints
+
+## Overview
+
+Generation history endpoints
+
+### Available Operations
+
+* [GetGeneration](#getgeneration) - Get request & usage metadata for a generation
+* [ListGenerationContent](#listgenerationcontent) - Get stored prompt, completion, and error content for a generation
+* [SubmitFeedback](#submitfeedback) - Submit feedback for a generation
+
+## GetGeneration
+
+Get request & usage metadata for a generation
+
+### Example Usage
+
+```go theme={null}
+package main
+
+import(
+	"context"
+	"os"
+	openrouter "github.com/OpenRouterTeam/go-sdk"
+	"log"
+)
+
+func main() {
+    ctx := context.Background()
+
+    s := openrouter.New(
+        openrouter.WithSecurity(os.Getenv("OPENROUTER_API_KEY")),
+    )
+
+    res, err := s.Generations.GetGeneration(ctx, "<id>")
+    if err != nil {
+        log.Fatal(err)
+    }
+    if res != nil {
+        // handle response
+    }
+}
+```
+
+### Parameters
+
+| Parameter | Type | Required | Description | Example |
+| - | - | - | - | - |
+| `ctx` | [context.Context](https://pkg.go.dev/context#Context) | ✔️ | The context to use for the request. | |
+| `id` | `string` | ✔️ | The generation ID | gen-1234567890 |
+| `opts` | \[][operations.Option](https://openrouter.ai/docs/client-sdks/go/models/operations/option.mdx) | ➖ | The options for this request. | |
+
+### Response
+
+**[\*components.GenerationResponse](https://openrouter.ai/docs/client-sdks/go/models/components/generationresponse.mdx), error**
+
+### Errors
+
+| Error Type | Status Code | Content Type |
+| - | - | - |
+| sdkerrors.BadRequestResponseError | 400 | application/json |
+| sdkerrors.UnauthorizedResponseError | 401 | application/json |
+| sdkerrors.PaymentRequiredResponseError | 402 | application/json |
+| sdkerrors.ForbiddenResponseError | 403 | application/json |
+| sdkerrors.NotFoundResponseError | 404 | application/json |
+| sdkerrors.TooManyRequestsResponseError | 429 | application/json |
+| sdkerrors.InternalServerResponseError | 500 | application/json |
+| sdkerrors.BadGatewayResponseError | 502 | application/json |
+| sdkerrors.EdgeNetworkTimeoutResponseError | 524 | application/json |
+| sdkerrors.ProviderOverloadedResponseError | 529 | application/json |
+| sdkerrors.APIError | 4XX, 5XX | \*/\* |
+
+## ListGenerationContent
+
+Get stored prompt, completion, and error content for a generation
+
+### Example Usage
+
+```go theme={null}
+package main
+
+import(
+	"context"
+	"os"
+	openrouter "github.com/OpenRouterTeam/go-sdk"
+	"log"
+)
+
+func main() {
+    ctx := context.Background()
+
+    s := openrouter.New(
+        openrouter.WithSecurity(os.Getenv("OPENROUTER_API_KEY")),
+    )
+
+    res, err := s.Generations.ListGenerationContent(ctx, "gen-1234567890")
+    if err != nil {
+        log.Fatal(err)
+    }
+    if res != nil {
+        // handle response
+    }
+}
+```
+
+### Parameters
+
+| Parameter | Type | Required | Description | Example |
+| - | - | - | - | - |
+| `ctx` | [context.Context](https://pkg.go.dev/context#Context) | ✔️ | The context to use for the request. | |
+| `id` | `string` | ✔️ | The generation ID | gen-1234567890 |
+| `opts` | \[][operations.Option](https://openrouter.ai/docs/client-sdks/go/models/operations/option.mdx) | ➖ | The options for this request. | |
+
+### Response
+
+**[\*components.GenerationContentResponse](https://openrouter.ai/docs/client-sdks/go/models/components/generationcontentresponse.mdx), error**
+
+### Errors
+
+| Error Type | Status Code | Content Type |
+| - | - | - |
+| sdkerrors.BadRequestResponseError | 400 | application/json |
+| sdkerrors.UnauthorizedResponseError | 401 | application/json |
+| sdkerrors.ForbiddenResponseError | 403 | application/json |
+| sdkerrors.NotFoundResponseError | 404 | application/json |
+| sdkerrors.TooManyRequestsResponseError | 429 | application/json |
+| sdkerrors.InternalServerResponseError | 500 | application/json |
+| sdkerrors.BadGatewayResponseError | 502 | application/json |
+| sdkerrors.EdgeNetworkTimeoutResponseError | 524 | application/json |
+| sdkerrors.ProviderOverloadedResponseError | 529 | application/json |
+| sdkerrors.APIError | 4XX, 5XX | \*/\* |
+
+## SubmitFeedback
+
+Submit structured feedback on a generation the authenticated user made. [Management key](https://openrouter.ai/docs/client-sdks/go/docs/guides/overview/auth/management-api-keys) required.
+
+### Example Usage
+
+```go theme={null}
+package main
+
+import(
+	"context"
+	"os"
+	openrouter "github.com/OpenRouterTeam/go-sdk"
+	"github.com/OpenRouterTeam/go-sdk/models/components"
+	"log"
+)
+
+func main() {
+    ctx := context.Background()
+
+    s := openrouter.New(
+        openrouter.WithSecurity(os.Getenv("OPENROUTER_API_KEY")),
+    )
+
+    res, err := s.Generations.SubmitFeedback(ctx, components.SubmitGenerationFeedbackRequest{
+        Category: components.SubmitGenerationFeedbackRequestCategoryIncorrectResponse,
+        Comment: openrouter.Pointer("The model repeated the same paragraph three times."),
+        GenerationID: "gen-3bhGkxlo4XFrqiabUM7NDtwDzWwG",
+    })
+    if err != nil {
+        log.Fatal(err)
+    }
+    if res != nil {
+        // handle response
+    }
+}
+```
+
+### Parameters
+
+| Parameter | Type | Required | Description |
+| - | - | - | - |
+| `ctx` | [context.Context](https://pkg.go.dev/context#Context) | ✔️ | The context to use for the request. |
+| `request` | [components.SubmitGenerationFeedbackRequest](https://openrouter.ai/docs/client-sdks/go/models/components/submitgenerationfeedbackrequest.mdx) | ✔️ | The request object to use for the request. |
+| `opts` | \[][operations.Option](https://openrouter.ai/docs/client-sdks/go/models/operations/option.mdx) | ➖ | The options for this request. |
+
+### Response
+
+**[\*components.SubmitGenerationFeedbackResponse](https://openrouter.ai/docs/client-sdks/go/models/components/submitgenerationfeedbackresponse.mdx), error**
+
+### Errors
+
+| Error Type | Status Code | Content Type |
+| - | - | - |
+| sdkerrors.BadRequestResponseError | 400 | application/json |
+| sdkerrors.UnauthorizedResponseError | 401 | application/json |
+| sdkerrors.ForbiddenResponseError | 403 | application/json |
+| sdkerrors.NotFoundResponseError | 404 | application/json |
+| sdkerrors.ConflictResponseError | 409 | application/json |
+| sdkerrors.TooManyRequestsResponseError | 429 | application/json |
+| sdkerrors.InternalServerResponseError | 500 | application/json |
+| sdkerrors.ServiceUnavailableResponseError | 503 | application/json |
+| sdkerrors.APIError | 4XX, 5XX | \*/\* |

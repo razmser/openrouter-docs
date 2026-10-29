@@ -1,0 +1,267 @@
+> ## Documentation Index
+> Fetch the complete documentation index at: https://openrouter.ai/docs/llms.txt
+> Use this file to discover all available pages before exploring further.
+
+# Datasets
+
+> Public OpenRouter usage datasets. Data returned by these endpoints is licensed under CC BY 4.0 (https://creativecommons.org/licenses/by/4.0/): reuse and republish it, including commercially, with attribution to OpenRouter.
+
+## Overview
+
+Public OpenRouter usage datasets. Data returned by these endpoints is licensed under CC BY 4.0 ([https://creativecommons.org/licenses/by/4.0/](https://creativecommons.org/licenses/by/4.0/)): reuse and republish it, including commercially, with attribution to OpenRouter.
+
+### Available Operations
+
+* [GetAppRankings](#getapprankings) - Top apps by token usage
+* [GetRankingsDaily](#getrankingsdaily) - Daily token totals for top 50 models
+* [GetSessionCost](#getsessioncost) - Cost per session by harness and model
+
+## GetAppRankings
+
+Returns the top public apps on OpenRouter ranked by token usage inside the requested
+date window, matching the public apps marketplace on openrouter.ai/apps. Token totals
+are `prompt_tokens + completion_tokens`; hidden and private apps are excluded and
+traffic from related app aliases is merged into the canonical visible app.
+
+`sort=popular` (default) ranks by total token volume inside the window.
+`sort=trending` ranks by absolute excess token growth: window volume minus the average
+volume of the three equal-length periods immediately preceding the window. Apps with
+no excess growth are omitted, so `trending` may return fewer than `limit` rows.
+
+Filter with `category` (marketplace category group, e.g. `coding`) or `subcategory`
+(e.g. `cli-agent`). Ranks are re-numbered 1..N after filtering. Page with `offset` —
+`rank` stays absolute, so the first row of `offset=50` is `rank: 51`.
+
+Authenticate with any valid OpenRouter API key (same key used for inference).
+Rate-limited to 30 requests/minute per key and 500 requests/day per account.
+
+When republishing or quoting this dataset, OpenRouter must be cited as:
+"Source: OpenRouter (openrouter.ai/apps), as of \{as\_of}."
+
+Token counts come from each upstream provider's own tokenizer, so a token attributed
+to one app is not directly comparable to a token attributed to another app whose
+traffic flows through a different provider.
+
+Licensed under [CC BY 4.0](https://creativecommons.org/licenses/by/4.0/): reuse and republish with attribution to OpenRouter.
+
+### Example Usage
+
+```go theme={null}
+package main
+
+import(
+	"context"
+	"os"
+	openrouter "github.com/OpenRouterTeam/go-sdk"
+	"github.com/OpenRouterTeam/go-sdk/models/operations"
+	"log"
+)
+
+func main() {
+    ctx := context.Background()
+
+    s := openrouter.New(
+        openrouter.WithSecurity(os.Getenv("OPENROUTER_API_KEY")),
+    )
+
+    res, err := s.Datasets.GetAppRankings(ctx, &operations.GetAppRankingsRequest{})
+    if err != nil {
+        log.Fatal(err)
+    }
+    if res != nil {
+        for {
+            // handle items
+
+            res, err = res.Next()
+
+            if err != nil {
+                // handle error
+            }
+
+            if res == nil {
+                break
+            }
+        }
+    }
+}
+```
+
+### Parameters
+
+| Parameter | Type | Required | Description |
+| - | - | - | - |
+| `ctx` | [context.Context](https://pkg.go.dev/context#Context) | ✔️ | The context to use for the request. |
+| `request` | [operations.GetAppRankingsRequest](https://openrouter.ai/docs/client-sdks/go/models/operations/getapprankingsrequest.mdx) | ✔️ | The request object to use for the request. |
+| `opts` | \[][operations.Option](https://openrouter.ai/docs/client-sdks/go/models/operations/option.mdx) | ➖ | The options for this request. |
+
+### Response
+
+**[\*operations.GetAppRankingsResponse](https://openrouter.ai/docs/client-sdks/go/models/operations/getapprankingsresponse.mdx), error**
+
+### Errors
+
+| Error Type | Status Code | Content Type |
+| - | - | - |
+| sdkerrors.BadRequestResponseError | 400 | application/json |
+| sdkerrors.UnauthorizedResponseError | 401 | application/json |
+| sdkerrors.TooManyRequestsResponseError | 429 | application/json |
+| sdkerrors.InternalServerResponseError | 500 | application/json |
+| sdkerrors.APIError | 4XX, 5XX | \*/\* |
+
+## GetRankingsDaily
+
+Returns the top 50 public models per day by total token usage on OpenRouter, plus a
+single aggregated `other` row per day that sums every model outside that top 50.
+Token totals are `prompt_tokens + completion_tokens`, matching the public rankings
+chart on openrouter.ai/rankings.
+
+Each row is a distinct `(date, model_permaslug)` pair. The `other` row uses the
+reserved permaslug `other` and is always returned last within its date, so callers
+can compute `top-50 traffic / total daily traffic` without a second request.
+
+Optional filters slice the dataset. `period` (`day`/`week`/`month`) sets the time
+grain. `modality` and `context_bucket` narrow the exact dataset by output/input
+modality (or tool-calling activity) and request context length. `category` and
+`language_type` instead read a sampled, upsampled dataset whose `total_tokens` are
+weekly-grain estimates — they cannot be combined with each other or with the exact
+filters, and reject `period=day` with a 400.
+
+Authenticate with any valid OpenRouter API key (same key used for inference).
+Rate-limited to 30 requests/minute per key and 500 requests/day per account.
+
+When republishing or quoting this dataset, OpenRouter must be cited as:
+"Source: OpenRouter (openrouter.ai/rankings), as of \{as\_of}."
+
+Token counts come from each upstream provider's own tokenizer (Anthropic counts
+are as reported by Anthropic, OpenAI counts are as reported by OpenAI, etc.), so
+a token in one row is not directly comparable to a token in another row from a
+different provider.
+
+Licensed under [CC BY 4.0](https://creativecommons.org/licenses/by/4.0/): reuse and republish with attribution to OpenRouter.
+
+### Example Usage
+
+```go theme={null}
+package main
+
+import(
+	"context"
+	"os"
+	openrouter "github.com/OpenRouterTeam/go-sdk"
+	"log"
+)
+
+func main() {
+    ctx := context.Background()
+
+    s := openrouter.New(
+        openrouter.WithSecurity(os.Getenv("OPENROUTER_API_KEY")),
+    )
+
+    res, err := s.Datasets.GetRankingsDaily(ctx, nil)
+    if err != nil {
+        log.Fatal(err)
+    }
+    if res != nil {
+        // handle response
+    }
+}
+```
+
+### Parameters
+
+| Parameter | Type | Required | Description |
+| - | - | - | - |
+| `ctx` | [context.Context](https://pkg.go.dev/context#Context) | ✔️ | The context to use for the request. |
+| `request` | [operations.GetRankingsDailyRequest](https://openrouter.ai/docs/client-sdks/go/models/operations/getrankingsdailyrequest.mdx) | ✔️ | The request object to use for the request. |
+| `opts` | \[][operations.Option](https://openrouter.ai/docs/client-sdks/go/models/operations/option.mdx) | ➖ | The options for this request. |
+
+### Response
+
+**[\*components.RankingsDailyResponse](https://openrouter.ai/docs/client-sdks/go/models/components/rankingsdailyresponse.mdx), error**
+
+### Errors
+
+| Error Type | Status Code | Content Type |
+| - | - | - |
+| sdkerrors.BadRequestResponseError | 400 | application/json |
+| sdkerrors.UnauthorizedResponseError | 401 | application/json |
+| sdkerrors.TooManyRequestsResponseError | 429 | application/json |
+| sdkerrors.InternalServerResponseError | 500 | application/json |
+| sdkerrors.APIError | 4XX, 5XX | \*/\* |
+
+## GetSessionCost
+
+Returns weekly refreshed, aggregated cost-per-session cells for the published harnesses.
+Sessions are never pooled across apps. Medians are of per-session USD spend, and
+privacy-preserving aggregation never exposes clerk\_user\_id values or per-session rows.
+
+Filter by `app_slug`, `model`, or `turn_range`. Filtering by `model` alone works across apps
+for harness-vs-harness comparison at a fixed model. Results refresh weekly and include the source snapshot
+window in `meta`.
+
+Licensed under [CC BY 4.0](https://creativecommons.org/licenses/by/4.0/): reuse and republish with attribution to OpenRouter.
+
+### Example Usage
+
+```go theme={null}
+package main
+
+import(
+	"context"
+	"os"
+	openrouter "github.com/OpenRouterTeam/go-sdk"
+	"github.com/OpenRouterTeam/go-sdk/models/operations"
+	"log"
+)
+
+func main() {
+    ctx := context.Background()
+
+    s := openrouter.New(
+        openrouter.WithSecurity(os.Getenv("OPENROUTER_API_KEY")),
+    )
+
+    res, err := s.Datasets.GetSessionCost(ctx, &operations.GetSessionCostRequest{})
+    if err != nil {
+        log.Fatal(err)
+    }
+    if res != nil {
+        for {
+            // handle items
+
+            res, err = res.Next()
+
+            if err != nil {
+                // handle error
+            }
+
+            if res == nil {
+                break
+            }
+        }
+    }
+}
+```
+
+### Parameters
+
+| Parameter | Type | Required | Description |
+| - | - | - | - |
+| `ctx` | [context.Context](https://pkg.go.dev/context#Context) | ✔️ | The context to use for the request. |
+| `request` | [operations.GetSessionCostRequest](https://openrouter.ai/docs/client-sdks/go/models/operations/getsessioncostrequest.mdx) | ✔️ | The request object to use for the request. |
+| `opts` | \[][operations.Option](https://openrouter.ai/docs/client-sdks/go/models/operations/option.mdx) | ➖ | The options for this request. |
+
+### Response
+
+**[\*operations.GetSessionCostResponse](https://openrouter.ai/docs/client-sdks/go/models/operations/getsessioncostresponse.mdx), error**
+
+### Errors
+
+| Error Type | Status Code | Content Type |
+| - | - | - |
+| sdkerrors.BadRequestResponseError | 400 | application/json |
+| sdkerrors.UnauthorizedResponseError | 401 | application/json |
+| sdkerrors.TooManyRequestsResponseError | 429 | application/json |
+| sdkerrors.InternalServerResponseError | 500 | application/json |
+| sdkerrors.APIError | 4XX, 5XX | \*/\* |

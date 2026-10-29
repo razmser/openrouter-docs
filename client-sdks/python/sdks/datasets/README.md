@@ -1,0 +1,243 @@
+> ## Documentation Index
+> Fetch the complete documentation index at: https://openrouter.ai/docs/llms.txt
+> Use this file to discover all available pages before exploring further.
+
+# Datasets
+
+> Public OpenRouter usage datasets. Data returned by these endpoints is licensed under CC BY 4.0 (https://creativecommons.org/licenses/by/4.0/): reuse and republish it, including commercially, with attribution to OpenRouter.
+
+## Overview
+
+Public OpenRouter usage datasets. Data returned by these endpoints is licensed under CC BY 4.0 ([https://creativecommons.org/licenses/by/4.0/](https://creativecommons.org/licenses/by/4.0/)): reuse and republish it, including commercially, with attribution to OpenRouter.
+
+### Available Operations
+
+* [get\_app\_rankings](#get_app_rankings) - Top apps by token usage
+* [get\_rankings\_daily](#get_rankings_daily) - Daily token totals for top 50 models
+* [get\_session\_cost](#get_session_cost) - Cost per session by harness and model
+
+## get\_app\_rankings
+
+Returns the top public apps on OpenRouter ranked by token usage inside the requested
+date window, matching the public apps marketplace on openrouter.ai/apps. Token totals
+are `prompt_tokens + completion_tokens`; hidden and private apps are excluded and
+traffic from related app aliases is merged into the canonical visible app.
+
+`sort=popular` (default) ranks by total token volume inside the window.
+`sort=trending` ranks by absolute excess token growth: window volume minus the average
+volume of the three equal-length periods immediately preceding the window. Apps with
+no excess growth are omitted, so `trending` may return fewer than `limit` rows.
+
+Filter with `category` (marketplace category group, e.g. `coding`) or `subcategory`
+(e.g. `cli-agent`). Ranks are re-numbered 1..N after filtering. Page with `offset` —
+`rank` stays absolute, so the first row of `offset=50` is `rank: 51`.
+
+Authenticate with any valid OpenRouter API key (same key used for inference).
+Rate-limited to 30 requests/minute per key and 500 requests/day per account.
+
+When republishing or quoting this dataset, OpenRouter must be cited as:
+"Source: OpenRouter (openrouter.ai/apps), as of \{as\_of}."
+
+Token counts come from each upstream provider's own tokenizer, so a token attributed
+to one app is not directly comparable to a token attributed to another app whose
+traffic flows through a different provider.
+
+Licensed under [CC BY 4.0](https://creativecommons.org/licenses/by/4.0/): reuse and republish with attribution to OpenRouter.
+
+### Example Usage
+
+```python theme={null}
+from openrouter import OpenRouter
+import os
+
+
+with OpenRouter(
+    http_referer="<value>",
+    x_open_router_title="<value>",
+    x_open_router_categories="<value>",
+    api_key=os.getenv("OPENROUTER_API_KEY", ""),
+) as open_router:
+
+    res = open_router.datasets.get_app_rankings(sort="popular", limit=50, offset=0)
+
+    while res is not None:
+        # Handle items
+
+        res = res.next()
+
+```
+
+### Parameters
+
+| Parameter | Type | Required | Description | Example |
+| - | - | - | - | - |
+| `http_referer` | *Optional\[str]* | ➖ | The app identifier should be your app's URL and is used as the primary identifier for rankings. This is used to track API usage per application.  | |
+| `x_open_router_title` | *Optional\[str]* | ➖ | The app display name allows you to customize how your app appears in OpenRouter's dashboard.  | |
+| `x_open_router_categories` | *Optional\[str]* | ➖ | Comma-separated list of app categories (e.g. "cli-agent,cloud-agent"). Used for marketplace rankings.  | |
+| `category` | [Optional\[operations.GetAppRankingsCategory\]](https://openrouter.ai/docs/client-sdks/python/operations/getapprankingscategory.mdx) | ➖ | Marketplace category group to filter by (e.g. `coding`). Only apps tagged with a subcategory inside this group are returned. Mutually combinable with `subcategory` — when both are supplied the `subcategory` must belong to the `category` group. | coding |
+| `subcategory` | [Optional\[operations.Subcategory\]](https://openrouter.ai/docs/client-sdks/python/operations/subcategory.mdx) | ➖ | Marketplace subcategory to filter by (e.g. `cli-agent`). Takes precedence over `category` for the actual filter; when `category` is also supplied the pair must be consistent. | cli-agent |
+| `sort` | [Optional\[operations.GetAppRankingsSort\]](https://openrouter.ai/docs/client-sdks/python/operations/getapprankingssort.mdx) | ➖ | `popular` ranks apps by total token volume inside the date window. `trending` ranks apps by absolute excess token growth: window volume minus the average volume of the three equal-length periods immediately preceding the window. Apps with no excess growth are omitted from `trending` results. | popular |
+| `start_date` | *Optional\[str]* | ➖ | Start of the date window in YYYY-MM-DD (UTC), inclusive. Defaults to 30 days before `end_date`. The dataset begins at 2025-01-01; earlier values are clamped forward to that floor and the resolved value is echoed in `meta.start_date`. | 2026-04-12 |
+| `end_date` | *Optional\[str]* | ➖ | End of the date window in YYYY-MM-DD (UTC), inclusive. Defaults to the most recent completed UTC day. Must be on or after 2025-01-01; earlier values are rejected with a 400. | 2026-05-11 |
+| `limit` | *Optional\[int]* | ➖ | Maximum number of apps to return (1-100). Defaults to 50. | 50 |
+| `offset` | *OptionalNullable\[int]* | ➖ | Number of ranked apps to skip before the first returned row (0-100). Defaults to 0. `rank` stays absolute, so the first row of `offset=50` is `rank: 51`. | 0 |
+| `retries` | [Optional\[utils.RetryConfig\]](https://openrouter.ai/docs/client-sdks/python/models/utils/retryconfig.mdx) | ➖ | Configuration to override the default retry behavior of the client. | |
+
+### Response
+
+**[operations.GetAppRankingsResponse](https://openrouter.ai/docs/client-sdks/python/operations/getapprankingsresponse.mdx)**
+
+### Errors
+
+| Error Type | Status Code | Content Type |
+| - | - | - |
+| errors.BadRequestResponseError | 400 | application/json |
+| errors.UnauthorizedResponseError | 401 | application/json |
+| errors.TooManyRequestsResponseError | 429 | application/json |
+| errors.InternalServerResponseError | 500 | application/json |
+| errors.OpenRouterDefaultError | 4XX, 5XX | \*/\* |
+
+## get\_rankings\_daily
+
+Returns the top 50 public models per day by total token usage on OpenRouter, plus a
+single aggregated `other` row per day that sums every model outside that top 50.
+Token totals are `prompt_tokens + completion_tokens`, matching the public rankings
+chart on openrouter.ai/rankings.
+
+Each row is a distinct `(date, model_permaslug)` pair. The `other` row uses the
+reserved permaslug `other` and is always returned last within its date, so callers
+can compute `top-50 traffic / total daily traffic` without a second request.
+
+Optional filters slice the dataset. `period` (`day`/`week`/`month`) sets the time
+grain. `modality` and `context_bucket` narrow the exact dataset by output/input
+modality (or tool-calling activity) and request context length. `category` and
+`language_type` instead read a sampled, upsampled dataset whose `total_tokens` are
+weekly-grain estimates — they cannot be combined with each other or with the exact
+filters, and reject `period=day` with a 400.
+
+Authenticate with any valid OpenRouter API key (same key used for inference).
+Rate-limited to 30 requests/minute per key and 500 requests/day per account.
+
+When republishing or quoting this dataset, OpenRouter must be cited as:
+"Source: OpenRouter (openrouter.ai/rankings), as of \{as\_of}."
+
+Token counts come from each upstream provider's own tokenizer (Anthropic counts
+are as reported by Anthropic, OpenAI counts are as reported by OpenAI, etc.), so
+a token in one row is not directly comparable to a token in another row from a
+different provider.
+
+Licensed under [CC BY 4.0](https://creativecommons.org/licenses/by/4.0/): reuse and republish with attribution to OpenRouter.
+
+### Example Usage
+
+```python theme={null}
+from openrouter import OpenRouter
+import os
+
+
+with OpenRouter(
+    http_referer="<value>",
+    x_open_router_title="<value>",
+    x_open_router_categories="<value>",
+    api_key=os.getenv("OPENROUTER_API_KEY", ""),
+) as open_router:
+
+    res = open_router.datasets.get_rankings_daily()
+
+    # Handle response
+    print(res)
+
+```
+
+### Parameters
+
+| Parameter | Type | Required | Description | Example |
+| - | - | - | - | - |
+| `http_referer` | *Optional\[str]* | ➖ | The app identifier should be your app's URL and is used as the primary identifier for rankings. This is used to track API usage per application.  | |
+| `x_open_router_title` | *Optional\[str]* | ➖ | The app display name allows you to customize how your app appears in OpenRouter's dashboard.  | |
+| `x_open_router_categories` | *Optional\[str]* | ➖ | Comma-separated list of app categories (e.g. "cli-agent,cloud-agent"). Used for marketplace rankings.  | |
+| `start_date` | *Optional\[str]* | ➖ | Start of the date window in YYYY-MM-DD (UTC), inclusive. Defaults to 30 days before `end_date`. The dataset begins at 2025-01-01; earlier values are clamped forward to that floor and the resolved value is echoed in `meta.start_date`. | 2026-04-12 |
+| `end_date` | *Optional\[str]* | ➖ | End of the date window in YYYY-MM-DD (UTC), inclusive. Defaults to the most recent completed UTC day. Must be on or after 2025-01-01; earlier values are rejected with a 400. | 2026-05-11 |
+| `period` | [Optional\[operations.Period\]](https://openrouter.ai/docs/client-sdks/python/operations/period.mdx) | ➖ | Time grain of each row. `day` (default) returns the per-UTC-day series; `week` buckets by ISO week start; `month` buckets by month start. With `category` or `language_type` only `week` (default) and `month` are available — `day` is rejected with a 400 because those datasets are aggregated weekly. For those sampled datasets `period=month` buckets each week by its week-start month, so totals are approximate at month boundaries. | day |
+| `modality` | [Optional\[operations.Modality\]](https://openrouter.ai/docs/client-sdks/python/operations/modality.mdx) | ➖ | Restrict to models for a modality surface: `text` / `image_output` match output modality, `image` / `audio` match input modality, and `tool_calling` keeps only rows that recorded at least one tool call. Exact dataset — cannot be combined with `category` or `language_type`. | text |
+| `context_bucket` | [Optional\[operations.ContextBucket\]](https://openrouter.ai/docs/client-sdks/python/operations/contextbucket.mdx) | ➖ | Restrict to requests whose context length falls in this bucket (`1K`, `10K`, `100K`, `1M`, or `10M`). Exact dataset — cannot be combined with `category` or `language_type`. | 100K |
+| `category` | [Optional\[operations.GetRankingsDailyCategory\]](https://openrouter.ai/docs/client-sdks/python/operations/getrankingsdailycategory.mdx) | ➖ | Restrict to a use-case category (e.g. `programming`, `roleplay`). Sourced from a sampled, upsampled dataset, so `total_tokens` is an estimate and is aggregated weekly (the trailing weekly bucket may include traffic past `end_date`). Cannot be combined with `modality`, `context_bucket`, or `language_type`. | programming |
+| `language_type` | [Optional\[operations.LanguageType\]](https://openrouter.ai/docs/client-sdks/python/operations/languagetype.mdx) | ➖ | Restrict to natural-language or programming-language tagged activity. Sourced from a sampled, upsampled dataset, so `total_tokens` is an estimate and is aggregated weekly (the trailing weekly bucket may include traffic past `end_date`). Cannot be combined with `modality`, `context_bucket`, or `category`. | natural |
+| `retries` | [Optional\[utils.RetryConfig\]](https://openrouter.ai/docs/client-sdks/python/models/utils/retryconfig.mdx) | ➖ | Configuration to override the default retry behavior of the client. | |
+
+### Response
+
+**[components.RankingsDailyResponse](https://openrouter.ai/docs/client-sdks/python/components/rankingsdailyresponse.mdx)**
+
+### Errors
+
+| Error Type | Status Code | Content Type |
+| - | - | - |
+| errors.BadRequestResponseError | 400 | application/json |
+| errors.UnauthorizedResponseError | 401 | application/json |
+| errors.TooManyRequestsResponseError | 429 | application/json |
+| errors.InternalServerResponseError | 500 | application/json |
+| errors.OpenRouterDefaultError | 4XX, 5XX | \*/\* |
+
+## get\_session\_cost
+
+Returns weekly refreshed, aggregated cost-per-session cells for the published harnesses.
+Sessions are never pooled across apps. Medians are of per-session USD spend, and
+privacy-preserving aggregation never exposes clerk\_user\_id values or per-session rows.
+
+Filter by `app_slug`, `model`, or `turn_range`. Filtering by `model` alone works across apps
+for harness-vs-harness comparison at a fixed model. Results refresh weekly and include the source snapshot
+window in `meta`.
+
+Licensed under [CC BY 4.0](https://creativecommons.org/licenses/by/4.0/): reuse and republish with attribution to OpenRouter.
+
+### Example Usage
+
+```python theme={null}
+from openrouter import OpenRouter
+import os
+
+
+with OpenRouter(
+    http_referer="<value>",
+    x_open_router_title="<value>",
+    x_open_router_categories="<value>",
+    api_key=os.getenv("OPENROUTER_API_KEY", ""),
+) as open_router:
+
+    res = open_router.datasets.get_session_cost(limit=100, offset=0)
+
+    while res is not None:
+        # Handle items
+
+        res = res.next()
+
+```
+
+### Parameters
+
+| Parameter | Type | Required | Description | Example |
+| - | - | - | - | - |
+| `http_referer` | *Optional\[str]* | ➖ | The app identifier should be your app's URL and is used as the primary identifier for rankings. This is used to track API usage per application.  | |
+| `x_open_router_title` | *Optional\[str]* | ➖ | The app display name allows you to customize how your app appears in OpenRouter's dashboard.  | |
+| `x_open_router_categories` | *Optional\[str]* | ➖ | Comma-separated list of app categories (e.g. "cli-agent,cloud-agent"). Used for marketplace rankings.  | |
+| `app_slug` | *Optional\[str]* | ➖ | Filter to one published harness slug. | hermes-agent |
+| `model` | *Optional\[str]* | ➖ | Exact model permaslug filter. Works across all harness apps. | anthropic/claude-4.8-opus |
+| `turn_range` | [Optional\[operations.TurnRange\]](https://openrouter.ai/docs/client-sdks/python/operations/turnrange.mdx) | ➖ | Filter by the inclusive number of turns in a session. | 10-49-turns |
+| `limit` | *Optional\[int]* | ➖ | Maximum number of cells to return (1-500). Defaults to 100. | 100 |
+| `offset` | *OptionalNullable\[int]* | ➖ | Number of sorted cells to skip (0-5000). Defaults to 0. | 0 |
+| `retries` | [Optional\[utils.RetryConfig\]](https://openrouter.ai/docs/client-sdks/python/models/utils/retryconfig.mdx) | ➖ | Configuration to override the default retry behavior of the client. | |
+
+### Response
+
+**[operations.GetSessionCostResponse](https://openrouter.ai/docs/client-sdks/python/operations/getsessioncostresponse.mdx)**
+
+### Errors
+
+| Error Type | Status Code | Content Type |
+| - | - | - |
+| errors.BadRequestResponseError | 400 | application/json |
+| errors.UnauthorizedResponseError | 401 | application/json |
+| errors.TooManyRequestsResponseError | 429 | application/json |
+| errors.InternalServerResponseError | 500 | application/json |
+| errors.OpenRouterDefaultError | 4XX, 5XX | \*/\* |

@@ -1,0 +1,125 @@
+> ## Documentation Index
+> Fetch the complete documentation index at: https://openrouter.ai/docs/llms.txt
+> Use this file to discover all available pages before exploring further.
+
+# Endpoints
+
+> Endpoint information
+
+## Overview
+
+Endpoint information
+
+### Available Operations
+
+* [ListZdrEndpoints](#listzdrendpoints) - Preview the impact of ZDR on the available endpoints
+* [List](#list) - List all endpoints for a model
+
+## ListZdrEndpoints
+
+Preview the impact of ZDR on the available endpoints
+
+### Example Usage
+
+```go theme={null}
+package main
+
+import(
+	"context"
+	"os"
+	openrouter "github.com/OpenRouterTeam/go-sdk"
+	"log"
+)
+
+func main() {
+    ctx := context.Background()
+
+    s := openrouter.New(
+        openrouter.WithSecurity(os.Getenv("OPENROUTER_API_KEY")),
+    )
+
+    res, err := s.Endpoints.ListZdrEndpoints(ctx)
+    if err != nil {
+        log.Fatal(err)
+    }
+    if res != nil {
+        // handle response
+    }
+}
+```
+
+### Parameters
+
+| Parameter | Type | Required | Description |
+| - | - | - | - |
+| `ctx` | [context.Context](https://pkg.go.dev/context#Context) | ✔️ | The context to use for the request. |
+| `opts` | \[][operations.Option](https://openrouter.ai/docs/client-sdks/go/models/operations/option.mdx) | ➖ | The options for this request. |
+
+### Response
+
+**[\*operations.ListEndpointsZdrResponse](https://openrouter.ai/docs/client-sdks/go/models/operations/listendpointszdrresponse.mdx), error**
+
+### Errors
+
+| Error Type | Status Code | Content Type |
+| - | - | - |
+| sdkerrors.ForbiddenResponseError | 403 | application/json |
+| sdkerrors.InternalServerResponseError | 500 | application/json |
+| sdkerrors.ServiceUnavailableResponseError | 503 | application/json |
+| sdkerrors.APIError | 4XX, 5XX | \*/\* |
+
+## List
+
+List all endpoints for a model
+
+### Example Usage
+
+```go theme={null}
+package main
+
+import(
+	"context"
+	"os"
+	openrouter "github.com/OpenRouterTeam/go-sdk"
+	"log"
+)
+
+func main() {
+    ctx := context.Background()
+
+    s := openrouter.New(
+        openrouter.WithSecurity(os.Getenv("OPENROUTER_API_KEY")),
+    )
+
+    res, err := s.Endpoints.List(ctx, "<value>", "<value>")
+    if err != nil {
+        log.Fatal(err)
+    }
+    if res != nil {
+        // handle response
+    }
+}
+```
+
+### Parameters
+
+| Parameter | Type | Required | Description | Example |
+| - | - | - | - | - |
+| `ctx` | [context.Context](https://pkg.go.dev/context#Context) | ✔️ | The context to use for the request. | |
+| `author` | `string` | ✔️ | The author/organization of the model | openai |
+| `slug` | `string` | ✔️ | The model slug | gpt-4 |
+| `opts` | \[][operations.Option](https://openrouter.ai/docs/client-sdks/go/models/operations/option.mdx) | ➖ | The options for this request. | |
+
+### Response
+
+**[\*operations.ListEndpointsResponse](https://openrouter.ai/docs/client-sdks/go/models/operations/listendpointsresponse.mdx), error**
+
+### Errors
+
+| Error Type | Status Code | Content Type |
+| - | - | - |
+| sdkerrors.ForbiddenResponseError | 403 | application/json |
+| sdkerrors.NotFoundResponseError | 404 | application/json |
+| sdkerrors.InternalServerResponseError | 500 | application/json |
+| sdkerrors.ServiceUnavailableResponseError | 503 | application/json |
+| sdkerrors.APIError | 4XX, 5XX | \*/\* |

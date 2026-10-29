@@ -1,0 +1,508 @@
+> ## Documentation Index
+> Fetch the complete documentation index at: https://openrouter.ai/docs/llms.txt
+> Use this file to discover all available pages before exploring further.
+
+# Scim
+
+> Management endpoints for SCIM group-to-workspace mappings, authenticated with a management key. These are not the SCIM 2.0 connector endpoints for your identity provider. In your identity provider, enter the SCIM endpoint URL shown when you enable provisioning under Settings > Members > SCIM Mappings. See https://openrouter.ai/docs/guides/features/scim-mappings#set-up-provisioning.
+
+## Overview
+
+Management endpoints for SCIM group-to-workspace mappings, authenticated with a management key. These are not the SCIM 2.0 connector endpoints for your identity provider. In your identity provider, enter the SCIM endpoint URL shown when you enable provisioning under Settings > Members > SCIM Mappings. See [https://openrouter.ai/docs/guides/features/scim-mappings#set-up-provisioning](../../../../guides/features/scim-mappings.md#set-up-provisioning).
+
+### Available Operations
+
+* [ListMappings](#listmappings) - List SCIM group mappings
+* [Create](#create) - Create a SCIM group mapping
+* [Delete](#delete) - Delete a SCIM group mapping
+* [Read](#read) - Get a SCIM group mapping
+* [Update](#update) - Update a SCIM group mapping
+* [ListGroups](#listgroups) - List SCIM groups
+* [CreateSyncJob](#createsyncjob) - Start a SCIM directory sync
+* [GetSyncJob](#getsyncjob) - Get SCIM directory sync status
+
+## ListMappings
+
+List SCIM group-to-workspace mappings for the organization. [Management key](https://openrouter.ai/docs/client-sdks/go/docs/guides/overview/auth/management-api-keys) required.
+
+### Example Usage
+
+```go theme={null}
+package main
+
+import(
+	"context"
+	"os"
+	openrouter "github.com/OpenRouterTeam/go-sdk"
+	"github.com/OpenRouterTeam/go-sdk/optionalnullable"
+	"log"
+)
+
+func main() {
+    ctx := context.Background()
+
+    s := openrouter.New(
+        openrouter.WithSecurity(os.Getenv("OPENROUTER_API_KEY")),
+    )
+
+    res, err := s.Scim.ListMappings(ctx, optionalnullable.From(openrouter.Pointer[int64](0)), openrouter.Pointer[int64](50))
+    if err != nil {
+        log.Fatal(err)
+    }
+    if res != nil {
+        for {
+            // handle items
+
+            res, err = res.Next()
+
+            if err != nil {
+                // handle error
+            }
+
+            if res == nil {
+                break
+            }
+        }
+    }
+}
+```
+
+### Parameters
+
+| Parameter | Type | Required | Description | Example |
+| - | - | - | - | - |
+| `ctx` | [context.Context](https://pkg.go.dev/context#Context) | ✔️ | The context to use for the request. | |
+| `offset` | optionalnullable.OptionalNullable\[`int64`] | ➖ | Number of records to skip for pagination | 0 |
+| `limit` | `*int64` | ➖ | Maximum number of records to return (max 100) | 50 |
+| `opts` | \[][operations.Option](https://openrouter.ai/docs/client-sdks/go/models/operations/option.mdx) | ➖ | The options for this request. | |
+
+### Response
+
+**[\*operations.ListScimGroupMappingsResponse](https://openrouter.ai/docs/client-sdks/go/models/operations/listscimgroupmappingsresponse.mdx), error**
+
+### Errors
+
+| Error Type | Status Code | Content Type |
+| - | - | - |
+| sdkerrors.UnauthorizedResponseError | 401 | application/json |
+| sdkerrors.ForbiddenResponseError | 403 | application/json |
+| sdkerrors.NotFoundResponseError | 404 | application/json |
+| sdkerrors.InternalServerResponseError | 500 | application/json |
+| sdkerrors.APIError | 4XX, 5XX | \*/\* |
+
+## Create
+
+Create a SCIM group-to-workspace role mapping. Creating a mapping that already exists with the same role succeeds and re-applies the mapping to the group members. Requesting a different role for an existing mapping returns 409. [Management key](https://openrouter.ai/docs/client-sdks/go/docs/guides/overview/auth/management-api-keys) required.
+
+### Example Usage
+
+```go theme={null}
+package main
+
+import(
+	"context"
+	"os"
+	openrouter "github.com/OpenRouterTeam/go-sdk"
+	"github.com/OpenRouterTeam/go-sdk/models/components"
+	"log"
+)
+
+func main() {
+    ctx := context.Background()
+
+    s := openrouter.New(
+        openrouter.WithSecurity(os.Getenv("OPENROUTER_API_KEY")),
+    )
+
+    res, err := s.Scim.Create(ctx, components.CreateScimGroupMappingRequest{
+        Role: components.CreateScimGroupMappingRequestRoleAdmin,
+        ScimGroupID: "ecdda85d-40dc-4ed7-9955-2bf12128e7da",
+        WorkspaceID: "d5a84a53-ce30-4057-ab5e-bd7b45553567",
+    })
+    if err != nil {
+        log.Fatal(err)
+    }
+    if res != nil {
+        // handle response
+    }
+}
+```
+
+### Parameters
+
+| Parameter | Type | Required | Description |
+| - | - | - | - |
+| `ctx` | [context.Context](https://pkg.go.dev/context#Context) | ✔️ | The context to use for the request. |
+| `request` | [components.CreateScimGroupMappingRequest](https://openrouter.ai/docs/client-sdks/go/models/components/createscimgroupmappingrequest.mdx) | ✔️ | The request object to use for the request. |
+| `opts` | \[][operations.Option](https://openrouter.ai/docs/client-sdks/go/models/operations/option.mdx) | ➖ | The options for this request. |
+
+### Response
+
+**[\*components.CreateScimGroupMappingResponse](https://openrouter.ai/docs/client-sdks/go/models/components/createscimgroupmappingresponse.mdx), error**
+
+### Errors
+
+| Error Type | Status Code | Content Type |
+| - | - | - |
+| sdkerrors.BadRequestResponseError | 400 | application/json |
+| sdkerrors.UnauthorizedResponseError | 401 | application/json |
+| sdkerrors.ForbiddenResponseError | 403 | application/json |
+| sdkerrors.NotFoundResponseError | 404 | application/json |
+| sdkerrors.ConflictResponseError | 409 | application/json |
+| sdkerrors.InternalServerResponseError | 500 | application/json |
+| sdkerrors.APIError | 4XX, 5XX | \*/\* |
+
+## Delete
+
+Delete a SCIM group-to-workspace mapping. [Management key](https://openrouter.ai/docs/client-sdks/go/docs/guides/overview/auth/management-api-keys) required.
+
+### Example Usage
+
+```go theme={null}
+package main
+
+import(
+	"context"
+	"os"
+	openrouter "github.com/OpenRouterTeam/go-sdk"
+	"github.com/OpenRouterTeam/go-sdk/models/operations"
+	"log"
+)
+
+func main() {
+    ctx := context.Background()
+
+    s := openrouter.New(
+        openrouter.WithSecurity(os.Getenv("OPENROUTER_API_KEY")),
+    )
+
+    res, err := s.Scim.Delete(ctx, "ef7219ae-c495-43b3-b46b-52bf82772570", operations.CreateKeepMembersBoolean(
+        false,
+    ))
+    if err != nil {
+        log.Fatal(err)
+    }
+    if res != nil {
+        // handle response
+    }
+}
+```
+
+### Parameters
+
+| Parameter | Type | Required | Description | Example |
+| - | - | - | - | - |
+| `ctx` | [context.Context](https://pkg.go.dev/context#Context) | ✔️ | The context to use for the request. | |
+| `id` | `string` | ✔️ | N/A | |
+| `keepMembers` | [operations.KeepMembers](https://openrouter.ai/docs/client-sdks/go/models/operations/keepmembers.mdx) | ✔️ | Required. Whether to keep workspace members after deleting the mapping. `false` **removes** the members this mapping granted access to; `true` deletes the mapping while leaving membership intact as manually-managed. There is deliberately no default — omitting it returns `400` so the destructive path cannot be reached by accident. Mirrors the dashboard, whose `DeleteMappingSchema.keepMembers` is likewise required. | false |
+| `opts` | \[][operations.Option](https://openrouter.ai/docs/client-sdks/go/models/operations/option.mdx) | ➖ | The options for this request. | |
+
+### Response
+
+**[\*components.DeleteScimGroupMappingResponse](https://openrouter.ai/docs/client-sdks/go/models/components/deletescimgroupmappingresponse.mdx), error**
+
+### Errors
+
+| Error Type | Status Code | Content Type |
+| - | - | - |
+| sdkerrors.BadRequestResponseError | 400 | application/json |
+| sdkerrors.UnauthorizedResponseError | 401 | application/json |
+| sdkerrors.ForbiddenResponseError | 403 | application/json |
+| sdkerrors.NotFoundResponseError | 404 | application/json |
+| sdkerrors.InternalServerResponseError | 500 | application/json |
+| sdkerrors.APIError | 4XX, 5XX | \*/\* |
+
+## Read
+
+Get a SCIM group-to-workspace mapping. [Management key](https://openrouter.ai/docs/client-sdks/go/docs/guides/overview/auth/management-api-keys) required.
+
+### Example Usage
+
+```go theme={null}
+package main
+
+import(
+	"context"
+	"os"
+	openrouter "github.com/OpenRouterTeam/go-sdk"
+	"log"
+)
+
+func main() {
+    ctx := context.Background()
+
+    s := openrouter.New(
+        openrouter.WithSecurity(os.Getenv("OPENROUTER_API_KEY")),
+    )
+
+    res, err := s.Scim.Read(ctx, "aca4d64d-fff7-419d-a8ae-3ec5ab8a0c1e")
+    if err != nil {
+        log.Fatal(err)
+    }
+    if res != nil {
+        // handle response
+    }
+}
+```
+
+### Parameters
+
+| Parameter | Type | Required | Description |
+| - | - | - | - |
+| `ctx` | [context.Context](https://pkg.go.dev/context#Context) | ✔️ | The context to use for the request. |
+| `id` | `string` | ✔️ | N/A |
+| `opts` | \[][operations.Option](https://openrouter.ai/docs/client-sdks/go/models/operations/option.mdx) | ➖ | The options for this request. |
+
+### Response
+
+**[\*components.GetScimGroupMappingResponse](https://openrouter.ai/docs/client-sdks/go/models/components/getscimgroupmappingresponse.mdx), error**
+
+### Errors
+
+| Error Type | Status Code | Content Type |
+| - | - | - |
+| sdkerrors.UnauthorizedResponseError | 401 | application/json |
+| sdkerrors.ForbiddenResponseError | 403 | application/json |
+| sdkerrors.NotFoundResponseError | 404 | application/json |
+| sdkerrors.InternalServerResponseError | 500 | application/json |
+| sdkerrors.APIError | 4XX, 5XX | \*/\* |
+
+## Update
+
+Update a SCIM group mapping role. [Management key](https://openrouter.ai/docs/client-sdks/go/docs/guides/overview/auth/management-api-keys) required.
+
+### Example Usage
+
+```go theme={null}
+package main
+
+import(
+	"context"
+	"os"
+	openrouter "github.com/OpenRouterTeam/go-sdk"
+	"github.com/OpenRouterTeam/go-sdk/models/components"
+	"log"
+)
+
+func main() {
+    ctx := context.Background()
+
+    s := openrouter.New(
+        openrouter.WithSecurity(os.Getenv("OPENROUTER_API_KEY")),
+    )
+
+    res, err := s.Scim.Update(ctx, "361a9698-8c34-4cbb-b0be-f6fd47094a30", components.UpdateScimGroupMappingRequest{
+        Role: components.UpdateScimGroupMappingRequestRoleMember,
+    })
+    if err != nil {
+        log.Fatal(err)
+    }
+    if res != nil {
+        // handle response
+    }
+}
+```
+
+### Parameters
+
+| Parameter | Type | Required | Description |
+| - | - | - | - |
+| `ctx` | [context.Context](https://pkg.go.dev/context#Context) | ✔️ | The context to use for the request. |
+| `id` | `string` | ✔️ | N/A |
+| `updateScimGroupMappingRequest` | [components.UpdateScimGroupMappingRequest](https://openrouter.ai/docs/client-sdks/go/models/components/updatescimgroupmappingrequest.mdx) | ✔️ | N/A |
+| `opts` | \[][operations.Option](https://openrouter.ai/docs/client-sdks/go/models/operations/option.mdx) | ➖ | The options for this request. |
+
+### Response
+
+**[\*components.UpdateScimGroupMappingResponse](https://openrouter.ai/docs/client-sdks/go/models/components/updatescimgroupmappingresponse.mdx), error**
+
+### Errors
+
+| Error Type | Status Code | Content Type |
+| - | - | - |
+| sdkerrors.BadRequestResponseError | 400 | application/json |
+| sdkerrors.UnauthorizedResponseError | 401 | application/json |
+| sdkerrors.ForbiddenResponseError | 403 | application/json |
+| sdkerrors.NotFoundResponseError | 404 | application/json |
+| sdkerrors.InternalServerResponseError | 500 | application/json |
+| sdkerrors.APIError | 4XX, 5XX | \*/\* |
+
+## ListGroups
+
+List SCIM groups for the organization. [Management key](https://openrouter.ai/docs/client-sdks/go/docs/guides/overview/auth/management-api-keys) required.
+
+### Example Usage
+
+```go theme={null}
+package main
+
+import(
+	"context"
+	"os"
+	openrouter "github.com/OpenRouterTeam/go-sdk"
+	"github.com/OpenRouterTeam/go-sdk/optionalnullable"
+	"log"
+)
+
+func main() {
+    ctx := context.Background()
+
+    s := openrouter.New(
+        openrouter.WithSecurity(os.Getenv("OPENROUTER_API_KEY")),
+    )
+
+    res, err := s.Scim.ListGroups(ctx, optionalnullable.From(openrouter.Pointer[int64](0)), openrouter.Pointer[int64](50), nil, nil)
+    if err != nil {
+        log.Fatal(err)
+    }
+    if res != nil {
+        for {
+            // handle items
+
+            res, err = res.Next()
+
+            if err != nil {
+                // handle error
+            }
+
+            if res == nil {
+                break
+            }
+        }
+    }
+}
+```
+
+### Parameters
+
+| Parameter | Type | Required | Description | Example |
+| - | - | - | - | - |
+| `ctx` | [context.Context](https://pkg.go.dev/context#Context) | ✔️ | The context to use for the request. | |
+| `offset` | optionalnullable.OptionalNullable\[`int64`] | ➖ | Number of records to skip for pagination | 0 |
+| `limit` | `*int64` | ➖ | Maximum number of records to return (max 100) | 50 |
+| `displayName` | `*string` | ➖ | Exact match filter on display\_name. Omitted or empty returns groups unfiltered by name (subject to offset/limit). When external\_id is also present, both must match. | Engineering |
+| `externalID` | `*string` | ➖ | Exact match filter on external\_id, e.g. the identity provider (such as Entra ID) group object ID. Omitted or empty returns groups unfiltered by external\_id (subject to offset/limit). When display\_name is also present, both must match. | a1b2c3d4-e5f6-7890-abcd-ef1234567890 |
+| `opts` | \[][operations.Option](https://openrouter.ai/docs/client-sdks/go/models/operations/option.mdx) | ➖ | The options for this request. | |
+
+### Response
+
+**[\*operations.ListScimGroupsResponse](https://openrouter.ai/docs/client-sdks/go/models/operations/listscimgroupsresponse.mdx), error**
+
+### Errors
+
+| Error Type | Status Code | Content Type |
+| - | - | - |
+| sdkerrors.UnauthorizedResponseError | 401 | application/json |
+| sdkerrors.ForbiddenResponseError | 403 | application/json |
+| sdkerrors.NotFoundResponseError | 404 | application/json |
+| sdkerrors.InternalServerResponseError | 500 | application/json |
+| sdkerrors.APIError | 4XX, 5XX | \*/\* |
+
+## CreateSyncJob
+
+Start a SCIM directory sync. [Management key](https://openrouter.ai/docs/client-sdks/go/docs/guides/overview/auth/management-api-keys) required.
+
+### Example Usage
+
+```go theme={null}
+package main
+
+import(
+	"context"
+	"os"
+	openrouter "github.com/OpenRouterTeam/go-sdk"
+	"log"
+)
+
+func main() {
+    ctx := context.Background()
+
+    s := openrouter.New(
+        openrouter.WithSecurity(os.Getenv("OPENROUTER_API_KEY")),
+    )
+
+    res, err := s.Scim.CreateSyncJob(ctx)
+    if err != nil {
+        log.Fatal(err)
+    }
+    if res != nil {
+        // handle response
+    }
+}
+```
+
+### Parameters
+
+| Parameter | Type | Required | Description |
+| - | - | - | - |
+| `ctx` | [context.Context](https://pkg.go.dev/context#Context) | ✔️ | The context to use for the request. |
+| `opts` | \[][operations.Option](https://openrouter.ai/docs/client-sdks/go/models/operations/option.mdx) | ➖ | The options for this request. |
+
+### Response
+
+**[\*operations.CreateScimSyncJobResponse](https://openrouter.ai/docs/client-sdks/go/models/operations/createscimsyncjobresponse.mdx), error**
+
+### Errors
+
+| Error Type | Status Code | Content Type |
+| - | - | - |
+| sdkerrors.UnauthorizedResponseError | 401 | application/json |
+| sdkerrors.ForbiddenResponseError | 403 | application/json |
+| sdkerrors.NotFoundResponseError | 404 | application/json |
+| sdkerrors.InternalServerResponseError | 500 | application/json |
+| sdkerrors.APIError | 4XX, 5XX | \*/\* |
+
+## GetSyncJob
+
+Get SCIM directory sync status. [Management key](https://openrouter.ai/docs/client-sdks/go/docs/guides/overview/auth/management-api-keys) required.
+
+### Example Usage
+
+```go theme={null}
+package main
+
+import(
+	"context"
+	"os"
+	openrouter "github.com/OpenRouterTeam/go-sdk"
+	"log"
+)
+
+func main() {
+    ctx := context.Background()
+
+    s := openrouter.New(
+        openrouter.WithSecurity(os.Getenv("OPENROUTER_API_KEY")),
+    )
+
+    res, err := s.Scim.GetSyncJob(ctx, "11506961-3c26-4184-a388-53273cc64c83")
+    if err != nil {
+        log.Fatal(err)
+    }
+    if res != nil {
+        // handle response
+    }
+}
+```
+
+### Parameters
+
+| Parameter | Type | Required | Description |
+| - | - | - | - |
+| `ctx` | [context.Context](https://pkg.go.dev/context#Context) | ✔️ | The context to use for the request. |
+| `id` | `string` | ✔️ | N/A |
+| `opts` | \[][operations.Option](https://openrouter.ai/docs/client-sdks/go/models/operations/option.mdx) | ➖ | The options for this request. |
+
+### Response
+
+**[\*components.GetScimSyncJobResponse](https://openrouter.ai/docs/client-sdks/go/models/components/getscimsyncjobresponse.mdx), error**
+
+### Errors
+
+| Error Type | Status Code | Content Type |
+| - | - | - |
+| sdkerrors.UnauthorizedResponseError | 401 | application/json |
+| sdkerrors.ForbiddenResponseError | 403 | application/json |
+| sdkerrors.NotFoundResponseError | 404 | application/json |
+| sdkerrors.InternalServerResponseError | 500 | application/json |
+| sdkerrors.APIError | 4XX, 5XX | \*/\* |

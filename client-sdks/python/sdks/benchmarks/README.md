@@ -1,0 +1,72 @@
+> ## Documentation Index
+> Fetch the complete documentation index at: https://openrouter.ai/docs/llms.txt
+> Use this file to discover all available pages before exploring further.
+
+# Benchmarks
+
+> Benchmarks endpoints
+
+## Overview
+
+Benchmarks endpoints
+
+### Available Operations
+
+* [get\_benchmarks](#get_benchmarks) - List Benchmarks
+
+## get\_benchmarks
+
+Unified benchmark endpoint that aggregates scores from multiple benchmark sources (Artificial Analysis, Design Arena, and OpenRouter's own tau-bench, GPQA, and web-search evals). Filter by source to reproduce the exact shapes from the legacy per-source endpoints, or use task\_type to find models suited for specific workloads. Use task\_type=search (or a search\_\* benchmark\_type) for OpenRouter's search benchmarks, which publish each model's highest-scoring eligible evaluation configuration with same-configuration runs combined by task-weighted mean. Authenticate with any valid OpenRouter API key. Rate-limited to 30 requests/minute per key and 500 requests/day per account.
+
+### Example Usage
+
+```python theme={null}
+from openrouter import OpenRouter
+import os
+
+
+with OpenRouter(
+    http_referer="<value>",
+    x_open_router_title="<value>",
+    x_open_router_categories="<value>",
+    api_key=os.getenv("OPENROUTER_API_KEY", ""),
+) as open_router:
+
+    res = open_router.benchmarks.get_benchmarks(include_run_config=True)
+
+    # Handle response
+    print(res)
+
+```
+
+### Parameters
+
+| Parameter | Type | Required | Description | Example |
+| - | - | - | - | - |
+| `http_referer` | *Optional\[str]* | ➖ | The app identifier should be your app's URL and is used as the primary identifier for rankings. This is used to track API usage per application.  | |
+| `x_open_router_title` | *Optional\[str]* | ➖ | The app display name allows you to customize how your app appears in OpenRouter's dashboard.  | |
+| `x_open_router_categories` | *Optional\[str]* | ➖ | Comma-separated list of app categories (e.g. "cli-agent,cloud-agent"). Used for marketplace rankings.  | |
+| `source` | [Optional\[operations.Source\]](https://openrouter.ai/docs/client-sdks/python/operations/source.mdx) | ➖ | Benchmark source to query. Determines the shape of the returned items. When omitted, returns results from all sources. | artificial-analysis |
+| `task_type` | [Optional\[operations.TaskType\]](https://openrouter.ai/docs/client-sdks/python/operations/tasktype.mdx) | ➖ | Filter results by task type. For Artificial Analysis, maps to the corresponding index. For Design Arena, maps to the matching category. `search` returns OpenRouter search benchmark results only. | coding |
+| `benchmark_type` | [Optional\[operations.BenchmarkType\]](https://openrouter.ai/docs/client-sdks/python/operations/benchmarktype.mdx) | ➖ | Return results for one exact OpenRouter benchmark. A `search_*` value narrows the response to search results only; a classic value narrows the OpenRouter items and leaves other sources' items as they are. | search\_widesearch |
+| `include_run_config` | *Optional\[bool]* | ➖ | Search benchmarks only: include the published lane configuration whitelist in each search item. Defaults to false. The whitelist is limited to agent turn count, reasoning effort, and temperature so future harness configuration changes do not change the public contract. | true |
+| `search_engine` | *Optional\[str]* | ➖ | OpenRouter search benchmarks only: filter by the search engine used. | exa |
+| `search_surface` | [Optional\[operations.SearchSurface\]](https://openrouter.ai/docs/client-sdks/python/operations/searchsurface.mdx) | ➖ | OpenRouter search benchmarks only: filter by the request surface the lane ran on. | server-tool |
+| `arena` | [Optional\[operations.Arena\]](https://openrouter.ai/docs/client-sdks/python/operations/arena.mdx) | ➖ | Design Arena only: arena to query. Defaults to `models` when source is `design-arena`. | models |
+| `category` | *Optional\[str]* | ➖ | Design Arena only: category within the arena (e.g. `codecategories`, `uicomponent`, `gamedev`, `3d`, `dataviz`, `image`, `video`, `svg`). When omitted, returns all categories. | codecategories |
+| `max_results` | *Optional\[int]* | ➖ | Maximum number of items to return. When omitted, all matching results are returned. | 50 |
+| `retries` | [Optional\[utils.RetryConfig\]](https://openrouter.ai/docs/client-sdks/python/models/utils/retryconfig.mdx) | ➖ | Configuration to override the default retry behavior of the client. | |
+
+### Response
+
+**[components.UnifiedBenchmarksResponse](https://openrouter.ai/docs/client-sdks/python/components/unifiedbenchmarksresponse.mdx)**
+
+### Errors
+
+| Error Type | Status Code | Content Type |
+| - | - | - |
+| errors.BadRequestResponseError | 400 | application/json |
+| errors.UnauthorizedResponseError | 401 | application/json |
+| errors.TooManyRequestsResponseError | 429 | application/json |
+| errors.InternalServerResponseError | 500 | application/json |
+| errors.OpenRouterDefaultError | 4XX, 5XX | \*/\* |

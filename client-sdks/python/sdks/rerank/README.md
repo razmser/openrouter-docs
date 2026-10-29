@@ -1,0 +1,82 @@
+> ## Documentation Index
+> Fetch the complete documentation index at: https://openrouter.ai/docs/llms.txt
+> Use this file to discover all available pages before exploring further.
+
+# Rerank
+
+> Rerank endpoints
+
+## Overview
+
+Rerank endpoints
+
+### Available Operations
+
+* [rerank](#rerank) - Submit a rerank request
+
+## rerank
+
+Submits a rerank request to the rerank router
+
+### Example Usage
+
+```python theme={null}
+from openrouter import OpenRouter
+import os
+
+
+with OpenRouter(
+    http_referer="<value>",
+    x_open_router_title="<value>",
+    x_open_router_categories="<value>",
+    api_key=os.getenv("OPENROUTER_API_KEY", ""),
+) as open_router:
+
+    res = open_router.rerank.rerank(documents=[
+        "Paris is the capital of France.",
+        "Berlin is the capital of Germany.",
+    ], model="cohere/rerank-v3.5", query="What is the capital of France?")
+
+    # Handle response
+    print(res)
+
+```
+
+### Parameters
+
+| Parameter | Type | Required | Description | Example |
+| - | - | - | - | - |
+| `documents` | List\[[operations.Document](https://openrouter.ai/docs/client-sdks/python/operations/document.mdx)] | ✔️ | The list of documents to rerank. Documents may be plain strings, or structured objects with `text` and/or `image` for multimodal models. | \[ "Paris is the capital of France.", "Berlin is the capital of Germany." ] |
+| `model` | *str* | ✔️ | The rerank model to use | cohere/rerank-v3.5 |
+| `query` | *str* | ✔️ | The search query to rerank documents against | What is the capital of France? |
+| `http_referer` | *Optional\[str]* | ➖ | The app identifier should be your app's URL and is used as the primary identifier for rankings. This is used to track API usage per application.  | |
+| `x_open_router_title` | *Optional\[str]* | ➖ | The app display name allows you to customize how your app appears in OpenRouter's dashboard.  | |
+| `x_open_router_categories` | *Optional\[str]* | ➖ | Comma-separated list of app categories (e.g. "cli-agent,cloud-agent"). Used for marketplace rankings.  | |
+| `provider` | [OptionalNullable\[components.ProviderPreferences\]](https://openrouter.ai/docs/client-sdks/python/components/providerpreferences.mdx) | ➖ | N/A | \{ "allow\_fallbacks": true } |
+| `session_id` | *Optional\[str]* | ➖ | A unique identifier for grouping related requests (e.g., a conversation or agent workflow). Used for observability grouping in Broadcast and private logging; never sent to the provider. If provided in both the request body and the x-session-id header, the body value takes precedence. Maximum of 256 characters. | session-1234 |
+| `top_n` | *Optional\[int]* | ➖ | Number of most relevant documents to return | 3 |
+| `trace` | [Optional\[components.TraceConfig\]](https://openrouter.ai/docs/client-sdks/python/components/traceconfig.mdx) | ➖ | Metadata for observability and tracing. Known keys (trace\_id, trace\_name, span\_name, generation\_name, parent\_span\_id) have special handling. Additional keys are passed through as custom metadata to configured broadcast destinations. | \{ "trace\_id": "trace-abc123", "trace\_name": "my-app-trace" } |
+| `user` | *Optional\[str]* | ➖ | A unique identifier representing your end-user. Forwarded to Broadcast and private logging as the end-user id; never sent to the provider. | user-1234 |
+| `retries` | [Optional\[utils.RetryConfig\]](https://openrouter.ai/docs/client-sdks/python/models/utils/retryconfig.mdx) | ➖ | Configuration to override the default retry behavior of the client. | |
+
+### Response
+
+**[operations.CreateRerankResponse](https://openrouter.ai/docs/client-sdks/python/operations/creatererankresponse.mdx)**
+
+### Errors
+
+| Error Type | Status Code | Content Type |
+| - | - | - |
+| errors.BadRequestResponseError | 400 | application/json |
+| errors.UnauthorizedResponseError | 401 | application/json |
+| errors.PaymentRequiredResponseError | 402 | application/json |
+| errors.ForbiddenResponseError | 403 | application/json |
+| errors.NotFoundResponseError | 404 | application/json |
+| errors.PayloadTooLargeResponseError | 413 | application/json |
+| errors.TooManyRequestsResponseError | 429 | application/json |
+| errors.InternalServerResponseError | 500 | application/json |
+| errors.BadGatewayResponseError | 502 | application/json |
+| errors.ServiceUnavailableResponseError | 503 | application/json |
+| errors.EdgeNetworkTimeoutResponseError | 524 | application/json |
+| errors.ProviderOverloadedResponseError | 529 | application/json |
+| errors.OpenRouterDefaultError | 4XX, 5XX | \*/\* |

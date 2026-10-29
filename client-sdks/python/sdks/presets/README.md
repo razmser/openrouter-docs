@@ -1,0 +1,509 @@
+> ## Documentation Index
+> Fetch the complete documentation index at: https://openrouter.ai/docs/llms.txt
+> Use this file to discover all available pages before exploring further.
+
+# Presets
+
+> Presets endpoints
+
+## Overview
+
+Presets endpoints
+
+### Available Operations
+
+* [list](#list) - List presets
+* [get](#get) - Get a preset
+* [create\_presets\_chat\_completions](#create_presets_chat_completions) - Create a preset from a chat-completions request body
+* [create\_presets\_messages](#create_presets_messages) - Create a preset from a messages request body
+* [create\_presets\_responses](#create_presets_responses) - Create a preset from a responses request body
+* [list\_versions](#list_versions) - List versions of a preset
+* [get\_version](#get_version) - Get a specific version of a preset
+
+## list
+
+Lists all presets for the authenticated user, ordered by most recently updated first.
+
+### Example Usage
+
+```python theme={null}
+from openrouter import OpenRouter
+import os
+
+
+with OpenRouter(
+    http_referer="<value>",
+    x_open_router_title="<value>",
+    x_open_router_categories="<value>",
+    api_key=os.getenv("OPENROUTER_API_KEY", ""),
+) as open_router:
+
+    res = open_router.presets.list(offset=0, limit=50)
+
+    while res is not None:
+        # Handle items
+
+        res = res.next()
+
+```
+
+### Parameters
+
+| Parameter | Type | Required | Description | Example |
+| - | - | - | - | - |
+| `http_referer` | *Optional\[str]* | ➖ | The app identifier should be your app's URL and is used as the primary identifier for rankings. This is used to track API usage per application.  | |
+| `x_open_router_title` | *Optional\[str]* | ➖ | The app display name allows you to customize how your app appears in OpenRouter's dashboard.  | |
+| `x_open_router_categories` | *Optional\[str]* | ➖ | Comma-separated list of app categories (e.g. "cli-agent,cloud-agent"). Used for marketplace rankings.  | |
+| `offset` | *OptionalNullable\[int]* | ➖ | Number of records to skip for pagination | 0 |
+| `limit` | *Optional\[int]* | ➖ | Maximum number of records to return (max 100) | 50 |
+| `retries` | [Optional\[utils.RetryConfig\]](https://openrouter.ai/docs/client-sdks/python/models/utils/retryconfig.mdx) | ➖ | Configuration to override the default retry behavior of the client. | |
+
+### Response
+
+**[operations.ListPresetsResponse](https://openrouter.ai/docs/client-sdks/python/operations/listpresetsresponse.mdx)**
+
+### Errors
+
+| Error Type | Status Code | Content Type |
+| - | - | - |
+| errors.BadRequestResponseError | 400 | application/json |
+| errors.UnauthorizedResponseError | 401 | application/json |
+| errors.ForbiddenResponseError | 403 | application/json |
+| errors.InternalServerResponseError | 500 | application/json |
+| errors.ServiceUnavailableResponseError | 503 | application/json |
+| errors.OpenRouterDefaultError | 4XX, 5XX | \*/\* |
+
+## get
+
+Retrieves a preset by its slug with its currently designated version inline.
+
+### Example Usage
+
+```python theme={null}
+from openrouter import OpenRouter
+import os
+
+
+with OpenRouter(
+    http_referer="<value>",
+    x_open_router_title="<value>",
+    x_open_router_categories="<value>",
+    api_key=os.getenv("OPENROUTER_API_KEY", ""),
+) as open_router:
+
+    res = open_router.presets.get(slug="my-preset")
+
+    # Handle response
+    print(res)
+
+```
+
+### Parameters
+
+| Parameter | Type | Required | Description | Example |
+| - | - | - | - | - |
+| `slug` | *str* | ✔️ | URL-safe slug identifying the preset. | my-preset |
+| `http_referer` | *Optional\[str]* | ➖ | The app identifier should be your app's URL and is used as the primary identifier for rankings. This is used to track API usage per application.  | |
+| `x_open_router_title` | *Optional\[str]* | ➖ | The app display name allows you to customize how your app appears in OpenRouter's dashboard.  | |
+| `x_open_router_categories` | *Optional\[str]* | ➖ | Comma-separated list of app categories (e.g. "cli-agent,cloud-agent"). Used for marketplace rankings.  | |
+| `retries` | [Optional\[utils.RetryConfig\]](https://openrouter.ai/docs/client-sdks/python/models/utils/retryconfig.mdx) | ➖ | Configuration to override the default retry behavior of the client. | |
+
+### Response
+
+**[components.GetPresetResponse](https://openrouter.ai/docs/client-sdks/python/components/getpresetresponse.mdx)**
+
+### Errors
+
+| Error Type | Status Code | Content Type |
+| - | - | - |
+| errors.BadRequestResponseError | 400 | application/json |
+| errors.UnauthorizedResponseError | 401 | application/json |
+| errors.ForbiddenResponseError | 403 | application/json |
+| errors.NotFoundResponseError | 404 | application/json |
+| errors.InternalServerResponseError | 500 | application/json |
+| errors.ServiceUnavailableResponseError | 503 | application/json |
+| errors.OpenRouterDefaultError | 4XX, 5XX | \*/\* |
+
+## create\_presets\_chat\_completions
+
+Creates a preset (or a new version of an existing one) from an inference request body. Only fields that overlap with the preset config are persisted; other fields (e.g. `messages`, `stream`, `prompt`) are silently ignored.
+
+### Example Usage
+
+```python theme={null}
+from openrouter import OpenRouter
+import os
+
+
+with OpenRouter(
+    http_referer="<value>",
+    x_open_router_title="<value>",
+    x_open_router_categories="<value>",
+    api_key=os.getenv("OPENROUTER_API_KEY", ""),
+) as open_router:
+
+    res = open_router.presets.create_presets_chat_completions(slug="my-preset", messages=[
+        {
+            "content": "You are a helpful assistant.",
+            "role": "system",
+        },
+        {
+            "content": "Hello!",
+            "role": "user",
+        },
+    ], model="openai/gpt-5.4", stream=False, temperature=0.7)
+
+    # Handle response
+    print(res)
+
+```
+
+### Parameters
+
+| Parameter | Type | Required | Description | Example |
+| - | - | - | - | - |
+| `slug` | *str* | ✔️ | URL-safe slug identifying the preset. Created if it does not exist. | my-preset |
+| `messages` | List\[[components.ChatMessages](https://openrouter.ai/docs/client-sdks/python/components/chatmessages.mdx)] | ✔️ | List of messages for the conversation | \[ \{ "content": "Hello!", "role": "user" } ] |
+| `http_referer` | *Optional\[str]* | ➖ | The app identifier should be your app's URL and is used as the primary identifier for rankings. This is used to track API usage per application.  | |
+| `x_open_router_title` | *Optional\[str]* | ➖ | The app display name allows you to customize how your app appears in OpenRouter's dashboard.  | |
+| `x_open_router_categories` | *Optional\[str]* | ➖ | Comma-separated list of app categories (e.g. "cli-agent,cloud-agent"). Used for marketplace rankings.  | |
+| `cache_control` | [Optional\[components.AnthropicCacheControlDirective\]](https://openrouter.ai/docs/client-sdks/python/components/anthropiccachecontroldirective.mdx) | ➖ | Enable automatic prompt caching. When set at the top level, the system automatically applies cache breakpoints to the last cacheable block in the request. When set on an individual content block, it marks an explicit cache breakpoint; block-level markers also work on OpenAI models that support explicit prompt caching — OpenRouter converts them to the provider's native format. | \{ "type": "ephemeral" } |
+| `debug` | [Optional\[components.ChatDebugOptions\]](https://openrouter.ai/docs/client-sdks/python/components/chatdebugoptions.mdx) | ➖ | Debug options for inspecting request transformations (streaming only) | \{ "echo\_upstream\_body": true } |
+| `deferred_tools` | [Optional\[components.DeferredToolsControl\]](https://openrouter.ai/docs/client-sdks/python/components/deferredtoolscontrol.mdx) | ➖ | Opt-in versioned router-level deferred-tool protocol. Replay assistant reasoning unchanged on continuation; keep the catalog unchanged. | \{ "profile": "portable", "protocol": "v1", "search": \{ "max\_results": 5, "type": "bm25" }, "validation": "runtime" } |
+| `frequency_penalty` | *OptionalNullable\[float]* | ➖ | Frequency penalty (-2.0 to 2.0) | 0 |
+| `image_config` | Dict\[str, [components.ImageConfig](https://openrouter.ai/docs/client-sdks/python/components/imageconfig.mdx)] | ➖ | Provider-specific image configuration options. Keys and values vary by model/provider. See [https://openrouter.ai/docs/guides/overview/multimodal/image-generation](../../../../guides/overview/multimodal/image-generation.md) for more details. | \{ "aspect\_ratio": "16:9", "quality": "high" } |
+| `logit_bias` | Dict\[str, *float*] | ➖ | Token logit bias adjustments | \{ "50256": -100 } |
+| `logprobs` | *OptionalNullable\[bool]* | ➖ | Return log probabilities | false |
+| `max_completion_tokens` | *OptionalNullable\[int]* | ➖ | Maximum tokens in completion | 100 |
+| `max_tokens` | *OptionalNullable\[int]* | ➖ | Maximum tokens (deprecated, use max\_completion\_tokens). Note: some providers enforce a minimum of 16. | 100 |
+| `metadata` | Dict\[str, *str*] | ➖ | Key-value pairs for additional object information (max 16 pairs, 64 char keys, 512 char values) | \{ "session\_id": "session-456", "user\_id": "user-123" } |
+| `min_p` | *OptionalNullable\[float]* | ➖ | Minimum probability threshold relative to the most likely token. Tokens with probability below min\_p \* (probability of top token) are filtered out. Not all providers support this parameter. | 0.1 |
+| `modalities` | List\[[components.Modality](https://openrouter.ai/docs/client-sdks/python/components/modality.mdx)] | ➖ | Output modalities for the response. Supported values are "text", "image", and "audio". | \[ "text", "image" ] |
+| `model` | *Optional\[str]* | ➖ | Model to use for completion | openai/gpt-4 |
+| `models` | List\[*str*] | ➖ | Models to use for completion | \[ "openai/gpt-4", "openai/gpt-4o" ] |
+| `parallel_tool_calls` | *OptionalNullable\[bool]* | ➖ | Whether to enable parallel function calling during tool use. When true, the model may generate multiple tool calls in a single response. | true |
+| `plugins` | List\[[components.ChatRequestPlugin](https://openrouter.ai/docs/client-sdks/python/components/chatrequestplugin.mdx)] | ➖ | Plugins you want to enable for this request, including their settings. | |
+| `prediction` | [OptionalNullable\[components.Prediction\]](https://openrouter.ai/docs/client-sdks/python/components/prediction.mdx) | ➖ | Static predicted output content. Supported models can use this to reduce latency when much of the response is known in advance. | \{ "content": "Expected response", "type": "content" } |
+| `presence_penalty` | *OptionalNullable\[float]* | ➖ | Presence penalty (-2.0 to 2.0) | 0 |
+| `prompt_cache_key` | *OptionalNullable\[str]* | ➖ | N/A | |
+| `prompt_cache_options` | [OptionalNullable\[components.PromptCacheOptions\]](https://openrouter.ai/docs/client-sdks/python/components/promptcacheoptions.mdx) | ➖ | Request-level prompt-cache controls. `mode: "explicit"` disables OpenAI-managed breakpoints so only blocks marked with `prompt_cache_breakpoint` are cached. `ttl` sets the minimum cache lifetime for every breakpoint the request writes: "30m" (default) or "12h" (billed at the higher 12h cache-write rate). Only supported by OpenAI GPT-5.6 and newer. | \{ "mode": "explicit", "ttl": "30m" } |
+| `provider` | [OptionalNullable\[components.ProviderPreferences\]](https://openrouter.ai/docs/client-sdks/python/components/providerpreferences.mdx) | ➖ | When multiple model providers are available, optionally indicate your routing preference. | \{ "allow\_fallbacks": true } |
+| `reasoning` | [Optional\[components.ChatRequestReasoning\]](https://openrouter.ai/docs/client-sdks/python/components/chatrequestreasoning.mdx) | ➖ | Configuration options for reasoning models | \{ "effort": "medium", "summary": "concise" } |
+| `reasoning_effort` | [OptionalNullable\[components.ChatRequestReasoningEffort\]](https://openrouter.ai/docs/client-sdks/python/components/chatrequestreasoningeffort.mdx) | ➖ | Shorthand for setting reasoning effort. Equivalent to setting reasoning.effort. Cannot be used simultaneously with reasoning.effort if they differ. | medium |
+| `repetition_penalty` | *OptionalNullable\[float]* | ➖ | Penalizes tokens based on how much they have already appeared in the text. A value of 1.0 means no penalty. Values above 1.0 penalize repeated tokens more strongly. Not all providers support this parameter. | 1 |
+| `response_format` | [Optional\[components.ResponseFormat\]](https://openrouter.ai/docs/client-sdks/python/components/responseformat.mdx) | ➖ | Response format configuration | \{ "type": "json\_object" } |
+| `seed` | *OptionalNullable\[int]* | ➖ | Random seed for deterministic outputs | 42 |
+| `service_tier` | [OptionalNullable\[components.ChatRequestServiceTier\]](https://openrouter.ai/docs/client-sdks/python/components/chatrequestservicetier.mdx) | ➖ | The service tier to use for processing this request. `fast` is accepted as an alias for `priority`. `ultrafast` prefers ultrafast endpoints and falls back to `priority`, then default endpoints. | auto |
+| `session_id` | *Optional\[str]* | ➖ | A unique identifier for grouping related requests (e.g., a conversation or agent workflow). When provided, OpenRouter uses it as the sticky routing key, routing all requests in the session to the same provider to maximize prompt cache hits. Also used for observability grouping. If provided in both the request body and the x-session-id header, the body value takes precedence. Maximum of 256 characters. | |
+| `stop` | [OptionalNullable\[components.ChatRequestStop\]](https://openrouter.ai/docs/client-sdks/python/components/chatrequeststop.mdx) | ➖ | Stop sequences (up to 4) | \[ "\n" ] |
+| `stop_server_tools_when` | List\[[components.StopServerToolsWhenCondition](https://openrouter.ai/docs/client-sdks/python/components/stopservertoolswhencondition.mdx)] | ➖ | Stop conditions for the server-tool agent loop. Any condition firing halts the loop (OR logic). When set, this overrides `max_tool_calls`. When a condition fires while the model is still emitting tool calls, the pending tool calls are executed and one final turn is made with tool calls disabled so the response ends with a natural-language answer instead of an unfinished tool call. | \[ \{ "step\_count": 5, "type": "step\_count\_is" }, \{ "max\_cost\_in\_dollars": 0.5, "type": "max\_cost" } ] |
+| `stream` | *Optional\[bool]* | ➖ | Enable streaming response | false |
+| `stream_options` | [OptionalNullable\[components.ChatStreamOptions\]](https://openrouter.ai/docs/client-sdks/python/components/chatstreamoptions.mdx) | ➖ | Streaming configuration options | \{ "include\_usage": true } |
+| `temperature` | *OptionalNullable\[float]* | ➖ | Sampling temperature (0-2) | 0.7 |
+| `tool_choice` | [Optional\[components.ChatToolChoice\]](https://openrouter.ai/docs/client-sdks/python/components/chattoolchoice.mdx) | ➖ | Tool choice configuration | auto |
+| `tools` | List\[[components.ChatFunctionTool](https://openrouter.ai/docs/client-sdks/python/components/chatfunctiontool.mdx)] | ➖ | Available tools for function calling | \[ \{ "function": \{ "description": "Get weather", "name": "get\_weather" }, "type": "function" } ] |
+| `top_a` | *OptionalNullable\[float]* | ➖ | Consider only tokens with "sufficiently high" probabilities based on the probability of the most likely token. Not all providers support this parameter. | 0 |
+| `top_k` | *OptionalNullable\[int]* | ➖ | Limits the model to choose from the top K most likely tokens at each step. A value of 1 means the model will always pick the most likely next token. Not all providers support this parameter. | 40 |
+| `top_logprobs` | *OptionalNullable\[int]* | ➖ | Number of top log probabilities to return (0-20) | 5 |
+| `top_p` | *OptionalNullable\[float]* | ➖ | Nucleus sampling parameter (0-1) | 1 |
+| `trace` | [Optional\[components.TraceConfig\]](https://openrouter.ai/docs/client-sdks/python/components/traceconfig.mdx) | ➖ | Metadata for observability and tracing. Known keys (trace\_id, trace\_name, span\_name, generation\_name, parent\_span\_id) have special handling. Additional keys are passed through as custom metadata to configured broadcast destinations. | \{ "trace\_id": "trace-abc123", "trace\_name": "my-app-trace" } |
+| `user` | *Optional\[str]* | ➖ | Per-end-user identifier for abuse isolation. Use a stable ID, hash, or pseudonym. When a provider requires a user identity, OpenRouter folds it into the hashed identity sent upstream and never forwards it raw. If omitted, requests use an account-level identity, so provider policy blocks can affect the whole account. | user-123 |
+| `retries` | [Optional\[utils.RetryConfig\]](https://openrouter.ai/docs/client-sdks/python/models/utils/retryconfig.mdx) | ➖ | Configuration to override the default retry behavior of the client. | |
+
+### Response
+
+**[components.CreatePresetFromInferenceResponse](https://openrouter.ai/docs/client-sdks/python/components/createpresetfrominferenceresponse.mdx)**
+
+### Errors
+
+| Error Type | Status Code | Content Type |
+| - | - | - |
+| errors.BadRequestResponseError | 400 | application/json |
+| errors.UnauthorizedResponseError | 401 | application/json |
+| errors.ForbiddenResponseError | 403 | application/json |
+| errors.NotFoundResponseError | 404 | application/json |
+| errors.ConflictResponseError | 409 | application/json |
+| errors.InternalServerResponseError | 500 | application/json |
+| errors.OpenRouterDefaultError | 4XX, 5XX | \*/\* |
+
+## create\_presets\_messages
+
+Creates a preset (or a new version of an existing one) from an inference request body. Only fields that overlap with the preset config are persisted; other fields (e.g. `messages`, `stream`, `prompt`) are silently ignored.
+
+### Example Usage
+
+```python theme={null}
+from openrouter import OpenRouter
+import os
+
+
+with OpenRouter(
+    http_referer="<value>",
+    x_open_router_title="<value>",
+    x_open_router_categories="<value>",
+    api_key=os.getenv("OPENROUTER_API_KEY", ""),
+) as open_router:
+
+    res = open_router.presets.create_presets_messages(slug="my-preset", messages=[
+        {
+            "content": "Hello!",
+            "role": "user",
+        },
+    ], model="anthropic/claude-4.6-sonnet", max_tokens=1024, system="You are a helpful assistant.")
+
+    # Handle response
+    print(res)
+
+```
+
+### Parameters
+
+| Parameter | Type | Required | Description | Example |
+| - | - | - | - | - |
+| `slug` | *str* | ✔️ | URL-safe slug identifying the preset. Created if it does not exist. | my-preset |
+| `messages` | List\[[components.MessagesMessageParam](https://openrouter.ai/docs/client-sdks/python/components/messagesmessageparam.mdx)] | ✔️ | N/A | |
+| `model` | *str* | ✔️ | N/A | |
+| `http_referer` | *Optional\[str]* | ➖ | The app identifier should be your app's URL and is used as the primary identifier for rankings. This is used to track API usage per application.  | |
+| `x_open_router_title` | *Optional\[str]* | ➖ | The app display name allows you to customize how your app appears in OpenRouter's dashboard.  | |
+| `x_open_router_categories` | *Optional\[str]* | ➖ | Comma-separated list of app categories (e.g. "cli-agent,cloud-agent"). Used for marketplace rankings.  | |
+| `cache_control` | [Optional\[components.AnthropicCacheControlDirective\]](https://openrouter.ai/docs/client-sdks/python/components/anthropiccachecontroldirective.mdx) | ➖ | Enable automatic prompt caching. When set at the top level, the system automatically applies cache breakpoints to the last cacheable block in the request. When set on an individual content block, it marks an explicit cache breakpoint; block-level markers also work on OpenAI models that support explicit prompt caching — OpenRouter converts them to the provider's native format. | \{ "type": "ephemeral" } |
+| `context_management` | [OptionalNullable\[components.ContextManagement\]](https://openrouter.ai/docs/client-sdks/python/components/contextmanagement.mdx) | ➖ | N/A | |
+| `deferred_tools` | [Optional\[components.DeferredToolsControl\]](https://openrouter.ai/docs/client-sdks/python/components/deferredtoolscontrol.mdx) | ➖ | Opt-in versioned router-level deferred-tool protocol. Replay assistant reasoning unchanged on continuation; keep the catalog unchanged. | \{ "profile": "portable", "protocol": "v1", "search": \{ "max\_results": 5, "type": "bm25" }, "validation": "runtime" } |
+| `fallbacks` | List\[[components.MessagesFallbackParam](https://openrouter.ai/docs/client-sdks/python/components/messagesfallbackparam.mdx)] | ➖ | Fallback models to try if the primary model fails or refuses, in order. Handled by OpenRouter multi-model routing rather than Anthropic server-side fallbacks; cannot be combined with `models`. Each entry accepts only `model`. Maximum of 3 entries. | \[ \{ "model": "claude-opus-4-8" } ] |
+| `max_tokens` | *Optional\[int]* | ➖ | N/A | |
+| `metadata` | [Optional\[components.MessagesRequestMetadata\]](https://openrouter.ai/docs/client-sdks/python/components/messagesrequestmetadata.mdx) | ➖ | N/A | |
+| `models` | List\[*str*] | ➖ | N/A | |
+| `output_config` | [Optional\[components.MessagesOutputConfig\]](https://openrouter.ai/docs/client-sdks/python/components/messagesoutputconfig.mdx) | ➖ | Configuration for controlling output behavior. Supports the effort parameter and structured output format. | \{ "effort": "medium" } |
+| `plugins` | List\[[components.MessagesRequestPlugin](https://openrouter.ai/docs/client-sdks/python/components/messagesrequestplugin.mdx)] | ➖ | Plugins you want to enable for this request, including their settings. | |
+| `provider` | [OptionalNullable\[components.ProviderPreferences\]](https://openrouter.ai/docs/client-sdks/python/components/providerpreferences.mdx) | ➖ | When multiple model providers are available, optionally indicate your routing preference. | \{ "allow\_fallbacks": true } |
+| `safeguards` | List\[[components.AnthropicSafeguard](https://openrouter.ai/docs/client-sdks/python/components/anthropicsafeguard.mdx)] | ➖ | N/A | |
+| `service_tier` | *Optional\[str]* | ➖ | N/A | |
+| `session_id` | *Optional\[str]* | ➖ | A unique identifier for grouping related requests (e.g., a conversation or agent workflow). When provided, OpenRouter uses it as the sticky routing key, routing all requests in the session to the same provider to maximize prompt cache hits. Also used for observability grouping. If provided in both the request body and the x-session-id header, the body value takes precedence. Maximum of 256 characters. | |
+| `speed` | [OptionalNullable\[components.Speed\]](https://openrouter.ai/docs/client-sdks/python/components/speed.mdx) | ➖ | N/A | fast |
+| `stop_sequences` | List\[*str*] | ➖ | N/A | |
+| `stop_server_tools_when` | List\[[components.StopServerToolsWhenCondition](https://openrouter.ai/docs/client-sdks/python/components/stopservertoolswhencondition.mdx)] | ➖ | Stop conditions for the server-tool agent loop. Any condition firing halts the loop (OR logic). When set, this overrides `max_tool_calls`. When a condition fires while the model is still emitting tool calls, the pending tool calls are executed and one final turn is made with tool calls disabled so the response ends with a natural-language answer instead of an unfinished tool call. | \[ \{ "step\_count": 5, "type": "step\_count\_is" }, \{ "max\_cost\_in\_dollars": 0.5, "type": "max\_cost" } ] |
+| `stream` | *Optional\[bool]* | ➖ | N/A | |
+| `system` | [Optional\[components.System\]](https://openrouter.ai/docs/client-sdks/python/components/system.mdx) | ➖ | N/A | |
+| `temperature` | *Optional\[float]* | ➖ | N/A | |
+| `thinking` | [Optional\[components.Thinking\]](https://openrouter.ai/docs/client-sdks/python/components/thinking.mdx) | ➖ | N/A | |
+| `tool_choice` | [Optional\[components.ToolChoice\]](https://openrouter.ai/docs/client-sdks/python/components/toolchoice.mdx) | ➖ | N/A | |
+| `tools` | List\[[components.MessagesRequestToolUnion](https://openrouter.ai/docs/client-sdks/python/components/messagesrequesttoolunion.mdx)] | ➖ | N/A | |
+| `top_k` | *Optional\[int]* | ➖ | N/A | |
+| `top_p` | *Optional\[float]* | ➖ | N/A | |
+| `trace` | [Optional\[components.TraceConfig\]](https://openrouter.ai/docs/client-sdks/python/components/traceconfig.mdx) | ➖ | Metadata for observability and tracing. Known keys (trace\_id, trace\_name, span\_name, generation\_name, parent\_span\_id) have special handling. Additional keys are passed through as custom metadata to configured broadcast destinations. | \{ "trace\_id": "trace-abc123", "trace\_name": "my-app-trace" } |
+| `user` | *Optional\[str]* | ➖ | A unique identifier representing your end-user, which helps distinguish between different users of your app. This allows your app to identify specific users in case of abuse reports, preventing your entire app from being affected by the actions of individual users. Maximum of 256 characters. | |
+| `retries` | [Optional\[utils.RetryConfig\]](https://openrouter.ai/docs/client-sdks/python/models/utils/retryconfig.mdx) | ➖ | Configuration to override the default retry behavior of the client. | |
+
+### Response
+
+**[components.CreatePresetFromInferenceResponse](https://openrouter.ai/docs/client-sdks/python/components/createpresetfrominferenceresponse.mdx)**
+
+### Errors
+
+| Error Type | Status Code | Content Type |
+| - | - | - |
+| errors.BadRequestResponseError | 400 | application/json |
+| errors.UnauthorizedResponseError | 401 | application/json |
+| errors.ForbiddenResponseError | 403 | application/json |
+| errors.NotFoundResponseError | 404 | application/json |
+| errors.ConflictResponseError | 409 | application/json |
+| errors.InternalServerResponseError | 500 | application/json |
+| errors.OpenRouterDefaultError | 4XX, 5XX | \*/\* |
+
+## create\_presets\_responses
+
+Creates a preset (or a new version of an existing one) from an inference request body. Only fields that overlap with the preset config are persisted; other fields (e.g. `messages`, `stream`, `prompt`) are silently ignored.
+
+### Example Usage
+
+```python theme={null}
+from openrouter import OpenRouter
+import os
+
+
+with OpenRouter(
+    http_referer="<value>",
+    x_open_router_title="<value>",
+    x_open_router_categories="<value>",
+    api_key=os.getenv("OPENROUTER_API_KEY", ""),
+) as open_router:
+
+    res = open_router.presets.create_presets_responses(slug="my-preset", input="Hello!", instructions="You are a helpful assistant.", model="openai/gpt-5.4", service_tier="auto", stream=False)
+
+    # Handle response
+    print(res)
+
+```
+
+### Parameters
+
+| Parameter | Type | Required | Description | Example |
+| - | - | - | - | - |
+| `slug` | *str* | ✔️ | URL-safe slug identifying the preset. Created if it does not exist. | my-preset |
+| `http_referer` | *Optional\[str]* | ➖ | The app identifier should be your app's URL and is used as the primary identifier for rankings. This is used to track API usage per application.  | |
+| `x_open_router_title` | *Optional\[str]* | ➖ | The app display name allows you to customize how your app appears in OpenRouter's dashboard.  | |
+| `x_open_router_categories` | *Optional\[str]* | ➖ | Comma-separated list of app categories (e.g. "cli-agent,cloud-agent"). Used for marketplace rankings.  | |
+| `background` | *OptionalNullable\[bool]* | ➖ | N/A | |
+| `cache_control` | [Optional\[components.AnthropicCacheControlDirective\]](https://openrouter.ai/docs/client-sdks/python/components/anthropiccachecontroldirective.mdx) | ➖ | Enable automatic prompt caching. When set at the top level, the system automatically applies cache breakpoints to the last cacheable block in the request. When set on an individual content block, it marks an explicit cache breakpoint; block-level markers also work on OpenAI models that support explicit prompt caching — OpenRouter converts them to the provider's native format. | \{ "type": "ephemeral" } |
+| `debug` | [Optional\[components.ChatDebugOptions\]](https://openrouter.ai/docs/client-sdks/python/components/chatdebugoptions.mdx) | ➖ | Debug options for inspecting request transformations (streaming only) | \{ "echo\_upstream\_body": true } |
+| `deferred_tools` | [Optional\[components.DeferredToolsControl\]](https://openrouter.ai/docs/client-sdks/python/components/deferredtoolscontrol.mdx) | ➖ | Opt-in versioned router-level deferred-tool protocol. Replay assistant reasoning unchanged on continuation; keep the catalog unchanged. | \{ "profile": "portable", "protocol": "v1", "search": \{ "max\_results": 5, "type": "bm25" }, "validation": "runtime" } |
+| `frequency_penalty` | *OptionalNullable\[float]* | ➖ | N/A | |
+| `image_config` | Dict\[str, [components.ImageConfig](https://openrouter.ai/docs/client-sdks/python/components/imageconfig.mdx)] | ➖ | Provider-specific image configuration options. Keys and values vary by model/provider. See [https://openrouter.ai/docs/guides/overview/multimodal/image-generation](../../../../guides/overview/multimodal/image-generation.md) for more details. | \{ "aspect\_ratio": "16:9", "quality": "high" } |
+| `include` | List\[[components.ResponseIncludesEnum](https://openrouter.ai/docs/client-sdks/python/components/responseincludesenum.mdx)] | ➖ | N/A | |
+| `input` | [Optional\[components.InputsUnion\]](https://openrouter.ai/docs/client-sdks/python/components/inputsunion.mdx) | ➖ | Input for a response request - can be a string or array of items | \[ \{ "content": "What is the weather today?", "role": "user" } ] |
+| `instructions` | *OptionalNullable\[str]* | ➖ | N/A | |
+| `max_output_tokens` | *OptionalNullable\[int]* | ➖ | N/A | |
+| `max_tool_calls` | *OptionalNullable\[int]* | ➖ | Maximum number of server-tool (e.g. `openrouter:web_search`) agent steps the model may take during a request. Defaults to 30, which is also the maximum. Ignored when `stop_server_tools_when` is set. | 30 |
+| `metadata` | Dict\[str, *str*] | ➖ | Metadata key-value pairs for the request. Keys must be ≤64 characters and cannot contain brackets. Values must be ≤512 characters. Maximum 16 pairs allowed. | \{ "session\_id": "abc-def-ghi", "user\_id": "123" } |
+| `modalities` | List\[[components.OutputModalityEnum](https://openrouter.ai/docs/client-sdks/python/components/outputmodalityenum.mdx)] | ➖ | Output modalities for the response. Supported values are "text" and "image". | \[ "text", "image" ] |
+| `model` | *Optional\[str]* | ➖ | N/A | |
+| `models` | List\[*str*] | ➖ | N/A | |
+| `parallel_tool_calls` | *OptionalNullable\[bool]* | ➖ | N/A | |
+| `plugins` | List\[[components.ResponsesRequestPlugin](https://openrouter.ai/docs/client-sdks/python/components/responsesrequestplugin.mdx)] | ➖ | Plugins you want to enable for this request, including their settings. | |
+| `presence_penalty` | *OptionalNullable\[float]* | ➖ | N/A | |
+| `previous_response_id` | *Optional\[Any]* | ➖ | Not supported on this proxy. Each response request is independent: no responses are stored, so a previous response cannot be referenced. Requests with a non-null value are rejected with a 400 error. Send the full conversation history in `input` instead. | |
+| `prompt` | [OptionalNullable\[components.StoredPromptTemplate\]](https://openrouter.ai/docs/client-sdks/python/components/storedprompttemplate.mdx) | ➖ | N/A | \{ "id": "prompt-abc123", "variables": \{ "name": "John" } } |
+| `prompt_cache_key` | *OptionalNullable\[str]* | ➖ | N/A | |
+| `prompt_cache_options` | [OptionalNullable\[components.PromptCacheOptions\]](https://openrouter.ai/docs/client-sdks/python/components/promptcacheoptions.mdx) | ➖ | Request-level prompt-cache controls. `mode: "explicit"` disables OpenAI-managed breakpoints so only blocks marked with `prompt_cache_breakpoint` are cached. `ttl` sets the minimum cache lifetime for every breakpoint the request writes: "30m" (default) or "12h" (billed at the higher 12h cache-write rate). Only supported by OpenAI GPT-5.6 and newer. | \{ "mode": "explicit", "ttl": "30m" } |
+| `provider` | [OptionalNullable\[components.ProviderPreferences\]](https://openrouter.ai/docs/client-sdks/python/components/providerpreferences.mdx) | ➖ | When multiple model providers are available, optionally indicate your routing preference. | \{ "allow\_fallbacks": true } |
+| `reasoning` | [OptionalNullable\[components.ReasoningConfig\]](https://openrouter.ai/docs/client-sdks/python/components/reasoningconfig.mdx) | ➖ | Configuration for reasoning mode in the response | \{ "enabled": true, "summary": "auto" } |
+| `safety_identifier` | *OptionalNullable\[str]* | ➖ | Recommended per-end-user identifier for abuse isolation. Use a stable ID, hash, or pseudonym. When a provider requires a user identity, OpenRouter folds it into the hashed identity sent upstream and never forwards it raw. If omitted, requests use an account-level identity, so provider policy blocks can affect the whole account. | user-123 |
+| `service_tier` | [OptionalNullable\[components.ResponsesRequestServiceTier\]](https://openrouter.ai/docs/client-sdks/python/components/responsesrequestservicetier.mdx) | ➖ | The service tier to use for processing this request. `fast` is accepted as an alias for `priority`. `ultrafast` prefers ultrafast endpoints and falls back to `priority`, then default endpoints. | |
+| `session_id` | *Optional\[str]* | ➖ | A unique identifier for grouping related requests (e.g., a conversation or agent workflow). When provided, OpenRouter uses it as the sticky routing key, routing all requests in the session to the same provider to maximize prompt cache hits. Also used for observability grouping. If provided in both the request body and the x-session-id header, the body value takes precedence. Maximum of 256 characters. | |
+| `stop` | [OptionalNullable\[components.ResponsesRequestStop\]](https://openrouter.ai/docs/client-sdks/python/components/responsesrequeststop.mdx) | ➖ | Stop sequences (up to 4) | \[ "\n" ] |
+| `stop_server_tools_when` | List\[[components.StopServerToolsWhenCondition](https://openrouter.ai/docs/client-sdks/python/components/stopservertoolswhencondition.mdx)] | ➖ | Stop conditions for the server-tool agent loop. Any condition firing halts the loop (OR logic). When set, this overrides `max_tool_calls`. When a condition fires while the model is still emitting tool calls, the pending tool calls are executed and one final turn is made with tool calls disabled so the response ends with a natural-language answer instead of an unfinished tool call. | \[ \{ "step\_count": 5, "type": "step\_count\_is" }, \{ "max\_cost\_in\_dollars": 0.5, "type": "max\_cost" } ] |
+| `stream` | *Optional\[bool]* | ➖ | N/A | |
+| `temperature` | *OptionalNullable\[float]* | ➖ | N/A | |
+| `text` | [Optional\[components.TextExtendedConfig\]](https://openrouter.ai/docs/client-sdks/python/components/textextendedconfig.mdx) | ➖ | Text output configuration including format and verbosity | \{ "format": \{ "type": "text" } } |
+| `tool_choice` | [Optional\[components.OpenAIResponsesToolChoiceUnion\]](https://openrouter.ai/docs/client-sdks/python/components/openairesponsestoolchoiceunion.mdx) | ➖ | N/A | auto |
+| `tools` | List\[[components.ResponsesRequestToolUnion](https://openrouter.ai/docs/client-sdks/python/components/responsesrequesttoolunion.mdx)] | ➖ | N/A | |
+| `top_k` | *Optional\[int]* | ➖ | N/A | |
+| `top_logprobs` | *OptionalNullable\[int]* | ➖ | N/A | |
+| `top_p` | *OptionalNullable\[float]* | ➖ | N/A | |
+| `trace` | [Optional\[components.TraceConfig\]](https://openrouter.ai/docs/client-sdks/python/components/traceconfig.mdx) | ➖ | Metadata for observability and tracing. Known keys (trace\_id, trace\_name, span\_name, generation\_name, parent\_span\_id) have special handling. Additional keys are passed through as custom metadata to configured broadcast destinations. | \{ "trace\_id": "trace-abc123", "trace\_name": "my-app-trace" } |
+| `truncation` | [OptionalNullable\[components.OpenAIResponsesTruncation\]](https://openrouter.ai/docs/client-sdks/python/components/openairesponsestruncation.mdx) | ➖ | N/A | auto |
+| `user` | *Optional\[str]* | ➖ | A unique identifier representing your end-user, which helps distinguish between different users of your app. This allows your app to identify specific users in case of abuse reports, preventing your entire app from being affected by the actions of individual users. Maximum of 256 characters. | |
+| `retries` | [Optional\[utils.RetryConfig\]](https://openrouter.ai/docs/client-sdks/python/models/utils/retryconfig.mdx) | ➖ | Configuration to override the default retry behavior of the client. | |
+
+### Response
+
+**[components.CreatePresetFromInferenceResponse](https://openrouter.ai/docs/client-sdks/python/components/createpresetfrominferenceresponse.mdx)**
+
+### Errors
+
+| Error Type | Status Code | Content Type |
+| - | - | - |
+| errors.BadRequestResponseError | 400 | application/json |
+| errors.UnauthorizedResponseError | 401 | application/json |
+| errors.ForbiddenResponseError | 403 | application/json |
+| errors.NotFoundResponseError | 404 | application/json |
+| errors.ConflictResponseError | 409 | application/json |
+| errors.InternalServerResponseError | 500 | application/json |
+| errors.OpenRouterDefaultError | 4XX, 5XX | \*/\* |
+
+## list\_versions
+
+Lists all versions of a preset, ordered by version number ascending (oldest first).
+
+### Example Usage
+
+```python theme={null}
+from openrouter import OpenRouter
+import os
+
+
+with OpenRouter(
+    http_referer="<value>",
+    x_open_router_title="<value>",
+    x_open_router_categories="<value>",
+    api_key=os.getenv("OPENROUTER_API_KEY", ""),
+) as open_router:
+
+    res = open_router.presets.list_versions(slug="my-preset", offset=0, limit=50)
+
+    while res is not None:
+        # Handle items
+
+        res = res.next()
+
+```
+
+### Parameters
+
+| Parameter | Type | Required | Description | Example |
+| - | - | - | - | - |
+| `slug` | *str* | ✔️ | URL-safe slug identifying the preset. | my-preset |
+| `http_referer` | *Optional\[str]* | ➖ | The app identifier should be your app's URL and is used as the primary identifier for rankings. This is used to track API usage per application.  | |
+| `x_open_router_title` | *Optional\[str]* | ➖ | The app display name allows you to customize how your app appears in OpenRouter's dashboard.  | |
+| `x_open_router_categories` | *Optional\[str]* | ➖ | Comma-separated list of app categories (e.g. "cli-agent,cloud-agent"). Used for marketplace rankings.  | |
+| `offset` | *OptionalNullable\[int]* | ➖ | Number of records to skip for pagination | 0 |
+| `limit` | *Optional\[int]* | ➖ | Maximum number of records to return (max 100) | 50 |
+| `retries` | [Optional\[utils.RetryConfig\]](https://openrouter.ai/docs/client-sdks/python/models/utils/retryconfig.mdx) | ➖ | Configuration to override the default retry behavior of the client. | |
+
+### Response
+
+**[operations.ListPresetVersionsResponse](https://openrouter.ai/docs/client-sdks/python/operations/listpresetversionsresponse.mdx)**
+
+### Errors
+
+| Error Type | Status Code | Content Type |
+| - | - | - |
+| errors.BadRequestResponseError | 400 | application/json |
+| errors.UnauthorizedResponseError | 401 | application/json |
+| errors.ForbiddenResponseError | 403 | application/json |
+| errors.NotFoundResponseError | 404 | application/json |
+| errors.InternalServerResponseError | 500 | application/json |
+| errors.ServiceUnavailableResponseError | 503 | application/json |
+| errors.OpenRouterDefaultError | 4XX, 5XX | \*/\* |
+
+## get\_version
+
+Retrieves a specific version of a preset by its slug and version number.
+
+### Example Usage
+
+```python theme={null}
+from openrouter import OpenRouter
+import os
+
+
+with OpenRouter(
+    http_referer="<value>",
+    x_open_router_title="<value>",
+    x_open_router_categories="<value>",
+    api_key=os.getenv("OPENROUTER_API_KEY", ""),
+) as open_router:
+
+    res = open_router.presets.get_version(slug="my-preset", version="1")
+
+    # Handle response
+    print(res)
+
+```
+
+### Parameters
+
+| Parameter | Type | Required | Description | Example |
+| - | - | - | - | - |
+| `slug` | *str* | ✔️ | URL-safe slug identifying the preset. | my-preset |
+| `version` | *str* | ✔️ | Version number of the preset. | 1 |
+| `http_referer` | *Optional\[str]* | ➖ | The app identifier should be your app's URL and is used as the primary identifier for rankings. This is used to track API usage per application.  | |
+| `x_open_router_title` | *Optional\[str]* | ➖ | The app display name allows you to customize how your app appears in OpenRouter's dashboard.  | |
+| `x_open_router_categories` | *Optional\[str]* | ➖ | Comma-separated list of app categories (e.g. "cli-agent,cloud-agent"). Used for marketplace rankings.  | |
+| `retries` | [Optional\[utils.RetryConfig\]](https://openrouter.ai/docs/client-sdks/python/models/utils/retryconfig.mdx) | ➖ | Configuration to override the default retry behavior of the client. | |
+
+### Response
+
+**[components.GetPresetVersionResponse](https://openrouter.ai/docs/client-sdks/python/components/getpresetversionresponse.mdx)**
+
+### Errors
+
+| Error Type | Status Code | Content Type |
+| - | - | - |
+| errors.BadRequestResponseError | 400 | application/json |
+| errors.UnauthorizedResponseError | 401 | application/json |
+| errors.ForbiddenResponseError | 403 | application/json |
+| errors.NotFoundResponseError | 404 | application/json |
+| errors.InternalServerResponseError | 500 | application/json |
+| errors.ServiceUnavailableResponseError | 503 | application/json |
+| errors.OpenRouterDefaultError | 4XX, 5XX | \*/\* |

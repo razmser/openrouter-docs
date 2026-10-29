@@ -1,0 +1,706 @@
+> ## Documentation Index
+> Fetch the complete documentation index at: https://openrouter.ai/docs/llms.txt
+> Use this file to discover all available pages before exploring further.
+
+# Private Endpoints
+
+> Private Endpoints endpoints
+
+## Overview
+
+Private Endpoints endpoints
+
+### Available Operations
+
+* [List](#list) - List private endpoints
+* [Create](#create) - Create a private endpoint
+* [Delete](#delete) - Delete a private endpoint
+* [Get](#get) - Get a private endpoint
+* [Update](#update) - Update a private endpoint
+* [Activate](#activate) - Activate a validated private endpoint
+* [Disable](#disable) - Disable a private endpoint
+* [Enable](#enable) - Enable a private endpoint
+* [~~UpdateParameters~~](#updateparameters) - Set private endpoint supported parameters (deprecated) ⚠️ **Deprecated**
+* [~~UpdatePricing~~](#updatepricing) - Set private endpoint pricing (deprecated) ⚠️ **Deprecated**
+* [Validate](#validate) - Validate a draft private endpoint
+
+## List
+
+List the organization's private endpoints, including drafts. Requires the private endpoints entitlement. [Management key](https://openrouter.ai/docs/client-sdks/go/docs/guides/overview/auth/management-api-keys) required.
+
+### Example Usage
+
+```go theme={null}
+package main
+
+import(
+	"context"
+	"os"
+	openrouter "github.com/OpenRouterTeam/go-sdk"
+	"log"
+)
+
+func main() {
+    ctx := context.Background()
+
+    s := openrouter.New(
+        openrouter.WithSecurity(os.Getenv("OPENROUTER_API_KEY")),
+    )
+
+    res, err := s.PrivateEndpoints.List(ctx)
+    if err != nil {
+        log.Fatal(err)
+    }
+    if res != nil {
+        // handle response
+    }
+}
+```
+
+### Parameters
+
+| Parameter | Type | Required | Description |
+| - | - | - | - |
+| `ctx` | [context.Context](https://pkg.go.dev/context#Context) | ✔️ | The context to use for the request. |
+| `opts` | \[][operations.Option](https://openrouter.ai/docs/client-sdks/go/models/operations/option.mdx) | ➖ | The options for this request. |
+
+### Response
+
+**[\*components.ListPrivateEndpointsResponse](https://openrouter.ai/docs/client-sdks/go/models/components/listprivateendpointsresponse.mdx), error**
+
+### Errors
+
+| Error Type | Status Code | Content Type |
+| - | - | - |
+| sdkerrors.UnauthorizedResponseError | 401 | application/json |
+| sdkerrors.ForbiddenResponseError | 403 | application/json |
+| sdkerrors.RequestTimeoutResponseError | 408 | application/json |
+| sdkerrors.InternalServerResponseError | 500 | application/json |
+| sdkerrors.APIError | 4XX, 5XX | \*/\* |
+
+## Create
+
+Create a private endpoint as a draft. Drafts are not routable: validate one with `POST /private-endpoints/{id}/validate`, then activate it with `POST /private-endpoints/{id}/activate`. Pass `activate` to do all three in one call; if validation fails the draft is kept and returned with the failed checks. Send an `Idempotency-Key` header to make retries safe: a repeated key with the same request returns the endpoint the first request created; reusing it with different fields returns 422 `idempotency_key_reused`. Returns 400 `parameters_invalid` when `tool_choice` is declared without `tools`. The response does not echo `declared_parameters` or `tested_parameters`; read them with `GET /private-endpoints/{id}`. [Management key](https://openrouter.ai/docs/client-sdks/go/docs/guides/overview/auth/management-api-keys) required.
+
+### Example Usage
+
+```go theme={null}
+package main
+
+import(
+	"context"
+	"os"
+	openrouter "github.com/OpenRouterTeam/go-sdk"
+	"github.com/OpenRouterTeam/go-sdk/models/components"
+	"log"
+)
+
+func main() {
+    ctx := context.Background()
+
+    s := openrouter.New(
+        openrouter.WithSecurity(os.Getenv("OPENROUTER_API_KEY")),
+    )
+
+    res, err := s.PrivateEndpoints.Create(ctx, components.CreatePrivateEndpointRequest{
+        ModelPermaslug: "openai/gpt-4o-2024-08-06",
+        ProviderSlug: "azure",
+        UpstreamModelID: "gpt-4o-prod",
+    }, nil)
+    if err != nil {
+        log.Fatal(err)
+    }
+    if res != nil {
+        // handle response
+    }
+}
+```
+
+### Parameters
+
+| Parameter | Type | Required | Description | Example |
+| - | - | - | - | - |
+| `ctx` | [context.Context](https://pkg.go.dev/context#Context) | ✔️ | The context to use for the request. | |
+| `createPrivateEndpointRequest` | [components.CreatePrivateEndpointRequest](https://openrouter.ai/docs/client-sdks/go/models/components/createprivateendpointrequest.mdx) | ✔️ | N/A | |
+| `idempotencyKey` | `*string` | ➖ | Retry-safe create: a repeated create with the same key from the same organization returns the endpoint the first request created instead of creating another. The endpoint is returned as it is now. Reusing a key with a different request body (model, provider, base URL, upstream model ID, declared ZDR or region, pricing, or declared parameters) is rejected with 422 `idempotency_key_reused`. Declared parameters are compared as a set, so a retry that reorders or repeats a name replays the endpoint. `activate` and `max_completion_tokens` are not compared, and later edits to the endpoint do not affect the comparison. | wayfair-gpt-4o-eastus-2026-09 |
+| `opts` | \[][operations.Option](https://openrouter.ai/docs/client-sdks/go/models/operations/option.mdx) | ➖ | The options for this request. | |
+
+### Response
+
+**[\*components.ManagedPrivateEndpointResponse](https://openrouter.ai/docs/client-sdks/go/models/components/managedprivateendpointresponse.mdx), error**
+
+### Errors
+
+| Error Type | Status Code | Content Type |
+| - | - | - |
+| sdkerrors.BadRequestResponseError | 400 | application/json |
+| sdkerrors.UnauthorizedResponseError | 401 | application/json |
+| sdkerrors.ForbiddenResponseError | 403 | application/json |
+| sdkerrors.NotFound | 404 | application/json |
+| sdkerrors.RequestTimeoutResponseError | 408 | application/json |
+| sdkerrors.Conflict | 409 | application/json |
+| sdkerrors.UnprocessableEntity | 422 | application/json |
+| sdkerrors.InternalServerError | 500 | application/json |
+| sdkerrors.BadGateway | 502 | application/json |
+| sdkerrors.APIError | 4XX, 5XX | \*/\* |
+
+## Delete
+
+Delete a private endpoint and stop routing to it. Pass `draft_only=true` to refuse (409) when the endpoint has been activated. [Management key](https://openrouter.ai/docs/client-sdks/go/docs/guides/overview/auth/management-api-keys) required.
+
+### Example Usage
+
+```go theme={null}
+package main
+
+import(
+	"context"
+	"os"
+	openrouter "github.com/OpenRouterTeam/go-sdk"
+	"log"
+)
+
+func main() {
+    ctx := context.Background()
+
+    s := openrouter.New(
+        openrouter.WithSecurity(os.Getenv("OPENROUTER_API_KEY")),
+    )
+
+    res, err := s.PrivateEndpoints.Delete(ctx, "5b1c4c4e-7d0a-4a8e-9f3a-2d6c1b0e8a11", nil)
+    if err != nil {
+        log.Fatal(err)
+    }
+    if res != nil {
+        // handle response
+    }
+}
+```
+
+### Parameters
+
+| Parameter | Type | Required | Description | Example |
+| - | - | - | - | - |
+| `ctx` | [context.Context](https://pkg.go.dev/context#Context) | ✔️ | The context to use for the request. | |
+| `id` | `string` | ✔️ | Stable identifier of the private endpoint. | 5b1c4c4e-7d0a-4a8e-9f3a-2d6c1b0e8a11 |
+| `draftOnly` | [\*operations.DraftOnly](https://openrouter.ai/docs/client-sdks/go/models/operations/draftonly.mdx) | ➖ | When `true`, only delete the endpoint if it is still a draft (409 otherwise). | |
+| `opts` | \[][operations.Option](https://openrouter.ai/docs/client-sdks/go/models/operations/option.mdx) | ➖ | The options for this request. | |
+
+### Response
+
+**[\*components.DeletePrivateEndpointResponse](https://openrouter.ai/docs/client-sdks/go/models/components/deleteprivateendpointresponse.mdx), error**
+
+### Errors
+
+| Error Type | Status Code | Content Type |
+| - | - | - |
+| sdkerrors.BadRequestResponseError | 400 | application/json |
+| sdkerrors.UnauthorizedResponseError | 401 | application/json |
+| sdkerrors.ForbiddenResponseError | 403 | application/json |
+| sdkerrors.NotFoundResponseError | 404 | application/json |
+| sdkerrors.RequestTimeoutResponseError | 408 | application/json |
+| sdkerrors.ConflictResponseError | 409 | application/json |
+| sdkerrors.UnprocessableEntityResponseError | 422 | application/json |
+| sdkerrors.InternalServerResponseError | 500 | application/json |
+| sdkerrors.BadGatewayResponseError | 502 | application/json |
+| sdkerrors.APIError | 4XX, 5XX | \*/\* |
+
+## Get
+
+Get one private endpoint with its upstream configuration and current pricing. [Management key](https://openrouter.ai/docs/client-sdks/go/docs/guides/overview/auth/management-api-keys) required.
+
+### Example Usage
+
+```go theme={null}
+package main
+
+import(
+	"context"
+	"os"
+	openrouter "github.com/OpenRouterTeam/go-sdk"
+	"log"
+)
+
+func main() {
+    ctx := context.Background()
+
+    s := openrouter.New(
+        openrouter.WithSecurity(os.Getenv("OPENROUTER_API_KEY")),
+    )
+
+    res, err := s.PrivateEndpoints.Get(ctx, "5b1c4c4e-7d0a-4a8e-9f3a-2d6c1b0e8a11")
+    if err != nil {
+        log.Fatal(err)
+    }
+    if res != nil {
+        // handle response
+    }
+}
+```
+
+### Parameters
+
+| Parameter | Type | Required | Description | Example |
+| - | - | - | - | - |
+| `ctx` | [context.Context](https://pkg.go.dev/context#Context) | ✔️ | The context to use for the request. | |
+| `id` | `string` | ✔️ | Stable identifier of the private endpoint. | 5b1c4c4e-7d0a-4a8e-9f3a-2d6c1b0e8a11 |
+| `opts` | \[][operations.Option](https://openrouter.ai/docs/client-sdks/go/models/operations/option.mdx) | ➖ | The options for this request. | |
+
+### Response
+
+**[\*components.PrivateEndpointResponse](https://openrouter.ai/docs/client-sdks/go/models/components/privateendpointresponse.mdx), error**
+
+### Errors
+
+| Error Type | Status Code | Content Type |
+| - | - | - |
+| sdkerrors.UnauthorizedResponseError | 401 | application/json |
+| sdkerrors.ForbiddenResponseError | 403 | application/json |
+| sdkerrors.NotFoundResponseError | 404 | application/json |
+| sdkerrors.RequestTimeoutResponseError | 408 | application/json |
+| sdkerrors.InternalServerResponseError | 500 | application/json |
+| sdkerrors.APIError | 4XX, 5XX | \*/\* |
+
+## Update
+
+Change any of the endpoint fields you own in one call; only the fields present change, and the response is the whole endpoint. `pricing` and `declared_parameters` replace their stored value, `settings` changes only the fields it names (`null` clears a limit or restores the provider default); routing picks these up for subsequent requests on drafts and active endpoints alike. `upstream_model_id`, `base_url`, `declared_zdr` and `declared_region` re-point a draft: an omitted `upstream_model_id` or `base_url` keeps the stored one, omitted data-policy declarations are kept while the upstream is unchanged and cleared when it changes, and any upstream change clears earlier validation. Naming an upstream field on an active endpoint returns 409 `already_active` and writes nothing; delete and re-create instead. Every group is checked before anything is written: 400 `parameters_invalid` when `tool_choice` is declared without `tools` tested or declared, 400 `settings_invalid` when `max_prompt_tokens` exceeds the context length, both completion APIs are off, or `excluded_parameters` names a tested parameter, 422 `pricing_invalid` for rates the provider strategy cannot represent. [Management key](https://openrouter.ai/docs/client-sdks/go/docs/guides/overview/auth/management-api-keys) required.
+
+### Example Usage
+
+```go theme={null}
+package main
+
+import(
+	"context"
+	"os"
+	openrouter "github.com/OpenRouterTeam/go-sdk"
+	"github.com/OpenRouterTeam/go-sdk/models/components"
+	"log"
+)
+
+func main() {
+    ctx := context.Background()
+
+    s := openrouter.New(
+        openrouter.WithSecurity(os.Getenv("OPENROUTER_API_KEY")),
+    )
+
+    res, err := s.PrivateEndpoints.Update(ctx, "5b1c4c4e-7d0a-4a8e-9f3a-2d6c1b0e8a11", components.UpdatePrivateEndpointRequest{})
+    if err != nil {
+        log.Fatal(err)
+    }
+    if res != nil {
+        // handle response
+    }
+}
+```
+
+### Parameters
+
+| Parameter | Type | Required | Description | Example |
+| - | - | - | - | - |
+| `ctx` | [context.Context](https://pkg.go.dev/context#Context) | ✔️ | The context to use for the request. | |
+| `id` | `string` | ✔️ | Stable identifier of the private endpoint. | 5b1c4c4e-7d0a-4a8e-9f3a-2d6c1b0e8a11 |
+| `updatePrivateEndpointRequest` | [components.UpdatePrivateEndpointRequest](https://openrouter.ai/docs/client-sdks/go/models/components/updateprivateendpointrequest.mdx) | ✔️ | N/A | \{ "declared\_parameters": \[ "seed" ], "settings": \{ "context\_length": 128000 } } |
+| `opts` | \[][operations.Option](https://openrouter.ai/docs/client-sdks/go/models/operations/option.mdx) | ➖ | The options for this request. | |
+
+### Response
+
+**[\*components.PrivateEndpointResponse](https://openrouter.ai/docs/client-sdks/go/models/components/privateendpointresponse.mdx), error**
+
+### Errors
+
+| Error Type | Status Code | Content Type |
+| - | - | - |
+| sdkerrors.BadRequestResponseError | 400 | application/json |
+| sdkerrors.UnauthorizedResponseError | 401 | application/json |
+| sdkerrors.ForbiddenResponseError | 403 | application/json |
+| sdkerrors.NotFoundResponseError | 404 | application/json |
+| sdkerrors.RequestTimeoutResponseError | 408 | application/json |
+| sdkerrors.ConflictResponseError | 409 | application/json |
+| sdkerrors.UnprocessableEntityResponseError | 422 | application/json |
+| sdkerrors.InternalServerResponseError | 500 | application/json |
+| sdkerrors.BadGatewayResponseError | 502 | application/json |
+| sdkerrors.APIError | 4XX, 5XX | \*/\* |
+
+## Activate
+
+Make a validated draft routable. Returns 409 when the endpoint was never validated, the validation is stale, or it is already active. [Management key](https://openrouter.ai/docs/client-sdks/go/docs/guides/overview/auth/management-api-keys) required.
+
+### Example Usage
+
+```go theme={null}
+package main
+
+import(
+	"context"
+	"os"
+	openrouter "github.com/OpenRouterTeam/go-sdk"
+	"log"
+)
+
+func main() {
+    ctx := context.Background()
+
+    s := openrouter.New(
+        openrouter.WithSecurity(os.Getenv("OPENROUTER_API_KEY")),
+    )
+
+    res, err := s.PrivateEndpoints.Activate(ctx, "5b1c4c4e-7d0a-4a8e-9f3a-2d6c1b0e8a11")
+    if err != nil {
+        log.Fatal(err)
+    }
+    if res != nil {
+        // handle response
+    }
+}
+```
+
+### Parameters
+
+| Parameter | Type | Required | Description | Example |
+| - | - | - | - | - |
+| `ctx` | [context.Context](https://pkg.go.dev/context#Context) | ✔️ | The context to use for the request. | |
+| `id` | `string` | ✔️ | Stable identifier of the private endpoint. | 5b1c4c4e-7d0a-4a8e-9f3a-2d6c1b0e8a11 |
+| `opts` | \[][operations.Option](https://openrouter.ai/docs/client-sdks/go/models/operations/option.mdx) | ➖ | The options for this request. | |
+
+### Response
+
+**[\*components.ManagedPrivateEndpointResponse](https://openrouter.ai/docs/client-sdks/go/models/components/managedprivateendpointresponse.mdx), error**
+
+### Errors
+
+| Error Type | Status Code | Content Type |
+| - | - | - |
+| sdkerrors.BadRequestResponseError | 400 | application/json |
+| sdkerrors.UnauthorizedResponseError | 401 | application/json |
+| sdkerrors.ForbiddenResponseError | 403 | application/json |
+| sdkerrors.NotFoundResponseError | 404 | application/json |
+| sdkerrors.RequestTimeoutResponseError | 408 | application/json |
+| sdkerrors.ConflictResponseError | 409 | application/json |
+| sdkerrors.UnprocessableEntityResponseError | 422 | application/json |
+| sdkerrors.InternalServerResponseError | 500 | application/json |
+| sdkerrors.BadGatewayResponseError | 502 | application/json |
+| sdkerrors.APIError | 4XX, 5XX | \*/\* |
+
+## Disable
+
+Stop routing to an active endpoint without deleting it. [Management key](https://openrouter.ai/docs/client-sdks/go/docs/guides/overview/auth/management-api-keys) required.
+
+### Example Usage
+
+```go theme={null}
+package main
+
+import(
+	"context"
+	"os"
+	openrouter "github.com/OpenRouterTeam/go-sdk"
+	"log"
+)
+
+func main() {
+    ctx := context.Background()
+
+    s := openrouter.New(
+        openrouter.WithSecurity(os.Getenv("OPENROUTER_API_KEY")),
+    )
+
+    res, err := s.PrivateEndpoints.Disable(ctx, "5b1c4c4e-7d0a-4a8e-9f3a-2d6c1b0e8a11")
+    if err != nil {
+        log.Fatal(err)
+    }
+    if res != nil {
+        // handle response
+    }
+}
+```
+
+### Parameters
+
+| Parameter | Type | Required | Description | Example |
+| - | - | - | - | - |
+| `ctx` | [context.Context](https://pkg.go.dev/context#Context) | ✔️ | The context to use for the request. | |
+| `id` | `string` | ✔️ | Stable identifier of the private endpoint. | 5b1c4c4e-7d0a-4a8e-9f3a-2d6c1b0e8a11 |
+| `opts` | \[][operations.Option](https://openrouter.ai/docs/client-sdks/go/models/operations/option.mdx) | ➖ | The options for this request. | |
+
+### Response
+
+**[\*components.ManagedPrivateEndpointResponse](https://openrouter.ai/docs/client-sdks/go/models/components/managedprivateendpointresponse.mdx), error**
+
+### Errors
+
+| Error Type | Status Code | Content Type |
+| - | - | - |
+| sdkerrors.BadRequestResponseError | 400 | application/json |
+| sdkerrors.UnauthorizedResponseError | 401 | application/json |
+| sdkerrors.ForbiddenResponseError | 403 | application/json |
+| sdkerrors.NotFoundResponseError | 404 | application/json |
+| sdkerrors.RequestTimeoutResponseError | 408 | application/json |
+| sdkerrors.ConflictResponseError | 409 | application/json |
+| sdkerrors.UnprocessableEntityResponseError | 422 | application/json |
+| sdkerrors.InternalServerResponseError | 500 | application/json |
+| sdkerrors.BadGatewayResponseError | 502 | application/json |
+| sdkerrors.APIError | 4XX, 5XX | \*/\* |
+
+## Enable
+
+Resume routing to a disabled endpoint. [Management key](https://openrouter.ai/docs/client-sdks/go/docs/guides/overview/auth/management-api-keys) required.
+
+### Example Usage
+
+```go theme={null}
+package main
+
+import(
+	"context"
+	"os"
+	openrouter "github.com/OpenRouterTeam/go-sdk"
+	"log"
+)
+
+func main() {
+    ctx := context.Background()
+
+    s := openrouter.New(
+        openrouter.WithSecurity(os.Getenv("OPENROUTER_API_KEY")),
+    )
+
+    res, err := s.PrivateEndpoints.Enable(ctx, "5b1c4c4e-7d0a-4a8e-9f3a-2d6c1b0e8a11")
+    if err != nil {
+        log.Fatal(err)
+    }
+    if res != nil {
+        // handle response
+    }
+}
+```
+
+### Parameters
+
+| Parameter | Type | Required | Description | Example |
+| - | - | - | - | - |
+| `ctx` | [context.Context](https://pkg.go.dev/context#Context) | ✔️ | The context to use for the request. | |
+| `id` | `string` | ✔️ | Stable identifier of the private endpoint. | 5b1c4c4e-7d0a-4a8e-9f3a-2d6c1b0e8a11 |
+| `opts` | \[][operations.Option](https://openrouter.ai/docs/client-sdks/go/models/operations/option.mdx) | ➖ | The options for this request. | |
+
+### Response
+
+**[\*components.ManagedPrivateEndpointResponse](https://openrouter.ai/docs/client-sdks/go/models/components/managedprivateendpointresponse.mdx), error**
+
+### Errors
+
+| Error Type | Status Code | Content Type |
+| - | - | - |
+| sdkerrors.BadRequestResponseError | 400 | application/json |
+| sdkerrors.UnauthorizedResponseError | 401 | application/json |
+| sdkerrors.ForbiddenResponseError | 403 | application/json |
+| sdkerrors.NotFoundResponseError | 404 | application/json |
+| sdkerrors.RequestTimeoutResponseError | 408 | application/json |
+| sdkerrors.ConflictResponseError | 409 | application/json |
+| sdkerrors.UnprocessableEntityResponseError | 422 | application/json |
+| sdkerrors.InternalServerResponseError | 500 | application/json |
+| sdkerrors.BadGatewayResponseError | 502 | application/json |
+| sdkerrors.APIError | 4XX, 5XX | \*/\* |
+
+## ~~UpdateParameters~~
+
+Deprecated: send `declared_parameters` to `PATCH /private-endpoints/{id}` instead; this route behaves exactly like that call and will be removed. The body replaces the earlier declaration and is read as a set; `tested_parameters` stay. Returns 400 `parameters_invalid` when `tool_choice` is declared without `tools` being tested or declared. [Management key](https://openrouter.ai/docs/client-sdks/go/docs/guides/overview/auth/management-api-keys) required.
+
+> ⚠️ **DEPRECATED**: This will be removed in a future release, please migrate away from it as soon as possible.
+
+### Example Usage
+
+```go theme={null}
+package main
+
+import(
+	"context"
+	"os"
+	openrouter "github.com/OpenRouterTeam/go-sdk"
+	"github.com/OpenRouterTeam/go-sdk/models/components"
+	"log"
+)
+
+func main() {
+    ctx := context.Background()
+
+    s := openrouter.New(
+        openrouter.WithSecurity(os.Getenv("OPENROUTER_API_KEY")),
+    )
+
+    res, err := s.PrivateEndpoints.UpdateParameters(ctx, "5b1c4c4e-7d0a-4a8e-9f3a-2d6c1b0e8a11", components.UpdatePrivateEndpointParametersRequest{
+        DeclaredParameters: []components.PrivateEndpointDeclaredParameter{
+            components.PrivateEndpointDeclaredParameterTemperature,
+            components.PrivateEndpointDeclaredParameterSeed,
+        },
+    })
+    if err != nil {
+        log.Fatal(err)
+    }
+    if res != nil {
+        // handle response
+    }
+}
+```
+
+### Parameters
+
+| Parameter | Type | Required | Description | Example |
+| - | - | - | - | - |
+| `ctx` | [context.Context](https://pkg.go.dev/context#Context) | ✔️ | The context to use for the request. | |
+| `id` | `string` | ✔️ | Stable identifier of the private endpoint. | 5b1c4c4e-7d0a-4a8e-9f3a-2d6c1b0e8a11 |
+| `updatePrivateEndpointParametersRequest` | [components.UpdatePrivateEndpointParametersRequest](https://openrouter.ai/docs/client-sdks/go/models/components/updateprivateendpointparametersrequest.mdx) | ✔️ | N/A | |
+| `opts` | \[][operations.Option](https://openrouter.ai/docs/client-sdks/go/models/operations/option.mdx) | ➖ | The options for this request. | |
+
+### Response
+
+**[\*components.PrivateEndpointResponse](https://openrouter.ai/docs/client-sdks/go/models/components/privateendpointresponse.mdx), error**
+
+### Errors
+
+| Error Type | Status Code | Content Type |
+| - | - | - |
+| sdkerrors.BadRequestResponseError | 400 | application/json |
+| sdkerrors.UnauthorizedResponseError | 401 | application/json |
+| sdkerrors.ForbiddenResponseError | 403 | application/json |
+| sdkerrors.NotFoundResponseError | 404 | application/json |
+| sdkerrors.RequestTimeoutResponseError | 408 | application/json |
+| sdkerrors.ConflictResponseError | 409 | application/json |
+| sdkerrors.UnprocessableEntityResponseError | 422 | application/json |
+| sdkerrors.InternalServerResponseError | 500 | application/json |
+| sdkerrors.BadGatewayResponseError | 502 | application/json |
+| sdkerrors.APIError | 4XX, 5XX | \*/\* |
+
+## ~~UpdatePricing~~
+
+Deprecated: send `pricing` to `PATCH /private-endpoints/{id}` instead; this route behaves exactly like that call and will be removed. The body replaces the whole pricing object: omitting `cache_read` or `cache_write` reverts that rate to the provider pricing strategy default. [Management key](https://openrouter.ai/docs/client-sdks/go/docs/guides/overview/auth/management-api-keys) required.
+
+> ⚠️ **DEPRECATED**: This will be removed in a future release, please migrate away from it as soon as possible.
+
+### Example Usage
+
+```go theme={null}
+package main
+
+import(
+	"context"
+	"os"
+	openrouter "github.com/OpenRouterTeam/go-sdk"
+	"github.com/OpenRouterTeam/go-sdk/models/components"
+	"log"
+)
+
+func main() {
+    ctx := context.Background()
+
+    s := openrouter.New(
+        openrouter.WithSecurity(os.Getenv("OPENROUTER_API_KEY")),
+    )
+
+    res, err := s.PrivateEndpoints.UpdatePricing(ctx, "5b1c4c4e-7d0a-4a8e-9f3a-2d6c1b0e8a11", components.UpdatePrivateEndpointPricingRequest{
+        Pricing: components.PrivateEndpointPricing{
+            Completion: "0.00001",
+            Prompt: "0.0000025",
+        },
+    })
+    if err != nil {
+        log.Fatal(err)
+    }
+    if res != nil {
+        // handle response
+    }
+}
+```
+
+### Parameters
+
+| Parameter | Type | Required | Description | Example |
+| - | - | - | - | - |
+| `ctx` | [context.Context](https://pkg.go.dev/context#Context) | ✔️ | The context to use for the request. | |
+| `id` | `string` | ✔️ | Stable identifier of the private endpoint. | 5b1c4c4e-7d0a-4a8e-9f3a-2d6c1b0e8a11 |
+| `updatePrivateEndpointPricingRequest` | [components.UpdatePrivateEndpointPricingRequest](https://openrouter.ai/docs/client-sdks/go/models/components/updateprivateendpointpricingrequest.mdx) | ✔️ | N/A | |
+| `opts` | \[][operations.Option](https://openrouter.ai/docs/client-sdks/go/models/operations/option.mdx) | ➖ | The options for this request. | |
+
+### Response
+
+**[\*components.PrivateEndpointResponse](https://openrouter.ai/docs/client-sdks/go/models/components/privateendpointresponse.mdx), error**
+
+### Errors
+
+| Error Type | Status Code | Content Type |
+| - | - | - |
+| sdkerrors.BadRequestResponseError | 400 | application/json |
+| sdkerrors.UnauthorizedResponseError | 401 | application/json |
+| sdkerrors.ForbiddenResponseError | 403 | application/json |
+| sdkerrors.NotFoundResponseError | 404 | application/json |
+| sdkerrors.RequestTimeoutResponseError | 408 | application/json |
+| sdkerrors.ConflictResponseError | 409 | application/json |
+| sdkerrors.UnprocessableEntityResponseError | 422 | application/json |
+| sdkerrors.InternalServerResponseError | 500 | application/json |
+| sdkerrors.BadGatewayResponseError | 502 | application/json |
+| sdkerrors.APIError | 4XX, 5XX | \*/\* |
+
+## Validate
+
+Send a live test request to the draft endpoint using the given workspace's BYOK credential for its provider. A passing validation is required before activation. Failed checks return 200 with `passed: false`. [Management key](https://openrouter.ai/docs/client-sdks/go/docs/guides/overview/auth/management-api-keys) required.
+
+### Example Usage
+
+```go theme={null}
+package main
+
+import(
+	"context"
+	"os"
+	openrouter "github.com/OpenRouterTeam/go-sdk"
+	"github.com/OpenRouterTeam/go-sdk/models/components"
+	"log"
+)
+
+func main() {
+    ctx := context.Background()
+
+    s := openrouter.New(
+        openrouter.WithSecurity(os.Getenv("OPENROUTER_API_KEY")),
+    )
+
+    res, err := s.PrivateEndpoints.Validate(ctx, "5b1c4c4e-7d0a-4a8e-9f3a-2d6c1b0e8a11", components.ValidatePrivateEndpointRequest{
+        WorkspaceID: "550e8400-e29b-41d4-a716-446655440000",
+    })
+    if err != nil {
+        log.Fatal(err)
+    }
+    if res != nil {
+        // handle response
+    }
+}
+```
+
+### Parameters
+
+| Parameter | Type | Required | Description | Example |
+| - | - | - | - | - |
+| `ctx` | [context.Context](https://pkg.go.dev/context#Context) | ✔️ | The context to use for the request. | |
+| `id` | `string` | ✔️ | Stable identifier of the private endpoint. | 5b1c4c4e-7d0a-4a8e-9f3a-2d6c1b0e8a11 |
+| `validatePrivateEndpointRequest` | [components.ValidatePrivateEndpointRequest](https://openrouter.ai/docs/client-sdks/go/models/components/validateprivateendpointrequest.mdx) | ✔️ | N/A | |
+| `opts` | \[][operations.Option](https://openrouter.ai/docs/client-sdks/go/models/operations/option.mdx) | ➖ | The options for this request. | |
+
+### Response
+
+**[\*components.PrivateEndpointValidationResponse](https://openrouter.ai/docs/client-sdks/go/models/components/privateendpointvalidationresponse.mdx), error**
+
+### Errors
+
+| Error Type | Status Code | Content Type |
+| - | - | - |
+| sdkerrors.BadRequestResponseError | 400 | application/json |
+| sdkerrors.UnauthorizedResponseError | 401 | application/json |
+| sdkerrors.ForbiddenResponseError | 403 | application/json |
+| sdkerrors.NotFoundResponseError | 404 | application/json |
+| sdkerrors.RequestTimeoutResponseError | 408 | application/json |
+| sdkerrors.ConflictResponseError | 409 | application/json |
+| sdkerrors.UnprocessableEntityResponseError | 422 | application/json |
+| sdkerrors.InternalServerResponseError | 500 | application/json |
+| sdkerrors.BadGatewayResponseError | 502 | application/json |
+| sdkerrors.APIError | 4XX, 5XX | \*/\* |

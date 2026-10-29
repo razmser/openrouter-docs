@@ -1,0 +1,239 @@
+> ## Documentation Index
+> Fetch the complete documentation index at: https://openrouter.ai/docs/llms.txt
+> Use this file to discover all available pages before exploring further.
+
+# Video Generation
+
+> Video Generation endpoints
+
+## Overview
+
+Video Generation endpoints
+
+### Available Operations
+
+* [generate](#generate) - Submit a video generation request
+* [get\_generation](#get_generation) - Poll video generation status
+* [get\_video\_content](#get_video_content) - Download generated video content
+* [list\_videos\_models](#list_videos_models) - List all video generation models
+
+## generate
+
+Submits a video generation request and returns a polling URL to check status
+
+### Example Usage
+
+```python theme={null}
+from openrouter import OpenRouter
+import os
+
+
+with OpenRouter(
+    http_referer="<value>",
+    x_open_router_title="<value>",
+    x_open_router_categories="<value>",
+    api_key=os.getenv("OPENROUTER_API_KEY", ""),
+) as open_router:
+
+    res = open_router.video_generation.generate(model="google/veo-3.1", aspect_ratio="16:9", duration=8, prompt="A serene mountain landscape at sunset", resolution="720p")
+
+    # Handle response
+    print(res)
+
+```
+
+### Parameters
+
+| Parameter | Type | Required | Description | Example |
+| - | - | - | - | - |
+| `model` | *str* | ✔️ | N/A | |
+| `http_referer` | *Optional\[str]* | ➖ | The app identifier should be your app's URL and is used as the primary identifier for rankings. This is used to track API usage per application.  | |
+| `x_open_router_title` | *Optional\[str]* | ➖ | The app display name allows you to customize how your app appears in OpenRouter's dashboard.  | |
+| `x_open_router_categories` | *Optional\[str]* | ➖ | Comma-separated list of app categories (e.g. "cli-agent,cloud-agent"). Used for marketplace rankings.  | |
+| `aspect_ratio` | [Optional\[components.VideoGenerationRequestAspectRatio\]](https://openrouter.ai/docs/client-sdks/python/components/videogenerationrequestaspectratio.mdx) | ➖ | Aspect ratio of the generated video | 16:9 |
+| `callback_url` | *Optional\[str]* | ➖ | URL to receive a webhook notification when the video generation job completes. Overrides the workspace-level default callback URL if set. Must be HTTPS. | [https://example.com/webhook](https://example.com/webhook) |
+| `creativity` | *Optional\[int]* | ➖ | Creativity level for video upscaling models only. This parameter is not supported by video generation models. | 1 |
+| `duration` | *Optional\[int]* | ➖ | Duration of the generated video in seconds | 8 |
+| `frame_images` | List\[[components.FrameImage](https://openrouter.ai/docs/client-sdks/python/components/frameimage.mdx)] | ➖ | Images to use as the first and/or last frame of the generated video. Each image must specify a frame\_type of first\_frame or last\_frame. | |
+| `generate_audio` | *Optional\[bool]* | ➖ | Whether to generate audio alongside the video. Defaults to the endpoint's generate\_audio capability flag, false if not set. | true |
+| `input_references` | List\[[components.InputReference](https://openrouter.ai/docs/client-sdks/python/components/inputreference.mdx)] | ➖ | Reference assets to guide video generation. Accepts image, audio, and video references. Audio and video references are only honored by providers that support them (including BytePlus Seedance generation 2 and newer); other providers use image references and ignore the rest. | |
+| `previous_job_id` | *Optional\[str]* | ➖ | ID of a completed video job to edit or extend, as returned by the submit response. The new job runs on the same model and endpoint that produced the previous one. Only models that support continuation accept this field. | gen-vid-1789493115-a1B2c3D4e5F6g7H8i9J0 |
+| `prompt` | *Optional\[str]* | ➖ | Text prompt describing the video to generate. Optional for models that support generating a video from image input alone; required by all other models. | A serene mountain landscape at sunset |
+| `provider` | [Optional\[components.VideoGenerationRequestProvider\]](https://openrouter.ai/docs/client-sdks/python/components/videogenerationrequestprovider.mdx) | ➖ | Provider-specific passthrough configuration | |
+| `resolution` | [Optional\[components.VideoGenerationRequestResolution\]](https://openrouter.ai/docs/client-sdks/python/components/videogenerationrequestresolution.mdx) | ➖ | Resolution of the generated video | 720p |
+| `seed` | *Optional\[int]* | ➖ | If specified, the generation will sample deterministically, such that repeated requests with the same seed and parameters should return the same result. Determinism is not guaranteed for all providers. | |
+| `session_id` | *Optional\[str]* | ➖ | A unique identifier for grouping related requests (e.g., a conversation or agent workflow). Used for observability grouping in Broadcast and private logging; never sent to the provider. If provided in both the request body and the x-session-id header, the body value takes precedence. Maximum of 256 characters. | session-1234 |
+| `size` | *Optional\[str]* | ➖ | Exact pixel dimensions of the generated video in "WIDTHxHEIGHT" format (e.g. "1280x720"). Interchangeable with resolution + aspect\_ratio. | 1280x720 |
+| `trace` | [Optional\[components.TraceConfig\]](https://openrouter.ai/docs/client-sdks/python/components/traceconfig.mdx) | ➖ | Metadata for observability and tracing. Known keys (trace\_id, trace\_name, span\_name, generation\_name, parent\_span\_id) have special handling. Additional keys are passed through as custom metadata to configured broadcast destinations. | \{ "trace\_id": "trace-abc123", "trace\_name": "my-app-trace" } |
+| `upscale_factor` | *Optional\[float]* | ➖ | Upscale factor for video upscaling models only. This parameter is not supported by video generation models. | 2 |
+| `user` | *Optional\[str]* | ➖ | A unique identifier representing your end-user. Forwarded to Broadcast and private logging as the end-user id; never sent to the provider. | user-1234 |
+| `retries` | [Optional\[utils.RetryConfig\]](https://openrouter.ai/docs/client-sdks/python/models/utils/retryconfig.mdx) | ➖ | Configuration to override the default retry behavior of the client. | |
+
+### Response
+
+**[components.VideoGenerationResponse](https://openrouter.ai/docs/client-sdks/python/components/videogenerationresponse.mdx)**
+
+### Errors
+
+| Error Type | Status Code | Content Type |
+| - | - | - |
+| errors.BadRequestResponseError | 400 | application/json |
+| errors.UnauthorizedResponseError | 401 | application/json |
+| errors.PaymentRequiredResponseError | 402 | application/json |
+| errors.ForbiddenResponseError | 403 | application/json |
+| errors.NotFoundResponseError | 404 | application/json |
+| errors.PayloadTooLargeResponseError | 413 | application/json |
+| errors.TooManyRequestsResponseError | 429 | application/json |
+| errors.ClientClosedRequestResponseError | 499 | application/json |
+| errors.InternalServerResponseError | 500 | application/json |
+| errors.ServiceUnavailableResponseError | 503 | application/json |
+| errors.OpenRouterDefaultError | 4XX, 5XX | \*/\* |
+
+## get\_generation
+
+Returns job status and content URLs when completed
+
+### Example Usage
+
+```python theme={null}
+from openrouter import OpenRouter
+import os
+
+
+with OpenRouter(
+    http_referer="<value>",
+    x_open_router_title="<value>",
+    x_open_router_categories="<value>",
+    api_key=os.getenv("OPENROUTER_API_KEY", ""),
+) as open_router:
+
+    res = open_router.video_generation.get_generation(job_id="job-abc123")
+
+    # Handle response
+    print(res)
+
+```
+
+### Parameters
+
+| Parameter | Type | Required | Description | Example |
+| - | - | - | - | - |
+| `job_id` | *str* | ✔️ | N/A | job-abc123 |
+| `http_referer` | *Optional\[str]* | ➖ | The app identifier should be your app's URL and is used as the primary identifier for rankings. This is used to track API usage per application.  | |
+| `x_open_router_title` | *Optional\[str]* | ➖ | The app display name allows you to customize how your app appears in OpenRouter's dashboard.  | |
+| `x_open_router_categories` | *Optional\[str]* | ➖ | Comma-separated list of app categories (e.g. "cli-agent,cloud-agent"). Used for marketplace rankings.  | |
+| `retries` | [Optional\[utils.RetryConfig\]](https://openrouter.ai/docs/client-sdks/python/models/utils/retryconfig.mdx) | ➖ | Configuration to override the default retry behavior of the client. | |
+
+### Response
+
+**[components.VideoGenerationResponse](https://openrouter.ai/docs/client-sdks/python/components/videogenerationresponse.mdx)**
+
+### Errors
+
+| Error Type | Status Code | Content Type |
+| - | - | - |
+| errors.UnauthorizedResponseError | 401 | application/json |
+| errors.ForbiddenResponseError | 403 | application/json |
+| errors.NotFoundResponseError | 404 | application/json |
+| errors.InternalServerResponseError | 500 | application/json |
+| errors.OpenRouterDefaultError | 4XX, 5XX | \*/\* |
+
+## get\_video\_content
+
+Streams the generated video content from the upstream provider
+
+### Example Usage
+
+```python theme={null}
+from openrouter import OpenRouter
+import os
+
+
+with OpenRouter(
+    http_referer="<value>",
+    x_open_router_title="<value>",
+    x_open_router_categories="<value>",
+    api_key=os.getenv("OPENROUTER_API_KEY", ""),
+) as open_router:
+
+    res = open_router.video_generation.get_video_content(job_id="job-abc123", index=0)
+
+    # Handle response
+    print(res)
+
+```
+
+### Parameters
+
+| Parameter | Type | Required | Description | Example |
+| - | - | - | - | - |
+| `job_id` | *str* | ✔️ | N/A | job-abc123 |
+| `http_referer` | *Optional\[str]* | ➖ | The app identifier should be your app's URL and is used as the primary identifier for rankings. This is used to track API usage per application.  | |
+| `x_open_router_title` | *Optional\[str]* | ➖ | The app display name allows you to customize how your app appears in OpenRouter's dashboard.  | |
+| `x_open_router_categories` | *Optional\[str]* | ➖ | Comma-separated list of app categories (e.g. "cli-agent,cloud-agent"). Used for marketplace rankings.  | |
+| `index` | *OptionalNullable\[int]* | ➖ | N/A | 0 |
+| `retries` | [Optional\[utils.RetryConfig\]](https://openrouter.ai/docs/client-sdks/python/models/utils/retryconfig.mdx) | ➖ | Configuration to override the default retry behavior of the client. | |
+
+### Response
+
+**[httpx.Response](https://openrouter.ai/docs/client-sdks/python/models/.mdx)**
+
+### Errors
+
+| Error Type | Status Code | Content Type |
+| - | - | - |
+| errors.BadRequestResponseError | 400 | application/json |
+| errors.UnauthorizedResponseError | 401 | application/json |
+| errors.ForbiddenResponseError | 403 | application/json |
+| errors.NotFoundResponseError | 404 | application/json |
+| errors.ConflictResponseError | 409 | application/json |
+| errors.GoneResponseError | 410 | application/json |
+| errors.InternalServerResponseError | 500 | application/json |
+| errors.BadGatewayResponseError | 502 | application/json |
+| errors.OpenRouterDefaultError | 4XX, 5XX | \*/\* |
+
+## list\_videos\_models
+
+Returns a list of all available video generation models and their properties
+
+### Example Usage
+
+```python theme={null}
+from openrouter import OpenRouter
+import os
+
+
+with OpenRouter(
+    http_referer="<value>",
+    x_open_router_title="<value>",
+    x_open_router_categories="<value>",
+    api_key=os.getenv("OPENROUTER_API_KEY", ""),
+) as open_router:
+
+    res = open_router.video_generation.list_videos_models()
+
+    # Handle response
+    print(res)
+
+```
+
+### Parameters
+
+| Parameter | Type | Required | Description |
+| - | - | - | - |
+| `http_referer` | *Optional\[str]* | ➖ | The app identifier should be your app's URL and is used as the primary identifier for rankings. This is used to track API usage per application.  |
+| `x_open_router_title` | *Optional\[str]* | ➖ | The app display name allows you to customize how your app appears in OpenRouter's dashboard.  |
+| `x_open_router_categories` | *Optional\[str]* | ➖ | Comma-separated list of app categories (e.g. "cli-agent,cloud-agent"). Used for marketplace rankings.  |
+| `retries` | [Optional\[utils.RetryConfig\]](https://openrouter.ai/docs/client-sdks/python/models/utils/retryconfig.mdx) | ➖ | Configuration to override the default retry behavior of the client. |
+
+### Response
+
+**[components.VideoModelsListResponse](https://openrouter.ai/docs/client-sdks/python/components/videomodelslistresponse.mdx)**
+
+### Errors
+
+| Error Type | Status Code | Content Type |
+| - | - | - |
+| errors.BadRequestResponseError | 400 | application/json |
+| errors.InternalServerResponseError | 500 | application/json |
+| errors.OpenRouterDefaultError | 4XX, 5XX | \*/\* |

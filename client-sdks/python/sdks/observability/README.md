@@ -1,0 +1,300 @@
+> ## Documentation Index
+> Fetch the complete documentation index at: https://openrouter.ai/docs/llms.txt
+> Use this file to discover all available pages before exploring further.
+
+# Observability
+
+> Observability endpoints
+
+## Overview
+
+Observability endpoints
+
+### Available Operations
+
+* [list](#list) - List observability destinations
+* [create](#create) - Create an observability destination
+* [delete](#delete) - Delete an observability destination
+* [get](#get) - Get an observability destination
+* [update](#update) - Update an observability destination
+
+## list
+
+List the observability destinations configured for the authenticated entity's default workspace. Use the `workspace_id` query parameter to scope the result to a different workspace. Only destinations with stable release status are surfaced — destinations of other types are excluded. [Management key](https://openrouter.ai/docs/client-sdks/python/docs/guides/overview/auth/management-api-keys) required.
+
+### Example Usage
+
+```python theme={null}
+from openrouter import OpenRouter
+import os
+
+
+with OpenRouter(
+    http_referer="<value>",
+    x_open_router_title="<value>",
+    x_open_router_categories="<value>",
+    api_key=os.getenv("OPENROUTER_API_KEY", ""),
+) as open_router:
+
+    res = open_router.observability.list(offset=0, limit=50)
+
+    while res is not None:
+        # Handle items
+
+        res = res.next()
+
+```
+
+### Parameters
+
+| Parameter | Type | Required | Description | Example |
+| - | - | - | - | - |
+| `http_referer` | *Optional\[str]* | ➖ | The app identifier should be your app's URL and is used as the primary identifier for rankings. This is used to track API usage per application.  | |
+| `x_open_router_title` | *Optional\[str]* | ➖ | The app display name allows you to customize how your app appears in OpenRouter's dashboard.  | |
+| `x_open_router_categories` | *Optional\[str]* | ➖ | Comma-separated list of app categories (e.g. "cli-agent,cloud-agent"). Used for marketplace rankings.  | |
+| `offset` | *OptionalNullable\[int]* | ➖ | Number of records to skip for pagination | 0 |
+| `limit` | *Optional\[int]* | ➖ | Maximum number of records to return (max 100) | 50 |
+| `workspace_id` | *Optional\[str]* | ➖ | Optional workspace ID to filter by. Defaults to the authenticated entity's default workspace. | 550e8400-e29b-41d4-a716-446655440000 |
+| `retries` | [Optional\[utils.RetryConfig\]](https://openrouter.ai/docs/client-sdks/python/models/utils/retryconfig.mdx) | ➖ | Configuration to override the default retry behavior of the client. | |
+
+### Response
+
+**[operations.ListObservabilityDestinationsResponse](https://openrouter.ai/docs/client-sdks/python/operations/listobservabilitydestinationsresponse.mdx)**
+
+### Errors
+
+| Error Type | Status Code | Content Type |
+| - | - | - |
+| errors.BadRequestResponseError | 400 | application/json |
+| errors.UnauthorizedResponseError | 401 | application/json |
+| errors.ForbiddenResponseError | 403 | application/json |
+| errors.InternalServerResponseError | 500 | application/json |
+| errors.OpenRouterDefaultError | 4XX, 5XX | \*/\* |
+
+## create
+
+Create a new observability destination. A maximum of 5 destinations per type is allowed. Defaults to the authenticated entity's default workspace; use the `workspace_id` body field to scope to a different workspace. [Management key](https://openrouter.ai/docs/client-sdks/python/docs/guides/overview/auth/management-api-keys) required.
+
+### Example Usage
+
+```python theme={null}
+from openrouter import OpenRouter
+import os
+
+
+with OpenRouter(
+    http_referer="<value>",
+    x_open_router_title="<value>",
+    x_open_router_categories="<value>",
+    api_key=os.getenv("OPENROUTER_API_KEY", ""),
+) as open_router:
+
+    res = open_router.observability.create(config={
+        "baseUrl": "https://us.cloud.langfuse.com",
+        "publicKey": "pk-l...EfGh",
+        "secretKey": "sk-l...AbCd",
+    }, name="Production Langfuse", type_="langfuse", broadcast_generation_cost=False, broadcast_generation_cost_allocation=False, broadcast_generation_identity=False, broadcast_generation_request_context=False, enabled=True, privacy_mode=False)
+
+    # Handle response
+    print(res)
+
+```
+
+### Parameters
+
+| Parameter | Type | Required | Description | Example |
+| - | - | - | - | - |
+| `config` | Dict\[str, *Any*] | ✔️ | Provider-specific configuration. The shape depends on `type` and is validated server-side. | \{ "baseUrl": "[https://us.cloud.langfuse.com](https://us.cloud.langfuse.com)", "publicKey": "pk-l...EfGh", "secretKey": "sk-l...AbCd" } |
+| `name` | *str* | ✔️ | Human-readable name for the destination. | Production Langfuse |
+| `type` | [components.CreateObservabilityDestinationRequestType](https://openrouter.ai/docs/client-sdks/python/components/createobservabilitydestinationrequesttype.mdx) | ✔️ | The destination type. Only stable destination types are accepted. | langfuse |
+| `http_referer` | *Optional\[str]* | ➖ | The app identifier should be your app's URL and is used as the primary identifier for rankings. This is used to track API usage per application.  | |
+| `x_open_router_title` | *Optional\[str]* | ➖ | The app display name allows you to customize how your app appears in OpenRouter's dashboard.  | |
+| `x_open_router_categories` | *Optional\[str]* | ➖ | Comma-separated list of app categories (e.g. "cli-agent,cloud-agent"). Used for marketplace rankings.  | |
+| `api_key_hashes` | List\[*str*] | ➖ | Optional allowlist of OpenRouter API key hashes whose traffic is forwarded. `null` or omitted means all keys. Must contain at least one hash if provided. | null |
+| `broadcast_generation_cost` | *Optional\[bool]* | ➖ | When true, include cost and billing generation metadata. | false |
+| `broadcast_generation_cost_allocation` | *Optional\[bool]* | ➖ | Beta. When true, include openrouter\_cost\_allocation: per-token-kind usage and cost, sent only when they reconcile with the billed cost. | false |
+| `broadcast_generation_identity` | *Optional\[bool]* | ➖ | When true, include identity generation metadata. | false |
+| `broadcast_generation_request_context` | *Optional\[bool]* | ➖ | When true, include request-context generation metadata. | false |
+| `enabled` | *Optional\[bool]* | ➖ | Whether this destination should be enabled immediately. | true |
+| `filter_rules` | [OptionalNullable\[components.ObservabilityFilterRulesConfigNullable\]](https://openrouter.ai/docs/client-sdks/python/components/observabilityfilterrulesconfignullable.mdx) | ➖ | Optional structured filter rules controlling which events are forwarded. | null |
+| `privacy_mode` | *Optional\[bool]* | ➖ | When true, request/response bodies are not forwarded — only metadata. | false |
+| `regions` | List\[[components.ObservabilityDataRegionInput](https://openrouter.ai/docs/client-sdks/python/components/observabilitydataregioninput.mdx)] | ➖ | Data regions this destination applies to. `eu` is accepted as an alias for `europe` and normalizes to `europe`. Omitting this field defaults to \['global']; the array must be non-empty. | \[ "global" ] |
+| `sampling_rate` | *Optional\[float]* | ➖ | Sampling rate between 0.0001 and 1 (1 = 100%). | 1 |
+| `workspace_id` | *Optional\[str]* | ➖ | Optional workspace ID. Defaults to the authenticated entity's default workspace. | 550e8400-e29b-41d4-a716-446655440000 |
+| `retries` | [Optional\[utils.RetryConfig\]](https://openrouter.ai/docs/client-sdks/python/models/utils/retryconfig.mdx) | ➖ | Configuration to override the default retry behavior of the client. | |
+
+### Response
+
+**[components.CreateObservabilityDestinationResponse](https://openrouter.ai/docs/client-sdks/python/components/createobservabilitydestinationresponse.mdx)**
+
+### Errors
+
+| Error Type | Status Code | Content Type |
+| - | - | - |
+| errors.BadRequestResponseError | 400 | application/json |
+| errors.UnauthorizedResponseError | 401 | application/json |
+| errors.ForbiddenResponseError | 403 | application/json |
+| errors.ConflictResponseError | 409 | application/json |
+| errors.InternalServerResponseError | 500 | application/json |
+| errors.OpenRouterDefaultError | 4XX, 5XX | \*/\* |
+
+## delete
+
+Delete an existing observability destination. This performs a soft delete. [Management key](https://openrouter.ai/docs/client-sdks/python/docs/guides/overview/auth/management-api-keys) required.
+
+### Example Usage
+
+```python theme={null}
+from openrouter import OpenRouter
+import os
+
+
+with OpenRouter(
+    http_referer="<value>",
+    x_open_router_title="<value>",
+    x_open_router_categories="<value>",
+    api_key=os.getenv("OPENROUTER_API_KEY", ""),
+) as open_router:
+
+    res = open_router.observability.delete(id="99999999-aaaa-bbbb-cccc-dddddddddddd")
+
+    # Handle response
+    print(res)
+
+```
+
+### Parameters
+
+| Parameter | Type | Required | Description | Example |
+| - | - | - | - | - |
+| `id` | *str* | ✔️ | The destination ID (UUID). | 99999999-aaaa-bbbb-cccc-dddddddddddd |
+| `http_referer` | *Optional\[str]* | ➖ | The app identifier should be your app's URL and is used as the primary identifier for rankings. This is used to track API usage per application.  | |
+| `x_open_router_title` | *Optional\[str]* | ➖ | The app display name allows you to customize how your app appears in OpenRouter's dashboard.  | |
+| `x_open_router_categories` | *Optional\[str]* | ➖ | Comma-separated list of app categories (e.g. "cli-agent,cloud-agent"). Used for marketplace rankings.  | |
+| `retries` | [Optional\[utils.RetryConfig\]](https://openrouter.ai/docs/client-sdks/python/models/utils/retryconfig.mdx) | ➖ | Configuration to override the default retry behavior of the client. | |
+
+### Response
+
+**[components.DeleteObservabilityDestinationResponse](https://openrouter.ai/docs/client-sdks/python/components/deleteobservabilitydestinationresponse.mdx)**
+
+### Errors
+
+| Error Type | Status Code | Content Type |
+| - | - | - |
+| errors.UnauthorizedResponseError | 401 | application/json |
+| errors.ForbiddenResponseError | 403 | application/json |
+| errors.NotFoundResponseError | 404 | application/json |
+| errors.InternalServerResponseError | 500 | application/json |
+| errors.OpenRouterDefaultError | 4XX, 5XX | \*/\* |
+
+## get
+
+Fetch a single observability destination by its UUID. [Management key](https://openrouter.ai/docs/client-sdks/python/docs/guides/overview/auth/management-api-keys) required.
+
+### Example Usage
+
+```python theme={null}
+from openrouter import OpenRouter
+import os
+
+
+with OpenRouter(
+    http_referer="<value>",
+    x_open_router_title="<value>",
+    x_open_router_categories="<value>",
+    api_key=os.getenv("OPENROUTER_API_KEY", ""),
+) as open_router:
+
+    res = open_router.observability.get(id="99999999-aaaa-bbbb-cccc-dddddddddddd")
+
+    # Handle response
+    print(res)
+
+```
+
+### Parameters
+
+| Parameter | Type | Required | Description | Example |
+| - | - | - | - | - |
+| `id` | *str* | ✔️ | The destination ID (UUID). | 99999999-aaaa-bbbb-cccc-dddddddddddd |
+| `http_referer` | *Optional\[str]* | ➖ | The app identifier should be your app's URL and is used as the primary identifier for rankings. This is used to track API usage per application.  | |
+| `x_open_router_title` | *Optional\[str]* | ➖ | The app display name allows you to customize how your app appears in OpenRouter's dashboard.  | |
+| `x_open_router_categories` | *Optional\[str]* | ➖ | Comma-separated list of app categories (e.g. "cli-agent,cloud-agent"). Used for marketplace rankings.  | |
+| `retries` | [Optional\[utils.RetryConfig\]](https://openrouter.ai/docs/client-sdks/python/models/utils/retryconfig.mdx) | ➖ | Configuration to override the default retry behavior of the client. | |
+
+### Response
+
+**[components.GetObservabilityDestinationResponse](https://openrouter.ai/docs/client-sdks/python/components/getobservabilitydestinationresponse.mdx)**
+
+### Errors
+
+| Error Type | Status Code | Content Type |
+| - | - | - |
+| errors.UnauthorizedResponseError | 401 | application/json |
+| errors.ForbiddenResponseError | 403 | application/json |
+| errors.NotFoundResponseError | 404 | application/json |
+| errors.InternalServerResponseError | 500 | application/json |
+| errors.OpenRouterDefaultError | 4XX, 5XX | \*/\* |
+
+## update
+
+Update an existing observability destination. Only the fields provided in the request body are updated. [Management key](https://openrouter.ai/docs/client-sdks/python/docs/guides/overview/auth/management-api-keys) required.
+
+### Example Usage
+
+```python theme={null}
+from openrouter import OpenRouter
+import os
+
+
+with OpenRouter(
+    http_referer="<value>",
+    x_open_router_title="<value>",
+    x_open_router_categories="<value>",
+    api_key=os.getenv("OPENROUTER_API_KEY", ""),
+) as open_router:
+
+    res = open_router.observability.update(id="99999999-aaaa-bbbb-cccc-dddddddddddd", enabled=False, name="Updated Langfuse")
+
+    # Handle response
+    print(res)
+
+```
+
+### Parameters
+
+| Parameter | Type | Required | Description | Example |
+| - | - | - | - | - |
+| `id` | *str* | ✔️ | The destination ID (UUID). | 99999999-aaaa-bbbb-cccc-dddddddddddd |
+| `http_referer` | *Optional\[str]* | ➖ | The app identifier should be your app's URL and is used as the primary identifier for rankings. This is used to track API usage per application.  | |
+| `x_open_router_title` | *Optional\[str]* | ➖ | The app display name allows you to customize how your app appears in OpenRouter's dashboard.  | |
+| `x_open_router_categories` | *Optional\[str]* | ➖ | Comma-separated list of app categories (e.g. "cli-agent,cloud-agent"). Used for marketplace rankings.  | |
+| `api_key_hashes` | List\[*str*] | ➖ | Optional allowlist of OpenRouter API key hashes. `null` clears the filter (all keys). Omitting leaves the current value. Must contain at least one hash if provided. | null |
+| `broadcast_generation_cost` | *Optional\[bool]* | ➖ | Whether to include cost and billing generation metadata. | false |
+| `broadcast_generation_cost_allocation` | *Optional\[bool]* | ➖ | Beta. When true, include openrouter\_cost\_allocation: per-token-kind usage and cost, sent only when they reconcile with the billed cost. | false |
+| `broadcast_generation_identity` | *Optional\[bool]* | ➖ | Whether to include identity generation metadata. | false |
+| `broadcast_generation_request_context` | *Optional\[bool]* | ➖ | Whether to include request-context generation metadata. | false |
+| `config` | Dict\[str, *Any*] | ➖ | Provider-specific configuration fields to update. Masked values are ignored; unset fields keep their current value. | \{ "baseUrl": "[https://us.cloud.langfuse.com](https://us.cloud.langfuse.com)", "publicKey": "pk-l...EfGh", "secretKey": "sk-l...AbCd" } |
+| `enabled` | *Optional\[bool]* | ➖ | Whether the destination is enabled. | true |
+| `filter_rules` | [OptionalNullable\[components.ObservabilityFilterRulesConfigNullable\]](https://openrouter.ai/docs/client-sdks/python/components/observabilityfilterrulesconfignullable.mdx) | ➖ | N/A | null |
+| `name` | *Optional\[str]* | ➖ | Human-readable name for the destination. | Production Langfuse |
+| `privacy_mode` | *Optional\[bool]* | ➖ | When true, request/response bodies are not forwarded — only metadata. | false |
+| `regions` | List\[[components.ObservabilityDataRegionInput](https://openrouter.ai/docs/client-sdks/python/components/observabilitydataregioninput.mdx)] | ➖ | Data regions this destination applies to. `eu` is accepted as an alias for `europe` and normalizes to `europe`. Omitting this field keeps the current value; it cannot be cleared. | \[ "global" ] |
+| `sampling_rate` | *Optional\[float]* | ➖ | Sampling rate between 0.0001 and 1 (1 = 100%). | 1 |
+| `retries` | [Optional\[utils.RetryConfig\]](https://openrouter.ai/docs/client-sdks/python/models/utils/retryconfig.mdx) | ➖ | Configuration to override the default retry behavior of the client. | |
+
+### Response
+
+**[components.UpdateObservabilityDestinationResponse](https://openrouter.ai/docs/client-sdks/python/components/updateobservabilitydestinationresponse.mdx)**
+
+### Errors
+
+| Error Type | Status Code | Content Type |
+| - | - | - |
+| errors.BadRequestResponseError | 400 | application/json |
+| errors.UnauthorizedResponseError | 401 | application/json |
+| errors.ForbiddenResponseError | 403 | application/json |
+| errors.NotFoundResponseError | 404 | application/json |
+| errors.ConflictResponseError | 409 | application/json |
+| errors.InternalServerResponseError | 500 | application/json |
+| errors.OpenRouterDefaultError | 4XX, 5XX | \*/\* |

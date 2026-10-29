@@ -1,0 +1,3945 @@
+> ## Documentation Index
+> Fetch the complete documentation index at: https://openrouter.ai/docs/llms.txt
+> Use this file to discover all available pages before exploring further.
+
+# Vault
+
+> Store host-bound secrets for a workspace or for one intern. Scope is selected by the API key. Responses return metadata only, never secret values. See https://openrouter.ai/docs/guides/ori/vault.
+
+## Overview
+
+Store host-bound secrets for a workspace or for one intern. Scope is selected by the API key. Responses return metadata only, never secret values. See [https://openrouter.ai/docs/guides/ori/vault](../../../../guides/ori/vault.md).
+
+### Available Operations
+
+* [listInternConnections](#listinternconnections) - List the connections an intern can use
+* [listInternEffectiveVaultSecrets](#listinterneffectivevaultsecrets) - List the secrets an intern receives
+* [listInternVaultSecrets](#listinternvaultsecrets) - List intern secrets
+* [deleteInternVaultSecret](#deleteinternvaultsecret) - Delete an intern secret
+* [storeInternVaultSecret](#storeinternvaultsecret) - Store an intern secret
+* [copyVaultSecretsToIntern](#copyvaultsecretstointern) - Copy workspace secrets to an intern
+* [listVaultSecrets](#listvaultsecrets) - List workspace secrets
+* [deleteVaultSecret](#deletevaultsecret) - Delete a workspace secret
+* [storeVaultSecret](#storevaultsecret) - Store a workspace secret
+
+## listInternConnections
+
+Lists the connections in scope for the intern, by the key of their card on the dashboard's Connections tab: `github`, `slack`, `google`, a catalog MCP server such as `linear` or `notion`, or `mcp:<host>` for a custom MCP server. A connection is listed when it is stored, enabled, and not turned off or hidden for this intern, as the Connections tab lists it; whether its last test passed is not part of the rule. `ori features add` checks a feature's `ori.requires.connections` against this list. `routing` is the vault's routing table for the intern: the credentials it holds and what it would inject each for, from the same lookups the egress proxy picks a credential with, GitHub repository coverage read through the installation token and cached. `routing_text` is that table as the lines the intern reads in its instructions. Never credentials. Returns 404 for an intern the key cannot see. The scope is selected by the API key: workspace routes act on the key's active workspace and intern routes act on one intern inside that workspace. There is no default workspace and no fallback to another scope. Every vault route, including reads, requires access to the Intern API programme and returns 404 outside it. An intern's own API key is confined to that intern: it can always read the intern's secrets and effective secrets, writes to them follow the rules above, and every other intern and every workspace route answers 404. Requests on regional hostnames such as `eu.openrouter.ai` are refused. [API key](https://openrouter.ai/docs/client-sdks/typescript/docs/api-reference/authentication) required.
+
+### Example Usage
+
+```typescript theme={null}
+import { OpenRouter } from "@openrouter/sdk";
+
+const openRouter = new OpenRouter({
+  httpReferer: "<value>",
+  appTitle: "<value>",
+  appCategories: "<value>",
+  apiKey: process.env["OPENROUTER_API_KEY"] ?? "",
+});
+
+async function run() {
+  const result = await openRouter.vault.listInternConnections({
+    internId: "7c9e6679-7425-40de-944b-e07fc1f90ae7",
+  });
+
+  console.log(result);
+}
+
+run();
+```
+
+### Standalone function
+
+The standalone function version of this method:
+
+```typescript theme={null}
+import { OpenRouterCore } from "@openrouter/sdk/core.js";
+import { vaultListInternConnections } from "@openrouter/sdk/funcs/vaultListInternConnections.js";
+
+// Use `OpenRouterCore` for best tree-shaking performance.
+// You can create one instance of it to use across an application.
+const openRouter = new OpenRouterCore({
+  httpReferer: "<value>",
+  appTitle: "<value>",
+  appCategories: "<value>",
+  apiKey: process.env["OPENROUTER_API_KEY"] ?? "",
+});
+
+async function run() {
+  const res = await vaultListInternConnections(openRouter, {
+    internId: "7c9e6679-7425-40de-944b-e07fc1f90ae7",
+  });
+  if (res.ok) {
+    const { value: result } = res;
+    console.log(result);
+  } else {
+    console.log("vaultListInternConnections failed:", res.error);
+  }
+}
+
+run();
+```
+
+### Parameters
+
+| Parameter | Type | Required | Description |
+| - | - | - | - |
+| `request` | [operations.ListInternConnectionsRequest](https://openrouter.ai/docs/client-sdks/typescript/models/operations/listinternconnectionsrequest.mdx) | ✔️ | The request object to use for the request. |
+| `options` | RequestOptions | ➖ | Used to set various options for making HTTP requests. |
+| `options.fetchOptions` | [RequestInit](https://developer.mozilla.org/en-US/docs/Web/API/Request/Request#options) | ➖ | Options that are passed to the underlying HTTP request. This can be used to inject extra headers for examples. All `Request` options, except `method` and `body`, are allowed. |
+| `options.retries` | [RetryConfig](https://openrouter.ai/docs/client-sdks/typescript/lib/utils/retryconfig.mdx) | ➖ | Enables retrying HTTP requests under certain failure conditions. |
+
+### Response
+
+**Promise\<[operations.ListInternConnectionsResponse](https://openrouter.ai/docs/client-sdks/typescript/models/operations/listinternconnectionsresponse.mdx)>**
+
+### Errors
+
+| Error Type | Status Code | Content Type |
+| - | - | - |
+| errors.BadRequestResponseError | 400 | application/json |
+| errors.UnauthorizedResponseError | 401 | application/json |
+| errors.ForbiddenResponseError | 403 | application/json |
+| errors.NotFoundResponseError | 404 | application/json |
+| errors.RequestTimeoutResponseError | 408 | application/json |
+| errors.TooManyRequestsResponseError | 429 | application/json |
+| errors.InternalServerResponseError | 500 | application/json |
+| errors.BadGatewayResponseError | 502 | application/json |
+| errors.ServiceUnavailableResponseError | 503 | application/json |
+| errors.GatewayTimeoutResponseError | 504 | application/json |
+| errors.OpenRouterDefaultError | 4XX, 5XX | \*/\* |
+
+## listInternEffectiveVaultSecrets
+
+Lists, one entry per name, the secret the intern's outbound requests receive: its own secrets, secrets from an attached vault, and workspace secrets, including ones stored before workspace-scoped storage. Where several vaults hold a name, the entry is the one that wins, in the order intern, attached, workspace. The same resolution decides what outbound requests receive, so this list and the intern's requests agree. `scope` says which vault the entry comes from. Responses carry metadata only, never values. Results are ordered by name and paginated with `limit` and `offset`. Returns 404 when the intern's attached vault is no longer available, since the intern then receives no secrets. The scope is selected by the API key: workspace routes act on the key's active workspace and intern routes act on one intern inside that workspace. There is no default workspace and no fallback to another scope. Every vault route, including reads, requires access to the Intern API programme and returns 404 outside it. An intern's own API key is confined to that intern: it can always read the intern's secrets and effective secrets, writes to them follow the rules above, and every other intern and every workspace route answers 404. Requests on regional hostnames such as `eu.openrouter.ai` are refused. [API key](https://openrouter.ai/docs/client-sdks/typescript/docs/api-reference/authentication) required.
+
+### Example Usage
+
+```typescript theme={null}
+import { OpenRouter } from "@openrouter/sdk";
+
+const openRouter = new OpenRouter({
+  httpReferer: "<value>",
+  appTitle: "<value>",
+  appCategories: "<value>",
+  apiKey: process.env["OPENROUTER_API_KEY"] ?? "",
+});
+
+async function run() {
+  const result = await openRouter.vault.listInternEffectiveVaultSecrets({
+    internId: "7c9e6679-7425-40de-944b-e07fc1f90ae7",
+    limit: 50,
+  });
+
+  console.log(result);
+}
+
+run();
+```
+
+### Standalone function
+
+The standalone function version of this method:
+
+```typescript theme={null}
+import { OpenRouterCore } from "@openrouter/sdk/core.js";
+import { vaultListInternEffectiveVaultSecrets } from "@openrouter/sdk/funcs/vaultListInternEffectiveVaultSecrets.js";
+
+// Use `OpenRouterCore` for best tree-shaking performance.
+// You can create one instance of it to use across an application.
+const openRouter = new OpenRouterCore({
+  httpReferer: "<value>",
+  appTitle: "<value>",
+  appCategories: "<value>",
+  apiKey: process.env["OPENROUTER_API_KEY"] ?? "",
+});
+
+async function run() {
+  const res = await vaultListInternEffectiveVaultSecrets(openRouter, {
+    internId: "7c9e6679-7425-40de-944b-e07fc1f90ae7",
+    limit: 50,
+  });
+  if (res.ok) {
+    const { value: result } = res;
+    console.log(result);
+  } else {
+    console.log("vaultListInternEffectiveVaultSecrets failed:", res.error);
+  }
+}
+
+run();
+```
+
+### Parameters
+
+| Parameter | Type | Required | Description |
+| - | - | - | - |
+| `request` | [operations.ListInternEffectiveVaultSecretsRequest](https://openrouter.ai/docs/client-sdks/typescript/models/operations/listinterneffectivevaultsecretsrequest.mdx) | ✔️ | The request object to use for the request. |
+| `options` | RequestOptions | ➖ | Used to set various options for making HTTP requests. |
+| `options.fetchOptions` | [RequestInit](https://developer.mozilla.org/en-US/docs/Web/API/Request/Request#options) | ➖ | Options that are passed to the underlying HTTP request. This can be used to inject extra headers for examples. All `Request` options, except `method` and `body`, are allowed. |
+| `options.retries` | [RetryConfig](https://openrouter.ai/docs/client-sdks/typescript/lib/utils/retryconfig.mdx) | ➖ | Enables retrying HTTP requests under certain failure conditions. |
+
+### Response
+
+**Promise\<[models.VaultEffectiveSecretListResponse](https://openrouter.ai/docs/client-sdks/typescript/models/vaulteffectivesecretlistresponse.mdx)>**
+
+### Errors
+
+| Error Type | Status Code | Content Type |
+| - | - | - |
+| errors.BadRequestResponseError | 400 | application/json |
+| errors.UnauthorizedResponseError | 401 | application/json |
+| errors.ForbiddenResponseError | 403 | application/json |
+| errors.NotFoundResponseError | 404 | application/json |
+| errors.RequestTimeoutResponseError | 408 | application/json |
+| errors.TooManyRequestsResponseError | 429 | application/json |
+| errors.InternalServerResponseError | 500 | application/json |
+| errors.BadGatewayResponseError | 502 | application/json |
+| errors.ServiceUnavailableResponseError | 503 | application/json |
+| errors.GatewayTimeoutResponseError | 504 | application/json |
+| errors.OpenRouterDefaultError | 4XX, 5XX | \*/\* |
+
+## listInternVaultSecrets
+
+Lists secret metadata stored for one intern. The list includes secrets stored from the dashboard or at provisioning before workspace-scoped storage; where both exist under one name, the one stored through this API is listed. Those older secrets cannot be deleted or copied through this API, and storing the same name through this API replaces them. Responses contain names, bound hosts, fingerprints and creation times, never secret values. Results are ordered by name and paginated with `limit` and `offset`. The scope is selected by the API key: workspace routes act on the key's active workspace and intern routes act on one intern inside that workspace. There is no default workspace and no fallback to another scope. Every vault route, including reads, requires access to the Intern API programme and returns 404 outside it. An intern's own API key is confined to that intern: it can always read the intern's secrets and effective secrets, writes to them follow the rules above, and every other intern and every workspace route answers 404. Requests on regional hostnames such as `eu.openrouter.ai` are refused. [API key](https://openrouter.ai/docs/client-sdks/typescript/docs/api-reference/authentication) required.
+
+### Example Usage
+
+```typescript theme={null}
+import { OpenRouter } from "@openrouter/sdk";
+
+const openRouter = new OpenRouter({
+  httpReferer: "<value>",
+  appTitle: "<value>",
+  appCategories: "<value>",
+  apiKey: process.env["OPENROUTER_API_KEY"] ?? "",
+});
+
+async function run() {
+  const result = await openRouter.vault.listInternVaultSecrets({
+    internId: "7c9e6679-7425-40de-944b-e07fc1f90ae7",
+    limit: 50,
+  });
+
+  console.log(result);
+}
+
+run();
+```
+
+### Standalone function
+
+The standalone function version of this method:
+
+```typescript theme={null}
+import { OpenRouterCore } from "@openrouter/sdk/core.js";
+import { vaultListInternVaultSecrets } from "@openrouter/sdk/funcs/vaultListInternVaultSecrets.js";
+
+// Use `OpenRouterCore` for best tree-shaking performance.
+// You can create one instance of it to use across an application.
+const openRouter = new OpenRouterCore({
+  httpReferer: "<value>",
+  appTitle: "<value>",
+  appCategories: "<value>",
+  apiKey: process.env["OPENROUTER_API_KEY"] ?? "",
+});
+
+async function run() {
+  const res = await vaultListInternVaultSecrets(openRouter, {
+    internId: "7c9e6679-7425-40de-944b-e07fc1f90ae7",
+    limit: 50,
+  });
+  if (res.ok) {
+    const { value: result } = res;
+    console.log(result);
+  } else {
+    console.log("vaultListInternVaultSecrets failed:", res.error);
+  }
+}
+
+run();
+```
+
+### Parameters
+
+| Parameter | Type | Required | Description |
+| - | - | - | - |
+| `request` | [operations.ListInternVaultSecretsRequest](https://openrouter.ai/docs/client-sdks/typescript/models/operations/listinternvaultsecretsrequest.mdx) | ✔️ | The request object to use for the request. |
+| `options` | RequestOptions | ➖ | Used to set various options for making HTTP requests. |
+| `options.fetchOptions` | [RequestInit](https://developer.mozilla.org/en-US/docs/Web/API/Request/Request#options) | ➖ | Options that are passed to the underlying HTTP request. This can be used to inject extra headers for examples. All `Request` options, except `method` and `body`, are allowed. |
+| `options.retries` | [RetryConfig](https://openrouter.ai/docs/client-sdks/typescript/lib/utils/retryconfig.mdx) | ➖ | Enables retrying HTTP requests under certain failure conditions. |
+
+### Response
+
+**Promise\<[models.VaultSecretListResponse](https://openrouter.ai/docs/client-sdks/typescript/models/vaultsecretlistresponse.mdx)>**
+
+### Errors
+
+| Error Type | Status Code | Content Type |
+| - | - | - |
+| errors.BadRequestResponseError | 400 | application/json |
+| errors.UnauthorizedResponseError | 401 | application/json |
+| errors.ForbiddenResponseError | 403 | application/json |
+| errors.NotFoundResponseError | 404 | application/json |
+| errors.RequestTimeoutResponseError | 408 | application/json |
+| errors.TooManyRequestsResponseError | 429 | application/json |
+| errors.InternalServerResponseError | 500 | application/json |
+| errors.BadGatewayResponseError | 502 | application/json |
+| errors.ServiceUnavailableResponseError | 503 | application/json |
+| errors.GatewayTimeoutResponseError | 504 | application/json |
+| errors.OpenRouterDefaultError | 4XX, 5XX | \*/\* |
+
+## deleteInternVaultSecret
+
+Deletes a secret stored for one intern. Returns 204 with no body on success and 404 when the secret does not exist in the selected scope. Writes return 503 while vault writes are disabled for the caller. The scope is selected by the API key: workspace routes act on the key's active workspace and intern routes act on one intern inside that workspace. There is no default workspace and no fallback to another scope. Every vault route, including reads, requires access to the Intern API programme and returns 404 outside it. An intern's own API key is confined to that intern: it can always read the intern's secrets and effective secrets, writes to them follow the rules above, and every other intern and every workspace route answers 404. Requests on regional hostnames such as `eu.openrouter.ai` are refused. [API key](https://openrouter.ai/docs/client-sdks/typescript/docs/api-reference/authentication) required.
+
+### Example Usage
+
+```typescript theme={null}
+import { OpenRouter } from "@openrouter/sdk";
+
+const openRouter = new OpenRouter({
+  httpReferer: "<value>",
+  appTitle: "<value>",
+  appCategories: "<value>",
+  apiKey: process.env["OPENROUTER_API_KEY"] ?? "",
+});
+
+async function run() {
+  await openRouter.vault.deleteInternVaultSecret({
+    internId: "7c9e6679-7425-40de-944b-e07fc1f90ae7",
+    name: "github_token",
+  });
+
+
+}
+
+run();
+```
+
+### Standalone function
+
+The standalone function version of this method:
+
+```typescript theme={null}
+import { OpenRouterCore } from "@openrouter/sdk/core.js";
+import { vaultDeleteInternVaultSecret } from "@openrouter/sdk/funcs/vaultDeleteInternVaultSecret.js";
+
+// Use `OpenRouterCore` for best tree-shaking performance.
+// You can create one instance of it to use across an application.
+const openRouter = new OpenRouterCore({
+  httpReferer: "<value>",
+  appTitle: "<value>",
+  appCategories: "<value>",
+  apiKey: process.env["OPENROUTER_API_KEY"] ?? "",
+});
+
+async function run() {
+  const res = await vaultDeleteInternVaultSecret(openRouter, {
+    internId: "7c9e6679-7425-40de-944b-e07fc1f90ae7",
+    name: "github_token",
+  });
+  if (res.ok) {
+    const { value: result } = res;
+    
+  } else {
+    console.log("vaultDeleteInternVaultSecret failed:", res.error);
+  }
+}
+
+run();
+```
+
+### Parameters
+
+| Parameter | Type | Required | Description |
+| - | - | - | - |
+| `request` | [operations.DeleteInternVaultSecretRequest](https://openrouter.ai/docs/client-sdks/typescript/models/operations/deleteinternvaultsecretrequest.mdx) | ✔️ | The request object to use for the request. |
+| `options` | RequestOptions | ➖ | Used to set various options for making HTTP requests. |
+| `options.fetchOptions` | [RequestInit](https://developer.mozilla.org/en-US/docs/Web/API/Request/Request#options) | ➖ | Options that are passed to the underlying HTTP request. This can be used to inject extra headers for examples. All `Request` options, except `method` and `body`, are allowed. |
+| `options.retries` | [RetryConfig](https://openrouter.ai/docs/client-sdks/typescript/lib/utils/retryconfig.mdx) | ➖ | Enables retrying HTTP requests under certain failure conditions. |
+
+### Response
+
+**Promise\<void>**
+
+### Errors
+
+| Error Type | Status Code | Content Type |
+| - | - | - |
+| errors.BadRequestResponseError | 400 | application/json |
+| errors.UnauthorizedResponseError | 401 | application/json |
+| errors.ForbiddenResponseError | 403 | application/json |
+| errors.NotFoundResponseError | 404 | application/json |
+| errors.RequestTimeoutResponseError | 408 | application/json |
+| errors.ConflictResponseError | 409 | application/json |
+| errors.TooManyRequestsResponseError | 429 | application/json |
+| errors.InternalServerResponseError | 500 | application/json |
+| errors.BadGatewayResponseError | 502 | application/json |
+| errors.ServiceUnavailableResponseError | 503 | application/json |
+| errors.GatewayTimeoutResponseError | 504 | application/json |
+| errors.OpenRouterDefaultError | 4XX, 5XX | \*/\* |
+
+## storeInternVaultSecret
+
+Creates or replaces a secret stored for one intern. The value is encrypted at rest and released only to the exact hostnames in `hosts`. The response carries metadata only. Writes return 503 while vault writes are disabled for the caller. The scope is selected by the API key: workspace routes act on the key's active workspace and intern routes act on one intern inside that workspace. There is no default workspace and no fallback to another scope. Every vault route, including reads, requires access to the Intern API programme and returns 404 outside it. An intern's own API key is confined to that intern: it can always read the intern's secrets and effective secrets, writes to them follow the rules above, and every other intern and every workspace route answers 404. Requests on regional hostnames such as `eu.openrouter.ai` are refused. [API key](https://openrouter.ai/docs/client-sdks/typescript/docs/api-reference/authentication) required.
+
+### Example Usage: body-timed-out
+
+```typescript theme={null}
+import { OpenRouter } from "@openrouter/sdk";
+
+const openRouter = new OpenRouter({
+  httpReferer: "<value>",
+  appTitle: "<value>",
+  appCategories: "<value>",
+  apiKey: process.env["OPENROUTER_API_KEY"] ?? "",
+});
+
+async function run() {
+  const result = await openRouter.vault.storeInternVaultSecret({
+    internId: "7c9e6679-7425-40de-944b-e07fc1f90ae7",
+    name: "github_token",
+    vaultSecretWriteRequest: {
+      hosts: [
+        "api.github.com",
+      ],
+      value: "ghp_exampleTokenValue",
+    },
+  });
+
+  console.log(result);
+}
+
+run();
+```
+
+### Standalone function
+
+The standalone function version of this method:
+
+```typescript theme={null}
+import { OpenRouterCore } from "@openrouter/sdk/core.js";
+import { vaultStoreInternVaultSecret } from "@openrouter/sdk/funcs/vaultStoreInternVaultSecret.js";
+
+// Use `OpenRouterCore` for best tree-shaking performance.
+// You can create one instance of it to use across an application.
+const openRouter = new OpenRouterCore({
+  httpReferer: "<value>",
+  appTitle: "<value>",
+  appCategories: "<value>",
+  apiKey: process.env["OPENROUTER_API_KEY"] ?? "",
+});
+
+async function run() {
+  const res = await vaultStoreInternVaultSecret(openRouter, {
+    internId: "7c9e6679-7425-40de-944b-e07fc1f90ae7",
+    name: "github_token",
+    vaultSecretWriteRequest: {
+      hosts: [
+        "api.github.com",
+      ],
+      value: "ghp_exampleTokenValue",
+    },
+  });
+  if (res.ok) {
+    const { value: result } = res;
+    console.log(result);
+  } else {
+    console.log("vaultStoreInternVaultSecret failed:", res.error);
+  }
+}
+
+run();
+```
+
+### Example Usage: body-too-large
+
+```typescript theme={null}
+import { OpenRouter } from "@openrouter/sdk";
+
+const openRouter = new OpenRouter({
+  httpReferer: "<value>",
+  appTitle: "<value>",
+  appCategories: "<value>",
+  apiKey: process.env["OPENROUTER_API_KEY"] ?? "",
+});
+
+async function run() {
+  const result = await openRouter.vault.storeInternVaultSecret({
+    internId: "7c9e6679-7425-40de-944b-e07fc1f90ae7",
+    name: "github_token",
+    vaultSecretWriteRequest: {
+      hosts: [
+        "api.github.com",
+      ],
+      value: "ghp_exampleTokenValue",
+    },
+  });
+
+  console.log(result);
+}
+
+run();
+```
+
+### Standalone function
+
+The standalone function version of this method:
+
+```typescript theme={null}
+import { OpenRouterCore } from "@openrouter/sdk/core.js";
+import { vaultStoreInternVaultSecret } from "@openrouter/sdk/funcs/vaultStoreInternVaultSecret.js";
+
+// Use `OpenRouterCore` for best tree-shaking performance.
+// You can create one instance of it to use across an application.
+const openRouter = new OpenRouterCore({
+  httpReferer: "<value>",
+  appTitle: "<value>",
+  appCategories: "<value>",
+  apiKey: process.env["OPENROUTER_API_KEY"] ?? "",
+});
+
+async function run() {
+  const res = await vaultStoreInternVaultSecret(openRouter, {
+    internId: "7c9e6679-7425-40de-944b-e07fc1f90ae7",
+    name: "github_token",
+    vaultSecretWriteRequest: {
+      hosts: [
+        "api.github.com",
+      ],
+      value: "ghp_exampleTokenValue",
+    },
+  });
+  if (res.ok) {
+    const { value: result } = res;
+    console.log(result);
+  } else {
+    console.log("vaultStoreInternVaultSecret failed:", res.error);
+  }
+}
+
+run();
+```
+
+### Example Usage: conflict
+
+```typescript theme={null}
+import { OpenRouter } from "@openrouter/sdk";
+
+const openRouter = new OpenRouter({
+  httpReferer: "<value>",
+  appTitle: "<value>",
+  appCategories: "<value>",
+  apiKey: process.env["OPENROUTER_API_KEY"] ?? "",
+});
+
+async function run() {
+  const result = await openRouter.vault.storeInternVaultSecret({
+    internId: "7c9e6679-7425-40de-944b-e07fc1f90ae7",
+    name: "github_token",
+    vaultSecretWriteRequest: {
+      hosts: [
+        "api.github.com",
+      ],
+      value: "ghp_exampleTokenValue",
+    },
+  });
+
+  console.log(result);
+}
+
+run();
+```
+
+### Standalone function
+
+The standalone function version of this method:
+
+```typescript theme={null}
+import { OpenRouterCore } from "@openrouter/sdk/core.js";
+import { vaultStoreInternVaultSecret } from "@openrouter/sdk/funcs/vaultStoreInternVaultSecret.js";
+
+// Use `OpenRouterCore` for best tree-shaking performance.
+// You can create one instance of it to use across an application.
+const openRouter = new OpenRouterCore({
+  httpReferer: "<value>",
+  appTitle: "<value>",
+  appCategories: "<value>",
+  apiKey: process.env["OPENROUTER_API_KEY"] ?? "",
+});
+
+async function run() {
+  const res = await vaultStoreInternVaultSecret(openRouter, {
+    internId: "7c9e6679-7425-40de-944b-e07fc1f90ae7",
+    name: "github_token",
+    vaultSecretWriteRequest: {
+      hosts: [
+        "api.github.com",
+      ],
+      value: "ghp_exampleTokenValue",
+    },
+  });
+  if (res.ok) {
+    const { value: result } = res;
+    console.log(result);
+  } else {
+    console.log("vaultStoreInternVaultSecret failed:", res.error);
+  }
+}
+
+run();
+```
+
+### Example Usage: internal-error
+
+```typescript theme={null}
+import { OpenRouter } from "@openrouter/sdk";
+
+const openRouter = new OpenRouter({
+  httpReferer: "<value>",
+  appTitle: "<value>",
+  appCategories: "<value>",
+  apiKey: process.env["OPENROUTER_API_KEY"] ?? "",
+});
+
+async function run() {
+  const result = await openRouter.vault.storeInternVaultSecret({
+    internId: "7c9e6679-7425-40de-944b-e07fc1f90ae7",
+    name: "github_token",
+    vaultSecretWriteRequest: {
+      hosts: [
+        "api.github.com",
+      ],
+      value: "ghp_exampleTokenValue",
+    },
+  });
+
+  console.log(result);
+}
+
+run();
+```
+
+### Standalone function
+
+The standalone function version of this method:
+
+```typescript theme={null}
+import { OpenRouterCore } from "@openrouter/sdk/core.js";
+import { vaultStoreInternVaultSecret } from "@openrouter/sdk/funcs/vaultStoreInternVaultSecret.js";
+
+// Use `OpenRouterCore` for best tree-shaking performance.
+// You can create one instance of it to use across an application.
+const openRouter = new OpenRouterCore({
+  httpReferer: "<value>",
+  appTitle: "<value>",
+  appCategories: "<value>",
+  apiKey: process.env["OPENROUTER_API_KEY"] ?? "",
+});
+
+async function run() {
+  const res = await vaultStoreInternVaultSecret(openRouter, {
+    internId: "7c9e6679-7425-40de-944b-e07fc1f90ae7",
+    name: "github_token",
+    vaultSecretWriteRequest: {
+      hosts: [
+        "api.github.com",
+      ],
+      value: "ghp_exampleTokenValue",
+    },
+  });
+  if (res.ok) {
+    const { value: result } = res;
+    console.log(result);
+  } else {
+    console.log("vaultStoreInternVaultSecret failed:", res.error);
+  }
+}
+
+run();
+```
+
+### Example Usage: invalid-or-missing-api-key
+
+```typescript theme={null}
+import { OpenRouter } from "@openrouter/sdk";
+
+const openRouter = new OpenRouter({
+  httpReferer: "<value>",
+  appTitle: "<value>",
+  appCategories: "<value>",
+  apiKey: process.env["OPENROUTER_API_KEY"] ?? "",
+});
+
+async function run() {
+  const result = await openRouter.vault.storeInternVaultSecret({
+    internId: "7c9e6679-7425-40de-944b-e07fc1f90ae7",
+    name: "github_token",
+    vaultSecretWriteRequest: {
+      hosts: [
+        "api.github.com",
+      ],
+      value: "ghp_exampleTokenValue",
+    },
+  });
+
+  console.log(result);
+}
+
+run();
+```
+
+### Standalone function
+
+The standalone function version of this method:
+
+```typescript theme={null}
+import { OpenRouterCore } from "@openrouter/sdk/core.js";
+import { vaultStoreInternVaultSecret } from "@openrouter/sdk/funcs/vaultStoreInternVaultSecret.js";
+
+// Use `OpenRouterCore` for best tree-shaking performance.
+// You can create one instance of it to use across an application.
+const openRouter = new OpenRouterCore({
+  httpReferer: "<value>",
+  appTitle: "<value>",
+  appCategories: "<value>",
+  apiKey: process.env["OPENROUTER_API_KEY"] ?? "",
+});
+
+async function run() {
+  const res = await vaultStoreInternVaultSecret(openRouter, {
+    internId: "7c9e6679-7425-40de-944b-e07fc1f90ae7",
+    name: "github_token",
+    vaultSecretWriteRequest: {
+      hosts: [
+        "api.github.com",
+      ],
+      value: "ghp_exampleTokenValue",
+    },
+  });
+  if (res.ok) {
+    const { value: result } = res;
+    console.log(result);
+  } else {
+    console.log("vaultStoreInternVaultSecret failed:", res.error);
+  }
+}
+
+run();
+```
+
+### Example Usage: invalid-vault-request
+
+```typescript theme={null}
+import { OpenRouter } from "@openrouter/sdk";
+
+const openRouter = new OpenRouter({
+  httpReferer: "<value>",
+  appTitle: "<value>",
+  appCategories: "<value>",
+  apiKey: process.env["OPENROUTER_API_KEY"] ?? "",
+});
+
+async function run() {
+  const result = await openRouter.vault.storeInternVaultSecret({
+    internId: "7c9e6679-7425-40de-944b-e07fc1f90ae7",
+    name: "github_token",
+    vaultSecretWriteRequest: {
+      hosts: [
+        "api.github.com",
+      ],
+      value: "ghp_exampleTokenValue",
+    },
+  });
+
+  console.log(result);
+}
+
+run();
+```
+
+### Standalone function
+
+The standalone function version of this method:
+
+```typescript theme={null}
+import { OpenRouterCore } from "@openrouter/sdk/core.js";
+import { vaultStoreInternVaultSecret } from "@openrouter/sdk/funcs/vaultStoreInternVaultSecret.js";
+
+// Use `OpenRouterCore` for best tree-shaking performance.
+// You can create one instance of it to use across an application.
+const openRouter = new OpenRouterCore({
+  httpReferer: "<value>",
+  appTitle: "<value>",
+  appCategories: "<value>",
+  apiKey: process.env["OPENROUTER_API_KEY"] ?? "",
+});
+
+async function run() {
+  const res = await vaultStoreInternVaultSecret(openRouter, {
+    internId: "7c9e6679-7425-40de-944b-e07fc1f90ae7",
+    name: "github_token",
+    vaultSecretWriteRequest: {
+      hosts: [
+        "api.github.com",
+      ],
+      value: "ghp_exampleTokenValue",
+    },
+  });
+  if (res.ok) {
+    const { value: result } = res;
+    console.log(result);
+  } else {
+    console.log("vaultStoreInternVaultSecret failed:", res.error);
+  }
+}
+
+run();
+```
+
+### Example Usage: invalid-vault-response
+
+```typescript theme={null}
+import { OpenRouter } from "@openrouter/sdk";
+
+const openRouter = new OpenRouter({
+  httpReferer: "<value>",
+  appTitle: "<value>",
+  appCategories: "<value>",
+  apiKey: process.env["OPENROUTER_API_KEY"] ?? "",
+});
+
+async function run() {
+  const result = await openRouter.vault.storeInternVaultSecret({
+    internId: "7c9e6679-7425-40de-944b-e07fc1f90ae7",
+    name: "github_token",
+    vaultSecretWriteRequest: {
+      hosts: [
+        "api.github.com",
+      ],
+      value: "ghp_exampleTokenValue",
+    },
+  });
+
+  console.log(result);
+}
+
+run();
+```
+
+### Standalone function
+
+The standalone function version of this method:
+
+```typescript theme={null}
+import { OpenRouterCore } from "@openrouter/sdk/core.js";
+import { vaultStoreInternVaultSecret } from "@openrouter/sdk/funcs/vaultStoreInternVaultSecret.js";
+
+// Use `OpenRouterCore` for best tree-shaking performance.
+// You can create one instance of it to use across an application.
+const openRouter = new OpenRouterCore({
+  httpReferer: "<value>",
+  appTitle: "<value>",
+  appCategories: "<value>",
+  apiKey: process.env["OPENROUTER_API_KEY"] ?? "",
+});
+
+async function run() {
+  const res = await vaultStoreInternVaultSecret(openRouter, {
+    internId: "7c9e6679-7425-40de-944b-e07fc1f90ae7",
+    name: "github_token",
+    vaultSecretWriteRequest: {
+      hosts: [
+        "api.github.com",
+      ],
+      value: "ghp_exampleTokenValue",
+    },
+  });
+  if (res.ok) {
+    const { value: result } = res;
+    console.log(result);
+  } else {
+    console.log("vaultStoreInternVaultSecret failed:", res.error);
+  }
+}
+
+run();
+```
+
+### Example Usage: not-found
+
+```typescript theme={null}
+import { OpenRouter } from "@openrouter/sdk";
+
+const openRouter = new OpenRouter({
+  httpReferer: "<value>",
+  appTitle: "<value>",
+  appCategories: "<value>",
+  apiKey: process.env["OPENROUTER_API_KEY"] ?? "",
+});
+
+async function run() {
+  const result = await openRouter.vault.storeInternVaultSecret({
+    internId: "7c9e6679-7425-40de-944b-e07fc1f90ae7",
+    name: "github_token",
+    vaultSecretWriteRequest: {
+      hosts: [
+        "api.github.com",
+      ],
+      value: "ghp_exampleTokenValue",
+    },
+  });
+
+  console.log(result);
+}
+
+run();
+```
+
+### Standalone function
+
+The standalone function version of this method:
+
+```typescript theme={null}
+import { OpenRouterCore } from "@openrouter/sdk/core.js";
+import { vaultStoreInternVaultSecret } from "@openrouter/sdk/funcs/vaultStoreInternVaultSecret.js";
+
+// Use `OpenRouterCore` for best tree-shaking performance.
+// You can create one instance of it to use across an application.
+const openRouter = new OpenRouterCore({
+  httpReferer: "<value>",
+  appTitle: "<value>",
+  appCategories: "<value>",
+  apiKey: process.env["OPENROUTER_API_KEY"] ?? "",
+});
+
+async function run() {
+  const res = await vaultStoreInternVaultSecret(openRouter, {
+    internId: "7c9e6679-7425-40de-944b-e07fc1f90ae7",
+    name: "github_token",
+    vaultSecretWriteRequest: {
+      hosts: [
+        "api.github.com",
+      ],
+      value: "ghp_exampleTokenValue",
+    },
+  });
+  if (res.ok) {
+    const { value: result } = res;
+    console.log(result);
+  } else {
+    console.log("vaultStoreInternVaultSecret failed:", res.error);
+  }
+}
+
+run();
+```
+
+### Example Usage: rate-limited
+
+```typescript theme={null}
+import { OpenRouter } from "@openrouter/sdk";
+
+const openRouter = new OpenRouter({
+  httpReferer: "<value>",
+  appTitle: "<value>",
+  appCategories: "<value>",
+  apiKey: process.env["OPENROUTER_API_KEY"] ?? "",
+});
+
+async function run() {
+  const result = await openRouter.vault.storeInternVaultSecret({
+    internId: "7c9e6679-7425-40de-944b-e07fc1f90ae7",
+    name: "github_token",
+    vaultSecretWriteRequest: {
+      hosts: [
+        "api.github.com",
+      ],
+      value: "ghp_exampleTokenValue",
+    },
+  });
+
+  console.log(result);
+}
+
+run();
+```
+
+### Standalone function
+
+The standalone function version of this method:
+
+```typescript theme={null}
+import { OpenRouterCore } from "@openrouter/sdk/core.js";
+import { vaultStoreInternVaultSecret } from "@openrouter/sdk/funcs/vaultStoreInternVaultSecret.js";
+
+// Use `OpenRouterCore` for best tree-shaking performance.
+// You can create one instance of it to use across an application.
+const openRouter = new OpenRouterCore({
+  httpReferer: "<value>",
+  appTitle: "<value>",
+  appCategories: "<value>",
+  apiKey: process.env["OPENROUTER_API_KEY"] ?? "",
+});
+
+async function run() {
+  const res = await vaultStoreInternVaultSecret(openRouter, {
+    internId: "7c9e6679-7425-40de-944b-e07fc1f90ae7",
+    name: "github_token",
+    vaultSecretWriteRequest: {
+      hosts: [
+        "api.github.com",
+      ],
+      value: "ghp_exampleTokenValue",
+    },
+  });
+  if (res.ok) {
+    const { value: result } = res;
+    console.log(result);
+  } else {
+    console.log("vaultStoreInternVaultSecret failed:", res.error);
+  }
+}
+
+run();
+```
+
+### Example Usage: regional-hostname
+
+```typescript theme={null}
+import { OpenRouter } from "@openrouter/sdk";
+
+const openRouter = new OpenRouter({
+  httpReferer: "<value>",
+  appTitle: "<value>",
+  appCategories: "<value>",
+  apiKey: process.env["OPENROUTER_API_KEY"] ?? "",
+});
+
+async function run() {
+  const result = await openRouter.vault.storeInternVaultSecret({
+    internId: "7c9e6679-7425-40de-944b-e07fc1f90ae7",
+    name: "github_token",
+    vaultSecretWriteRequest: {
+      hosts: [
+        "api.github.com",
+      ],
+      value: "ghp_exampleTokenValue",
+    },
+  });
+
+  console.log(result);
+}
+
+run();
+```
+
+### Standalone function
+
+The standalone function version of this method:
+
+```typescript theme={null}
+import { OpenRouterCore } from "@openrouter/sdk/core.js";
+import { vaultStoreInternVaultSecret } from "@openrouter/sdk/funcs/vaultStoreInternVaultSecret.js";
+
+// Use `OpenRouterCore` for best tree-shaking performance.
+// You can create one instance of it to use across an application.
+const openRouter = new OpenRouterCore({
+  httpReferer: "<value>",
+  appTitle: "<value>",
+  appCategories: "<value>",
+  apiKey: process.env["OPENROUTER_API_KEY"] ?? "",
+});
+
+async function run() {
+  const res = await vaultStoreInternVaultSecret(openRouter, {
+    internId: "7c9e6679-7425-40de-944b-e07fc1f90ae7",
+    name: "github_token",
+    vaultSecretWriteRequest: {
+      hosts: [
+        "api.github.com",
+      ],
+      value: "ghp_exampleTokenValue",
+    },
+  });
+  if (res.ok) {
+    const { value: result } = res;
+    console.log(result);
+  } else {
+    console.log("vaultStoreInternVaultSecret failed:", res.error);
+  }
+}
+
+run();
+```
+
+### Example Usage: route-deadline
+
+```typescript theme={null}
+import { OpenRouter } from "@openrouter/sdk";
+
+const openRouter = new OpenRouter({
+  httpReferer: "<value>",
+  appTitle: "<value>",
+  appCategories: "<value>",
+  apiKey: process.env["OPENROUTER_API_KEY"] ?? "",
+});
+
+async function run() {
+  const result = await openRouter.vault.storeInternVaultSecret({
+    internId: "7c9e6679-7425-40de-944b-e07fc1f90ae7",
+    name: "github_token",
+    vaultSecretWriteRequest: {
+      hosts: [
+        "api.github.com",
+      ],
+      value: "ghp_exampleTokenValue",
+    },
+  });
+
+  console.log(result);
+}
+
+run();
+```
+
+### Standalone function
+
+The standalone function version of this method:
+
+```typescript theme={null}
+import { OpenRouterCore } from "@openrouter/sdk/core.js";
+import { vaultStoreInternVaultSecret } from "@openrouter/sdk/funcs/vaultStoreInternVaultSecret.js";
+
+// Use `OpenRouterCore` for best tree-shaking performance.
+// You can create one instance of it to use across an application.
+const openRouter = new OpenRouterCore({
+  httpReferer: "<value>",
+  appTitle: "<value>",
+  appCategories: "<value>",
+  apiKey: process.env["OPENROUTER_API_KEY"] ?? "",
+});
+
+async function run() {
+  const res = await vaultStoreInternVaultSecret(openRouter, {
+    internId: "7c9e6679-7425-40de-944b-e07fc1f90ae7",
+    name: "github_token",
+    vaultSecretWriteRequest: {
+      hosts: [
+        "api.github.com",
+      ],
+      value: "ghp_exampleTokenValue",
+    },
+  });
+  if (res.ok) {
+    const { value: result } = res;
+    console.log(result);
+  } else {
+    console.log("vaultStoreInternVaultSecret failed:", res.error);
+  }
+}
+
+run();
+```
+
+### Example Usage: transfer-in-progress
+
+```typescript theme={null}
+import { OpenRouter } from "@openrouter/sdk";
+
+const openRouter = new OpenRouter({
+  httpReferer: "<value>",
+  appTitle: "<value>",
+  appCategories: "<value>",
+  apiKey: process.env["OPENROUTER_API_KEY"] ?? "",
+});
+
+async function run() {
+  const result = await openRouter.vault.storeInternVaultSecret({
+    internId: "7c9e6679-7425-40de-944b-e07fc1f90ae7",
+    name: "github_token",
+    vaultSecretWriteRequest: {
+      hosts: [
+        "api.github.com",
+      ],
+      value: "ghp_exampleTokenValue",
+    },
+  });
+
+  console.log(result);
+}
+
+run();
+```
+
+### Standalone function
+
+The standalone function version of this method:
+
+```typescript theme={null}
+import { OpenRouterCore } from "@openrouter/sdk/core.js";
+import { vaultStoreInternVaultSecret } from "@openrouter/sdk/funcs/vaultStoreInternVaultSecret.js";
+
+// Use `OpenRouterCore` for best tree-shaking performance.
+// You can create one instance of it to use across an application.
+const openRouter = new OpenRouterCore({
+  httpReferer: "<value>",
+  appTitle: "<value>",
+  appCategories: "<value>",
+  apiKey: process.env["OPENROUTER_API_KEY"] ?? "",
+});
+
+async function run() {
+  const res = await vaultStoreInternVaultSecret(openRouter, {
+    internId: "7c9e6679-7425-40de-944b-e07fc1f90ae7",
+    name: "github_token",
+    vaultSecretWriteRequest: {
+      hosts: [
+        "api.github.com",
+      ],
+      value: "ghp_exampleTokenValue",
+    },
+  });
+  if (res.ok) {
+    const { value: result } = res;
+    console.log(result);
+  } else {
+    console.log("vaultStoreInternVaultSecret failed:", res.error);
+  }
+}
+
+run();
+```
+
+### Example Usage: vault-request-failed
+
+```typescript theme={null}
+import { OpenRouter } from "@openrouter/sdk";
+
+const openRouter = new OpenRouter({
+  httpReferer: "<value>",
+  appTitle: "<value>",
+  appCategories: "<value>",
+  apiKey: process.env["OPENROUTER_API_KEY"] ?? "",
+});
+
+async function run() {
+  const result = await openRouter.vault.storeInternVaultSecret({
+    internId: "7c9e6679-7425-40de-944b-e07fc1f90ae7",
+    name: "github_token",
+    vaultSecretWriteRequest: {
+      hosts: [
+        "api.github.com",
+      ],
+      value: "ghp_exampleTokenValue",
+    },
+  });
+
+  console.log(result);
+}
+
+run();
+```
+
+### Standalone function
+
+The standalone function version of this method:
+
+```typescript theme={null}
+import { OpenRouterCore } from "@openrouter/sdk/core.js";
+import { vaultStoreInternVaultSecret } from "@openrouter/sdk/funcs/vaultStoreInternVaultSecret.js";
+
+// Use `OpenRouterCore` for best tree-shaking performance.
+// You can create one instance of it to use across an application.
+const openRouter = new OpenRouterCore({
+  httpReferer: "<value>",
+  appTitle: "<value>",
+  appCategories: "<value>",
+  apiKey: process.env["OPENROUTER_API_KEY"] ?? "",
+});
+
+async function run() {
+  const res = await vaultStoreInternVaultSecret(openRouter, {
+    internId: "7c9e6679-7425-40de-944b-e07fc1f90ae7",
+    name: "github_token",
+    vaultSecretWriteRequest: {
+      hosts: [
+        "api.github.com",
+      ],
+      value: "ghp_exampleTokenValue",
+    },
+  });
+  if (res.ok) {
+    const { value: result } = res;
+    console.log(result);
+  } else {
+    console.log("vaultStoreInternVaultSecret failed:", res.error);
+  }
+}
+
+run();
+```
+
+### Example Usage: vault-timed-out
+
+```typescript theme={null}
+import { OpenRouter } from "@openrouter/sdk";
+
+const openRouter = new OpenRouter({
+  httpReferer: "<value>",
+  appTitle: "<value>",
+  appCategories: "<value>",
+  apiKey: process.env["OPENROUTER_API_KEY"] ?? "",
+});
+
+async function run() {
+  const result = await openRouter.vault.storeInternVaultSecret({
+    internId: "7c9e6679-7425-40de-944b-e07fc1f90ae7",
+    name: "github_token",
+    vaultSecretWriteRequest: {
+      hosts: [
+        "api.github.com",
+      ],
+      value: "ghp_exampleTokenValue",
+    },
+  });
+
+  console.log(result);
+}
+
+run();
+```
+
+### Standalone function
+
+The standalone function version of this method:
+
+```typescript theme={null}
+import { OpenRouterCore } from "@openrouter/sdk/core.js";
+import { vaultStoreInternVaultSecret } from "@openrouter/sdk/funcs/vaultStoreInternVaultSecret.js";
+
+// Use `OpenRouterCore` for best tree-shaking performance.
+// You can create one instance of it to use across an application.
+const openRouter = new OpenRouterCore({
+  httpReferer: "<value>",
+  appTitle: "<value>",
+  appCategories: "<value>",
+  apiKey: process.env["OPENROUTER_API_KEY"] ?? "",
+});
+
+async function run() {
+  const res = await vaultStoreInternVaultSecret(openRouter, {
+    internId: "7c9e6679-7425-40de-944b-e07fc1f90ae7",
+    name: "github_token",
+    vaultSecretWriteRequest: {
+      hosts: [
+        "api.github.com",
+      ],
+      value: "ghp_exampleTokenValue",
+    },
+  });
+  if (res.ok) {
+    const { value: result } = res;
+    console.log(result);
+  } else {
+    console.log("vaultStoreInternVaultSecret failed:", res.error);
+  }
+}
+
+run();
+```
+
+### Example Usage: vault-unavailable
+
+```typescript theme={null}
+import { OpenRouter } from "@openrouter/sdk";
+
+const openRouter = new OpenRouter({
+  httpReferer: "<value>",
+  appTitle: "<value>",
+  appCategories: "<value>",
+  apiKey: process.env["OPENROUTER_API_KEY"] ?? "",
+});
+
+async function run() {
+  const result = await openRouter.vault.storeInternVaultSecret({
+    internId: "7c9e6679-7425-40de-944b-e07fc1f90ae7",
+    name: "github_token",
+    vaultSecretWriteRequest: {
+      hosts: [
+        "api.github.com",
+      ],
+      value: "ghp_exampleTokenValue",
+    },
+  });
+
+  console.log(result);
+}
+
+run();
+```
+
+### Standalone function
+
+The standalone function version of this method:
+
+```typescript theme={null}
+import { OpenRouterCore } from "@openrouter/sdk/core.js";
+import { vaultStoreInternVaultSecret } from "@openrouter/sdk/funcs/vaultStoreInternVaultSecret.js";
+
+// Use `OpenRouterCore` for best tree-shaking performance.
+// You can create one instance of it to use across an application.
+const openRouter = new OpenRouterCore({
+  httpReferer: "<value>",
+  appTitle: "<value>",
+  appCategories: "<value>",
+  apiKey: process.env["OPENROUTER_API_KEY"] ?? "",
+});
+
+async function run() {
+  const res = await vaultStoreInternVaultSecret(openRouter, {
+    internId: "7c9e6679-7425-40de-944b-e07fc1f90ae7",
+    name: "github_token",
+    vaultSecretWriteRequest: {
+      hosts: [
+        "api.github.com",
+      ],
+      value: "ghp_exampleTokenValue",
+    },
+  });
+  if (res.ok) {
+    const { value: result } = res;
+    console.log(result);
+  } else {
+    console.log("vaultStoreInternVaultSecret failed:", res.error);
+  }
+}
+
+run();
+```
+
+### Example Usage: workspace-scope-unavailable
+
+```typescript theme={null}
+import { OpenRouter } from "@openrouter/sdk";
+
+const openRouter = new OpenRouter({
+  httpReferer: "<value>",
+  appTitle: "<value>",
+  appCategories: "<value>",
+  apiKey: process.env["OPENROUTER_API_KEY"] ?? "",
+});
+
+async function run() {
+  const result = await openRouter.vault.storeInternVaultSecret({
+    internId: "7c9e6679-7425-40de-944b-e07fc1f90ae7",
+    name: "github_token",
+    vaultSecretWriteRequest: {
+      hosts: [
+        "api.github.com",
+      ],
+      value: "ghp_exampleTokenValue",
+    },
+  });
+
+  console.log(result);
+}
+
+run();
+```
+
+### Standalone function
+
+The standalone function version of this method:
+
+```typescript theme={null}
+import { OpenRouterCore } from "@openrouter/sdk/core.js";
+import { vaultStoreInternVaultSecret } from "@openrouter/sdk/funcs/vaultStoreInternVaultSecret.js";
+
+// Use `OpenRouterCore` for best tree-shaking performance.
+// You can create one instance of it to use across an application.
+const openRouter = new OpenRouterCore({
+  httpReferer: "<value>",
+  appTitle: "<value>",
+  appCategories: "<value>",
+  apiKey: process.env["OPENROUTER_API_KEY"] ?? "",
+});
+
+async function run() {
+  const res = await vaultStoreInternVaultSecret(openRouter, {
+    internId: "7c9e6679-7425-40de-944b-e07fc1f90ae7",
+    name: "github_token",
+    vaultSecretWriteRequest: {
+      hosts: [
+        "api.github.com",
+      ],
+      value: "ghp_exampleTokenValue",
+    },
+  });
+  if (res.ok) {
+    const { value: result } = res;
+    console.log(result);
+  } else {
+    console.log("vaultStoreInternVaultSecret failed:", res.error);
+  }
+}
+
+run();
+```
+
+### Example Usage: writes-disabled
+
+```typescript theme={null}
+import { OpenRouter } from "@openrouter/sdk";
+
+const openRouter = new OpenRouter({
+  httpReferer: "<value>",
+  appTitle: "<value>",
+  appCategories: "<value>",
+  apiKey: process.env["OPENROUTER_API_KEY"] ?? "",
+});
+
+async function run() {
+  const result = await openRouter.vault.storeInternVaultSecret({
+    internId: "7c9e6679-7425-40de-944b-e07fc1f90ae7",
+    name: "github_token",
+    vaultSecretWriteRequest: {
+      hosts: [
+        "api.github.com",
+      ],
+      value: "ghp_exampleTokenValue",
+    },
+  });
+
+  console.log(result);
+}
+
+run();
+```
+
+### Standalone function
+
+The standalone function version of this method:
+
+```typescript theme={null}
+import { OpenRouterCore } from "@openrouter/sdk/core.js";
+import { vaultStoreInternVaultSecret } from "@openrouter/sdk/funcs/vaultStoreInternVaultSecret.js";
+
+// Use `OpenRouterCore` for best tree-shaking performance.
+// You can create one instance of it to use across an application.
+const openRouter = new OpenRouterCore({
+  httpReferer: "<value>",
+  appTitle: "<value>",
+  appCategories: "<value>",
+  apiKey: process.env["OPENROUTER_API_KEY"] ?? "",
+});
+
+async function run() {
+  const res = await vaultStoreInternVaultSecret(openRouter, {
+    internId: "7c9e6679-7425-40de-944b-e07fc1f90ae7",
+    name: "github_token",
+    vaultSecretWriteRequest: {
+      hosts: [
+        "api.github.com",
+      ],
+      value: "ghp_exampleTokenValue",
+    },
+  });
+  if (res.ok) {
+    const { value: result } = res;
+    console.log(result);
+  } else {
+    console.log("vaultStoreInternVaultSecret failed:", res.error);
+  }
+}
+
+run();
+```
+
+### Parameters
+
+| Parameter | Type | Required | Description |
+| - | - | - | - |
+| `request` | [operations.StoreInternVaultSecretRequest](https://openrouter.ai/docs/client-sdks/typescript/models/operations/storeinternvaultsecretrequest.mdx) | ✔️ | The request object to use for the request. |
+| `options` | RequestOptions | ➖ | Used to set various options for making HTTP requests. |
+| `options.fetchOptions` | [RequestInit](https://developer.mozilla.org/en-US/docs/Web/API/Request/Request#options) | ➖ | Options that are passed to the underlying HTTP request. This can be used to inject extra headers for examples. All `Request` options, except `method` and `body`, are allowed. |
+| `options.retries` | [RetryConfig](https://openrouter.ai/docs/client-sdks/typescript/lib/utils/retryconfig.mdx) | ➖ | Enables retrying HTTP requests under certain failure conditions. |
+
+### Response
+
+**Promise\<[models.VaultSecretResponse](https://openrouter.ai/docs/client-sdks/typescript/models/vaultsecretresponse.mdx)>**
+
+### Errors
+
+| Error Type | Status Code | Content Type |
+| - | - | - |
+| errors.BadRequestResponseError | 400 | application/json |
+| errors.UnauthorizedResponseError | 401 | application/json |
+| errors.ForbiddenResponseError | 403 | application/json |
+| errors.NotFoundResponseError | 404 | application/json |
+| errors.RequestTimeoutResponseError | 408 | application/json |
+| errors.ConflictResponseError | 409 | application/json |
+| errors.PayloadTooLargeResponseError | 413 | application/json |
+| errors.TooManyRequestsResponseError | 429 | application/json |
+| errors.InternalServerResponseError | 500 | application/json |
+| errors.BadGatewayResponseError | 502 | application/json |
+| errors.ServiceUnavailableResponseError | 503 | application/json |
+| errors.GatewayTimeoutResponseError | 504 | application/json |
+| errors.OpenRouterDefaultError | 4XX, 5XX | \*/\* |
+
+## copyVaultSecretsToIntern
+
+Copies the named workspace secrets into one intern's scope, replacing any intern secret with the same name. Each copy keeps the source value and host bindings. Every name must exist in the workspace scope or the request fails with 404 and nothing is copied. A workspace secret whose `hosts` is `null` cannot be copied: the request fails with 409 and nothing is copied until that secret is stored again with hosts. The response carries metadata only. Writes return 503 while vault writes are disabled for the caller. The scope is selected by the API key: workspace routes act on the key's active workspace and intern routes act on one intern inside that workspace. There is no default workspace and no fallback to another scope. Every vault route, including reads, requires access to the Intern API programme and returns 404 outside it. An intern's own API key is confined to that intern: it can always read the intern's secrets and effective secrets, writes to them follow the rules above, and every other intern and every workspace route answers 404. Requests on regional hostnames such as `eu.openrouter.ai` are refused. [API key](https://openrouter.ai/docs/client-sdks/typescript/docs/api-reference/authentication) required.
+
+### Example Usage: body-timed-out
+
+```typescript theme={null}
+import { OpenRouter } from "@openrouter/sdk";
+
+const openRouter = new OpenRouter({
+  httpReferer: "<value>",
+  appTitle: "<value>",
+  appCategories: "<value>",
+  apiKey: process.env["OPENROUTER_API_KEY"] ?? "",
+});
+
+async function run() {
+  const result = await openRouter.vault.copyVaultSecretsToIntern({
+    internId: "7c9e6679-7425-40de-944b-e07fc1f90ae7",
+    vaultSecretCopyRequest: {
+      names: [
+        "github_token",
+      ],
+    },
+  });
+
+  console.log(result);
+}
+
+run();
+```
+
+### Standalone function
+
+The standalone function version of this method:
+
+```typescript theme={null}
+import { OpenRouterCore } from "@openrouter/sdk/core.js";
+import { vaultCopyVaultSecretsToIntern } from "@openrouter/sdk/funcs/vaultCopyVaultSecretsToIntern.js";
+
+// Use `OpenRouterCore` for best tree-shaking performance.
+// You can create one instance of it to use across an application.
+const openRouter = new OpenRouterCore({
+  httpReferer: "<value>",
+  appTitle: "<value>",
+  appCategories: "<value>",
+  apiKey: process.env["OPENROUTER_API_KEY"] ?? "",
+});
+
+async function run() {
+  const res = await vaultCopyVaultSecretsToIntern(openRouter, {
+    internId: "7c9e6679-7425-40de-944b-e07fc1f90ae7",
+    vaultSecretCopyRequest: {
+      names: [
+        "github_token",
+      ],
+    },
+  });
+  if (res.ok) {
+    const { value: result } = res;
+    console.log(result);
+  } else {
+    console.log("vaultCopyVaultSecretsToIntern failed:", res.error);
+  }
+}
+
+run();
+```
+
+### Example Usage: body-too-large
+
+```typescript theme={null}
+import { OpenRouter } from "@openrouter/sdk";
+
+const openRouter = new OpenRouter({
+  httpReferer: "<value>",
+  appTitle: "<value>",
+  appCategories: "<value>",
+  apiKey: process.env["OPENROUTER_API_KEY"] ?? "",
+});
+
+async function run() {
+  const result = await openRouter.vault.copyVaultSecretsToIntern({
+    internId: "7c9e6679-7425-40de-944b-e07fc1f90ae7",
+    vaultSecretCopyRequest: {
+      names: [
+        "github_token",
+      ],
+    },
+  });
+
+  console.log(result);
+}
+
+run();
+```
+
+### Standalone function
+
+The standalone function version of this method:
+
+```typescript theme={null}
+import { OpenRouterCore } from "@openrouter/sdk/core.js";
+import { vaultCopyVaultSecretsToIntern } from "@openrouter/sdk/funcs/vaultCopyVaultSecretsToIntern.js";
+
+// Use `OpenRouterCore` for best tree-shaking performance.
+// You can create one instance of it to use across an application.
+const openRouter = new OpenRouterCore({
+  httpReferer: "<value>",
+  appTitle: "<value>",
+  appCategories: "<value>",
+  apiKey: process.env["OPENROUTER_API_KEY"] ?? "",
+});
+
+async function run() {
+  const res = await vaultCopyVaultSecretsToIntern(openRouter, {
+    internId: "7c9e6679-7425-40de-944b-e07fc1f90ae7",
+    vaultSecretCopyRequest: {
+      names: [
+        "github_token",
+      ],
+    },
+  });
+  if (res.ok) {
+    const { value: result } = res;
+    console.log(result);
+  } else {
+    console.log("vaultCopyVaultSecretsToIntern failed:", res.error);
+  }
+}
+
+run();
+```
+
+### Example Usage: copy-conflict
+
+```typescript theme={null}
+import { OpenRouter } from "@openrouter/sdk";
+
+const openRouter = new OpenRouter({
+  httpReferer: "<value>",
+  appTitle: "<value>",
+  appCategories: "<value>",
+  apiKey: process.env["OPENROUTER_API_KEY"] ?? "",
+});
+
+async function run() {
+  const result = await openRouter.vault.copyVaultSecretsToIntern({
+    internId: "7c9e6679-7425-40de-944b-e07fc1f90ae7",
+    vaultSecretCopyRequest: {
+      names: [
+        "github_token",
+      ],
+    },
+  });
+
+  console.log(result);
+}
+
+run();
+```
+
+### Standalone function
+
+The standalone function version of this method:
+
+```typescript theme={null}
+import { OpenRouterCore } from "@openrouter/sdk/core.js";
+import { vaultCopyVaultSecretsToIntern } from "@openrouter/sdk/funcs/vaultCopyVaultSecretsToIntern.js";
+
+// Use `OpenRouterCore` for best tree-shaking performance.
+// You can create one instance of it to use across an application.
+const openRouter = new OpenRouterCore({
+  httpReferer: "<value>",
+  appTitle: "<value>",
+  appCategories: "<value>",
+  apiKey: process.env["OPENROUTER_API_KEY"] ?? "",
+});
+
+async function run() {
+  const res = await vaultCopyVaultSecretsToIntern(openRouter, {
+    internId: "7c9e6679-7425-40de-944b-e07fc1f90ae7",
+    vaultSecretCopyRequest: {
+      names: [
+        "github_token",
+      ],
+    },
+  });
+  if (res.ok) {
+    const { value: result } = res;
+    console.log(result);
+  } else {
+    console.log("vaultCopyVaultSecretsToIntern failed:", res.error);
+  }
+}
+
+run();
+```
+
+### Example Usage: internal-error
+
+```typescript theme={null}
+import { OpenRouter } from "@openrouter/sdk";
+
+const openRouter = new OpenRouter({
+  httpReferer: "<value>",
+  appTitle: "<value>",
+  appCategories: "<value>",
+  apiKey: process.env["OPENROUTER_API_KEY"] ?? "",
+});
+
+async function run() {
+  const result = await openRouter.vault.copyVaultSecretsToIntern({
+    internId: "7c9e6679-7425-40de-944b-e07fc1f90ae7",
+    vaultSecretCopyRequest: {
+      names: [
+        "github_token",
+      ],
+    },
+  });
+
+  console.log(result);
+}
+
+run();
+```
+
+### Standalone function
+
+The standalone function version of this method:
+
+```typescript theme={null}
+import { OpenRouterCore } from "@openrouter/sdk/core.js";
+import { vaultCopyVaultSecretsToIntern } from "@openrouter/sdk/funcs/vaultCopyVaultSecretsToIntern.js";
+
+// Use `OpenRouterCore` for best tree-shaking performance.
+// You can create one instance of it to use across an application.
+const openRouter = new OpenRouterCore({
+  httpReferer: "<value>",
+  appTitle: "<value>",
+  appCategories: "<value>",
+  apiKey: process.env["OPENROUTER_API_KEY"] ?? "",
+});
+
+async function run() {
+  const res = await vaultCopyVaultSecretsToIntern(openRouter, {
+    internId: "7c9e6679-7425-40de-944b-e07fc1f90ae7",
+    vaultSecretCopyRequest: {
+      names: [
+        "github_token",
+      ],
+    },
+  });
+  if (res.ok) {
+    const { value: result } = res;
+    console.log(result);
+  } else {
+    console.log("vaultCopyVaultSecretsToIntern failed:", res.error);
+  }
+}
+
+run();
+```
+
+### Example Usage: invalid-or-missing-api-key
+
+```typescript theme={null}
+import { OpenRouter } from "@openrouter/sdk";
+
+const openRouter = new OpenRouter({
+  httpReferer: "<value>",
+  appTitle: "<value>",
+  appCategories: "<value>",
+  apiKey: process.env["OPENROUTER_API_KEY"] ?? "",
+});
+
+async function run() {
+  const result = await openRouter.vault.copyVaultSecretsToIntern({
+    internId: "7c9e6679-7425-40de-944b-e07fc1f90ae7",
+    vaultSecretCopyRequest: {
+      names: [
+        "github_token",
+      ],
+    },
+  });
+
+  console.log(result);
+}
+
+run();
+```
+
+### Standalone function
+
+The standalone function version of this method:
+
+```typescript theme={null}
+import { OpenRouterCore } from "@openrouter/sdk/core.js";
+import { vaultCopyVaultSecretsToIntern } from "@openrouter/sdk/funcs/vaultCopyVaultSecretsToIntern.js";
+
+// Use `OpenRouterCore` for best tree-shaking performance.
+// You can create one instance of it to use across an application.
+const openRouter = new OpenRouterCore({
+  httpReferer: "<value>",
+  appTitle: "<value>",
+  appCategories: "<value>",
+  apiKey: process.env["OPENROUTER_API_KEY"] ?? "",
+});
+
+async function run() {
+  const res = await vaultCopyVaultSecretsToIntern(openRouter, {
+    internId: "7c9e6679-7425-40de-944b-e07fc1f90ae7",
+    vaultSecretCopyRequest: {
+      names: [
+        "github_token",
+      ],
+    },
+  });
+  if (res.ok) {
+    const { value: result } = res;
+    console.log(result);
+  } else {
+    console.log("vaultCopyVaultSecretsToIntern failed:", res.error);
+  }
+}
+
+run();
+```
+
+### Example Usage: invalid-vault-request
+
+```typescript theme={null}
+import { OpenRouter } from "@openrouter/sdk";
+
+const openRouter = new OpenRouter({
+  httpReferer: "<value>",
+  appTitle: "<value>",
+  appCategories: "<value>",
+  apiKey: process.env["OPENROUTER_API_KEY"] ?? "",
+});
+
+async function run() {
+  const result = await openRouter.vault.copyVaultSecretsToIntern({
+    internId: "7c9e6679-7425-40de-944b-e07fc1f90ae7",
+    vaultSecretCopyRequest: {
+      names: [
+        "github_token",
+      ],
+    },
+  });
+
+  console.log(result);
+}
+
+run();
+```
+
+### Standalone function
+
+The standalone function version of this method:
+
+```typescript theme={null}
+import { OpenRouterCore } from "@openrouter/sdk/core.js";
+import { vaultCopyVaultSecretsToIntern } from "@openrouter/sdk/funcs/vaultCopyVaultSecretsToIntern.js";
+
+// Use `OpenRouterCore` for best tree-shaking performance.
+// You can create one instance of it to use across an application.
+const openRouter = new OpenRouterCore({
+  httpReferer: "<value>",
+  appTitle: "<value>",
+  appCategories: "<value>",
+  apiKey: process.env["OPENROUTER_API_KEY"] ?? "",
+});
+
+async function run() {
+  const res = await vaultCopyVaultSecretsToIntern(openRouter, {
+    internId: "7c9e6679-7425-40de-944b-e07fc1f90ae7",
+    vaultSecretCopyRequest: {
+      names: [
+        "github_token",
+      ],
+    },
+  });
+  if (res.ok) {
+    const { value: result } = res;
+    console.log(result);
+  } else {
+    console.log("vaultCopyVaultSecretsToIntern failed:", res.error);
+  }
+}
+
+run();
+```
+
+### Example Usage: invalid-vault-response
+
+```typescript theme={null}
+import { OpenRouter } from "@openrouter/sdk";
+
+const openRouter = new OpenRouter({
+  httpReferer: "<value>",
+  appTitle: "<value>",
+  appCategories: "<value>",
+  apiKey: process.env["OPENROUTER_API_KEY"] ?? "",
+});
+
+async function run() {
+  const result = await openRouter.vault.copyVaultSecretsToIntern({
+    internId: "7c9e6679-7425-40de-944b-e07fc1f90ae7",
+    vaultSecretCopyRequest: {
+      names: [
+        "github_token",
+      ],
+    },
+  });
+
+  console.log(result);
+}
+
+run();
+```
+
+### Standalone function
+
+The standalone function version of this method:
+
+```typescript theme={null}
+import { OpenRouterCore } from "@openrouter/sdk/core.js";
+import { vaultCopyVaultSecretsToIntern } from "@openrouter/sdk/funcs/vaultCopyVaultSecretsToIntern.js";
+
+// Use `OpenRouterCore` for best tree-shaking performance.
+// You can create one instance of it to use across an application.
+const openRouter = new OpenRouterCore({
+  httpReferer: "<value>",
+  appTitle: "<value>",
+  appCategories: "<value>",
+  apiKey: process.env["OPENROUTER_API_KEY"] ?? "",
+});
+
+async function run() {
+  const res = await vaultCopyVaultSecretsToIntern(openRouter, {
+    internId: "7c9e6679-7425-40de-944b-e07fc1f90ae7",
+    vaultSecretCopyRequest: {
+      names: [
+        "github_token",
+      ],
+    },
+  });
+  if (res.ok) {
+    const { value: result } = res;
+    console.log(result);
+  } else {
+    console.log("vaultCopyVaultSecretsToIntern failed:", res.error);
+  }
+}
+
+run();
+```
+
+### Example Usage: not-found
+
+```typescript theme={null}
+import { OpenRouter } from "@openrouter/sdk";
+
+const openRouter = new OpenRouter({
+  httpReferer: "<value>",
+  appTitle: "<value>",
+  appCategories: "<value>",
+  apiKey: process.env["OPENROUTER_API_KEY"] ?? "",
+});
+
+async function run() {
+  const result = await openRouter.vault.copyVaultSecretsToIntern({
+    internId: "7c9e6679-7425-40de-944b-e07fc1f90ae7",
+    vaultSecretCopyRequest: {
+      names: [
+        "github_token",
+      ],
+    },
+  });
+
+  console.log(result);
+}
+
+run();
+```
+
+### Standalone function
+
+The standalone function version of this method:
+
+```typescript theme={null}
+import { OpenRouterCore } from "@openrouter/sdk/core.js";
+import { vaultCopyVaultSecretsToIntern } from "@openrouter/sdk/funcs/vaultCopyVaultSecretsToIntern.js";
+
+// Use `OpenRouterCore` for best tree-shaking performance.
+// You can create one instance of it to use across an application.
+const openRouter = new OpenRouterCore({
+  httpReferer: "<value>",
+  appTitle: "<value>",
+  appCategories: "<value>",
+  apiKey: process.env["OPENROUTER_API_KEY"] ?? "",
+});
+
+async function run() {
+  const res = await vaultCopyVaultSecretsToIntern(openRouter, {
+    internId: "7c9e6679-7425-40de-944b-e07fc1f90ae7",
+    vaultSecretCopyRequest: {
+      names: [
+        "github_token",
+      ],
+    },
+  });
+  if (res.ok) {
+    const { value: result } = res;
+    console.log(result);
+  } else {
+    console.log("vaultCopyVaultSecretsToIntern failed:", res.error);
+  }
+}
+
+run();
+```
+
+### Example Usage: rate-limited
+
+```typescript theme={null}
+import { OpenRouter } from "@openrouter/sdk";
+
+const openRouter = new OpenRouter({
+  httpReferer: "<value>",
+  appTitle: "<value>",
+  appCategories: "<value>",
+  apiKey: process.env["OPENROUTER_API_KEY"] ?? "",
+});
+
+async function run() {
+  const result = await openRouter.vault.copyVaultSecretsToIntern({
+    internId: "7c9e6679-7425-40de-944b-e07fc1f90ae7",
+    vaultSecretCopyRequest: {
+      names: [
+        "github_token",
+      ],
+    },
+  });
+
+  console.log(result);
+}
+
+run();
+```
+
+### Standalone function
+
+The standalone function version of this method:
+
+```typescript theme={null}
+import { OpenRouterCore } from "@openrouter/sdk/core.js";
+import { vaultCopyVaultSecretsToIntern } from "@openrouter/sdk/funcs/vaultCopyVaultSecretsToIntern.js";
+
+// Use `OpenRouterCore` for best tree-shaking performance.
+// You can create one instance of it to use across an application.
+const openRouter = new OpenRouterCore({
+  httpReferer: "<value>",
+  appTitle: "<value>",
+  appCategories: "<value>",
+  apiKey: process.env["OPENROUTER_API_KEY"] ?? "",
+});
+
+async function run() {
+  const res = await vaultCopyVaultSecretsToIntern(openRouter, {
+    internId: "7c9e6679-7425-40de-944b-e07fc1f90ae7",
+    vaultSecretCopyRequest: {
+      names: [
+        "github_token",
+      ],
+    },
+  });
+  if (res.ok) {
+    const { value: result } = res;
+    console.log(result);
+  } else {
+    console.log("vaultCopyVaultSecretsToIntern failed:", res.error);
+  }
+}
+
+run();
+```
+
+### Example Usage: regional-hostname
+
+```typescript theme={null}
+import { OpenRouter } from "@openrouter/sdk";
+
+const openRouter = new OpenRouter({
+  httpReferer: "<value>",
+  appTitle: "<value>",
+  appCategories: "<value>",
+  apiKey: process.env["OPENROUTER_API_KEY"] ?? "",
+});
+
+async function run() {
+  const result = await openRouter.vault.copyVaultSecretsToIntern({
+    internId: "7c9e6679-7425-40de-944b-e07fc1f90ae7",
+    vaultSecretCopyRequest: {
+      names: [
+        "github_token",
+      ],
+    },
+  });
+
+  console.log(result);
+}
+
+run();
+```
+
+### Standalone function
+
+The standalone function version of this method:
+
+```typescript theme={null}
+import { OpenRouterCore } from "@openrouter/sdk/core.js";
+import { vaultCopyVaultSecretsToIntern } from "@openrouter/sdk/funcs/vaultCopyVaultSecretsToIntern.js";
+
+// Use `OpenRouterCore` for best tree-shaking performance.
+// You can create one instance of it to use across an application.
+const openRouter = new OpenRouterCore({
+  httpReferer: "<value>",
+  appTitle: "<value>",
+  appCategories: "<value>",
+  apiKey: process.env["OPENROUTER_API_KEY"] ?? "",
+});
+
+async function run() {
+  const res = await vaultCopyVaultSecretsToIntern(openRouter, {
+    internId: "7c9e6679-7425-40de-944b-e07fc1f90ae7",
+    vaultSecretCopyRequest: {
+      names: [
+        "github_token",
+      ],
+    },
+  });
+  if (res.ok) {
+    const { value: result } = res;
+    console.log(result);
+  } else {
+    console.log("vaultCopyVaultSecretsToIntern failed:", res.error);
+  }
+}
+
+run();
+```
+
+### Example Usage: route-deadline
+
+```typescript theme={null}
+import { OpenRouter } from "@openrouter/sdk";
+
+const openRouter = new OpenRouter({
+  httpReferer: "<value>",
+  appTitle: "<value>",
+  appCategories: "<value>",
+  apiKey: process.env["OPENROUTER_API_KEY"] ?? "",
+});
+
+async function run() {
+  const result = await openRouter.vault.copyVaultSecretsToIntern({
+    internId: "7c9e6679-7425-40de-944b-e07fc1f90ae7",
+    vaultSecretCopyRequest: {
+      names: [
+        "github_token",
+      ],
+    },
+  });
+
+  console.log(result);
+}
+
+run();
+```
+
+### Standalone function
+
+The standalone function version of this method:
+
+```typescript theme={null}
+import { OpenRouterCore } from "@openrouter/sdk/core.js";
+import { vaultCopyVaultSecretsToIntern } from "@openrouter/sdk/funcs/vaultCopyVaultSecretsToIntern.js";
+
+// Use `OpenRouterCore` for best tree-shaking performance.
+// You can create one instance of it to use across an application.
+const openRouter = new OpenRouterCore({
+  httpReferer: "<value>",
+  appTitle: "<value>",
+  appCategories: "<value>",
+  apiKey: process.env["OPENROUTER_API_KEY"] ?? "",
+});
+
+async function run() {
+  const res = await vaultCopyVaultSecretsToIntern(openRouter, {
+    internId: "7c9e6679-7425-40de-944b-e07fc1f90ae7",
+    vaultSecretCopyRequest: {
+      names: [
+        "github_token",
+      ],
+    },
+  });
+  if (res.ok) {
+    const { value: result } = res;
+    console.log(result);
+  } else {
+    console.log("vaultCopyVaultSecretsToIntern failed:", res.error);
+  }
+}
+
+run();
+```
+
+### Example Usage: vault-request-failed
+
+```typescript theme={null}
+import { OpenRouter } from "@openrouter/sdk";
+
+const openRouter = new OpenRouter({
+  httpReferer: "<value>",
+  appTitle: "<value>",
+  appCategories: "<value>",
+  apiKey: process.env["OPENROUTER_API_KEY"] ?? "",
+});
+
+async function run() {
+  const result = await openRouter.vault.copyVaultSecretsToIntern({
+    internId: "7c9e6679-7425-40de-944b-e07fc1f90ae7",
+    vaultSecretCopyRequest: {
+      names: [
+        "github_token",
+      ],
+    },
+  });
+
+  console.log(result);
+}
+
+run();
+```
+
+### Standalone function
+
+The standalone function version of this method:
+
+```typescript theme={null}
+import { OpenRouterCore } from "@openrouter/sdk/core.js";
+import { vaultCopyVaultSecretsToIntern } from "@openrouter/sdk/funcs/vaultCopyVaultSecretsToIntern.js";
+
+// Use `OpenRouterCore` for best tree-shaking performance.
+// You can create one instance of it to use across an application.
+const openRouter = new OpenRouterCore({
+  httpReferer: "<value>",
+  appTitle: "<value>",
+  appCategories: "<value>",
+  apiKey: process.env["OPENROUTER_API_KEY"] ?? "",
+});
+
+async function run() {
+  const res = await vaultCopyVaultSecretsToIntern(openRouter, {
+    internId: "7c9e6679-7425-40de-944b-e07fc1f90ae7",
+    vaultSecretCopyRequest: {
+      names: [
+        "github_token",
+      ],
+    },
+  });
+  if (res.ok) {
+    const { value: result } = res;
+    console.log(result);
+  } else {
+    console.log("vaultCopyVaultSecretsToIntern failed:", res.error);
+  }
+}
+
+run();
+```
+
+### Example Usage: vault-timed-out
+
+```typescript theme={null}
+import { OpenRouter } from "@openrouter/sdk";
+
+const openRouter = new OpenRouter({
+  httpReferer: "<value>",
+  appTitle: "<value>",
+  appCategories: "<value>",
+  apiKey: process.env["OPENROUTER_API_KEY"] ?? "",
+});
+
+async function run() {
+  const result = await openRouter.vault.copyVaultSecretsToIntern({
+    internId: "7c9e6679-7425-40de-944b-e07fc1f90ae7",
+    vaultSecretCopyRequest: {
+      names: [
+        "github_token",
+      ],
+    },
+  });
+
+  console.log(result);
+}
+
+run();
+```
+
+### Standalone function
+
+The standalone function version of this method:
+
+```typescript theme={null}
+import { OpenRouterCore } from "@openrouter/sdk/core.js";
+import { vaultCopyVaultSecretsToIntern } from "@openrouter/sdk/funcs/vaultCopyVaultSecretsToIntern.js";
+
+// Use `OpenRouterCore` for best tree-shaking performance.
+// You can create one instance of it to use across an application.
+const openRouter = new OpenRouterCore({
+  httpReferer: "<value>",
+  appTitle: "<value>",
+  appCategories: "<value>",
+  apiKey: process.env["OPENROUTER_API_KEY"] ?? "",
+});
+
+async function run() {
+  const res = await vaultCopyVaultSecretsToIntern(openRouter, {
+    internId: "7c9e6679-7425-40de-944b-e07fc1f90ae7",
+    vaultSecretCopyRequest: {
+      names: [
+        "github_token",
+      ],
+    },
+  });
+  if (res.ok) {
+    const { value: result } = res;
+    console.log(result);
+  } else {
+    console.log("vaultCopyVaultSecretsToIntern failed:", res.error);
+  }
+}
+
+run();
+```
+
+### Example Usage: vault-unavailable
+
+```typescript theme={null}
+import { OpenRouter } from "@openrouter/sdk";
+
+const openRouter = new OpenRouter({
+  httpReferer: "<value>",
+  appTitle: "<value>",
+  appCategories: "<value>",
+  apiKey: process.env["OPENROUTER_API_KEY"] ?? "",
+});
+
+async function run() {
+  const result = await openRouter.vault.copyVaultSecretsToIntern({
+    internId: "7c9e6679-7425-40de-944b-e07fc1f90ae7",
+    vaultSecretCopyRequest: {
+      names: [
+        "github_token",
+      ],
+    },
+  });
+
+  console.log(result);
+}
+
+run();
+```
+
+### Standalone function
+
+The standalone function version of this method:
+
+```typescript theme={null}
+import { OpenRouterCore } from "@openrouter/sdk/core.js";
+import { vaultCopyVaultSecretsToIntern } from "@openrouter/sdk/funcs/vaultCopyVaultSecretsToIntern.js";
+
+// Use `OpenRouterCore` for best tree-shaking performance.
+// You can create one instance of it to use across an application.
+const openRouter = new OpenRouterCore({
+  httpReferer: "<value>",
+  appTitle: "<value>",
+  appCategories: "<value>",
+  apiKey: process.env["OPENROUTER_API_KEY"] ?? "",
+});
+
+async function run() {
+  const res = await vaultCopyVaultSecretsToIntern(openRouter, {
+    internId: "7c9e6679-7425-40de-944b-e07fc1f90ae7",
+    vaultSecretCopyRequest: {
+      names: [
+        "github_token",
+      ],
+    },
+  });
+  if (res.ok) {
+    const { value: result } = res;
+    console.log(result);
+  } else {
+    console.log("vaultCopyVaultSecretsToIntern failed:", res.error);
+  }
+}
+
+run();
+```
+
+### Example Usage: workspace-scope-unavailable
+
+```typescript theme={null}
+import { OpenRouter } from "@openrouter/sdk";
+
+const openRouter = new OpenRouter({
+  httpReferer: "<value>",
+  appTitle: "<value>",
+  appCategories: "<value>",
+  apiKey: process.env["OPENROUTER_API_KEY"] ?? "",
+});
+
+async function run() {
+  const result = await openRouter.vault.copyVaultSecretsToIntern({
+    internId: "7c9e6679-7425-40de-944b-e07fc1f90ae7",
+    vaultSecretCopyRequest: {
+      names: [
+        "github_token",
+      ],
+    },
+  });
+
+  console.log(result);
+}
+
+run();
+```
+
+### Standalone function
+
+The standalone function version of this method:
+
+```typescript theme={null}
+import { OpenRouterCore } from "@openrouter/sdk/core.js";
+import { vaultCopyVaultSecretsToIntern } from "@openrouter/sdk/funcs/vaultCopyVaultSecretsToIntern.js";
+
+// Use `OpenRouterCore` for best tree-shaking performance.
+// You can create one instance of it to use across an application.
+const openRouter = new OpenRouterCore({
+  httpReferer: "<value>",
+  appTitle: "<value>",
+  appCategories: "<value>",
+  apiKey: process.env["OPENROUTER_API_KEY"] ?? "",
+});
+
+async function run() {
+  const res = await vaultCopyVaultSecretsToIntern(openRouter, {
+    internId: "7c9e6679-7425-40de-944b-e07fc1f90ae7",
+    vaultSecretCopyRequest: {
+      names: [
+        "github_token",
+      ],
+    },
+  });
+  if (res.ok) {
+    const { value: result } = res;
+    console.log(result);
+  } else {
+    console.log("vaultCopyVaultSecretsToIntern failed:", res.error);
+  }
+}
+
+run();
+```
+
+### Example Usage: writes-disabled
+
+```typescript theme={null}
+import { OpenRouter } from "@openrouter/sdk";
+
+const openRouter = new OpenRouter({
+  httpReferer: "<value>",
+  appTitle: "<value>",
+  appCategories: "<value>",
+  apiKey: process.env["OPENROUTER_API_KEY"] ?? "",
+});
+
+async function run() {
+  const result = await openRouter.vault.copyVaultSecretsToIntern({
+    internId: "7c9e6679-7425-40de-944b-e07fc1f90ae7",
+    vaultSecretCopyRequest: {
+      names: [
+        "github_token",
+      ],
+    },
+  });
+
+  console.log(result);
+}
+
+run();
+```
+
+### Standalone function
+
+The standalone function version of this method:
+
+```typescript theme={null}
+import { OpenRouterCore } from "@openrouter/sdk/core.js";
+import { vaultCopyVaultSecretsToIntern } from "@openrouter/sdk/funcs/vaultCopyVaultSecretsToIntern.js";
+
+// Use `OpenRouterCore` for best tree-shaking performance.
+// You can create one instance of it to use across an application.
+const openRouter = new OpenRouterCore({
+  httpReferer: "<value>",
+  appTitle: "<value>",
+  appCategories: "<value>",
+  apiKey: process.env["OPENROUTER_API_KEY"] ?? "",
+});
+
+async function run() {
+  const res = await vaultCopyVaultSecretsToIntern(openRouter, {
+    internId: "7c9e6679-7425-40de-944b-e07fc1f90ae7",
+    vaultSecretCopyRequest: {
+      names: [
+        "github_token",
+      ],
+    },
+  });
+  if (res.ok) {
+    const { value: result } = res;
+    console.log(result);
+  } else {
+    console.log("vaultCopyVaultSecretsToIntern failed:", res.error);
+  }
+}
+
+run();
+```
+
+### Parameters
+
+| Parameter | Type | Required | Description |
+| - | - | - | - |
+| `request` | [operations.CopyVaultSecretsToInternRequest](https://openrouter.ai/docs/client-sdks/typescript/models/operations/copyvaultsecretstointernrequest.mdx) | ✔️ | The request object to use for the request. |
+| `options` | RequestOptions | ➖ | Used to set various options for making HTTP requests. |
+| `options.fetchOptions` | [RequestInit](https://developer.mozilla.org/en-US/docs/Web/API/Request/Request#options) | ➖ | Options that are passed to the underlying HTTP request. This can be used to inject extra headers for examples. All `Request` options, except `method` and `body`, are allowed. |
+| `options.retries` | [RetryConfig](https://openrouter.ai/docs/client-sdks/typescript/lib/utils/retryconfig.mdx) | ➖ | Enables retrying HTTP requests under certain failure conditions. |
+
+### Response
+
+**Promise\<[models.VaultSecretCopyResponse](https://openrouter.ai/docs/client-sdks/typescript/models/vaultsecretcopyresponse.mdx)>**
+
+### Errors
+
+| Error Type | Status Code | Content Type |
+| - | - | - |
+| errors.BadRequestResponseError | 400 | application/json |
+| errors.UnauthorizedResponseError | 401 | application/json |
+| errors.ForbiddenResponseError | 403 | application/json |
+| errors.NotFoundResponseError | 404 | application/json |
+| errors.RequestTimeoutResponseError | 408 | application/json |
+| errors.ConflictResponseError | 409 | application/json |
+| errors.PayloadTooLargeResponseError | 413 | application/json |
+| errors.TooManyRequestsResponseError | 429 | application/json |
+| errors.InternalServerResponseError | 500 | application/json |
+| errors.BadGatewayResponseError | 502 | application/json |
+| errors.ServiceUnavailableResponseError | 503 | application/json |
+| errors.GatewayTimeoutResponseError | 504 | application/json |
+| errors.OpenRouterDefaultError | 4XX, 5XX | \*/\* |
+
+## listVaultSecrets
+
+Lists secret metadata for the workspace of the authenticated API key. The list includes secrets stored from the dashboard or at provisioning before workspace-scoped storage; where both exist under one name, the one stored through this API is listed. Those older secrets cannot be deleted or copied through this API, and storing the same name through this API replaces them. Responses contain names, bound hosts, fingerprints and creation times, never secret values. Results are ordered by name and paginated with `limit` and `offset`. The scope is selected by the API key: workspace routes act on the key's active workspace and intern routes act on one intern inside that workspace. There is no default workspace and no fallback to another scope. Every vault route, including reads, requires access to the Intern API programme and returns 404 outside it. An intern's own API key is confined to that intern: it can always read the intern's secrets and effective secrets, writes to them follow the rules above, and every other intern and every workspace route answers 404. Requests on regional hostnames such as `eu.openrouter.ai` are refused. [API key](https://openrouter.ai/docs/client-sdks/typescript/docs/api-reference/authentication) required.
+
+### Example Usage
+
+```typescript theme={null}
+import { OpenRouter } from "@openrouter/sdk";
+
+const openRouter = new OpenRouter({
+  httpReferer: "<value>",
+  appTitle: "<value>",
+  appCategories: "<value>",
+  apiKey: process.env["OPENROUTER_API_KEY"] ?? "",
+});
+
+async function run() {
+  const result = await openRouter.vault.listVaultSecrets();
+
+  console.log(result);
+}
+
+run();
+```
+
+### Standalone function
+
+The standalone function version of this method:
+
+```typescript theme={null}
+import { OpenRouterCore } from "@openrouter/sdk/core.js";
+import { vaultListVaultSecrets } from "@openrouter/sdk/funcs/vaultListVaultSecrets.js";
+
+// Use `OpenRouterCore` for best tree-shaking performance.
+// You can create one instance of it to use across an application.
+const openRouter = new OpenRouterCore({
+  httpReferer: "<value>",
+  appTitle: "<value>",
+  appCategories: "<value>",
+  apiKey: process.env["OPENROUTER_API_KEY"] ?? "",
+});
+
+async function run() {
+  const res = await vaultListVaultSecrets(openRouter);
+  if (res.ok) {
+    const { value: result } = res;
+    console.log(result);
+  } else {
+    console.log("vaultListVaultSecrets failed:", res.error);
+  }
+}
+
+run();
+```
+
+### Parameters
+
+| Parameter | Type | Required | Description |
+| - | - | - | - |
+| `request` | [operations.ListVaultSecretsRequest](https://openrouter.ai/docs/client-sdks/typescript/models/operations/listvaultsecretsrequest.mdx) | ✔️ | The request object to use for the request. |
+| `options` | RequestOptions | ➖ | Used to set various options for making HTTP requests. |
+| `options.fetchOptions` | [RequestInit](https://developer.mozilla.org/en-US/docs/Web/API/Request/Request#options) | ➖ | Options that are passed to the underlying HTTP request. This can be used to inject extra headers for examples. All `Request` options, except `method` and `body`, are allowed. |
+| `options.retries` | [RetryConfig](https://openrouter.ai/docs/client-sdks/typescript/lib/utils/retryconfig.mdx) | ➖ | Enables retrying HTTP requests under certain failure conditions. |
+
+### Response
+
+**Promise\<[models.VaultSecretListResponse](https://openrouter.ai/docs/client-sdks/typescript/models/vaultsecretlistresponse.mdx)>**
+
+### Errors
+
+| Error Type | Status Code | Content Type |
+| - | - | - |
+| errors.BadRequestResponseError | 400 | application/json |
+| errors.UnauthorizedResponseError | 401 | application/json |
+| errors.ForbiddenResponseError | 403 | application/json |
+| errors.NotFoundResponseError | 404 | application/json |
+| errors.RequestTimeoutResponseError | 408 | application/json |
+| errors.TooManyRequestsResponseError | 429 | application/json |
+| errors.InternalServerResponseError | 500 | application/json |
+| errors.BadGatewayResponseError | 502 | application/json |
+| errors.ServiceUnavailableResponseError | 503 | application/json |
+| errors.GatewayTimeoutResponseError | 504 | application/json |
+| errors.OpenRouterDefaultError | 4XX, 5XX | \*/\* |
+
+## deleteVaultSecret
+
+Deletes a secret from the workspace of the authenticated API key. Returns 204 with no body on success and 404 when the secret does not exist in the selected scope. Writes return 503 while vault writes are disabled for the caller. The scope is selected by the API key: workspace routes act on the key's active workspace and intern routes act on one intern inside that workspace. There is no default workspace and no fallback to another scope. Every vault route, including reads, requires access to the Intern API programme and returns 404 outside it. An intern's own API key is confined to that intern: it can always read the intern's secrets and effective secrets, writes to them follow the rules above, and every other intern and every workspace route answers 404. Requests on regional hostnames such as `eu.openrouter.ai` are refused. [API key](https://openrouter.ai/docs/client-sdks/typescript/docs/api-reference/authentication) required.
+
+### Example Usage
+
+```typescript theme={null}
+import { OpenRouter } from "@openrouter/sdk";
+
+const openRouter = new OpenRouter({
+  httpReferer: "<value>",
+  appTitle: "<value>",
+  appCategories: "<value>",
+  apiKey: process.env["OPENROUTER_API_KEY"] ?? "",
+});
+
+async function run() {
+  await openRouter.vault.deleteVaultSecret({
+    name: "github_token",
+  });
+
+
+}
+
+run();
+```
+
+### Standalone function
+
+The standalone function version of this method:
+
+```typescript theme={null}
+import { OpenRouterCore } from "@openrouter/sdk/core.js";
+import { vaultDeleteVaultSecret } from "@openrouter/sdk/funcs/vaultDeleteVaultSecret.js";
+
+// Use `OpenRouterCore` for best tree-shaking performance.
+// You can create one instance of it to use across an application.
+const openRouter = new OpenRouterCore({
+  httpReferer: "<value>",
+  appTitle: "<value>",
+  appCategories: "<value>",
+  apiKey: process.env["OPENROUTER_API_KEY"] ?? "",
+});
+
+async function run() {
+  const res = await vaultDeleteVaultSecret(openRouter, {
+    name: "github_token",
+  });
+  if (res.ok) {
+    const { value: result } = res;
+    
+  } else {
+    console.log("vaultDeleteVaultSecret failed:", res.error);
+  }
+}
+
+run();
+```
+
+### Parameters
+
+| Parameter | Type | Required | Description |
+| - | - | - | - |
+| `request` | [operations.DeleteVaultSecretRequest](https://openrouter.ai/docs/client-sdks/typescript/models/operations/deletevaultsecretrequest.mdx) | ✔️ | The request object to use for the request. |
+| `options` | RequestOptions | ➖ | Used to set various options for making HTTP requests. |
+| `options.fetchOptions` | [RequestInit](https://developer.mozilla.org/en-US/docs/Web/API/Request/Request#options) | ➖ | Options that are passed to the underlying HTTP request. This can be used to inject extra headers for examples. All `Request` options, except `method` and `body`, are allowed. |
+| `options.retries` | [RetryConfig](https://openrouter.ai/docs/client-sdks/typescript/lib/utils/retryconfig.mdx) | ➖ | Enables retrying HTTP requests under certain failure conditions. |
+
+### Response
+
+**Promise\<void>**
+
+### Errors
+
+| Error Type | Status Code | Content Type |
+| - | - | - |
+| errors.BadRequestResponseError | 400 | application/json |
+| errors.UnauthorizedResponseError | 401 | application/json |
+| errors.ForbiddenResponseError | 403 | application/json |
+| errors.NotFoundResponseError | 404 | application/json |
+| errors.RequestTimeoutResponseError | 408 | application/json |
+| errors.ConflictResponseError | 409 | application/json |
+| errors.TooManyRequestsResponseError | 429 | application/json |
+| errors.InternalServerResponseError | 500 | application/json |
+| errors.BadGatewayResponseError | 502 | application/json |
+| errors.ServiceUnavailableResponseError | 503 | application/json |
+| errors.GatewayTimeoutResponseError | 504 | application/json |
+| errors.OpenRouterDefaultError | 4XX, 5XX | \*/\* |
+
+## storeVaultSecret
+
+Creates or replaces a secret in the workspace of the authenticated API key. The value is encrypted at rest and released only to the exact hostnames in `hosts`. The response carries metadata only. Writes return 503 while vault writes are disabled for the caller. The scope is selected by the API key: workspace routes act on the key's active workspace and intern routes act on one intern inside that workspace. There is no default workspace and no fallback to another scope. Every vault route, including reads, requires access to the Intern API programme and returns 404 outside it. An intern's own API key is confined to that intern: it can always read the intern's secrets and effective secrets, writes to them follow the rules above, and every other intern and every workspace route answers 404. Requests on regional hostnames such as `eu.openrouter.ai` are refused. [API key](https://openrouter.ai/docs/client-sdks/typescript/docs/api-reference/authentication) required.
+
+### Example Usage: body-timed-out
+
+```typescript theme={null}
+import { OpenRouter } from "@openrouter/sdk";
+
+const openRouter = new OpenRouter({
+  httpReferer: "<value>",
+  appTitle: "<value>",
+  appCategories: "<value>",
+  apiKey: process.env["OPENROUTER_API_KEY"] ?? "",
+});
+
+async function run() {
+  const result = await openRouter.vault.storeVaultSecret({
+    name: "github_token",
+    vaultSecretWriteRequest: {
+      hosts: [
+        "api.github.com",
+      ],
+      value: "ghp_exampleTokenValue",
+    },
+  });
+
+  console.log(result);
+}
+
+run();
+```
+
+### Standalone function
+
+The standalone function version of this method:
+
+```typescript theme={null}
+import { OpenRouterCore } from "@openrouter/sdk/core.js";
+import { vaultStoreVaultSecret } from "@openrouter/sdk/funcs/vaultStoreVaultSecret.js";
+
+// Use `OpenRouterCore` for best tree-shaking performance.
+// You can create one instance of it to use across an application.
+const openRouter = new OpenRouterCore({
+  httpReferer: "<value>",
+  appTitle: "<value>",
+  appCategories: "<value>",
+  apiKey: process.env["OPENROUTER_API_KEY"] ?? "",
+});
+
+async function run() {
+  const res = await vaultStoreVaultSecret(openRouter, {
+    name: "github_token",
+    vaultSecretWriteRequest: {
+      hosts: [
+        "api.github.com",
+      ],
+      value: "ghp_exampleTokenValue",
+    },
+  });
+  if (res.ok) {
+    const { value: result } = res;
+    console.log(result);
+  } else {
+    console.log("vaultStoreVaultSecret failed:", res.error);
+  }
+}
+
+run();
+```
+
+### Example Usage: body-too-large
+
+```typescript theme={null}
+import { OpenRouter } from "@openrouter/sdk";
+
+const openRouter = new OpenRouter({
+  httpReferer: "<value>",
+  appTitle: "<value>",
+  appCategories: "<value>",
+  apiKey: process.env["OPENROUTER_API_KEY"] ?? "",
+});
+
+async function run() {
+  const result = await openRouter.vault.storeVaultSecret({
+    name: "github_token",
+    vaultSecretWriteRequest: {
+      hosts: [
+        "api.github.com",
+      ],
+      value: "ghp_exampleTokenValue",
+    },
+  });
+
+  console.log(result);
+}
+
+run();
+```
+
+### Standalone function
+
+The standalone function version of this method:
+
+```typescript theme={null}
+import { OpenRouterCore } from "@openrouter/sdk/core.js";
+import { vaultStoreVaultSecret } from "@openrouter/sdk/funcs/vaultStoreVaultSecret.js";
+
+// Use `OpenRouterCore` for best tree-shaking performance.
+// You can create one instance of it to use across an application.
+const openRouter = new OpenRouterCore({
+  httpReferer: "<value>",
+  appTitle: "<value>",
+  appCategories: "<value>",
+  apiKey: process.env["OPENROUTER_API_KEY"] ?? "",
+});
+
+async function run() {
+  const res = await vaultStoreVaultSecret(openRouter, {
+    name: "github_token",
+    vaultSecretWriteRequest: {
+      hosts: [
+        "api.github.com",
+      ],
+      value: "ghp_exampleTokenValue",
+    },
+  });
+  if (res.ok) {
+    const { value: result } = res;
+    console.log(result);
+  } else {
+    console.log("vaultStoreVaultSecret failed:", res.error);
+  }
+}
+
+run();
+```
+
+### Example Usage: conflict
+
+```typescript theme={null}
+import { OpenRouter } from "@openrouter/sdk";
+
+const openRouter = new OpenRouter({
+  httpReferer: "<value>",
+  appTitle: "<value>",
+  appCategories: "<value>",
+  apiKey: process.env["OPENROUTER_API_KEY"] ?? "",
+});
+
+async function run() {
+  const result = await openRouter.vault.storeVaultSecret({
+    name: "github_token",
+    vaultSecretWriteRequest: {
+      hosts: [
+        "api.github.com",
+      ],
+      value: "ghp_exampleTokenValue",
+    },
+  });
+
+  console.log(result);
+}
+
+run();
+```
+
+### Standalone function
+
+The standalone function version of this method:
+
+```typescript theme={null}
+import { OpenRouterCore } from "@openrouter/sdk/core.js";
+import { vaultStoreVaultSecret } from "@openrouter/sdk/funcs/vaultStoreVaultSecret.js";
+
+// Use `OpenRouterCore` for best tree-shaking performance.
+// You can create one instance of it to use across an application.
+const openRouter = new OpenRouterCore({
+  httpReferer: "<value>",
+  appTitle: "<value>",
+  appCategories: "<value>",
+  apiKey: process.env["OPENROUTER_API_KEY"] ?? "",
+});
+
+async function run() {
+  const res = await vaultStoreVaultSecret(openRouter, {
+    name: "github_token",
+    vaultSecretWriteRequest: {
+      hosts: [
+        "api.github.com",
+      ],
+      value: "ghp_exampleTokenValue",
+    },
+  });
+  if (res.ok) {
+    const { value: result } = res;
+    console.log(result);
+  } else {
+    console.log("vaultStoreVaultSecret failed:", res.error);
+  }
+}
+
+run();
+```
+
+### Example Usage: internal-error
+
+```typescript theme={null}
+import { OpenRouter } from "@openrouter/sdk";
+
+const openRouter = new OpenRouter({
+  httpReferer: "<value>",
+  appTitle: "<value>",
+  appCategories: "<value>",
+  apiKey: process.env["OPENROUTER_API_KEY"] ?? "",
+});
+
+async function run() {
+  const result = await openRouter.vault.storeVaultSecret({
+    name: "github_token",
+    vaultSecretWriteRequest: {
+      hosts: [
+        "api.github.com",
+      ],
+      value: "ghp_exampleTokenValue",
+    },
+  });
+
+  console.log(result);
+}
+
+run();
+```
+
+### Standalone function
+
+The standalone function version of this method:
+
+```typescript theme={null}
+import { OpenRouterCore } from "@openrouter/sdk/core.js";
+import { vaultStoreVaultSecret } from "@openrouter/sdk/funcs/vaultStoreVaultSecret.js";
+
+// Use `OpenRouterCore` for best tree-shaking performance.
+// You can create one instance of it to use across an application.
+const openRouter = new OpenRouterCore({
+  httpReferer: "<value>",
+  appTitle: "<value>",
+  appCategories: "<value>",
+  apiKey: process.env["OPENROUTER_API_KEY"] ?? "",
+});
+
+async function run() {
+  const res = await vaultStoreVaultSecret(openRouter, {
+    name: "github_token",
+    vaultSecretWriteRequest: {
+      hosts: [
+        "api.github.com",
+      ],
+      value: "ghp_exampleTokenValue",
+    },
+  });
+  if (res.ok) {
+    const { value: result } = res;
+    console.log(result);
+  } else {
+    console.log("vaultStoreVaultSecret failed:", res.error);
+  }
+}
+
+run();
+```
+
+### Example Usage: invalid-or-missing-api-key
+
+```typescript theme={null}
+import { OpenRouter } from "@openrouter/sdk";
+
+const openRouter = new OpenRouter({
+  httpReferer: "<value>",
+  appTitle: "<value>",
+  appCategories: "<value>",
+  apiKey: process.env["OPENROUTER_API_KEY"] ?? "",
+});
+
+async function run() {
+  const result = await openRouter.vault.storeVaultSecret({
+    name: "github_token",
+    vaultSecretWriteRequest: {
+      hosts: [
+        "api.github.com",
+      ],
+      value: "ghp_exampleTokenValue",
+    },
+  });
+
+  console.log(result);
+}
+
+run();
+```
+
+### Standalone function
+
+The standalone function version of this method:
+
+```typescript theme={null}
+import { OpenRouterCore } from "@openrouter/sdk/core.js";
+import { vaultStoreVaultSecret } from "@openrouter/sdk/funcs/vaultStoreVaultSecret.js";
+
+// Use `OpenRouterCore` for best tree-shaking performance.
+// You can create one instance of it to use across an application.
+const openRouter = new OpenRouterCore({
+  httpReferer: "<value>",
+  appTitle: "<value>",
+  appCategories: "<value>",
+  apiKey: process.env["OPENROUTER_API_KEY"] ?? "",
+});
+
+async function run() {
+  const res = await vaultStoreVaultSecret(openRouter, {
+    name: "github_token",
+    vaultSecretWriteRequest: {
+      hosts: [
+        "api.github.com",
+      ],
+      value: "ghp_exampleTokenValue",
+    },
+  });
+  if (res.ok) {
+    const { value: result } = res;
+    console.log(result);
+  } else {
+    console.log("vaultStoreVaultSecret failed:", res.error);
+  }
+}
+
+run();
+```
+
+### Example Usage: invalid-vault-request
+
+```typescript theme={null}
+import { OpenRouter } from "@openrouter/sdk";
+
+const openRouter = new OpenRouter({
+  httpReferer: "<value>",
+  appTitle: "<value>",
+  appCategories: "<value>",
+  apiKey: process.env["OPENROUTER_API_KEY"] ?? "",
+});
+
+async function run() {
+  const result = await openRouter.vault.storeVaultSecret({
+    name: "github_token",
+    vaultSecretWriteRequest: {
+      hosts: [
+        "api.github.com",
+      ],
+      value: "ghp_exampleTokenValue",
+    },
+  });
+
+  console.log(result);
+}
+
+run();
+```
+
+### Standalone function
+
+The standalone function version of this method:
+
+```typescript theme={null}
+import { OpenRouterCore } from "@openrouter/sdk/core.js";
+import { vaultStoreVaultSecret } from "@openrouter/sdk/funcs/vaultStoreVaultSecret.js";
+
+// Use `OpenRouterCore` for best tree-shaking performance.
+// You can create one instance of it to use across an application.
+const openRouter = new OpenRouterCore({
+  httpReferer: "<value>",
+  appTitle: "<value>",
+  appCategories: "<value>",
+  apiKey: process.env["OPENROUTER_API_KEY"] ?? "",
+});
+
+async function run() {
+  const res = await vaultStoreVaultSecret(openRouter, {
+    name: "github_token",
+    vaultSecretWriteRequest: {
+      hosts: [
+        "api.github.com",
+      ],
+      value: "ghp_exampleTokenValue",
+    },
+  });
+  if (res.ok) {
+    const { value: result } = res;
+    console.log(result);
+  } else {
+    console.log("vaultStoreVaultSecret failed:", res.error);
+  }
+}
+
+run();
+```
+
+### Example Usage: invalid-vault-response
+
+```typescript theme={null}
+import { OpenRouter } from "@openrouter/sdk";
+
+const openRouter = new OpenRouter({
+  httpReferer: "<value>",
+  appTitle: "<value>",
+  appCategories: "<value>",
+  apiKey: process.env["OPENROUTER_API_KEY"] ?? "",
+});
+
+async function run() {
+  const result = await openRouter.vault.storeVaultSecret({
+    name: "github_token",
+    vaultSecretWriteRequest: {
+      hosts: [
+        "api.github.com",
+      ],
+      value: "ghp_exampleTokenValue",
+    },
+  });
+
+  console.log(result);
+}
+
+run();
+```
+
+### Standalone function
+
+The standalone function version of this method:
+
+```typescript theme={null}
+import { OpenRouterCore } from "@openrouter/sdk/core.js";
+import { vaultStoreVaultSecret } from "@openrouter/sdk/funcs/vaultStoreVaultSecret.js";
+
+// Use `OpenRouterCore` for best tree-shaking performance.
+// You can create one instance of it to use across an application.
+const openRouter = new OpenRouterCore({
+  httpReferer: "<value>",
+  appTitle: "<value>",
+  appCategories: "<value>",
+  apiKey: process.env["OPENROUTER_API_KEY"] ?? "",
+});
+
+async function run() {
+  const res = await vaultStoreVaultSecret(openRouter, {
+    name: "github_token",
+    vaultSecretWriteRequest: {
+      hosts: [
+        "api.github.com",
+      ],
+      value: "ghp_exampleTokenValue",
+    },
+  });
+  if (res.ok) {
+    const { value: result } = res;
+    console.log(result);
+  } else {
+    console.log("vaultStoreVaultSecret failed:", res.error);
+  }
+}
+
+run();
+```
+
+### Example Usage: not-found
+
+```typescript theme={null}
+import { OpenRouter } from "@openrouter/sdk";
+
+const openRouter = new OpenRouter({
+  httpReferer: "<value>",
+  appTitle: "<value>",
+  appCategories: "<value>",
+  apiKey: process.env["OPENROUTER_API_KEY"] ?? "",
+});
+
+async function run() {
+  const result = await openRouter.vault.storeVaultSecret({
+    name: "github_token",
+    vaultSecretWriteRequest: {
+      hosts: [
+        "api.github.com",
+      ],
+      value: "ghp_exampleTokenValue",
+    },
+  });
+
+  console.log(result);
+}
+
+run();
+```
+
+### Standalone function
+
+The standalone function version of this method:
+
+```typescript theme={null}
+import { OpenRouterCore } from "@openrouter/sdk/core.js";
+import { vaultStoreVaultSecret } from "@openrouter/sdk/funcs/vaultStoreVaultSecret.js";
+
+// Use `OpenRouterCore` for best tree-shaking performance.
+// You can create one instance of it to use across an application.
+const openRouter = new OpenRouterCore({
+  httpReferer: "<value>",
+  appTitle: "<value>",
+  appCategories: "<value>",
+  apiKey: process.env["OPENROUTER_API_KEY"] ?? "",
+});
+
+async function run() {
+  const res = await vaultStoreVaultSecret(openRouter, {
+    name: "github_token",
+    vaultSecretWriteRequest: {
+      hosts: [
+        "api.github.com",
+      ],
+      value: "ghp_exampleTokenValue",
+    },
+  });
+  if (res.ok) {
+    const { value: result } = res;
+    console.log(result);
+  } else {
+    console.log("vaultStoreVaultSecret failed:", res.error);
+  }
+}
+
+run();
+```
+
+### Example Usage: rate-limited
+
+```typescript theme={null}
+import { OpenRouter } from "@openrouter/sdk";
+
+const openRouter = new OpenRouter({
+  httpReferer: "<value>",
+  appTitle: "<value>",
+  appCategories: "<value>",
+  apiKey: process.env["OPENROUTER_API_KEY"] ?? "",
+});
+
+async function run() {
+  const result = await openRouter.vault.storeVaultSecret({
+    name: "github_token",
+    vaultSecretWriteRequest: {
+      hosts: [
+        "api.github.com",
+      ],
+      value: "ghp_exampleTokenValue",
+    },
+  });
+
+  console.log(result);
+}
+
+run();
+```
+
+### Standalone function
+
+The standalone function version of this method:
+
+```typescript theme={null}
+import { OpenRouterCore } from "@openrouter/sdk/core.js";
+import { vaultStoreVaultSecret } from "@openrouter/sdk/funcs/vaultStoreVaultSecret.js";
+
+// Use `OpenRouterCore` for best tree-shaking performance.
+// You can create one instance of it to use across an application.
+const openRouter = new OpenRouterCore({
+  httpReferer: "<value>",
+  appTitle: "<value>",
+  appCategories: "<value>",
+  apiKey: process.env["OPENROUTER_API_KEY"] ?? "",
+});
+
+async function run() {
+  const res = await vaultStoreVaultSecret(openRouter, {
+    name: "github_token",
+    vaultSecretWriteRequest: {
+      hosts: [
+        "api.github.com",
+      ],
+      value: "ghp_exampleTokenValue",
+    },
+  });
+  if (res.ok) {
+    const { value: result } = res;
+    console.log(result);
+  } else {
+    console.log("vaultStoreVaultSecret failed:", res.error);
+  }
+}
+
+run();
+```
+
+### Example Usage: regional-hostname
+
+```typescript theme={null}
+import { OpenRouter } from "@openrouter/sdk";
+
+const openRouter = new OpenRouter({
+  httpReferer: "<value>",
+  appTitle: "<value>",
+  appCategories: "<value>",
+  apiKey: process.env["OPENROUTER_API_KEY"] ?? "",
+});
+
+async function run() {
+  const result = await openRouter.vault.storeVaultSecret({
+    name: "github_token",
+    vaultSecretWriteRequest: {
+      hosts: [
+        "api.github.com",
+      ],
+      value: "ghp_exampleTokenValue",
+    },
+  });
+
+  console.log(result);
+}
+
+run();
+```
+
+### Standalone function
+
+The standalone function version of this method:
+
+```typescript theme={null}
+import { OpenRouterCore } from "@openrouter/sdk/core.js";
+import { vaultStoreVaultSecret } from "@openrouter/sdk/funcs/vaultStoreVaultSecret.js";
+
+// Use `OpenRouterCore` for best tree-shaking performance.
+// You can create one instance of it to use across an application.
+const openRouter = new OpenRouterCore({
+  httpReferer: "<value>",
+  appTitle: "<value>",
+  appCategories: "<value>",
+  apiKey: process.env["OPENROUTER_API_KEY"] ?? "",
+});
+
+async function run() {
+  const res = await vaultStoreVaultSecret(openRouter, {
+    name: "github_token",
+    vaultSecretWriteRequest: {
+      hosts: [
+        "api.github.com",
+      ],
+      value: "ghp_exampleTokenValue",
+    },
+  });
+  if (res.ok) {
+    const { value: result } = res;
+    console.log(result);
+  } else {
+    console.log("vaultStoreVaultSecret failed:", res.error);
+  }
+}
+
+run();
+```
+
+### Example Usage: route-deadline
+
+```typescript theme={null}
+import { OpenRouter } from "@openrouter/sdk";
+
+const openRouter = new OpenRouter({
+  httpReferer: "<value>",
+  appTitle: "<value>",
+  appCategories: "<value>",
+  apiKey: process.env["OPENROUTER_API_KEY"] ?? "",
+});
+
+async function run() {
+  const result = await openRouter.vault.storeVaultSecret({
+    name: "github_token",
+    vaultSecretWriteRequest: {
+      hosts: [
+        "api.github.com",
+      ],
+      value: "ghp_exampleTokenValue",
+    },
+  });
+
+  console.log(result);
+}
+
+run();
+```
+
+### Standalone function
+
+The standalone function version of this method:
+
+```typescript theme={null}
+import { OpenRouterCore } from "@openrouter/sdk/core.js";
+import { vaultStoreVaultSecret } from "@openrouter/sdk/funcs/vaultStoreVaultSecret.js";
+
+// Use `OpenRouterCore` for best tree-shaking performance.
+// You can create one instance of it to use across an application.
+const openRouter = new OpenRouterCore({
+  httpReferer: "<value>",
+  appTitle: "<value>",
+  appCategories: "<value>",
+  apiKey: process.env["OPENROUTER_API_KEY"] ?? "",
+});
+
+async function run() {
+  const res = await vaultStoreVaultSecret(openRouter, {
+    name: "github_token",
+    vaultSecretWriteRequest: {
+      hosts: [
+        "api.github.com",
+      ],
+      value: "ghp_exampleTokenValue",
+    },
+  });
+  if (res.ok) {
+    const { value: result } = res;
+    console.log(result);
+  } else {
+    console.log("vaultStoreVaultSecret failed:", res.error);
+  }
+}
+
+run();
+```
+
+### Example Usage: vault-request-failed
+
+```typescript theme={null}
+import { OpenRouter } from "@openrouter/sdk";
+
+const openRouter = new OpenRouter({
+  httpReferer: "<value>",
+  appTitle: "<value>",
+  appCategories: "<value>",
+  apiKey: process.env["OPENROUTER_API_KEY"] ?? "",
+});
+
+async function run() {
+  const result = await openRouter.vault.storeVaultSecret({
+    name: "github_token",
+    vaultSecretWriteRequest: {
+      hosts: [
+        "api.github.com",
+      ],
+      value: "ghp_exampleTokenValue",
+    },
+  });
+
+  console.log(result);
+}
+
+run();
+```
+
+### Standalone function
+
+The standalone function version of this method:
+
+```typescript theme={null}
+import { OpenRouterCore } from "@openrouter/sdk/core.js";
+import { vaultStoreVaultSecret } from "@openrouter/sdk/funcs/vaultStoreVaultSecret.js";
+
+// Use `OpenRouterCore` for best tree-shaking performance.
+// You can create one instance of it to use across an application.
+const openRouter = new OpenRouterCore({
+  httpReferer: "<value>",
+  appTitle: "<value>",
+  appCategories: "<value>",
+  apiKey: process.env["OPENROUTER_API_KEY"] ?? "",
+});
+
+async function run() {
+  const res = await vaultStoreVaultSecret(openRouter, {
+    name: "github_token",
+    vaultSecretWriteRequest: {
+      hosts: [
+        "api.github.com",
+      ],
+      value: "ghp_exampleTokenValue",
+    },
+  });
+  if (res.ok) {
+    const { value: result } = res;
+    console.log(result);
+  } else {
+    console.log("vaultStoreVaultSecret failed:", res.error);
+  }
+}
+
+run();
+```
+
+### Example Usage: vault-timed-out
+
+```typescript theme={null}
+import { OpenRouter } from "@openrouter/sdk";
+
+const openRouter = new OpenRouter({
+  httpReferer: "<value>",
+  appTitle: "<value>",
+  appCategories: "<value>",
+  apiKey: process.env["OPENROUTER_API_KEY"] ?? "",
+});
+
+async function run() {
+  const result = await openRouter.vault.storeVaultSecret({
+    name: "github_token",
+    vaultSecretWriteRequest: {
+      hosts: [
+        "api.github.com",
+      ],
+      value: "ghp_exampleTokenValue",
+    },
+  });
+
+  console.log(result);
+}
+
+run();
+```
+
+### Standalone function
+
+The standalone function version of this method:
+
+```typescript theme={null}
+import { OpenRouterCore } from "@openrouter/sdk/core.js";
+import { vaultStoreVaultSecret } from "@openrouter/sdk/funcs/vaultStoreVaultSecret.js";
+
+// Use `OpenRouterCore` for best tree-shaking performance.
+// You can create one instance of it to use across an application.
+const openRouter = new OpenRouterCore({
+  httpReferer: "<value>",
+  appTitle: "<value>",
+  appCategories: "<value>",
+  apiKey: process.env["OPENROUTER_API_KEY"] ?? "",
+});
+
+async function run() {
+  const res = await vaultStoreVaultSecret(openRouter, {
+    name: "github_token",
+    vaultSecretWriteRequest: {
+      hosts: [
+        "api.github.com",
+      ],
+      value: "ghp_exampleTokenValue",
+    },
+  });
+  if (res.ok) {
+    const { value: result } = res;
+    console.log(result);
+  } else {
+    console.log("vaultStoreVaultSecret failed:", res.error);
+  }
+}
+
+run();
+```
+
+### Example Usage: vault-unavailable
+
+```typescript theme={null}
+import { OpenRouter } from "@openrouter/sdk";
+
+const openRouter = new OpenRouter({
+  httpReferer: "<value>",
+  appTitle: "<value>",
+  appCategories: "<value>",
+  apiKey: process.env["OPENROUTER_API_KEY"] ?? "",
+});
+
+async function run() {
+  const result = await openRouter.vault.storeVaultSecret({
+    name: "github_token",
+    vaultSecretWriteRequest: {
+      hosts: [
+        "api.github.com",
+      ],
+      value: "ghp_exampleTokenValue",
+    },
+  });
+
+  console.log(result);
+}
+
+run();
+```
+
+### Standalone function
+
+The standalone function version of this method:
+
+```typescript theme={null}
+import { OpenRouterCore } from "@openrouter/sdk/core.js";
+import { vaultStoreVaultSecret } from "@openrouter/sdk/funcs/vaultStoreVaultSecret.js";
+
+// Use `OpenRouterCore` for best tree-shaking performance.
+// You can create one instance of it to use across an application.
+const openRouter = new OpenRouterCore({
+  httpReferer: "<value>",
+  appTitle: "<value>",
+  appCategories: "<value>",
+  apiKey: process.env["OPENROUTER_API_KEY"] ?? "",
+});
+
+async function run() {
+  const res = await vaultStoreVaultSecret(openRouter, {
+    name: "github_token",
+    vaultSecretWriteRequest: {
+      hosts: [
+        "api.github.com",
+      ],
+      value: "ghp_exampleTokenValue",
+    },
+  });
+  if (res.ok) {
+    const { value: result } = res;
+    console.log(result);
+  } else {
+    console.log("vaultStoreVaultSecret failed:", res.error);
+  }
+}
+
+run();
+```
+
+### Example Usage: workspace-scope-unavailable
+
+```typescript theme={null}
+import { OpenRouter } from "@openrouter/sdk";
+
+const openRouter = new OpenRouter({
+  httpReferer: "<value>",
+  appTitle: "<value>",
+  appCategories: "<value>",
+  apiKey: process.env["OPENROUTER_API_KEY"] ?? "",
+});
+
+async function run() {
+  const result = await openRouter.vault.storeVaultSecret({
+    name: "github_token",
+    vaultSecretWriteRequest: {
+      hosts: [
+        "api.github.com",
+      ],
+      value: "ghp_exampleTokenValue",
+    },
+  });
+
+  console.log(result);
+}
+
+run();
+```
+
+### Standalone function
+
+The standalone function version of this method:
+
+```typescript theme={null}
+import { OpenRouterCore } from "@openrouter/sdk/core.js";
+import { vaultStoreVaultSecret } from "@openrouter/sdk/funcs/vaultStoreVaultSecret.js";
+
+// Use `OpenRouterCore` for best tree-shaking performance.
+// You can create one instance of it to use across an application.
+const openRouter = new OpenRouterCore({
+  httpReferer: "<value>",
+  appTitle: "<value>",
+  appCategories: "<value>",
+  apiKey: process.env["OPENROUTER_API_KEY"] ?? "",
+});
+
+async function run() {
+  const res = await vaultStoreVaultSecret(openRouter, {
+    name: "github_token",
+    vaultSecretWriteRequest: {
+      hosts: [
+        "api.github.com",
+      ],
+      value: "ghp_exampleTokenValue",
+    },
+  });
+  if (res.ok) {
+    const { value: result } = res;
+    console.log(result);
+  } else {
+    console.log("vaultStoreVaultSecret failed:", res.error);
+  }
+}
+
+run();
+```
+
+### Example Usage: writes-disabled
+
+```typescript theme={null}
+import { OpenRouter } from "@openrouter/sdk";
+
+const openRouter = new OpenRouter({
+  httpReferer: "<value>",
+  appTitle: "<value>",
+  appCategories: "<value>",
+  apiKey: process.env["OPENROUTER_API_KEY"] ?? "",
+});
+
+async function run() {
+  const result = await openRouter.vault.storeVaultSecret({
+    name: "github_token",
+    vaultSecretWriteRequest: {
+      hosts: [
+        "api.github.com",
+      ],
+      value: "ghp_exampleTokenValue",
+    },
+  });
+
+  console.log(result);
+}
+
+run();
+```
+
+### Standalone function
+
+The standalone function version of this method:
+
+```typescript theme={null}
+import { OpenRouterCore } from "@openrouter/sdk/core.js";
+import { vaultStoreVaultSecret } from "@openrouter/sdk/funcs/vaultStoreVaultSecret.js";
+
+// Use `OpenRouterCore` for best tree-shaking performance.
+// You can create one instance of it to use across an application.
+const openRouter = new OpenRouterCore({
+  httpReferer: "<value>",
+  appTitle: "<value>",
+  appCategories: "<value>",
+  apiKey: process.env["OPENROUTER_API_KEY"] ?? "",
+});
+
+async function run() {
+  const res = await vaultStoreVaultSecret(openRouter, {
+    name: "github_token",
+    vaultSecretWriteRequest: {
+      hosts: [
+        "api.github.com",
+      ],
+      value: "ghp_exampleTokenValue",
+    },
+  });
+  if (res.ok) {
+    const { value: result } = res;
+    console.log(result);
+  } else {
+    console.log("vaultStoreVaultSecret failed:", res.error);
+  }
+}
+
+run();
+```
+
+### Parameters
+
+| Parameter | Type | Required | Description |
+| - | - | - | - |
+| `request` | [operations.StoreVaultSecretRequest](https://openrouter.ai/docs/client-sdks/typescript/models/operations/storevaultsecretrequest.mdx) | ✔️ | The request object to use for the request. |
+| `options` | RequestOptions | ➖ | Used to set various options for making HTTP requests. |
+| `options.fetchOptions` | [RequestInit](https://developer.mozilla.org/en-US/docs/Web/API/Request/Request#options) | ➖ | Options that are passed to the underlying HTTP request. This can be used to inject extra headers for examples. All `Request` options, except `method` and `body`, are allowed. |
+| `options.retries` | [RetryConfig](https://openrouter.ai/docs/client-sdks/typescript/lib/utils/retryconfig.mdx) | ➖ | Enables retrying HTTP requests under certain failure conditions. |
+
+### Response
+
+**Promise\<[models.VaultSecretResponse](https://openrouter.ai/docs/client-sdks/typescript/models/vaultsecretresponse.mdx)>**
+
+### Errors
+
+| Error Type | Status Code | Content Type |
+| - | - | - |
+| errors.BadRequestResponseError | 400 | application/json |
+| errors.UnauthorizedResponseError | 401 | application/json |
+| errors.ForbiddenResponseError | 403 | application/json |
+| errors.NotFoundResponseError | 404 | application/json |
+| errors.RequestTimeoutResponseError | 408 | application/json |
+| errors.ConflictResponseError | 409 | application/json |
+| errors.PayloadTooLargeResponseError | 413 | application/json |
+| errors.TooManyRequestsResponseError | 429 | application/json |
+| errors.InternalServerResponseError | 500 | application/json |
+| errors.BadGatewayResponseError | 502 | application/json |
+| errors.ServiceUnavailableResponseError | 503 | application/json |
+| errors.GatewayTimeoutResponseError | 504 | application/json |
+| errors.OpenRouterDefaultError | 4XX, 5XX | \*/\* |

@@ -1,0 +1,646 @@
+> ## Documentation Index
+> Fetch the complete documentation index at: https://openrouter.ai/docs/llms.txt
+> Use this file to discover all available pages before exploring further.
+
+# Private Endpoints
+
+> Private Endpoints endpoints
+
+## Overview
+
+Private Endpoints endpoints
+
+### Available Operations
+
+* [list](#list) - List private endpoints
+* [create](#create) - Create a private endpoint
+* [delete](#delete) - Delete a private endpoint
+* [get](#get) - Get a private endpoint
+* [update](#update) - Update a private endpoint
+* [activate](#activate) - Activate a validated private endpoint
+* [disable](#disable) - Disable a private endpoint
+* [enable](#enable) - Enable a private endpoint
+* [~~update\_parameters~~](#update_parameters) - Set private endpoint supported parameters (deprecated) ⚠️ **Deprecated**
+* [~~update\_pricing~~](#update_pricing) - Set private endpoint pricing (deprecated) ⚠️ **Deprecated**
+* [validate](#validate) - Validate a draft private endpoint
+
+## list
+
+List the organization's private endpoints, including drafts. Requires the private endpoints entitlement. [Management key](https://openrouter.ai/docs/client-sdks/python/docs/guides/overview/auth/management-api-keys) required.
+
+### Example Usage
+
+```python theme={null}
+from openrouter import OpenRouter
+import os
+
+
+with OpenRouter(
+    http_referer="<value>",
+    x_open_router_title="<value>",
+    x_open_router_categories="<value>",
+    api_key=os.getenv("OPENROUTER_API_KEY", ""),
+) as open_router:
+
+    res = open_router.private_endpoints.list()
+
+    # Handle response
+    print(res)
+
+```
+
+### Parameters
+
+| Parameter | Type | Required | Description |
+| - | - | - | - |
+| `http_referer` | *Optional\[str]* | ➖ | The app identifier should be your app's URL and is used as the primary identifier for rankings. This is used to track API usage per application.  |
+| `x_open_router_title` | *Optional\[str]* | ➖ | The app display name allows you to customize how your app appears in OpenRouter's dashboard.  |
+| `x_open_router_categories` | *Optional\[str]* | ➖ | Comma-separated list of app categories (e.g. "cli-agent,cloud-agent"). Used for marketplace rankings.  |
+| `retries` | [Optional\[utils.RetryConfig\]](https://openrouter.ai/docs/client-sdks/python/models/utils/retryconfig.mdx) | ➖ | Configuration to override the default retry behavior of the client. |
+
+### Response
+
+**[components.ListPrivateEndpointsResponse](https://openrouter.ai/docs/client-sdks/python/components/listprivateendpointsresponse.mdx)**
+
+### Errors
+
+| Error Type | Status Code | Content Type |
+| - | - | - |
+| errors.UnauthorizedResponseError | 401 | application/json |
+| errors.ForbiddenResponseError | 403 | application/json |
+| errors.RequestTimeoutResponseError | 408 | application/json |
+| errors.InternalServerResponseError | 500 | application/json |
+| errors.OpenRouterDefaultError | 4XX, 5XX | \*/\* |
+
+## create
+
+Create a private endpoint as a draft. Drafts are not routable: validate one with `POST /private-endpoints/{id}/validate`, then activate it with `POST /private-endpoints/{id}/activate`. Pass `activate` to do all three in one call; if validation fails the draft is kept and returned with the failed checks. Send an `Idempotency-Key` header to make retries safe: a repeated key with the same request returns the endpoint the first request created; reusing it with different fields returns 422 `idempotency_key_reused`. Returns 400 `parameters_invalid` when `tool_choice` is declared without `tools`. The response does not echo `declared_parameters` or `tested_parameters`; read them with `GET /private-endpoints/{id}`. [Management key](https://openrouter.ai/docs/client-sdks/python/docs/guides/overview/auth/management-api-keys) required.
+
+### Example Usage
+
+```python theme={null}
+from openrouter import OpenRouter
+import os
+
+
+with OpenRouter(
+    http_referer="<value>",
+    x_open_router_title="<value>",
+    x_open_router_categories="<value>",
+    api_key=os.getenv("OPENROUTER_API_KEY", ""),
+) as open_router:
+
+    res = open_router.private_endpoints.create(model_permaslug="openai/gpt-4o-2024-08-06", provider_slug="azure", upstream_model_id="gpt-4o-prod")
+
+    # Handle response
+    print(res)
+
+```
+
+### Parameters
+
+| Parameter | Type | Required | Description | Example |
+| - | - | - | - | - |
+| `model_permaslug` | *str* | ✔️ | Permanent slug of the model this endpoint serves. | openai/gpt-4o-2024-08-06 |
+| `provider_slug` | *str* | ✔️ | Slug of the upstream provider. | azure |
+| `upstream_model_id` | *str* | ✔️ | Model or deployment identifier sent to the upstream provider. | gpt-4o-prod |
+| `http_referer` | *Optional\[str]* | ➖ | The app identifier should be your app's URL and is used as the primary identifier for rankings. This is used to track API usage per application.  | |
+| `x_open_router_title` | *Optional\[str]* | ➖ | The app display name allows you to customize how your app appears in OpenRouter's dashboard.  | |
+| `x_open_router_categories` | *Optional\[str]* | ➖ | Comma-separated list of app categories (e.g. "cli-agent,cloud-agent"). Used for marketplace rankings.  | |
+| `idempotency_key` | *Optional\[str]* | ➖ | Retry-safe create: a repeated create with the same key from the same organization returns the endpoint the first request created instead of creating another. The endpoint is returned as it is now. Reusing a key with a different request body (model, provider, base URL, upstream model ID, declared ZDR or region, pricing, or declared parameters) is rejected with 422 `idempotency_key_reused`. Declared parameters are compared as a set, so a retry that reorders or repeats a name replays the endpoint. `activate` and `max_completion_tokens` are not compared, and later edits to the endpoint do not affect the comparison. | wayfair-gpt-4o-eastus-2026-09 |
+| `activate` | [Optional\[components.PrivateEndpointActivation\]](https://openrouter.ai/docs/client-sdks/python/components/privateendpointactivation.mdx) | ➖ | Validate and activate in the same call. On a failed validation the draft is kept and returned with a 422, so fix it and call `/validate` and `/activate` instead of creating it again. | \{ "workspace\_id": "550e8400-e29b-41d4-a716-446655440000" } |
+| `base_url` | *Optional\[str]* | ➖ | HTTPS base URL of your deployment. Required unless the provider derives its URL from the BYOK credential (Azure, Amazon Bedrock, Google Vertex). | [https://contoso.openai.azure.com](https://contoso.openai.azure.com) |
+| `declared_parameters` | List\[[components.PrivateEndpointDeclaredParameter](https://openrouter.ai/docs/client-sdks/python/components/privateendpointdeclaredparameter.mdx)] | ➖ | Parameters the upstream supports beyond the tested ones. Replaces the earlier declaration; tested parameters stay. Order and repeated names are ignored, but the list holds at most as many entries as there are declarable parameters, repeats included. `tool_choice` requires `tools` to be tested or declared. | \[ "temperature", "seed" ] |
+| `declared_region` | [OptionalNullable\[components.CreatePrivateEndpointRequestDeclaredRegion\]](https://openrouter.ai/docs/client-sdks/python/components/createprivateendpointrequestdeclaredregion.mdx) | ➖ | Attest where this deployment processes data. | us |
+| `declared_zdr` | *OptionalNullable\[bool]* | ➖ | Attest that this deployment retains no prompt or completion data. | |
+| `max_completion_tokens` | *Optional\[int]* | ➖ | Cap on completion tokens per request. Requests asking for more skip this endpoint, and the default output length stays within it. When omitted, the cap is copied from the public endpoint for the same model and provider, if there is one. | 131072 |
+| `pricing` | [Optional\[components.PrivateEndpointPricing\]](https://openrouter.ai/docs/client-sdks/python/components/privateendpointpricing.mdx) | ➖ | Negotiated per-token rates reported for requests routed to this endpoint. | \{ "cache\_read": "0.00000025", "cache\_write": "0.000003125", "completion": "0.00001", "prompt": "0.0000025" } |
+| `settings` | [Optional\[components.UpdatePrivateEndpointSettingsRequest\]](https://openrouter.ai/docs/client-sdks/python/components/updateprivateendpointsettingsrequest.mdx) | ➖ | Capabilities and limits to set over the ones copied from the public endpoint for this model and provider (or from the model). Omitted fields keep the copied values. | \{ "context\_length": 128000, "reasoning": \{ "supported": true } } |
+| `retries` | [Optional\[utils.RetryConfig\]](https://openrouter.ai/docs/client-sdks/python/models/utils/retryconfig.mdx) | ➖ | Configuration to override the default retry behavior of the client. | |
+
+### Response
+
+**[components.ManagedPrivateEndpointResponse](https://openrouter.ai/docs/client-sdks/python/components/managedprivateendpointresponse.mdx)**
+
+### Errors
+
+| Error Type | Status Code | Content Type |
+| - | - | - |
+| errors.BadRequestResponseError | 400 | application/json |
+| errors.UnauthorizedResponseError | 401 | application/json |
+| errors.ForbiddenResponseError | 403 | application/json |
+| errors.CreatePrivateEndpointValidationFailedResponseError | 404 | application/json |
+| errors.NotFoundResponseError | 404 | application/json |
+| errors.RequestTimeoutResponseError | 408 | application/json |
+| errors.CreatePrivateEndpointValidationFailedResponseError | 409 | application/json |
+| errors.ConflictResponseError | 409 | application/json |
+| errors.CreatePrivateEndpointValidationFailedResponseError | 422 | application/json |
+| errors.UnprocessableEntityResponseError | 422 | application/json |
+| errors.CreatePrivateEndpointValidationFailedResponseError | 500 | application/json |
+| errors.InternalServerResponseError | 500 | application/json |
+| errors.CreatePrivateEndpointValidationFailedResponseError | 502 | application/json |
+| errors.BadGatewayResponseError | 502 | application/json |
+| errors.OpenRouterDefaultError | 4XX, 5XX | \*/\* |
+
+## delete
+
+Delete a private endpoint and stop routing to it. Pass `draft_only=true` to refuse (409) when the endpoint has been activated. [Management key](https://openrouter.ai/docs/client-sdks/python/docs/guides/overview/auth/management-api-keys) required.
+
+### Example Usage
+
+```python theme={null}
+from openrouter import OpenRouter
+import os
+
+
+with OpenRouter(
+    http_referer="<value>",
+    x_open_router_title="<value>",
+    x_open_router_categories="<value>",
+    api_key=os.getenv("OPENROUTER_API_KEY", ""),
+) as open_router:
+
+    res = open_router.private_endpoints.delete(id="5b1c4c4e-7d0a-4a8e-9f3a-2d6c1b0e8a11")
+
+    # Handle response
+    print(res)
+
+```
+
+### Parameters
+
+| Parameter | Type | Required | Description | Example |
+| - | - | - | - | - |
+| `id` | *str* | ✔️ | Stable identifier of the private endpoint. | 5b1c4c4e-7d0a-4a8e-9f3a-2d6c1b0e8a11 |
+| `http_referer` | *Optional\[str]* | ➖ | The app identifier should be your app's URL and is used as the primary identifier for rankings. This is used to track API usage per application.  | |
+| `x_open_router_title` | *Optional\[str]* | ➖ | The app display name allows you to customize how your app appears in OpenRouter's dashboard.  | |
+| `x_open_router_categories` | *Optional\[str]* | ➖ | Comma-separated list of app categories (e.g. "cli-agent,cloud-agent"). Used for marketplace rankings.  | |
+| `draft_only` | [Optional\[operations.DraftOnly\]](https://openrouter.ai/docs/client-sdks/python/operations/draftonly.mdx) | ➖ | When `true`, only delete the endpoint if it is still a draft (409 otherwise). | |
+| `retries` | [Optional\[utils.RetryConfig\]](https://openrouter.ai/docs/client-sdks/python/models/utils/retryconfig.mdx) | ➖ | Configuration to override the default retry behavior of the client. | |
+
+### Response
+
+**[components.DeletePrivateEndpointResponse](https://openrouter.ai/docs/client-sdks/python/components/deleteprivateendpointresponse.mdx)**
+
+### Errors
+
+| Error Type | Status Code | Content Type |
+| - | - | - |
+| errors.BadRequestResponseError | 400 | application/json |
+| errors.UnauthorizedResponseError | 401 | application/json |
+| errors.ForbiddenResponseError | 403 | application/json |
+| errors.NotFoundResponseError | 404 | application/json |
+| errors.RequestTimeoutResponseError | 408 | application/json |
+| errors.ConflictResponseError | 409 | application/json |
+| errors.UnprocessableEntityResponseError | 422 | application/json |
+| errors.InternalServerResponseError | 500 | application/json |
+| errors.BadGatewayResponseError | 502 | application/json |
+| errors.OpenRouterDefaultError | 4XX, 5XX | \*/\* |
+
+## get
+
+Get one private endpoint with its upstream configuration and current pricing. [Management key](https://openrouter.ai/docs/client-sdks/python/docs/guides/overview/auth/management-api-keys) required.
+
+### Example Usage
+
+```python theme={null}
+from openrouter import OpenRouter
+import os
+
+
+with OpenRouter(
+    http_referer="<value>",
+    x_open_router_title="<value>",
+    x_open_router_categories="<value>",
+    api_key=os.getenv("OPENROUTER_API_KEY", ""),
+) as open_router:
+
+    res = open_router.private_endpoints.get(id="5b1c4c4e-7d0a-4a8e-9f3a-2d6c1b0e8a11")
+
+    # Handle response
+    print(res)
+
+```
+
+### Parameters
+
+| Parameter | Type | Required | Description | Example |
+| - | - | - | - | - |
+| `id` | *str* | ✔️ | Stable identifier of the private endpoint. | 5b1c4c4e-7d0a-4a8e-9f3a-2d6c1b0e8a11 |
+| `http_referer` | *Optional\[str]* | ➖ | The app identifier should be your app's URL and is used as the primary identifier for rankings. This is used to track API usage per application.  | |
+| `x_open_router_title` | *Optional\[str]* | ➖ | The app display name allows you to customize how your app appears in OpenRouter's dashboard.  | |
+| `x_open_router_categories` | *Optional\[str]* | ➖ | Comma-separated list of app categories (e.g. "cli-agent,cloud-agent"). Used for marketplace rankings.  | |
+| `retries` | [Optional\[utils.RetryConfig\]](https://openrouter.ai/docs/client-sdks/python/models/utils/retryconfig.mdx) | ➖ | Configuration to override the default retry behavior of the client. | |
+
+### Response
+
+**[components.PrivateEndpointResponse](https://openrouter.ai/docs/client-sdks/python/components/privateendpointresponse.mdx)**
+
+### Errors
+
+| Error Type | Status Code | Content Type |
+| - | - | - |
+| errors.UnauthorizedResponseError | 401 | application/json |
+| errors.ForbiddenResponseError | 403 | application/json |
+| errors.NotFoundResponseError | 404 | application/json |
+| errors.RequestTimeoutResponseError | 408 | application/json |
+| errors.InternalServerResponseError | 500 | application/json |
+| errors.OpenRouterDefaultError | 4XX, 5XX | \*/\* |
+
+## update
+
+Change any of the endpoint fields you own in one call; only the fields present change, and the response is the whole endpoint. `pricing` and `declared_parameters` replace their stored value, `settings` changes only the fields it names (`null` clears a limit or restores the provider default); routing picks these up for subsequent requests on drafts and active endpoints alike. `upstream_model_id`, `base_url`, `declared_zdr` and `declared_region` re-point a draft: an omitted `upstream_model_id` or `base_url` keeps the stored one, omitted data-policy declarations are kept while the upstream is unchanged and cleared when it changes, and any upstream change clears earlier validation. Naming an upstream field on an active endpoint returns 409 `already_active` and writes nothing; delete and re-create instead. Every group is checked before anything is written: 400 `parameters_invalid` when `tool_choice` is declared without `tools` tested or declared, 400 `settings_invalid` when `max_prompt_tokens` exceeds the context length, both completion APIs are off, or `excluded_parameters` names a tested parameter, 422 `pricing_invalid` for rates the provider strategy cannot represent. [Management key](https://openrouter.ai/docs/client-sdks/python/docs/guides/overview/auth/management-api-keys) required.
+
+### Example Usage
+
+```python theme={null}
+from openrouter import OpenRouter
+import os
+
+
+with OpenRouter(
+    http_referer="<value>",
+    x_open_router_title="<value>",
+    x_open_router_categories="<value>",
+    api_key=os.getenv("OPENROUTER_API_KEY", ""),
+) as open_router:
+
+    res = open_router.private_endpoints.update(id="5b1c4c4e-7d0a-4a8e-9f3a-2d6c1b0e8a11")
+
+    # Handle response
+    print(res)
+
+```
+
+### Parameters
+
+| Parameter | Type | Required | Description | Example |
+| - | - | - | - | - |
+| `id` | *str* | ✔️ | Stable identifier of the private endpoint. | 5b1c4c4e-7d0a-4a8e-9f3a-2d6c1b0e8a11 |
+| `http_referer` | *Optional\[str]* | ➖ | The app identifier should be your app's URL and is used as the primary identifier for rankings. This is used to track API usage per application.  | |
+| `x_open_router_title` | *Optional\[str]* | ➖ | The app display name allows you to customize how your app appears in OpenRouter's dashboard.  | |
+| `x_open_router_categories` | *Optional\[str]* | ➖ | Comma-separated list of app categories (e.g. "cli-agent,cloud-agent"). Used for marketplace rankings.  | |
+| `base_url` | *Optional\[str]* | ➖ | HTTPS base URL of your deployment. Required unless the provider derives its URL from the BYOK credential (Azure, Amazon Bedrock, Google Vertex). | [https://contoso.openai.azure.com](https://contoso.openai.azure.com) |
+| `declared_parameters` | List\[[components.PrivateEndpointDeclaredParameter](https://openrouter.ai/docs/client-sdks/python/components/privateendpointdeclaredparameter.mdx)] | ➖ | Parameters the upstream supports beyond the tested ones. Replaces the earlier declaration; tested parameters stay. Order and repeated names are ignored, but the list holds at most as many entries as there are declarable parameters, repeats included. `tool_choice` requires `tools` to be tested or declared. | \[ "temperature", "seed" ] |
+| `declared_region` | [OptionalNullable\[components.UpdatePrivateEndpointRequestDeclaredRegion\]](https://openrouter.ai/docs/client-sdks/python/components/updateprivateendpointrequestdeclaredregion.mdx) | ➖ | Attest where this deployment processes data. | us |
+| `declared_zdr` | *OptionalNullable\[bool]* | ➖ | Attest that this deployment retains no prompt or completion data. | |
+| `pricing` | [Optional\[components.PrivateEndpointPricing\]](https://openrouter.ai/docs/client-sdks/python/components/privateendpointpricing.mdx) | ➖ | N/A | \{ "cache\_read": "0.00000025", "cache\_write": "0.000003125", "completion": "0.00001", "prompt": "0.0000025" } |
+| `settings` | [Optional\[components.UpdatePrivateEndpointSettingsRequest\]](https://openrouter.ai/docs/client-sdks/python/components/updateprivateendpointsettingsrequest.mdx) | ➖ | N/A | \{ "context\_length": 128000, "reasoning": \{ "supported": true } } |
+| `upstream_model_id` | *Optional\[str]* | ➖ | Model or deployment identifier sent to the upstream provider. | gpt-4o-prod |
+| `retries` | [Optional\[utils.RetryConfig\]](https://openrouter.ai/docs/client-sdks/python/models/utils/retryconfig.mdx) | ➖ | Configuration to override the default retry behavior of the client. | |
+
+### Response
+
+**[components.PrivateEndpointResponse](https://openrouter.ai/docs/client-sdks/python/components/privateendpointresponse.mdx)**
+
+### Errors
+
+| Error Type | Status Code | Content Type |
+| - | - | - |
+| errors.BadRequestResponseError | 400 | application/json |
+| errors.UnauthorizedResponseError | 401 | application/json |
+| errors.ForbiddenResponseError | 403 | application/json |
+| errors.NotFoundResponseError | 404 | application/json |
+| errors.RequestTimeoutResponseError | 408 | application/json |
+| errors.ConflictResponseError | 409 | application/json |
+| errors.UnprocessableEntityResponseError | 422 | application/json |
+| errors.InternalServerResponseError | 500 | application/json |
+| errors.BadGatewayResponseError | 502 | application/json |
+| errors.OpenRouterDefaultError | 4XX, 5XX | \*/\* |
+
+## activate
+
+Make a validated draft routable. Returns 409 when the endpoint was never validated, the validation is stale, or it is already active. [Management key](https://openrouter.ai/docs/client-sdks/python/docs/guides/overview/auth/management-api-keys) required.
+
+### Example Usage
+
+```python theme={null}
+from openrouter import OpenRouter
+import os
+
+
+with OpenRouter(
+    http_referer="<value>",
+    x_open_router_title="<value>",
+    x_open_router_categories="<value>",
+    api_key=os.getenv("OPENROUTER_API_KEY", ""),
+) as open_router:
+
+    res = open_router.private_endpoints.activate(id="5b1c4c4e-7d0a-4a8e-9f3a-2d6c1b0e8a11")
+
+    # Handle response
+    print(res)
+
+```
+
+### Parameters
+
+| Parameter | Type | Required | Description | Example |
+| - | - | - | - | - |
+| `id` | *str* | ✔️ | Stable identifier of the private endpoint. | 5b1c4c4e-7d0a-4a8e-9f3a-2d6c1b0e8a11 |
+| `http_referer` | *Optional\[str]* | ➖ | The app identifier should be your app's URL and is used as the primary identifier for rankings. This is used to track API usage per application.  | |
+| `x_open_router_title` | *Optional\[str]* | ➖ | The app display name allows you to customize how your app appears in OpenRouter's dashboard.  | |
+| `x_open_router_categories` | *Optional\[str]* | ➖ | Comma-separated list of app categories (e.g. "cli-agent,cloud-agent"). Used for marketplace rankings.  | |
+| `retries` | [Optional\[utils.RetryConfig\]](https://openrouter.ai/docs/client-sdks/python/models/utils/retryconfig.mdx) | ➖ | Configuration to override the default retry behavior of the client. | |
+
+### Response
+
+**[components.ManagedPrivateEndpointResponse](https://openrouter.ai/docs/client-sdks/python/components/managedprivateendpointresponse.mdx)**
+
+### Errors
+
+| Error Type | Status Code | Content Type |
+| - | - | - |
+| errors.BadRequestResponseError | 400 | application/json |
+| errors.UnauthorizedResponseError | 401 | application/json |
+| errors.ForbiddenResponseError | 403 | application/json |
+| errors.NotFoundResponseError | 404 | application/json |
+| errors.RequestTimeoutResponseError | 408 | application/json |
+| errors.ConflictResponseError | 409 | application/json |
+| errors.UnprocessableEntityResponseError | 422 | application/json |
+| errors.InternalServerResponseError | 500 | application/json |
+| errors.BadGatewayResponseError | 502 | application/json |
+| errors.OpenRouterDefaultError | 4XX, 5XX | \*/\* |
+
+## disable
+
+Stop routing to an active endpoint without deleting it. [Management key](https://openrouter.ai/docs/client-sdks/python/docs/guides/overview/auth/management-api-keys) required.
+
+### Example Usage
+
+```python theme={null}
+from openrouter import OpenRouter
+import os
+
+
+with OpenRouter(
+    http_referer="<value>",
+    x_open_router_title="<value>",
+    x_open_router_categories="<value>",
+    api_key=os.getenv("OPENROUTER_API_KEY", ""),
+) as open_router:
+
+    res = open_router.private_endpoints.disable(id="5b1c4c4e-7d0a-4a8e-9f3a-2d6c1b0e8a11")
+
+    # Handle response
+    print(res)
+
+```
+
+### Parameters
+
+| Parameter | Type | Required | Description | Example |
+| - | - | - | - | - |
+| `id` | *str* | ✔️ | Stable identifier of the private endpoint. | 5b1c4c4e-7d0a-4a8e-9f3a-2d6c1b0e8a11 |
+| `http_referer` | *Optional\[str]* | ➖ | The app identifier should be your app's URL and is used as the primary identifier for rankings. This is used to track API usage per application.  | |
+| `x_open_router_title` | *Optional\[str]* | ➖ | The app display name allows you to customize how your app appears in OpenRouter's dashboard.  | |
+| `x_open_router_categories` | *Optional\[str]* | ➖ | Comma-separated list of app categories (e.g. "cli-agent,cloud-agent"). Used for marketplace rankings.  | |
+| `retries` | [Optional\[utils.RetryConfig\]](https://openrouter.ai/docs/client-sdks/python/models/utils/retryconfig.mdx) | ➖ | Configuration to override the default retry behavior of the client. | |
+
+### Response
+
+**[components.ManagedPrivateEndpointResponse](https://openrouter.ai/docs/client-sdks/python/components/managedprivateendpointresponse.mdx)**
+
+### Errors
+
+| Error Type | Status Code | Content Type |
+| - | - | - |
+| errors.BadRequestResponseError | 400 | application/json |
+| errors.UnauthorizedResponseError | 401 | application/json |
+| errors.ForbiddenResponseError | 403 | application/json |
+| errors.NotFoundResponseError | 404 | application/json |
+| errors.RequestTimeoutResponseError | 408 | application/json |
+| errors.ConflictResponseError | 409 | application/json |
+| errors.UnprocessableEntityResponseError | 422 | application/json |
+| errors.InternalServerResponseError | 500 | application/json |
+| errors.BadGatewayResponseError | 502 | application/json |
+| errors.OpenRouterDefaultError | 4XX, 5XX | \*/\* |
+
+## enable
+
+Resume routing to a disabled endpoint. [Management key](https://openrouter.ai/docs/client-sdks/python/docs/guides/overview/auth/management-api-keys) required.
+
+### Example Usage
+
+```python theme={null}
+from openrouter import OpenRouter
+import os
+
+
+with OpenRouter(
+    http_referer="<value>",
+    x_open_router_title="<value>",
+    x_open_router_categories="<value>",
+    api_key=os.getenv("OPENROUTER_API_KEY", ""),
+) as open_router:
+
+    res = open_router.private_endpoints.enable(id="5b1c4c4e-7d0a-4a8e-9f3a-2d6c1b0e8a11")
+
+    # Handle response
+    print(res)
+
+```
+
+### Parameters
+
+| Parameter | Type | Required | Description | Example |
+| - | - | - | - | - |
+| `id` | *str* | ✔️ | Stable identifier of the private endpoint. | 5b1c4c4e-7d0a-4a8e-9f3a-2d6c1b0e8a11 |
+| `http_referer` | *Optional\[str]* | ➖ | The app identifier should be your app's URL and is used as the primary identifier for rankings. This is used to track API usage per application.  | |
+| `x_open_router_title` | *Optional\[str]* | ➖ | The app display name allows you to customize how your app appears in OpenRouter's dashboard.  | |
+| `x_open_router_categories` | *Optional\[str]* | ➖ | Comma-separated list of app categories (e.g. "cli-agent,cloud-agent"). Used for marketplace rankings.  | |
+| `retries` | [Optional\[utils.RetryConfig\]](https://openrouter.ai/docs/client-sdks/python/models/utils/retryconfig.mdx) | ➖ | Configuration to override the default retry behavior of the client. | |
+
+### Response
+
+**[components.ManagedPrivateEndpointResponse](https://openrouter.ai/docs/client-sdks/python/components/managedprivateendpointresponse.mdx)**
+
+### Errors
+
+| Error Type | Status Code | Content Type |
+| - | - | - |
+| errors.BadRequestResponseError | 400 | application/json |
+| errors.UnauthorizedResponseError | 401 | application/json |
+| errors.ForbiddenResponseError | 403 | application/json |
+| errors.NotFoundResponseError | 404 | application/json |
+| errors.RequestTimeoutResponseError | 408 | application/json |
+| errors.ConflictResponseError | 409 | application/json |
+| errors.UnprocessableEntityResponseError | 422 | application/json |
+| errors.InternalServerResponseError | 500 | application/json |
+| errors.BadGatewayResponseError | 502 | application/json |
+| errors.OpenRouterDefaultError | 4XX, 5XX | \*/\* |
+
+## ~~update\_parameters~~
+
+Deprecated: send `declared_parameters` to `PATCH /private-endpoints/{id}` instead; this route behaves exactly like that call and will be removed. The body replaces the earlier declaration and is read as a set; `tested_parameters` stay. Returns 400 `parameters_invalid` when `tool_choice` is declared without `tools` being tested or declared. [Management key](https://openrouter.ai/docs/client-sdks/python/docs/guides/overview/auth/management-api-keys) required.
+
+> ⚠️ **DEPRECATED**: This will be removed in a future release, please migrate away from it as soon as possible.
+
+### Example Usage
+
+```python theme={null}
+from openrouter import OpenRouter
+import os
+
+
+with OpenRouter(
+    http_referer="<value>",
+    x_open_router_title="<value>",
+    x_open_router_categories="<value>",
+    api_key=os.getenv("OPENROUTER_API_KEY", ""),
+) as open_router:
+
+    res = open_router.private_endpoints.update_parameters(id="5b1c4c4e-7d0a-4a8e-9f3a-2d6c1b0e8a11", declared_parameters=[
+        "temperature",
+        "seed",
+    ])
+
+    # Handle response
+    print(res)
+
+```
+
+### Parameters
+
+| Parameter | Type | Required | Description | Example |
+| - | - | - | - | - |
+| `id` | *str* | ✔️ | Stable identifier of the private endpoint. | 5b1c4c4e-7d0a-4a8e-9f3a-2d6c1b0e8a11 |
+| `declared_parameters` | List\[[components.PrivateEndpointDeclaredParameter](https://openrouter.ai/docs/client-sdks/python/components/privateendpointdeclaredparameter.mdx)] | ✔️ | Parameters the upstream supports beyond the tested ones. Replaces the earlier declaration; tested parameters stay. Order and repeated names are ignored, but the list holds at most as many entries as there are declarable parameters, repeats included. `tool_choice` requires `tools` to be tested or declared. | \[ "temperature", "seed" ] |
+| `http_referer` | *Optional\[str]* | ➖ | The app identifier should be your app's URL and is used as the primary identifier for rankings. This is used to track API usage per application.  | |
+| `x_open_router_title` | *Optional\[str]* | ➖ | The app display name allows you to customize how your app appears in OpenRouter's dashboard.  | |
+| `x_open_router_categories` | *Optional\[str]* | ➖ | Comma-separated list of app categories (e.g. "cli-agent,cloud-agent"). Used for marketplace rankings.  | |
+| `retries` | [Optional\[utils.RetryConfig\]](https://openrouter.ai/docs/client-sdks/python/models/utils/retryconfig.mdx) | ➖ | Configuration to override the default retry behavior of the client. | |
+
+### Response
+
+**[components.PrivateEndpointResponse](https://openrouter.ai/docs/client-sdks/python/components/privateendpointresponse.mdx)**
+
+### Errors
+
+| Error Type | Status Code | Content Type |
+| - | - | - |
+| errors.BadRequestResponseError | 400 | application/json |
+| errors.UnauthorizedResponseError | 401 | application/json |
+| errors.ForbiddenResponseError | 403 | application/json |
+| errors.NotFoundResponseError | 404 | application/json |
+| errors.RequestTimeoutResponseError | 408 | application/json |
+| errors.ConflictResponseError | 409 | application/json |
+| errors.UnprocessableEntityResponseError | 422 | application/json |
+| errors.InternalServerResponseError | 500 | application/json |
+| errors.BadGatewayResponseError | 502 | application/json |
+| errors.OpenRouterDefaultError | 4XX, 5XX | \*/\* |
+
+## ~~update\_pricing~~
+
+Deprecated: send `pricing` to `PATCH /private-endpoints/{id}` instead; this route behaves exactly like that call and will be removed. The body replaces the whole pricing object: omitting `cache_read` or `cache_write` reverts that rate to the provider pricing strategy default. [Management key](https://openrouter.ai/docs/client-sdks/python/docs/guides/overview/auth/management-api-keys) required.
+
+> ⚠️ **DEPRECATED**: This will be removed in a future release, please migrate away from it as soon as possible.
+
+### Example Usage
+
+```python theme={null}
+from openrouter import OpenRouter
+import os
+
+
+with OpenRouter(
+    http_referer="<value>",
+    x_open_router_title="<value>",
+    x_open_router_categories="<value>",
+    api_key=os.getenv("OPENROUTER_API_KEY", ""),
+) as open_router:
+
+    res = open_router.private_endpoints.update_pricing(id="5b1c4c4e-7d0a-4a8e-9f3a-2d6c1b0e8a11", pricing={
+        "completion": "0.00001",
+        "prompt": "0.0000025",
+    })
+
+    # Handle response
+    print(res)
+
+```
+
+### Parameters
+
+| Parameter | Type | Required | Description | Example |
+| - | - | - | - | - |
+| `id` | *str* | ✔️ | Stable identifier of the private endpoint. | 5b1c4c4e-7d0a-4a8e-9f3a-2d6c1b0e8a11 |
+| `pricing` | [components.PrivateEndpointPricing](https://openrouter.ai/docs/client-sdks/python/components/privateendpointpricing.mdx) | ✔️ | Negotiated per-token rates reported for requests routed to this endpoint. | \{ "cache\_read": "0.00000025", "cache\_write": "0.000003125", "completion": "0.00001", "prompt": "0.0000025" } |
+| `http_referer` | *Optional\[str]* | ➖ | The app identifier should be your app's URL and is used as the primary identifier for rankings. This is used to track API usage per application.  | |
+| `x_open_router_title` | *Optional\[str]* | ➖ | The app display name allows you to customize how your app appears in OpenRouter's dashboard.  | |
+| `x_open_router_categories` | *Optional\[str]* | ➖ | Comma-separated list of app categories (e.g. "cli-agent,cloud-agent"). Used for marketplace rankings.  | |
+| `retries` | [Optional\[utils.RetryConfig\]](https://openrouter.ai/docs/client-sdks/python/models/utils/retryconfig.mdx) | ➖ | Configuration to override the default retry behavior of the client. | |
+
+### Response
+
+**[components.PrivateEndpointResponse](https://openrouter.ai/docs/client-sdks/python/components/privateendpointresponse.mdx)**
+
+### Errors
+
+| Error Type | Status Code | Content Type |
+| - | - | - |
+| errors.BadRequestResponseError | 400 | application/json |
+| errors.UnauthorizedResponseError | 401 | application/json |
+| errors.ForbiddenResponseError | 403 | application/json |
+| errors.NotFoundResponseError | 404 | application/json |
+| errors.RequestTimeoutResponseError | 408 | application/json |
+| errors.ConflictResponseError | 409 | application/json |
+| errors.UnprocessableEntityResponseError | 422 | application/json |
+| errors.InternalServerResponseError | 500 | application/json |
+| errors.BadGatewayResponseError | 502 | application/json |
+| errors.OpenRouterDefaultError | 4XX, 5XX | \*/\* |
+
+## validate
+
+Send a live test request to the draft endpoint using the given workspace's BYOK credential for its provider. A passing validation is required before activation. Failed checks return 200 with `passed: false`. [Management key](https://openrouter.ai/docs/client-sdks/python/docs/guides/overview/auth/management-api-keys) required.
+
+### Example Usage
+
+```python theme={null}
+from openrouter import OpenRouter
+import os
+
+
+with OpenRouter(
+    http_referer="<value>",
+    x_open_router_title="<value>",
+    x_open_router_categories="<value>",
+    api_key=os.getenv("OPENROUTER_API_KEY", ""),
+) as open_router:
+
+    res = open_router.private_endpoints.validate(id="5b1c4c4e-7d0a-4a8e-9f3a-2d6c1b0e8a11", workspace_id="550e8400-e29b-41d4-a716-446655440000")
+
+    # Handle response
+    print(res)
+
+```
+
+### Parameters
+
+| Parameter | Type | Required | Description | Example |
+| - | - | - | - | - |
+| `id` | *str* | ✔️ | Stable identifier of the private endpoint. | 5b1c4c4e-7d0a-4a8e-9f3a-2d6c1b0e8a11 |
+| `workspace_id` | *str* | ✔️ | Workspace whose BYOK credential is used for the live validation call. The workspace must belong to your account. | 550e8400-e29b-41d4-a716-446655440000 |
+| `http_referer` | *Optional\[str]* | ➖ | The app identifier should be your app's URL and is used as the primary identifier for rankings. This is used to track API usage per application.  | |
+| `x_open_router_title` | *Optional\[str]* | ➖ | The app display name allows you to customize how your app appears in OpenRouter's dashboard.  | |
+| `x_open_router_categories` | *Optional\[str]* | ➖ | Comma-separated list of app categories (e.g. "cli-agent,cloud-agent"). Used for marketplace rankings.  | |
+| `retries` | [Optional\[utils.RetryConfig\]](https://openrouter.ai/docs/client-sdks/python/models/utils/retryconfig.mdx) | ➖ | Configuration to override the default retry behavior of the client. | |
+
+### Response
+
+**[components.PrivateEndpointValidationResponse](https://openrouter.ai/docs/client-sdks/python/components/privateendpointvalidationresponse.mdx)**
+
+### Errors
+
+| Error Type | Status Code | Content Type |
+| - | - | - |
+| errors.BadRequestResponseError | 400 | application/json |
+| errors.UnauthorizedResponseError | 401 | application/json |
+| errors.ForbiddenResponseError | 403 | application/json |
+| errors.NotFoundResponseError | 404 | application/json |
+| errors.RequestTimeoutResponseError | 408 | application/json |
+| errors.ConflictResponseError | 409 | application/json |
+| errors.UnprocessableEntityResponseError | 422 | application/json |
+| errors.InternalServerResponseError | 500 | application/json |
+| errors.BadGatewayResponseError | 502 | application/json |
+| errors.OpenRouterDefaultError | 4XX, 5XX | \*/\* |

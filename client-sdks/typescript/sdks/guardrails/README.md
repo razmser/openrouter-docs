@@ -1,0 +1,1207 @@
+> ## Documentation Index
+> Fetch the complete documentation index at: https://openrouter.ai/docs/llms.txt
+> Use this file to discover all available pages before exploring further.
+
+# Guardrails
+
+> Guardrails endpoints
+
+## Overview
+
+Guardrails endpoints
+
+### Available Operations
+
+* [list](#list) - List guardrails
+* [create](#create) - Create a guardrail
+* [delete](#delete) - Delete a guardrail
+* [get](#get) - Get a guardrail
+* [update](#update) - Update a guardrail
+* [listGuardrailKeyAssignments](#listguardrailkeyassignments) - List key assignments for a guardrail
+* [bulkAssignKeys](#bulkassignkeys) - Bulk assign keys to a guardrail
+* [bulkUnassignKeys](#bulkunassignkeys) - Bulk unassign keys from a guardrail
+* [listGuardrailMemberAssignments](#listguardrailmemberassignments) - List member assignments for a guardrail
+* [bulkAssignMembers](#bulkassignmembers) - Bulk assign members to a guardrail
+* [bulkUnassignMembers](#bulkunassignmembers) - Bulk unassign members from a guardrail
+* [listKeyAssignments](#listkeyassignments) - List all key assignments
+* [listMemberAssignments](#listmemberassignments) - List all member assignments
+
+## list
+
+List all guardrails for the authenticated user. [Management key](https://openrouter.ai/docs/client-sdks/typescript/docs/guides/overview/auth/management-api-keys) required.
+
+### Example Usage
+
+```typescript theme={null}
+import { OpenRouter } from "@openrouter/sdk";
+
+const openRouter = new OpenRouter({
+  httpReferer: "<value>",
+  appTitle: "<value>",
+  appCategories: "<value>",
+  apiKey: process.env["OPENROUTER_API_KEY"] ?? "",
+});
+
+async function run() {
+  const result = await openRouter.guardrails.list();
+
+  for await (const page of result) {
+    console.log(page);
+  }
+}
+
+run();
+```
+
+### Standalone function
+
+The standalone function version of this method:
+
+```typescript theme={null}
+import { OpenRouterCore } from "@openrouter/sdk/core.js";
+import { guardrailsList } from "@openrouter/sdk/funcs/guardrailsList.js";
+
+// Use `OpenRouterCore` for best tree-shaking performance.
+// You can create one instance of it to use across an application.
+const openRouter = new OpenRouterCore({
+  httpReferer: "<value>",
+  appTitle: "<value>",
+  appCategories: "<value>",
+  apiKey: process.env["OPENROUTER_API_KEY"] ?? "",
+});
+
+async function run() {
+  const res = await guardrailsList(openRouter);
+  if (res.ok) {
+    const { value: result } = res;
+    for await (const page of result) {
+    console.log(page);
+  }
+  } else {
+    console.log("guardrailsList failed:", res.error);
+  }
+}
+
+run();
+```
+
+### Parameters
+
+| Parameter | Type | Required | Description |
+| - | - | - | - |
+| `request` | [operations.ListGuardrailsRequest](https://openrouter.ai/docs/client-sdks/typescript/models/operations/listguardrailsrequest.mdx) | ✔️ | The request object to use for the request. |
+| `options` | RequestOptions | ➖ | Used to set various options for making HTTP requests. |
+| `options.fetchOptions` | [RequestInit](https://developer.mozilla.org/en-US/docs/Web/API/Request/Request#options) | ➖ | Options that are passed to the underlying HTTP request. This can be used to inject extra headers for examples. All `Request` options, except `method` and `body`, are allowed. |
+| `options.retries` | [RetryConfig](https://openrouter.ai/docs/client-sdks/typescript/lib/utils/retryconfig.mdx) | ➖ | Enables retrying HTTP requests under certain failure conditions. |
+
+### Response
+
+**Promise\<[operations.ListGuardrailsResponse](https://openrouter.ai/docs/client-sdks/typescript/models/operations/listguardrailsresponse.mdx)>**
+
+### Errors
+
+| Error Type | Status Code | Content Type |
+| - | - | - |
+| errors.BadRequestResponseError | 400 | application/json |
+| errors.UnauthorizedResponseError | 401 | application/json |
+| errors.ForbiddenResponseError | 403 | application/json |
+| errors.InternalServerResponseError | 500 | application/json |
+| errors.OpenRouterDefaultError | 4XX, 5XX | \*/\* |
+
+## create
+
+Create a new guardrail for the authenticated user. A newly created guardrail enforces nothing until it is assigned to API keys or organization members; `workspace_id` places the guardrail in a workspace but does not apply it to that workspace's traffic. To restrict all traffic in a workspace, update the workspace's default guardrail instead. Set `allowed_data_regions` to enforce [In-Region Routing](https://openrouter.ai/docs/client-sdks/typescript/docs/guides/features/in-region-routing#enforcing-in-region-routing-with-guardrails): governed requests must arrive through one of the listed OpenRouter domains and are rejected with a 403 otherwise. [Management key](https://openrouter.ai/docs/client-sdks/typescript/docs/guides/overview/auth/management-api-keys) required.
+
+### Example Usage
+
+```typescript theme={null}
+import { OpenRouter } from "@openrouter/sdk";
+
+const openRouter = new OpenRouter({
+  httpReferer: "<value>",
+  appTitle: "<value>",
+  appCategories: "<value>",
+  apiKey: process.env["OPENROUTER_API_KEY"] ?? "",
+});
+
+async function run() {
+  const result = await openRouter.guardrails.create({
+    createGuardrailRequest: {
+      allowedDataRegions: [
+        "europe",
+      ],
+      allowedModels: null,
+      allowedProviders: [
+        "openai",
+        "anthropic",
+        "deepseek",
+      ],
+      description: "A guardrail for limiting API usage",
+      enforceZdrAnthropic: true,
+      enforceZdrGoogle: false,
+      enforceZdrOpenai: true,
+      enforceZdrOther: false,
+      enforceZdrXai: false,
+      ignoredModels: null,
+      ignoredProviders: null,
+      limitUsd: 50,
+      name: "My New Guardrail",
+      resetInterval: "monthly",
+    },
+  });
+
+  console.log(result);
+}
+
+run();
+```
+
+### Standalone function
+
+The standalone function version of this method:
+
+```typescript theme={null}
+import { OpenRouterCore } from "@openrouter/sdk/core.js";
+import { guardrailsCreate } from "@openrouter/sdk/funcs/guardrailsCreate.js";
+
+// Use `OpenRouterCore` for best tree-shaking performance.
+// You can create one instance of it to use across an application.
+const openRouter = new OpenRouterCore({
+  httpReferer: "<value>",
+  appTitle: "<value>",
+  appCategories: "<value>",
+  apiKey: process.env["OPENROUTER_API_KEY"] ?? "",
+});
+
+async function run() {
+  const res = await guardrailsCreate(openRouter, {
+    createGuardrailRequest: {
+      allowedDataRegions: [
+        "europe",
+      ],
+      allowedModels: null,
+      allowedProviders: [
+        "openai",
+        "anthropic",
+        "deepseek",
+      ],
+      description: "A guardrail for limiting API usage",
+      enforceZdrAnthropic: true,
+      enforceZdrGoogle: false,
+      enforceZdrOpenai: true,
+      enforceZdrOther: false,
+      enforceZdrXai: false,
+      ignoredModels: null,
+      ignoredProviders: null,
+      limitUsd: 50,
+      name: "My New Guardrail",
+      resetInterval: "monthly",
+    },
+  });
+  if (res.ok) {
+    const { value: result } = res;
+    console.log(result);
+  } else {
+    console.log("guardrailsCreate failed:", res.error);
+  }
+}
+
+run();
+```
+
+### Parameters
+
+| Parameter | Type | Required | Description |
+| - | - | - | - |
+| `request` | [operations.CreateGuardrailRequest](https://openrouter.ai/docs/client-sdks/typescript/models/operations/createguardrailrequest.mdx) | ✔️ | The request object to use for the request. |
+| `options` | RequestOptions | ➖ | Used to set various options for making HTTP requests. |
+| `options.fetchOptions` | [RequestInit](https://developer.mozilla.org/en-US/docs/Web/API/Request/Request#options) | ➖ | Options that are passed to the underlying HTTP request. This can be used to inject extra headers for examples. All `Request` options, except `method` and `body`, are allowed. |
+| `options.retries` | [RetryConfig](https://openrouter.ai/docs/client-sdks/typescript/lib/utils/retryconfig.mdx) | ➖ | Enables retrying HTTP requests under certain failure conditions. |
+
+### Response
+
+**Promise\<[models.CreateGuardrailResponse](https://openrouter.ai/docs/client-sdks/typescript/models/createguardrailresponse.mdx)>**
+
+### Errors
+
+| Error Type | Status Code | Content Type |
+| - | - | - |
+| errors.BadRequestResponseError | 400 | application/json |
+| errors.UnauthorizedResponseError | 401 | application/json |
+| errors.ForbiddenResponseError | 403 | application/json |
+| errors.InternalServerResponseError | 500 | application/json |
+| errors.OpenRouterDefaultError | 4XX, 5XX | \*/\* |
+
+## delete
+
+Delete an existing guardrail. [Management key](https://openrouter.ai/docs/client-sdks/typescript/docs/guides/overview/auth/management-api-keys) required.
+
+### Example Usage
+
+```typescript theme={null}
+import { OpenRouter } from "@openrouter/sdk";
+
+const openRouter = new OpenRouter({
+  httpReferer: "<value>",
+  appTitle: "<value>",
+  appCategories: "<value>",
+  apiKey: process.env["OPENROUTER_API_KEY"] ?? "",
+});
+
+async function run() {
+  const result = await openRouter.guardrails.delete({
+    id: "550e8400-e29b-41d4-a716-446655440000",
+  });
+
+  console.log(result);
+}
+
+run();
+```
+
+### Standalone function
+
+The standalone function version of this method:
+
+```typescript theme={null}
+import { OpenRouterCore } from "@openrouter/sdk/core.js";
+import { guardrailsDelete } from "@openrouter/sdk/funcs/guardrailsDelete.js";
+
+// Use `OpenRouterCore` for best tree-shaking performance.
+// You can create one instance of it to use across an application.
+const openRouter = new OpenRouterCore({
+  httpReferer: "<value>",
+  appTitle: "<value>",
+  appCategories: "<value>",
+  apiKey: process.env["OPENROUTER_API_KEY"] ?? "",
+});
+
+async function run() {
+  const res = await guardrailsDelete(openRouter, {
+    id: "550e8400-e29b-41d4-a716-446655440000",
+  });
+  if (res.ok) {
+    const { value: result } = res;
+    console.log(result);
+  } else {
+    console.log("guardrailsDelete failed:", res.error);
+  }
+}
+
+run();
+```
+
+### Parameters
+
+| Parameter | Type | Required | Description |
+| - | - | - | - |
+| `request` | [operations.DeleteGuardrailRequest](https://openrouter.ai/docs/client-sdks/typescript/models/operations/deleteguardrailrequest.mdx) | ✔️ | The request object to use for the request. |
+| `options` | RequestOptions | ➖ | Used to set various options for making HTTP requests. |
+| `options.fetchOptions` | [RequestInit](https://developer.mozilla.org/en-US/docs/Web/API/Request/Request#options) | ➖ | Options that are passed to the underlying HTTP request. This can be used to inject extra headers for examples. All `Request` options, except `method` and `body`, are allowed. |
+| `options.retries` | [RetryConfig](https://openrouter.ai/docs/client-sdks/typescript/lib/utils/retryconfig.mdx) | ➖ | Enables retrying HTTP requests under certain failure conditions. |
+
+### Response
+
+**Promise\<[models.DeleteGuardrailResponse](https://openrouter.ai/docs/client-sdks/typescript/models/deleteguardrailresponse.mdx)>**
+
+### Errors
+
+| Error Type | Status Code | Content Type |
+| - | - | - |
+| errors.UnauthorizedResponseError | 401 | application/json |
+| errors.ForbiddenResponseError | 403 | application/json |
+| errors.NotFoundResponseError | 404 | application/json |
+| errors.InternalServerResponseError | 500 | application/json |
+| errors.OpenRouterDefaultError | 4XX, 5XX | \*/\* |
+
+## get
+
+Get a single guardrail by ID. [Management key](https://openrouter.ai/docs/client-sdks/typescript/docs/guides/overview/auth/management-api-keys) required.
+
+### Example Usage
+
+```typescript theme={null}
+import { OpenRouter } from "@openrouter/sdk";
+
+const openRouter = new OpenRouter({
+  httpReferer: "<value>",
+  appTitle: "<value>",
+  appCategories: "<value>",
+  apiKey: process.env["OPENROUTER_API_KEY"] ?? "",
+});
+
+async function run() {
+  const result = await openRouter.guardrails.get({
+    id: "550e8400-e29b-41d4-a716-446655440000",
+  });
+
+  console.log(result);
+}
+
+run();
+```
+
+### Standalone function
+
+The standalone function version of this method:
+
+```typescript theme={null}
+import { OpenRouterCore } from "@openrouter/sdk/core.js";
+import { guardrailsGet } from "@openrouter/sdk/funcs/guardrailsGet.js";
+
+// Use `OpenRouterCore` for best tree-shaking performance.
+// You can create one instance of it to use across an application.
+const openRouter = new OpenRouterCore({
+  httpReferer: "<value>",
+  appTitle: "<value>",
+  appCategories: "<value>",
+  apiKey: process.env["OPENROUTER_API_KEY"] ?? "",
+});
+
+async function run() {
+  const res = await guardrailsGet(openRouter, {
+    id: "550e8400-e29b-41d4-a716-446655440000",
+  });
+  if (res.ok) {
+    const { value: result } = res;
+    console.log(result);
+  } else {
+    console.log("guardrailsGet failed:", res.error);
+  }
+}
+
+run();
+```
+
+### Parameters
+
+| Parameter | Type | Required | Description |
+| - | - | - | - |
+| `request` | [operations.GetGuardrailRequest](https://openrouter.ai/docs/client-sdks/typescript/models/operations/getguardrailrequest.mdx) | ✔️ | The request object to use for the request. |
+| `options` | RequestOptions | ➖ | Used to set various options for making HTTP requests. |
+| `options.fetchOptions` | [RequestInit](https://developer.mozilla.org/en-US/docs/Web/API/Request/Request#options) | ➖ | Options that are passed to the underlying HTTP request. This can be used to inject extra headers for examples. All `Request` options, except `method` and `body`, are allowed. |
+| `options.retries` | [RetryConfig](https://openrouter.ai/docs/client-sdks/typescript/lib/utils/retryconfig.mdx) | ➖ | Enables retrying HTTP requests under certain failure conditions. |
+
+### Response
+
+**Promise\<[models.GetGuardrailResponse](https://openrouter.ai/docs/client-sdks/typescript/models/getguardrailresponse.mdx)>**
+
+### Errors
+
+| Error Type | Status Code | Content Type |
+| - | - | - |
+| errors.UnauthorizedResponseError | 401 | application/json |
+| errors.ForbiddenResponseError | 403 | application/json |
+| errors.NotFoundResponseError | 404 | application/json |
+| errors.InternalServerResponseError | 500 | application/json |
+| errors.OpenRouterDefaultError | 4XX, 5XX | \*/\* |
+
+## update
+
+Update an existing guardrail, or materialize an unconfigured workspace default guardrail. Collection fields use replace semantics: send the full desired set on every update. [Management key](https://openrouter.ai/docs/client-sdks/typescript/docs/guides/overview/auth/management-api-keys) required.
+
+### Example Usage
+
+```typescript theme={null}
+import { OpenRouter } from "@openrouter/sdk";
+
+const openRouter = new OpenRouter({
+  httpReferer: "<value>",
+  appTitle: "<value>",
+  appCategories: "<value>",
+  apiKey: process.env["OPENROUTER_API_KEY"] ?? "",
+});
+
+async function run() {
+  const result = await openRouter.guardrails.update({
+    id: "550e8400-e29b-41d4-a716-446655440000",
+    updateGuardrailRequest: {
+      description: "Updated description",
+      limitUsd: 75,
+      name: "Updated Guardrail Name",
+      resetInterval: "weekly",
+    },
+  });
+
+  console.log(result);
+}
+
+run();
+```
+
+### Standalone function
+
+The standalone function version of this method:
+
+```typescript theme={null}
+import { OpenRouterCore } from "@openrouter/sdk/core.js";
+import { guardrailsUpdate } from "@openrouter/sdk/funcs/guardrailsUpdate.js";
+
+// Use `OpenRouterCore` for best tree-shaking performance.
+// You can create one instance of it to use across an application.
+const openRouter = new OpenRouterCore({
+  httpReferer: "<value>",
+  appTitle: "<value>",
+  appCategories: "<value>",
+  apiKey: process.env["OPENROUTER_API_KEY"] ?? "",
+});
+
+async function run() {
+  const res = await guardrailsUpdate(openRouter, {
+    id: "550e8400-e29b-41d4-a716-446655440000",
+    updateGuardrailRequest: {
+      description: "Updated description",
+      limitUsd: 75,
+      name: "Updated Guardrail Name",
+      resetInterval: "weekly",
+    },
+  });
+  if (res.ok) {
+    const { value: result } = res;
+    console.log(result);
+  } else {
+    console.log("guardrailsUpdate failed:", res.error);
+  }
+}
+
+run();
+```
+
+### Parameters
+
+| Parameter | Type | Required | Description |
+| - | - | - | - |
+| `request` | [operations.UpdateGuardrailRequest](https://openrouter.ai/docs/client-sdks/typescript/models/operations/updateguardrailrequest.mdx) | ✔️ | The request object to use for the request. |
+| `options` | RequestOptions | ➖ | Used to set various options for making HTTP requests. |
+| `options.fetchOptions` | [RequestInit](https://developer.mozilla.org/en-US/docs/Web/API/Request/Request#options) | ➖ | Options that are passed to the underlying HTTP request. This can be used to inject extra headers for examples. All `Request` options, except `method` and `body`, are allowed. |
+| `options.retries` | [RetryConfig](https://openrouter.ai/docs/client-sdks/typescript/lib/utils/retryconfig.mdx) | ➖ | Enables retrying HTTP requests under certain failure conditions. |
+
+### Response
+
+**Promise\<[models.UpdateGuardrailResponse](https://openrouter.ai/docs/client-sdks/typescript/models/updateguardrailresponse.mdx)>**
+
+### Errors
+
+| Error Type | Status Code | Content Type |
+| - | - | - |
+| errors.BadRequestResponseError | 400 | application/json |
+| errors.UnauthorizedResponseError | 401 | application/json |
+| errors.ForbiddenResponseError | 403 | application/json |
+| errors.NotFoundResponseError | 404 | application/json |
+| errors.ConflictResponseError | 409 | application/json |
+| errors.InternalServerResponseError | 500 | application/json |
+| errors.OpenRouterDefaultError | 4XX, 5XX | \*/\* |
+
+## listGuardrailKeyAssignments
+
+List all API key assignments for a specific guardrail. [Management key](https://openrouter.ai/docs/client-sdks/typescript/docs/guides/overview/auth/management-api-keys) required.
+
+### Example Usage
+
+```typescript theme={null}
+import { OpenRouter } from "@openrouter/sdk";
+
+const openRouter = new OpenRouter({
+  httpReferer: "<value>",
+  appTitle: "<value>",
+  appCategories: "<value>",
+  apiKey: process.env["OPENROUTER_API_KEY"] ?? "",
+});
+
+async function run() {
+  const result = await openRouter.guardrails.listGuardrailKeyAssignments({
+    id: "550e8400-e29b-41d4-a716-446655440000",
+  });
+
+  for await (const page of result) {
+    console.log(page);
+  }
+}
+
+run();
+```
+
+### Standalone function
+
+The standalone function version of this method:
+
+```typescript theme={null}
+import { OpenRouterCore } from "@openrouter/sdk/core.js";
+import { guardrailsListGuardrailKeyAssignments } from "@openrouter/sdk/funcs/guardrailsListGuardrailKeyAssignments.js";
+
+// Use `OpenRouterCore` for best tree-shaking performance.
+// You can create one instance of it to use across an application.
+const openRouter = new OpenRouterCore({
+  httpReferer: "<value>",
+  appTitle: "<value>",
+  appCategories: "<value>",
+  apiKey: process.env["OPENROUTER_API_KEY"] ?? "",
+});
+
+async function run() {
+  const res = await guardrailsListGuardrailKeyAssignments(openRouter, {
+    id: "550e8400-e29b-41d4-a716-446655440000",
+  });
+  if (res.ok) {
+    const { value: result } = res;
+    for await (const page of result) {
+    console.log(page);
+  }
+  } else {
+    console.log("guardrailsListGuardrailKeyAssignments failed:", res.error);
+  }
+}
+
+run();
+```
+
+### Parameters
+
+| Parameter | Type | Required | Description |
+| - | - | - | - |
+| `request` | [operations.ListGuardrailKeyAssignmentsRequest](https://openrouter.ai/docs/client-sdks/typescript/models/operations/listguardrailkeyassignmentsrequest.mdx) | ✔️ | The request object to use for the request. |
+| `options` | RequestOptions | ➖ | Used to set various options for making HTTP requests. |
+| `options.fetchOptions` | [RequestInit](https://developer.mozilla.org/en-US/docs/Web/API/Request/Request#options) | ➖ | Options that are passed to the underlying HTTP request. This can be used to inject extra headers for examples. All `Request` options, except `method` and `body`, are allowed. |
+| `options.retries` | [RetryConfig](https://openrouter.ai/docs/client-sdks/typescript/lib/utils/retryconfig.mdx) | ➖ | Enables retrying HTTP requests under certain failure conditions. |
+
+### Response
+
+**Promise\<[operations.ListGuardrailKeyAssignmentsResponse](https://openrouter.ai/docs/client-sdks/typescript/models/operations/listguardrailkeyassignmentsresponse.mdx)>**
+
+### Errors
+
+| Error Type | Status Code | Content Type |
+| - | - | - |
+| errors.UnauthorizedResponseError | 401 | application/json |
+| errors.ForbiddenResponseError | 403 | application/json |
+| errors.NotFoundResponseError | 404 | application/json |
+| errors.InternalServerResponseError | 500 | application/json |
+| errors.OpenRouterDefaultError | 4XX, 5XX | \*/\* |
+
+## bulkAssignKeys
+
+Assign multiple API keys to a specific guardrail. A key may hold at most one guardrail; assigning replaces any existing assignment. [Management key](https://openrouter.ai/docs/client-sdks/typescript/docs/guides/overview/auth/management-api-keys) required.
+
+### Example Usage
+
+```typescript theme={null}
+import { OpenRouter } from "@openrouter/sdk";
+
+const openRouter = new OpenRouter({
+  httpReferer: "<value>",
+  appTitle: "<value>",
+  appCategories: "<value>",
+  apiKey: process.env["OPENROUTER_API_KEY"] ?? "",
+});
+
+async function run() {
+  const result = await openRouter.guardrails.bulkAssignKeys({
+    id: "550e8400-e29b-41d4-a716-446655440000",
+    bulkAssignKeysRequest: {
+      keyHashes: [
+        "c56454edb818d6b14bc0d61c46025f1450b0f4012d12304ab40aacb519fcbc93",
+      ],
+    },
+  });
+
+  console.log(result);
+}
+
+run();
+```
+
+### Standalone function
+
+The standalone function version of this method:
+
+```typescript theme={null}
+import { OpenRouterCore } from "@openrouter/sdk/core.js";
+import { guardrailsBulkAssignKeys } from "@openrouter/sdk/funcs/guardrailsBulkAssignKeys.js";
+
+// Use `OpenRouterCore` for best tree-shaking performance.
+// You can create one instance of it to use across an application.
+const openRouter = new OpenRouterCore({
+  httpReferer: "<value>",
+  appTitle: "<value>",
+  appCategories: "<value>",
+  apiKey: process.env["OPENROUTER_API_KEY"] ?? "",
+});
+
+async function run() {
+  const res = await guardrailsBulkAssignKeys(openRouter, {
+    id: "550e8400-e29b-41d4-a716-446655440000",
+    bulkAssignKeysRequest: {
+      keyHashes: [
+        "c56454edb818d6b14bc0d61c46025f1450b0f4012d12304ab40aacb519fcbc93",
+      ],
+    },
+  });
+  if (res.ok) {
+    const { value: result } = res;
+    console.log(result);
+  } else {
+    console.log("guardrailsBulkAssignKeys failed:", res.error);
+  }
+}
+
+run();
+```
+
+### Parameters
+
+| Parameter | Type | Required | Description |
+| - | - | - | - |
+| `request` | [operations.BulkAssignKeysToGuardrailRequest](https://openrouter.ai/docs/client-sdks/typescript/models/operations/bulkassignkeystoguardrailrequest.mdx) | ✔️ | The request object to use for the request. |
+| `options` | RequestOptions | ➖ | Used to set various options for making HTTP requests. |
+| `options.fetchOptions` | [RequestInit](https://developer.mozilla.org/en-US/docs/Web/API/Request/Request#options) | ➖ | Options that are passed to the underlying HTTP request. This can be used to inject extra headers for examples. All `Request` options, except `method` and `body`, are allowed. |
+| `options.retries` | [RetryConfig](https://openrouter.ai/docs/client-sdks/typescript/lib/utils/retryconfig.mdx) | ➖ | Enables retrying HTTP requests under certain failure conditions. |
+
+### Response
+
+**Promise\<[models.BulkAssignKeysResponse](https://openrouter.ai/docs/client-sdks/typescript/models/bulkassignkeysresponse.mdx)>**
+
+### Errors
+
+| Error Type | Status Code | Content Type |
+| - | - | - |
+| errors.BadRequestResponseError | 400 | application/json |
+| errors.UnauthorizedResponseError | 401 | application/json |
+| errors.ForbiddenResponseError | 403 | application/json |
+| errors.NotFoundResponseError | 404 | application/json |
+| errors.InternalServerResponseError | 500 | application/json |
+| errors.OpenRouterDefaultError | 4XX, 5XX | \*/\* |
+
+## bulkUnassignKeys
+
+Unassign multiple API keys from a specific guardrail. [Management key](https://openrouter.ai/docs/client-sdks/typescript/docs/guides/overview/auth/management-api-keys) required.
+
+### Example Usage
+
+```typescript theme={null}
+import { OpenRouter } from "@openrouter/sdk";
+
+const openRouter = new OpenRouter({
+  httpReferer: "<value>",
+  appTitle: "<value>",
+  appCategories: "<value>",
+  apiKey: process.env["OPENROUTER_API_KEY"] ?? "",
+});
+
+async function run() {
+  const result = await openRouter.guardrails.bulkUnassignKeys({
+    id: "550e8400-e29b-41d4-a716-446655440000",
+    bulkUnassignKeysRequest: {
+      keyHashes: [
+        "c56454edb818d6b14bc0d61c46025f1450b0f4012d12304ab40aacb519fcbc93",
+      ],
+    },
+  });
+
+  console.log(result);
+}
+
+run();
+```
+
+### Standalone function
+
+The standalone function version of this method:
+
+```typescript theme={null}
+import { OpenRouterCore } from "@openrouter/sdk/core.js";
+import { guardrailsBulkUnassignKeys } from "@openrouter/sdk/funcs/guardrailsBulkUnassignKeys.js";
+
+// Use `OpenRouterCore` for best tree-shaking performance.
+// You can create one instance of it to use across an application.
+const openRouter = new OpenRouterCore({
+  httpReferer: "<value>",
+  appTitle: "<value>",
+  appCategories: "<value>",
+  apiKey: process.env["OPENROUTER_API_KEY"] ?? "",
+});
+
+async function run() {
+  const res = await guardrailsBulkUnassignKeys(openRouter, {
+    id: "550e8400-e29b-41d4-a716-446655440000",
+    bulkUnassignKeysRequest: {
+      keyHashes: [
+        "c56454edb818d6b14bc0d61c46025f1450b0f4012d12304ab40aacb519fcbc93",
+      ],
+    },
+  });
+  if (res.ok) {
+    const { value: result } = res;
+    console.log(result);
+  } else {
+    console.log("guardrailsBulkUnassignKeys failed:", res.error);
+  }
+}
+
+run();
+```
+
+### Parameters
+
+| Parameter | Type | Required | Description |
+| - | - | - | - |
+| `request` | [operations.BulkUnassignKeysFromGuardrailRequest](https://openrouter.ai/docs/client-sdks/typescript/models/operations/bulkunassignkeysfromguardrailrequest.mdx) | ✔️ | The request object to use for the request. |
+| `options` | RequestOptions | ➖ | Used to set various options for making HTTP requests. |
+| `options.fetchOptions` | [RequestInit](https://developer.mozilla.org/en-US/docs/Web/API/Request/Request#options) | ➖ | Options that are passed to the underlying HTTP request. This can be used to inject extra headers for examples. All `Request` options, except `method` and `body`, are allowed. |
+| `options.retries` | [RetryConfig](https://openrouter.ai/docs/client-sdks/typescript/lib/utils/retryconfig.mdx) | ➖ | Enables retrying HTTP requests under certain failure conditions. |
+
+### Response
+
+**Promise\<[models.BulkUnassignKeysResponse](https://openrouter.ai/docs/client-sdks/typescript/models/bulkunassignkeysresponse.mdx)>**
+
+### Errors
+
+| Error Type | Status Code | Content Type |
+| - | - | - |
+| errors.BadRequestResponseError | 400 | application/json |
+| errors.UnauthorizedResponseError | 401 | application/json |
+| errors.ForbiddenResponseError | 403 | application/json |
+| errors.NotFoundResponseError | 404 | application/json |
+| errors.InternalServerResponseError | 500 | application/json |
+| errors.OpenRouterDefaultError | 4XX, 5XX | \*/\* |
+
+## listGuardrailMemberAssignments
+
+List all organization member assignments for a specific guardrail. [Management key](https://openrouter.ai/docs/client-sdks/typescript/docs/guides/overview/auth/management-api-keys) required.
+
+### Example Usage
+
+```typescript theme={null}
+import { OpenRouter } from "@openrouter/sdk";
+
+const openRouter = new OpenRouter({
+  httpReferer: "<value>",
+  appTitle: "<value>",
+  appCategories: "<value>",
+  apiKey: process.env["OPENROUTER_API_KEY"] ?? "",
+});
+
+async function run() {
+  const result = await openRouter.guardrails.listGuardrailMemberAssignments({
+    id: "550e8400-e29b-41d4-a716-446655440000",
+  });
+
+  for await (const page of result) {
+    console.log(page);
+  }
+}
+
+run();
+```
+
+### Standalone function
+
+The standalone function version of this method:
+
+```typescript theme={null}
+import { OpenRouterCore } from "@openrouter/sdk/core.js";
+import { guardrailsListGuardrailMemberAssignments } from "@openrouter/sdk/funcs/guardrailsListGuardrailMemberAssignments.js";
+
+// Use `OpenRouterCore` for best tree-shaking performance.
+// You can create one instance of it to use across an application.
+const openRouter = new OpenRouterCore({
+  httpReferer: "<value>",
+  appTitle: "<value>",
+  appCategories: "<value>",
+  apiKey: process.env["OPENROUTER_API_KEY"] ?? "",
+});
+
+async function run() {
+  const res = await guardrailsListGuardrailMemberAssignments(openRouter, {
+    id: "550e8400-e29b-41d4-a716-446655440000",
+  });
+  if (res.ok) {
+    const { value: result } = res;
+    for await (const page of result) {
+    console.log(page);
+  }
+  } else {
+    console.log("guardrailsListGuardrailMemberAssignments failed:", res.error);
+  }
+}
+
+run();
+```
+
+### Parameters
+
+| Parameter | Type | Required | Description |
+| - | - | - | - |
+| `request` | [operations.ListGuardrailMemberAssignmentsRequest](https://openrouter.ai/docs/client-sdks/typescript/models/operations/listguardrailmemberassignmentsrequest.mdx) | ✔️ | The request object to use for the request. |
+| `options` | RequestOptions | ➖ | Used to set various options for making HTTP requests. |
+| `options.fetchOptions` | [RequestInit](https://developer.mozilla.org/en-US/docs/Web/API/Request/Request#options) | ➖ | Options that are passed to the underlying HTTP request. This can be used to inject extra headers for examples. All `Request` options, except `method` and `body`, are allowed. |
+| `options.retries` | [RetryConfig](https://openrouter.ai/docs/client-sdks/typescript/lib/utils/retryconfig.mdx) | ➖ | Enables retrying HTTP requests under certain failure conditions. |
+
+### Response
+
+**Promise\<[operations.ListGuardrailMemberAssignmentsResponse](https://openrouter.ai/docs/client-sdks/typescript/models/operations/listguardrailmemberassignmentsresponse.mdx)>**
+
+### Errors
+
+| Error Type | Status Code | Content Type |
+| - | - | - |
+| errors.UnauthorizedResponseError | 401 | application/json |
+| errors.ForbiddenResponseError | 403 | application/json |
+| errors.NotFoundResponseError | 404 | application/json |
+| errors.InternalServerResponseError | 500 | application/json |
+| errors.OpenRouterDefaultError | 4XX, 5XX | \*/\* |
+
+## bulkAssignMembers
+
+Assign multiple organization members to a specific guardrail. [Management key](https://openrouter.ai/docs/client-sdks/typescript/docs/guides/overview/auth/management-api-keys) required.
+
+### Example Usage
+
+```typescript theme={null}
+import { OpenRouter } from "@openrouter/sdk";
+
+const openRouter = new OpenRouter({
+  httpReferer: "<value>",
+  appTitle: "<value>",
+  appCategories: "<value>",
+  apiKey: process.env["OPENROUTER_API_KEY"] ?? "",
+});
+
+async function run() {
+  const result = await openRouter.guardrails.bulkAssignMembers({
+    id: "550e8400-e29b-41d4-a716-446655440000",
+    bulkAssignMembersRequest: {
+      memberUserIds: [
+        "user_abc123",
+        "user_def456",
+      ],
+    },
+  });
+
+  console.log(result);
+}
+
+run();
+```
+
+### Standalone function
+
+The standalone function version of this method:
+
+```typescript theme={null}
+import { OpenRouterCore } from "@openrouter/sdk/core.js";
+import { guardrailsBulkAssignMembers } from "@openrouter/sdk/funcs/guardrailsBulkAssignMembers.js";
+
+// Use `OpenRouterCore` for best tree-shaking performance.
+// You can create one instance of it to use across an application.
+const openRouter = new OpenRouterCore({
+  httpReferer: "<value>",
+  appTitle: "<value>",
+  appCategories: "<value>",
+  apiKey: process.env["OPENROUTER_API_KEY"] ?? "",
+});
+
+async function run() {
+  const res = await guardrailsBulkAssignMembers(openRouter, {
+    id: "550e8400-e29b-41d4-a716-446655440000",
+    bulkAssignMembersRequest: {
+      memberUserIds: [
+        "user_abc123",
+        "user_def456",
+      ],
+    },
+  });
+  if (res.ok) {
+    const { value: result } = res;
+    console.log(result);
+  } else {
+    console.log("guardrailsBulkAssignMembers failed:", res.error);
+  }
+}
+
+run();
+```
+
+### Parameters
+
+| Parameter | Type | Required | Description |
+| - | - | - | - |
+| `request` | [operations.BulkAssignMembersToGuardrailRequest](https://openrouter.ai/docs/client-sdks/typescript/models/operations/bulkassignmemberstoguardrailrequest.mdx) | ✔️ | The request object to use for the request. |
+| `options` | RequestOptions | ➖ | Used to set various options for making HTTP requests. |
+| `options.fetchOptions` | [RequestInit](https://developer.mozilla.org/en-US/docs/Web/API/Request/Request#options) | ➖ | Options that are passed to the underlying HTTP request. This can be used to inject extra headers for examples. All `Request` options, except `method` and `body`, are allowed. |
+| `options.retries` | [RetryConfig](https://openrouter.ai/docs/client-sdks/typescript/lib/utils/retryconfig.mdx) | ➖ | Enables retrying HTTP requests under certain failure conditions. |
+
+### Response
+
+**Promise\<[models.BulkAssignMembersResponse](https://openrouter.ai/docs/client-sdks/typescript/models/bulkassignmembersresponse.mdx)>**
+
+### Errors
+
+| Error Type | Status Code | Content Type |
+| - | - | - |
+| errors.BadRequestResponseError | 400 | application/json |
+| errors.UnauthorizedResponseError | 401 | application/json |
+| errors.ForbiddenResponseError | 403 | application/json |
+| errors.NotFoundResponseError | 404 | application/json |
+| errors.InternalServerResponseError | 500 | application/json |
+| errors.OpenRouterDefaultError | 4XX, 5XX | \*/\* |
+
+## bulkUnassignMembers
+
+Unassign multiple organization members from a specific guardrail. [Management key](https://openrouter.ai/docs/client-sdks/typescript/docs/guides/overview/auth/management-api-keys) required.
+
+### Example Usage
+
+```typescript theme={null}
+import { OpenRouter } from "@openrouter/sdk";
+
+const openRouter = new OpenRouter({
+  httpReferer: "<value>",
+  appTitle: "<value>",
+  appCategories: "<value>",
+  apiKey: process.env["OPENROUTER_API_KEY"] ?? "",
+});
+
+async function run() {
+  const result = await openRouter.guardrails.bulkUnassignMembers({
+    id: "550e8400-e29b-41d4-a716-446655440000",
+    bulkUnassignMembersRequest: {
+      memberUserIds: [
+        "user_abc123",
+        "user_def456",
+      ],
+    },
+  });
+
+  console.log(result);
+}
+
+run();
+```
+
+### Standalone function
+
+The standalone function version of this method:
+
+```typescript theme={null}
+import { OpenRouterCore } from "@openrouter/sdk/core.js";
+import { guardrailsBulkUnassignMembers } from "@openrouter/sdk/funcs/guardrailsBulkUnassignMembers.js";
+
+// Use `OpenRouterCore` for best tree-shaking performance.
+// You can create one instance of it to use across an application.
+const openRouter = new OpenRouterCore({
+  httpReferer: "<value>",
+  appTitle: "<value>",
+  appCategories: "<value>",
+  apiKey: process.env["OPENROUTER_API_KEY"] ?? "",
+});
+
+async function run() {
+  const res = await guardrailsBulkUnassignMembers(openRouter, {
+    id: "550e8400-e29b-41d4-a716-446655440000",
+    bulkUnassignMembersRequest: {
+      memberUserIds: [
+        "user_abc123",
+        "user_def456",
+      ],
+    },
+  });
+  if (res.ok) {
+    const { value: result } = res;
+    console.log(result);
+  } else {
+    console.log("guardrailsBulkUnassignMembers failed:", res.error);
+  }
+}
+
+run();
+```
+
+### Parameters
+
+| Parameter | Type | Required | Description |
+| - | - | - | - |
+| `request` | [operations.BulkUnassignMembersFromGuardrailRequest](https://openrouter.ai/docs/client-sdks/typescript/models/operations/bulkunassignmembersfromguardrailrequest.mdx) | ✔️ | The request object to use for the request. |
+| `options` | RequestOptions | ➖ | Used to set various options for making HTTP requests. |
+| `options.fetchOptions` | [RequestInit](https://developer.mozilla.org/en-US/docs/Web/API/Request/Request#options) | ➖ | Options that are passed to the underlying HTTP request. This can be used to inject extra headers for examples. All `Request` options, except `method` and `body`, are allowed. |
+| `options.retries` | [RetryConfig](https://openrouter.ai/docs/client-sdks/typescript/lib/utils/retryconfig.mdx) | ➖ | Enables retrying HTTP requests under certain failure conditions. |
+
+### Response
+
+**Promise\<[models.BulkUnassignMembersResponse](https://openrouter.ai/docs/client-sdks/typescript/models/bulkunassignmembersresponse.mdx)>**
+
+### Errors
+
+| Error Type | Status Code | Content Type |
+| - | - | - |
+| errors.BadRequestResponseError | 400 | application/json |
+| errors.UnauthorizedResponseError | 401 | application/json |
+| errors.ForbiddenResponseError | 403 | application/json |
+| errors.NotFoundResponseError | 404 | application/json |
+| errors.InternalServerResponseError | 500 | application/json |
+| errors.OpenRouterDefaultError | 4XX, 5XX | \*/\* |
+
+## listKeyAssignments
+
+List all API key guardrail assignments for the authenticated user. [Management key](https://openrouter.ai/docs/client-sdks/typescript/docs/guides/overview/auth/management-api-keys) required.
+
+### Example Usage
+
+```typescript theme={null}
+import { OpenRouter } from "@openrouter/sdk";
+
+const openRouter = new OpenRouter({
+  httpReferer: "<value>",
+  appTitle: "<value>",
+  appCategories: "<value>",
+  apiKey: process.env["OPENROUTER_API_KEY"] ?? "",
+});
+
+async function run() {
+  const result = await openRouter.guardrails.listKeyAssignments();
+
+  for await (const page of result) {
+    console.log(page);
+  }
+}
+
+run();
+```
+
+### Standalone function
+
+The standalone function version of this method:
+
+```typescript theme={null}
+import { OpenRouterCore } from "@openrouter/sdk/core.js";
+import { guardrailsListKeyAssignments } from "@openrouter/sdk/funcs/guardrailsListKeyAssignments.js";
+
+// Use `OpenRouterCore` for best tree-shaking performance.
+// You can create one instance of it to use across an application.
+const openRouter = new OpenRouterCore({
+  httpReferer: "<value>",
+  appTitle: "<value>",
+  appCategories: "<value>",
+  apiKey: process.env["OPENROUTER_API_KEY"] ?? "",
+});
+
+async function run() {
+  const res = await guardrailsListKeyAssignments(openRouter);
+  if (res.ok) {
+    const { value: result } = res;
+    for await (const page of result) {
+    console.log(page);
+  }
+  } else {
+    console.log("guardrailsListKeyAssignments failed:", res.error);
+  }
+}
+
+run();
+```
+
+### Parameters
+
+| Parameter | Type | Required | Description |
+| - | - | - | - |
+| `request` | [operations.ListKeyAssignmentsRequest](https://openrouter.ai/docs/client-sdks/typescript/models/operations/listkeyassignmentsrequest.mdx) | ✔️ | The request object to use for the request. |
+| `options` | RequestOptions | ➖ | Used to set various options for making HTTP requests. |
+| `options.fetchOptions` | [RequestInit](https://developer.mozilla.org/en-US/docs/Web/API/Request/Request#options) | ➖ | Options that are passed to the underlying HTTP request. This can be used to inject extra headers for examples. All `Request` options, except `method` and `body`, are allowed. |
+| `options.retries` | [RetryConfig](https://openrouter.ai/docs/client-sdks/typescript/lib/utils/retryconfig.mdx) | ➖ | Enables retrying HTTP requests under certain failure conditions. |
+
+### Response
+
+**Promise\<[operations.ListKeyAssignmentsResponse](https://openrouter.ai/docs/client-sdks/typescript/models/operations/listkeyassignmentsresponse.mdx)>**
+
+### Errors
+
+| Error Type | Status Code | Content Type |
+| - | - | - |
+| errors.BadRequestResponseError | 400 | application/json |
+| errors.UnauthorizedResponseError | 401 | application/json |
+| errors.ForbiddenResponseError | 403 | application/json |
+| errors.NotFoundResponseError | 404 | application/json |
+| errors.InternalServerResponseError | 500 | application/json |
+| errors.OpenRouterDefaultError | 4XX, 5XX | \*/\* |
+
+## listMemberAssignments
+
+List all organization member guardrail assignments for the authenticated user. [Management key](https://openrouter.ai/docs/client-sdks/typescript/docs/guides/overview/auth/management-api-keys) required.
+
+### Example Usage
+
+```typescript theme={null}
+import { OpenRouter } from "@openrouter/sdk";
+
+const openRouter = new OpenRouter({
+  httpReferer: "<value>",
+  appTitle: "<value>",
+  appCategories: "<value>",
+  apiKey: process.env["OPENROUTER_API_KEY"] ?? "",
+});
+
+async function run() {
+  const result = await openRouter.guardrails.listMemberAssignments();
+
+  for await (const page of result) {
+    console.log(page);
+  }
+}
+
+run();
+```
+
+### Standalone function
+
+The standalone function version of this method:
+
+```typescript theme={null}
+import { OpenRouterCore } from "@openrouter/sdk/core.js";
+import { guardrailsListMemberAssignments } from "@openrouter/sdk/funcs/guardrailsListMemberAssignments.js";
+
+// Use `OpenRouterCore` for best tree-shaking performance.
+// You can create one instance of it to use across an application.
+const openRouter = new OpenRouterCore({
+  httpReferer: "<value>",
+  appTitle: "<value>",
+  appCategories: "<value>",
+  apiKey: process.env["OPENROUTER_API_KEY"] ?? "",
+});
+
+async function run() {
+  const res = await guardrailsListMemberAssignments(openRouter);
+  if (res.ok) {
+    const { value: result } = res;
+    for await (const page of result) {
+    console.log(page);
+  }
+  } else {
+    console.log("guardrailsListMemberAssignments failed:", res.error);
+  }
+}
+
+run();
+```
+
+### Parameters
+
+| Parameter | Type | Required | Description |
+| - | - | - | - |
+| `request` | [operations.ListMemberAssignmentsRequest](https://openrouter.ai/docs/client-sdks/typescript/models/operations/listmemberassignmentsrequest.mdx) | ✔️ | The request object to use for the request. |
+| `options` | RequestOptions | ➖ | Used to set various options for making HTTP requests. |
+| `options.fetchOptions` | [RequestInit](https://developer.mozilla.org/en-US/docs/Web/API/Request/Request#options) | ➖ | Options that are passed to the underlying HTTP request. This can be used to inject extra headers for examples. All `Request` options, except `method` and `body`, are allowed. |
+| `options.retries` | [RetryConfig](https://openrouter.ai/docs/client-sdks/typescript/lib/utils/retryconfig.mdx) | ➖ | Enables retrying HTTP requests under certain failure conditions. |
+
+### Response
+
+**Promise\<[operations.ListMemberAssignmentsResponse](https://openrouter.ai/docs/client-sdks/typescript/models/operations/listmemberassignmentsresponse.mdx)>**
+
+### Errors
+
+| Error Type | Status Code | Content Type |
+| - | - | - |
+| errors.BadRequestResponseError | 400 | application/json |
+| errors.UnauthorizedResponseError | 401 | application/json |
+| errors.ForbiddenResponseError | 403 | application/json |
+| errors.NotFoundResponseError | 404 | application/json |
+| errors.InternalServerResponseError | 500 | application/json |
+| errors.OpenRouterDefaultError | 4XX, 5XX | \*/\* |

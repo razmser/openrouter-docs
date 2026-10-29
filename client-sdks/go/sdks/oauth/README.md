@@ -1,0 +1,250 @@
+> ## Documentation Index
+> Fetch the complete documentation index at: https://openrouter.ai/docs/llms.txt
+> Use this file to discover all available pages before exploring further.
+
+# OAuth
+
+> OAuth authentication endpoints
+
+## Overview
+
+OAuth authentication endpoints
+
+### Available Operations
+
+* [ExchangeAuthCodeForAPIKey](#exchangeauthcodeforapikey) - Exchange authorization code for API key
+* [CreateAuthCode](#createauthcode) - Create authorization code
+* [ListOauthJwks](#listoauthjwks) - OpenRouter access token signing keys
+* [CreateOauthToken](#createoauthtoken) - Exchange a workload identity token
+
+## ExchangeAuthCodeForAPIKey
+
+Exchange an authorization code from the PKCE flow for a user-controlled API key
+
+### Example Usage
+
+```go theme={null}
+package main
+
+import(
+	"context"
+	"os"
+	openrouter "github.com/OpenRouterTeam/go-sdk"
+	"github.com/OpenRouterTeam/go-sdk/models/operations"
+	"github.com/OpenRouterTeam/go-sdk/optionalnullable"
+	"log"
+)
+
+func main() {
+    ctx := context.Background()
+
+    s := openrouter.New(
+        openrouter.WithSecurity(os.Getenv("OPENROUTER_API_KEY")),
+    )
+
+    res, err := s.OAuth.ExchangeAuthCodeForAPIKey(ctx, operations.ExchangeAuthCodeForAPIKeyRequest{
+        Code: "auth_code_abc123def456",
+        CodeChallengeMethod: optionalnullable.From(openrouter.Pointer(operations.ExchangeAuthCodeForAPIKeyCodeChallengeMethodS256)),
+        CodeVerifier: openrouter.Pointer("dBjftJeZ4CVP-mB92K27uhbUJU1p1r_wW1gFWFOEjXk"),
+    })
+    if err != nil {
+        log.Fatal(err)
+    }
+    if res != nil {
+        // handle response
+    }
+}
+```
+
+### Parameters
+
+| Parameter | Type | Required | Description |
+| - | - | - | - |
+| `ctx` | [context.Context](https://pkg.go.dev/context#Context) | ✔️ | The context to use for the request. |
+| `request` | [operations.ExchangeAuthCodeForAPIKeyRequest](https://openrouter.ai/docs/client-sdks/go/models/operations/exchangeauthcodeforapikeyrequest.mdx) | ✔️ | The request object to use for the request. |
+| `opts` | \[][operations.Option](https://openrouter.ai/docs/client-sdks/go/models/operations/option.mdx) | ➖ | The options for this request. |
+
+### Response
+
+**[\*operations.ExchangeAuthCodeForAPIKeyResponse](https://openrouter.ai/docs/client-sdks/go/models/operations/exchangeauthcodeforapikeyresponse.mdx), error**
+
+### Errors
+
+| Error Type | Status Code | Content Type |
+| - | - | - |
+| sdkerrors.BadRequestResponseError | 400 | application/json |
+| sdkerrors.ForbiddenResponseError | 403 | application/json |
+| sdkerrors.InternalServerResponseError | 500 | application/json |
+| sdkerrors.APIError | 4XX, 5XX | \*/\* |
+
+## CreateAuthCode
+
+Create an authorization code for the PKCE flow to generate a user-controlled API key
+
+### Example Usage
+
+```go theme={null}
+package main
+
+import(
+	"context"
+	"os"
+	openrouter "github.com/OpenRouterTeam/go-sdk"
+	"github.com/OpenRouterTeam/go-sdk/models/operations"
+	"log"
+)
+
+func main() {
+    ctx := context.Background()
+
+    s := openrouter.New(
+        openrouter.WithSecurity(os.Getenv("OPENROUTER_API_KEY")),
+    )
+
+    res, err := s.OAuth.CreateAuthCode(ctx, operations.CreateAuthKeysCodeRequest{
+        CallbackURL: "https://myapp.com/auth/callback",
+        CodeChallenge: openrouter.Pointer("E9Melhoa2OwvFrEMTJguCHaoeK1t8URWbuGJSstw-cM"),
+        CodeChallengeMethod: operations.CreateAuthKeysCodeCodeChallengeMethodS256.ToPointer(),
+        Limit: openrouter.Pointer[float64](100.0),
+    })
+    if err != nil {
+        log.Fatal(err)
+    }
+    if res != nil {
+        // handle response
+    }
+}
+```
+
+### Parameters
+
+| Parameter | Type | Required | Description |
+| - | - | - | - |
+| `ctx` | [context.Context](https://pkg.go.dev/context#Context) | ✔️ | The context to use for the request. |
+| `request` | [operations.CreateAuthKeysCodeRequest](https://openrouter.ai/docs/client-sdks/go/models/operations/createauthkeyscoderequest.mdx) | ✔️ | The request object to use for the request. |
+| `opts` | \[][operations.Option](https://openrouter.ai/docs/client-sdks/go/models/operations/option.mdx) | ➖ | The options for this request. |
+
+### Response
+
+**[\*operations.CreateAuthKeysCodeResponse](https://openrouter.ai/docs/client-sdks/go/models/operations/createauthkeyscoderesponse.mdx), error**
+
+### Errors
+
+| Error Type | Status Code | Content Type |
+| - | - | - |
+| sdkerrors.BadRequestResponseError | 400 | application/json |
+| sdkerrors.UnauthorizedResponseError | 401 | application/json |
+| sdkerrors.ForbiddenResponseError | 403 | application/json |
+| sdkerrors.ConflictResponseError | 409 | application/json |
+| sdkerrors.InternalServerResponseError | 500 | application/json |
+| sdkerrors.APIError | 4XX, 5XX | \*/\* |
+
+## ListOauthJwks
+
+RFC 7517 JWK Set containing the public keys OpenRouter signs access tokens with.
+
+### Example Usage
+
+```go theme={null}
+package main
+
+import(
+	"context"
+	"os"
+	openrouter "github.com/OpenRouterTeam/go-sdk"
+	"log"
+)
+
+func main() {
+    ctx := context.Background()
+
+    s := openrouter.New(
+        openrouter.WithSecurity(os.Getenv("OPENROUTER_API_KEY")),
+    )
+
+    res, err := s.OAuth.ListOauthJwks(ctx)
+    if err != nil {
+        log.Fatal(err)
+    }
+    if res != nil {
+        // handle response
+    }
+}
+```
+
+### Parameters
+
+| Parameter | Type | Required | Description |
+| - | - | - | - |
+| `ctx` | [context.Context](https://pkg.go.dev/context#Context) | ✔️ | The context to use for the request. |
+| `opts` | \[][operations.Option](https://openrouter.ai/docs/client-sdks/go/models/operations/option.mdx) | ➖ | The options for this request. |
+
+### Response
+
+**[\*components.OAuthJwks](https://openrouter.ai/docs/client-sdks/go/models/components/oauthjwks.mdx), error**
+
+### Errors
+
+| Error Type | Status Code | Content Type |
+| - | - | - |
+| sdkerrors.InternalServerResponseError | 500 | application/json |
+| sdkerrors.APIError | 4XX, 5XX | \*/\* |
+
+## CreateOauthToken
+
+RFC 8693 token exchange. Presents a JWT from an issuer your organization trusts (Settings → Workload identity) and receives a short-lived OpenRouter access token that acts as the API key the matching federation policy targets.
+
+### Example Usage
+
+```go theme={null}
+package main
+
+import(
+	"context"
+	"os"
+	openrouter "github.com/OpenRouterTeam/go-sdk"
+	"github.com/OpenRouterTeam/go-sdk/models/components"
+	"log"
+)
+
+func main() {
+    ctx := context.Background()
+
+    s := openrouter.New(
+        openrouter.WithSecurity(os.Getenv("OPENROUTER_API_KEY")),
+    )
+
+    res, err := s.OAuth.CreateOauthToken(ctx, components.TokenExchangeRequest{
+        FederationPolicyID: "4b2f7d1e-8c3a-4e5f-9a6b-1c2d3e4f5a6b",
+        GrantType: components.GrantTypeUrnIetfParamsOauthGrantTypeTokenExchange,
+        SubjectToken: "<jwt from your identity provider>",
+        SubjectTokenType: components.SubjectTokenTypeUrnIetfParamsOauthTokenTypeJwt,
+    })
+    if err != nil {
+        log.Fatal(err)
+    }
+    if res != nil {
+        // handle response
+    }
+}
+```
+
+### Parameters
+
+| Parameter | Type | Required | Description |
+| - | - | - | - |
+| `ctx` | [context.Context](https://pkg.go.dev/context#Context) | ✔️ | The context to use for the request. |
+| `request` | [components.TokenExchangeRequest](https://openrouter.ai/docs/client-sdks/go/models/components/tokenexchangerequest.mdx) | ✔️ | The request object to use for the request. |
+| `opts` | \[][operations.Option](https://openrouter.ai/docs/client-sdks/go/models/operations/option.mdx) | ➖ | The options for this request. |
+
+### Response
+
+**[\*components.TokenExchangeResponse](https://openrouter.ai/docs/client-sdks/go/models/components/tokenexchangeresponse.mdx), error**
+
+### Errors
+
+| Error Type | Status Code | Content Type |
+| - | - | - |
+| sdkerrors.OAuthErrorResponse | 400, 429 | application/json |
+| sdkerrors.OAuthErrorResponse | 500, 503 | application/json |
+| sdkerrors.APIError | 4XX, 5XX | \*/\* |
