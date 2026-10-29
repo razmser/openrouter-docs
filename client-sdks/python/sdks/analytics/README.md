@@ -1,0 +1,178 @@
+> ## Documentation Index
+> Fetch the complete documentation index at: https://openrouter.ai/docs/llms.txt
+> Use this file to discover all available pages before exploring further.
+
+# Analytics
+
+> Analytics and usage endpoints
+
+## Overview
+
+Analytics and usage endpoints
+
+### Available Operations
+
+* [get\_user\_activity](#get_user_activity) - Get user activity grouped by endpoint
+* [get\_analytics\_meta](#get_analytics_meta) - Get available analytics metrics and dimensions
+* [query\_analytics](#query_analytics) - Query analytics data
+
+## get\_user\_activity
+
+Returns user activity data grouped by endpoint for the last 30 (completed) UTC days. Pass `workspace_id` to scope the response to a single workspace. Pass `group_by=workspace` to split each row per workspace and include `workspace_id` on every item; by default rows are aggregated across workspaces and `workspace_id` is not returned. Activity recorded before workspace resolution existed is permanently attributed to the account default workspace (no backfill is possible). [Management key](https://openrouter.ai/docs/client-sdks/python/docs/guides/overview/auth/management-api-keys) required.
+
+### Example Usage
+
+```python theme={null}
+from openrouter import OpenRouter
+import os
+
+
+with OpenRouter(
+    http_referer="<value>",
+    x_open_router_title="<value>",
+    x_open_router_categories="<value>",
+    api_key=os.getenv("OPENROUTER_API_KEY", ""),
+) as open_router:
+
+    res = open_router.analytics.get_user_activity()
+
+    # Handle response
+    print(res)
+
+```
+
+### Parameters
+
+| Parameter | Type | Required | Description |
+| - | - | - | - |
+| `request` | [operations.GetUserActivityRequest](https://openrouter.ai/docs/client-sdks/python/operations/getuseractivityrequest.mdx) | ✔️ | The request object to use for the request. |
+| `retries` | [Optional\[utils.RetryConfig\]](https://openrouter.ai/docs/client-sdks/python/models/utils/retryconfig.mdx) | ➖ | Configuration to override the default retry behavior of the client. |
+
+### Response
+
+**[components.ActivityResponse](https://openrouter.ai/docs/client-sdks/python/components/activityresponse.mdx)**
+
+### Errors
+
+| Error Type | Status Code | Content Type |
+| - | - | - |
+| errors.BadRequestResponseError | 400 | application/json |
+| errors.UnauthorizedResponseError | 401 | application/json |
+| errors.ForbiddenResponseError | 403 | application/json |
+| errors.NotFoundResponseError | 404 | application/json |
+| errors.InternalServerResponseError | 500 | application/json |
+| errors.OpenRouterDefaultError | 4XX, 5XX | \*/\* |
+
+## get\_analytics\_meta
+
+Returns the available metrics, dimensions, filter operators, and granularities for the analytics query endpoint. [Management key](https://openrouter.ai/docs/client-sdks/python/docs/guides/overview/auth/management-api-keys) required.
+
+### Example Usage
+
+```python theme={null}
+from openrouter import OpenRouter
+import os
+
+
+with OpenRouter(
+    http_referer="<value>",
+    x_open_router_title="<value>",
+    x_open_router_categories="<value>",
+    api_key=os.getenv("OPENROUTER_API_KEY", ""),
+) as open_router:
+
+    res = open_router.analytics.get_analytics_meta()
+
+    # Handle response
+    print(res)
+
+```
+
+### Parameters
+
+| Parameter | Type | Required | Description |
+| - | - | - | - |
+| `http_referer` | *Optional\[str]* | ➖ | The app identifier should be your app's URL and is used as the primary identifier for rankings. This is used to track API usage per application.  |
+| `x_open_router_title` | *Optional\[str]* | ➖ | The app display name allows you to customize how your app appears in OpenRouter's dashboard.  |
+| `x_open_router_categories` | *Optional\[str]* | ➖ | Comma-separated list of app categories (e.g. "cli-agent,cloud-agent"). Used for marketplace rankings.  |
+| `retries` | [Optional\[utils.RetryConfig\]](https://openrouter.ai/docs/client-sdks/python/models/utils/retryconfig.mdx) | ➖ | Configuration to override the default retry behavior of the client. |
+
+### Response
+
+**[operations.GetAnalyticsMetaResponse](https://openrouter.ai/docs/client-sdks/python/operations/getanalyticsmetaresponse.mdx)**
+
+### Errors
+
+| Error Type | Status Code | Content Type |
+| - | - | - |
+| errors.UnauthorizedResponseError | 401 | application/json |
+| errors.ForbiddenResponseError | 403 | application/json |
+| errors.InternalServerResponseError | 500 | application/json |
+| errors.OpenRouterDefaultError | 4XX, 5XX | \*/\* |
+
+## query\_analytics
+
+Execute an analytics query with specified metrics, dimensions, filters, and time range. [Management key](https://openrouter.ai/docs/client-sdks/python/docs/guides/overview/auth/management-api-keys) required.
+
+### Example Usage
+
+```python theme={null}
+from openrouter import OpenRouter
+from openrouter.utils import parse_datetime
+import os
+
+
+with OpenRouter(
+    http_referer="<value>",
+    x_open_router_title="<value>",
+    x_open_router_categories="<value>",
+    api_key=os.getenv("OPENROUTER_API_KEY", ""),
+) as open_router:
+
+    res = open_router.analytics.query_analytics(metrics=[
+        "request_count",
+    ], dimensions=[
+        "model",
+    ], granularity="day", limit=100, time_range={
+        "end": parse_datetime("2025-01-08T00:00:00Z"),
+        "start": parse_datetime("2025-01-01T00:00:00Z"),
+    })
+
+    # Handle response
+    print(res)
+
+```
+
+### Parameters
+
+| Parameter | Type | Required | Description | Example |
+| - | - | - | - | - |
+| `metrics` | List\[*str*] | ✔️ | N/A | |
+| `http_referer` | *Optional\[str]* | ➖ | The app identifier should be your app's URL and is used as the primary identifier for rankings. This is used to track API usage per application.  | |
+| `x_open_router_title` | *Optional\[str]* | ➖ | The app display name allows you to customize how your app appears in OpenRouter's dashboard.  | |
+| `x_open_router_categories` | *Optional\[str]* | ➖ | Comma-separated list of app categories (e.g. "cli-agent,cloud-agent"). Used for marketplace rankings.  | |
+| `classifier_dimensions` | [Optional\[operations.ClassifierDimensions\]](https://openrouter.ai/docs/client-sdks/python/operations/classifierdimensions.mdx) | ➖ | Group results by custom classifier tags, breaking down metrics by the specified dimension values. Requires an active classifier on the workspace. | |
+| `classifier_filters` | [Optional\[operations.ClassifierFilters\]](https://openrouter.ai/docs/client-sdks/python/operations/classifierfilters.mdx) | ➖ | Filter results to generations with specific classifier tag values. Can be combined with classifier\_dimensions (must use the same classifier\_id) or used independently with standard dimensions. | |
+| `dimensions` | List\[*str*] | ➖ | N/A | |
+| `filters` | List\[[operations.Filter](https://openrouter.ai/docs/client-sdks/python/operations/filter_.mdx)] | ➖ | N/A | |
+| `granularity` | *Optional\[str]* | ➖ | Time granularity | day |
+| `group_limit` | *Optional\[int]* | ➖ | Maximum rows per distinct combination of dimensions. When omitted on time-series queries (granularity + dimensions), auto-computed to avoid truncating time windows. Explicit values override the default and may truncate time buckets if set lower than the number of buckets in the range. Ignored when no dimensions are specified. | 100 |
+| `limit` | *Optional\[int]* | ➖ | Maximum total rows returned. Defaults to 1000. On time-series queries with dimensions and no explicit group\_limit, the server may raise this to accommodate the expected number of unique time-bucket/dimension combinations. | |
+| `order_by` | [Optional\[operations.OrderBy\]](https://openrouter.ai/docs/client-sdks/python/operations/orderby.mdx) | ➖ | N/A | |
+| `time_range` | [Optional\[operations.TimeRange\]](https://openrouter.ai/docs/client-sdks/python/operations/timerange.mdx) | ➖ | N/A | |
+| `retries` | [Optional\[utils.RetryConfig\]](https://openrouter.ai/docs/client-sdks/python/models/utils/retryconfig.mdx) | ➖ | Configuration to override the default retry behavior of the client. | |
+
+### Response
+
+**[operations.QueryAnalyticsResponse](https://openrouter.ai/docs/client-sdks/python/operations/queryanalyticsresponse.mdx)**
+
+### Errors
+
+| Error Type | Status Code | Content Type |
+| - | - | - |
+| errors.BadRequestResponseError | 400 | application/json |
+| errors.UnauthorizedResponseError | 401 | application/json |
+| errors.ForbiddenResponseError | 403 | application/json |
+| errors.RequestTimeoutResponseError | 408 | application/json |
+| errors.InternalServerResponseError | 500 | application/json |
+| errors.OpenRouterDefaultError | 4XX, 5XX | \*/\* |

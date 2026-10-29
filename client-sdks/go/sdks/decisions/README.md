@@ -1,0 +1,143 @@
+> ## Documentation Index
+> Fetch the complete documentation index at: https://openrouter.ai/docs/llms.txt
+> Use this file to discover all available pages before exploring further.
+
+# Alpha.Decisions
+
+> Alpha feature endpoints for Decisions requests
+
+## Overview
+
+Alpha feature endpoints for Decisions requests
+
+### Available Operations
+
+* [Create](#create) - Submit a Decisions request
+
+## Create
+
+Submits a Decisions request to the Decisions router
+
+### Example Usage
+
+```go theme={null}
+package main
+
+import(
+	"context"
+	"os"
+	openrouter "github.com/OpenRouterTeam/go-sdk"
+	"github.com/OpenRouterTeam/go-sdk/models/components"
+	"log"
+)
+
+func main() {
+    ctx := context.Background()
+
+    s := openrouter.New(
+        openrouter.WithSecurity(os.Getenv("OPENROUTER_API_KEY")),
+    )
+
+    res, err := s.Alpha.Decisions.Create(ctx, components.DecisionsRequest{
+        Model: "typesafe/jev-1.13",
+        Questions: map[string]components.Questions{
+            "is_bug": components.CreateQuestionsNoul(
+                components.DecisionsNoulQuestion{
+                    Criteria: &components.DecisionsNoulQuestionCriteria{
+                        False: components.CreateFalseStr(
+                            "The customer is asking a question or requesting a feature.",
+                        ),
+                        True: components.CreateTrueStr(
+                            "The customer describes broken or unexpected product behavior.",
+                        ),
+                    },
+                    Instructions: components.CreateDecisionsNoulQuestionInstructionsStr(
+                        "Is the customer reporting a software defect?",
+                    ),
+                    Type: components.DecisionsNoulQuestionTypeNoul,
+                },
+            ),
+            "team": components.CreateQuestionsChoice(
+                components.DecisionsChoiceQuestion{
+                    Criteria: map[string]*components.Criteria{
+                        "account": openrouter.Pointer(components.CreateCriteriaStr(
+                            "Login, permissions, or profile issues.",
+                        )),
+                        "frontend": openrouter.Pointer(components.CreateCriteriaStr(
+                            "Rendering, layout, or browser compatibility issues.",
+                        )),
+                        "payments": openrouter.Pointer(components.CreateCriteriaStr(
+                            "Checkout, billing, or payment processing issues.",
+                        )),
+                    },
+                    Instructions: components.CreateDecisionsChoiceQuestionInstructionsStr(
+                        "Which team should own this ticket?",
+                    ),
+                    Type: components.DecisionsChoiceQuestionTypeChoice,
+                },
+            ),
+            "urgency": components.CreateQuestionsScore(
+                components.DecisionsScoreQuestion{
+                    Criteria: []components.Criterion{
+                        components.CreateCriterionStr(
+                            "Can wait for the next release",
+                        ),
+                        components.CreateCriterionStr(
+                            "Should be fixed this week",
+                        ),
+                        components.CreateCriterionStr(
+                            "Blocking revenue right now",
+                        ),
+                    },
+                    Instructions: components.CreateDecisionsScoreQuestionInstructionsStr(
+                        "How urgent is this ticket?",
+                    ),
+                    Type: components.DecisionsScoreQuestionTypeScore,
+                },
+            ),
+        },
+        State: components.CreateStateMapOfAny(
+            map[string]any{
+                "customer_tier": "enterprise",
+                "ticket": "My checkout page shows a blank screen after I click Pay. I have tried two browsers.",
+            },
+        ),
+    })
+    if err != nil {
+        log.Fatal(err)
+    }
+    if res != nil {
+        // handle response
+    }
+}
+```
+
+### Parameters
+
+| Parameter | Type | Required | Description |
+| - | - | - | - |
+| `ctx` | [context.Context](https://pkg.go.dev/context#Context) | ✔️ | The context to use for the request. |
+| `request` | [components.DecisionsRequest](https://openrouter.ai/docs/client-sdks/go/models/components/decisionsrequest.mdx) | ✔️ | The request object to use for the request. |
+| `opts` | \[][operations.Option](https://openrouter.ai/docs/client-sdks/go/models/operations/option.mdx) | ➖ | The options for this request. |
+
+### Response
+
+**[\*components.DecisionsResponse](https://openrouter.ai/docs/client-sdks/go/models/components/decisionsresponse.mdx), error**
+
+### Errors
+
+| Error Type | Status Code | Content Type |
+| - | - | - |
+| sdkerrors.BadRequestResponseError | 400 | application/json |
+| sdkerrors.UnauthorizedResponseError | 401 | application/json |
+| sdkerrors.PaymentRequiredResponseError | 402 | application/json |
+| sdkerrors.ForbiddenResponseError | 403 | application/json |
+| sdkerrors.NotFoundResponseError | 404 | application/json |
+| sdkerrors.PayloadTooLargeResponseError | 413 | application/json |
+| sdkerrors.TooManyRequestsResponseError | 429 | application/json |
+| sdkerrors.InternalServerResponseError | 500 | application/json |
+| sdkerrors.BadGatewayResponseError | 502 | application/json |
+| sdkerrors.ServiceUnavailableResponseError | 503 | application/json |
+| sdkerrors.EdgeNetworkTimeoutResponseError | 524 | application/json |
+| sdkerrors.ProviderOverloadedResponseError | 529 | application/json |
+| sdkerrors.APIError | 4XX, 5XX | \*/\* |

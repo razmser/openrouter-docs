@@ -1,0 +1,222 @@
+> ## Documentation Index
+> Fetch the complete documentation index at: https://openrouter.ai/docs/llms.txt
+> Use this file to discover all available pages before exploring further.
+
+# OAuth
+
+> OAuth authentication endpoints
+
+## Overview
+
+OAuth authentication endpoints
+
+### Available Operations
+
+* [exchange\_auth\_code\_for\_api\_key](#exchange_auth_code_for_api_key) - Exchange authorization code for API key
+* [create\_auth\_code](#create_auth_code) - Create authorization code
+* [list\_oauth\_jwks](#list_oauth_jwks) - OpenRouter access token signing keys
+* [create\_oauth\_token](#create_oauth_token) - Exchange a workload identity token
+
+## exchange\_auth\_code\_for\_api\_key
+
+Exchange an authorization code from the PKCE flow for a user-controlled API key
+
+### Example Usage
+
+```python theme={null}
+from openrouter import OpenRouter
+import os
+
+
+with OpenRouter(
+    http_referer="<value>",
+    x_open_router_title="<value>",
+    x_open_router_categories="<value>",
+    api_key=os.getenv("OPENROUTER_API_KEY", ""),
+) as open_router:
+
+    res = open_router.o_auth.exchange_auth_code_for_api_key(code="auth_code_abc123def456", code_challenge_method="S256", code_verifier="dBjftJeZ4CVP-mB92K27uhbUJU1p1r_wW1gFWFOEjXk")
+
+    # Handle response
+    print(res)
+
+```
+
+### Parameters
+
+| Parameter | Type | Required | Description | Example |
+| - | - | - | - | - |
+| `code` | *str* | ✔️ | The authorization code received from the OAuth redirect | auth\_code\_abc123def456 |
+| `http_referer` | *Optional\[str]* | ➖ | The app identifier should be your app's URL and is used as the primary identifier for rankings. This is used to track API usage per application.  | |
+| `x_open_router_title` | *Optional\[str]* | ➖ | The app display name allows you to customize how your app appears in OpenRouter's dashboard.  | |
+| `x_open_router_categories` | *Optional\[str]* | ➖ | Comma-separated list of app categories (e.g. "cli-agent,cloud-agent"). Used for marketplace rankings.  | |
+| `code_challenge_method` | [OptionalNullable\[operations.ExchangeAuthCodeForAPIKeyCodeChallengeMethod\]](https://openrouter.ai/docs/client-sdks/python/operations/exchangeauthcodeforapikeycodechallengemethod.mdx) | ➖ | The method used to generate the code challenge | S256 |
+| `code_verifier` | *Optional\[str]* | ➖ | The code verifier if code\_challenge was used in the authorization request | dBjftJeZ4CVP-mB92K27uhbUJU1p1r\_wW1gFWFOEjXk |
+| `retries` | [Optional\[utils.RetryConfig\]](https://openrouter.ai/docs/client-sdks/python/models/utils/retryconfig.mdx) | ➖ | Configuration to override the default retry behavior of the client. | |
+
+### Response
+
+**[operations.ExchangeAuthCodeForAPIKeyResponse](https://openrouter.ai/docs/client-sdks/python/operations/exchangeauthcodeforapikeyresponse.mdx)**
+
+### Errors
+
+| Error Type | Status Code | Content Type |
+| - | - | - |
+| errors.BadRequestResponseError | 400 | application/json |
+| errors.ForbiddenResponseError | 403 | application/json |
+| errors.InternalServerResponseError | 500 | application/json |
+| errors.OpenRouterDefaultError | 4XX, 5XX | \*/\* |
+
+## create\_auth\_code
+
+Create an authorization code for the PKCE flow to generate a user-controlled API key
+
+### Example Usage
+
+```python theme={null}
+from openrouter import OpenRouter
+import os
+
+
+with OpenRouter(
+    http_referer="<value>",
+    x_open_router_title="<value>",
+    x_open_router_categories="<value>",
+    api_key=os.getenv("OPENROUTER_API_KEY", ""),
+) as open_router:
+
+    res = open_router.o_auth.create_auth_code(callback_url="https://myapp.com/auth/callback", code_challenge="E9Melhoa2OwvFrEMTJguCHaoeK1t8URWbuGJSstw-cM", code_challenge_method="S256", limit=100.0)
+
+    # Handle response
+    print(res)
+
+```
+
+### Parameters
+
+| Parameter | Type | Required | Description | Example |
+| - | - | - | - | - |
+| `callback_url` | *str* | ✔️ | The callback URL to redirect to after authorization. Supports https URLs and localhost/127.0.0.1 URLs on any port for local CLI tools. | [https://myapp.com/auth/callback](https://myapp.com/auth/callback) |
+| `http_referer` | *Optional\[str]* | ➖ | The app identifier should be your app's URL and is used as the primary identifier for rankings. This is used to track API usage per application.  | |
+| `x_open_router_title` | *Optional\[str]* | ➖ | The app display name allows you to customize how your app appears in OpenRouter's dashboard.  | |
+| `x_open_router_categories` | *Optional\[str]* | ➖ | Comma-separated list of app categories (e.g. "cli-agent,cloud-agent"). Used for marketplace rankings.  | |
+| `code_challenge` | *Optional\[str]* | ➖ | PKCE code challenge for enhanced security | E9Melhoa2OwvFrEMTJguCHaoeK1t8URWbuGJSstw-cM |
+| `code_challenge_method` | [Optional\[operations.CreateAuthKeysCodeCodeChallengeMethod\]](https://openrouter.ai/docs/client-sdks/python/operations/createauthkeyscodecodechallengemethod.mdx) | ➖ | The method used to generate the code challenge | S256 |
+| `expires_at` | [date](https://docs.python.org/3/library/datetime.html#date-objects) | ➖ | Optional ISO 8601 UTC expiration timestamp. Must include seconds (YYYY-MM-DDTHH:MM:SSZ; fractional seconds allowed); minute-precision timestamps are rejected. | 2027-12-31T23:59:59Z |
+| `key_label` | *Optional\[str]* | ➖ | Optional custom label for the API key. Defaults to the app name if not provided. | My Custom Key |
+| `limit` | *Optional\[float]* | ➖ | Credit limit for the API key to be created | 100 |
+| `usage_limit_type` | [Optional\[operations.UsageLimitType\]](https://openrouter.ai/docs/client-sdks/python/operations/usagelimittype.mdx) | ➖ | Optional credit limit reset interval. When set, the credit limit resets on this interval. | monthly |
+| `workspace_id` | *Optional\[str]* | ➖ | Optional workspace ID to associate the API key with | |
+| `retries` | [Optional\[utils.RetryConfig\]](https://openrouter.ai/docs/client-sdks/python/models/utils/retryconfig.mdx) | ➖ | Configuration to override the default retry behavior of the client. | |
+
+### Response
+
+**[operations.CreateAuthKeysCodeResponse](https://openrouter.ai/docs/client-sdks/python/operations/createauthkeyscoderesponse.mdx)**
+
+### Errors
+
+| Error Type | Status Code | Content Type |
+| - | - | - |
+| errors.BadRequestResponseError | 400 | application/json |
+| errors.UnauthorizedResponseError | 401 | application/json |
+| errors.ForbiddenResponseError | 403 | application/json |
+| errors.ConflictResponseError | 409 | application/json |
+| errors.InternalServerResponseError | 500 | application/json |
+| errors.OpenRouterDefaultError | 4XX, 5XX | \*/\* |
+
+## list\_oauth\_jwks
+
+RFC 7517 JWK Set containing the public keys OpenRouter signs access tokens with.
+
+### Example Usage
+
+```python theme={null}
+from openrouter import OpenRouter
+import os
+
+
+with OpenRouter(
+    http_referer="<value>",
+    x_open_router_title="<value>",
+    x_open_router_categories="<value>",
+    api_key=os.getenv("OPENROUTER_API_KEY", ""),
+) as open_router:
+
+    res = open_router.o_auth.list_oauth_jwks()
+
+    # Handle response
+    print(res)
+
+```
+
+### Parameters
+
+| Parameter | Type | Required | Description |
+| - | - | - | - |
+| `http_referer` | *Optional\[str]* | ➖ | The app identifier should be your app's URL and is used as the primary identifier for rankings. This is used to track API usage per application.  |
+| `x_open_router_title` | *Optional\[str]* | ➖ | The app display name allows you to customize how your app appears in OpenRouter's dashboard.  |
+| `x_open_router_categories` | *Optional\[str]* | ➖ | Comma-separated list of app categories (e.g. "cli-agent,cloud-agent"). Used for marketplace rankings.  |
+| `retries` | [Optional\[utils.RetryConfig\]](https://openrouter.ai/docs/client-sdks/python/models/utils/retryconfig.mdx) | ➖ | Configuration to override the default retry behavior of the client. |
+
+### Response
+
+**[components.OAuthJwks](https://openrouter.ai/docs/client-sdks/python/components/oauthjwks.mdx)**
+
+### Errors
+
+| Error Type | Status Code | Content Type |
+| - | - | - |
+| errors.InternalServerResponseError | 500 | application/json |
+| errors.OpenRouterDefaultError | 4XX, 5XX | \*/\* |
+
+## create\_oauth\_token
+
+RFC 8693 token exchange. Presents a JWT from an issuer your organization trusts (Settings → Workload identity) and receives a short-lived OpenRouter access token that acts as the API key the matching federation policy targets.
+
+### Example Usage
+
+```python theme={null}
+from openrouter import OpenRouter
+import os
+
+
+with OpenRouter(
+    http_referer="<value>",
+    x_open_router_title="<value>",
+    x_open_router_categories="<value>",
+    api_key=os.getenv("OPENROUTER_API_KEY", ""),
+) as open_router:
+
+    res = open_router.o_auth.create_oauth_token(federation_policy_id="4b2f7d1e-8c3a-4e5f-9a6b-1c2d3e4f5a6b", grant_type="urn:ietf:params:oauth:grant-type:token-exchange", subject_token="<jwt from your identity provider>", subject_token_type="urn:ietf:params:oauth:token-type:jwt")
+
+    # Handle response
+    print(res)
+
+```
+
+### Parameters
+
+| Parameter | Type | Required | Description | Example |
+| - | - | - | - | - |
+| `federation_policy_id` | *str* | ✔️ | The federation policy to evaluate, from Settings → Workload identity. Binds the exchange to one organization. | 4b2f7d1e-8c3a-4e5f-9a6b-1c2d3e4f5a6b |
+| `grant_type` | [components.GrantType](https://openrouter.ai/docs/client-sdks/python/components/granttype.mdx) | ✔️ | Must be `urn:ietf:params:oauth:grant-type:token-exchange`. | urn:ietf:params:oauth:grant-type:token-exchange |
+| `subject_token` | *str* | ✔️ | The JWT issued by your identity provider. | \<jwt from your identity provider> |
+| `subject_token_type` | [components.SubjectTokenType](https://openrouter.ai/docs/client-sdks/python/components/subjecttokentype.mdx) | ✔️ | Must be `urn:ietf:params:oauth:token-type:jwt`. | urn:ietf:params:oauth:token-type:jwt |
+| `http_referer` | *Optional\[str]* | ➖ | The app identifier should be your app's URL and is used as the primary identifier for rankings. This is used to track API usage per application.  | |
+| `x_open_router_title` | *Optional\[str]* | ➖ | The app display name allows you to customize how your app appears in OpenRouter's dashboard.  | |
+| `x_open_router_categories` | *Optional\[str]* | ➖ | Comma-separated list of app categories (e.g. "cli-agent,cloud-agent"). Used for marketplace rankings.  | |
+| `requested_token_type` | [Optional\[components.RequestedTokenType\]](https://openrouter.ai/docs/client-sdks/python/components/requestedtokentype.mdx) | ➖ | Optional; when present must be `urn:ietf:params:oauth:token-type:access_token`. | urn:ietf:params:oauth:token-type:access\_token |
+| `scope` | [Optional\[components.TokenExchangeRequestScope\]](https://openrouter.ai/docs/client-sdks/python/components/tokenexchangerequestscope.mdx) | ➖ | Optional; when present must match the policy's key: `management` for a management key, `inference` otherwise. | inference |
+| `retries` | [Optional\[utils.RetryConfig\]](https://openrouter.ai/docs/client-sdks/python/models/utils/retryconfig.mdx) | ➖ | Configuration to override the default retry behavior of the client. | |
+
+### Response
+
+**[components.TokenExchangeResponse](https://openrouter.ai/docs/client-sdks/python/components/tokenexchangeresponse.mdx)**
+
+### Errors
+
+| Error Type | Status Code | Content Type |
+| - | - | - |
+| errors.OAuthErrorResponse | 400, 429 | application/json |
+| errors.OAuthErrorResponse | 500, 503 | application/json |
+| errors.OpenRouterDefaultError | 4XX, 5XX | \*/\* |

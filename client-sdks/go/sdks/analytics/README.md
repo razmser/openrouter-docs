@@ -1,0 +1,201 @@
+> ## Documentation Index
+> Fetch the complete documentation index at: https://openrouter.ai/docs/llms.txt
+> Use this file to discover all available pages before exploring further.
+
+# Analytics
+
+> Analytics and usage endpoints
+
+## Overview
+
+Analytics and usage endpoints
+
+### Available Operations
+
+* [GetUserActivity](#getuseractivity) - Get user activity grouped by endpoint
+* [GetAnalyticsMeta](#getanalyticsmeta) - Get available analytics metrics and dimensions
+* [QueryAnalytics](#queryanalytics) - Query analytics data
+
+## GetUserActivity
+
+Returns user activity data grouped by endpoint for the last 30 (completed) UTC days. Pass `workspace_id` to scope the response to a single workspace. Pass `group_by=workspace` to split each row per workspace and include `workspace_id` on every item; by default rows are aggregated across workspaces and `workspace_id` is not returned. Activity recorded before workspace resolution existed is permanently attributed to the account default workspace (no backfill is possible). [Management key](https://openrouter.ai/docs/client-sdks/go/docs/guides/overview/auth/management-api-keys) required.
+
+### Example Usage
+
+```go theme={null}
+package main
+
+import(
+	"context"
+	"os"
+	openrouter "github.com/OpenRouterTeam/go-sdk"
+	"log"
+)
+
+func main() {
+    ctx := context.Background()
+
+    s := openrouter.New(
+        openrouter.WithSecurity(os.Getenv("OPENROUTER_API_KEY")),
+    )
+
+    res, err := s.Analytics.GetUserActivity(ctx, nil, nil, nil, nil, nil)
+    if err != nil {
+        log.Fatal(err)
+    }
+    if res != nil {
+        // handle response
+    }
+}
+```
+
+### Parameters
+
+| Parameter | Type | Required | Description | Example |
+| - | - | - | - | - |
+| `ctx` | [context.Context](https://pkg.go.dev/context#Context) | ✔️ | The context to use for the request. | |
+| `date` | `*string` | ➖ | Filter by a single UTC date in the last 30 days (YYYY-MM-DD format). | 2025-08-24 |
+| `apiKeyHash` | `*string` | ➖ | Filter by API key hash (SHA-256 hex string, as returned by the keys API). | abc123def456... |
+| `userID` | `*string` | ➖ | Filter by org member user ID. Only applicable for organization accounts. | user\_abc123 |
+| `groupBy` | [\*operations.GroupBy](https://openrouter.ai/docs/client-sdks/go/models/operations/groupby.mdx) | ➖ | Set to 'workspace' to split each row per workspace and include `workspace_id` on every item. Omitted by default, in which case rows are aggregated across workspaces (by date, model, and endpoint) and `workspace_id` is not returned — preserving the historical response shape. | workspace |
+| `workspaceID` | `*string` | ➖ | Filter by workspace ID (UUID). Returns only activity attributed to that workspace. The workspace must belong to the authenticated account. | 550e8400-e29b-41d4-a716-446655440000 |
+| `opts` | \[][operations.Option](https://openrouter.ai/docs/client-sdks/go/models/operations/option.mdx) | ➖ | The options for this request. | |
+
+### Response
+
+**[\*components.ActivityResponse](https://openrouter.ai/docs/client-sdks/go/models/components/activityresponse.mdx), error**
+
+### Errors
+
+| Error Type | Status Code | Content Type |
+| - | - | - |
+| sdkerrors.BadRequestResponseError | 400 | application/json |
+| sdkerrors.UnauthorizedResponseError | 401 | application/json |
+| sdkerrors.ForbiddenResponseError | 403 | application/json |
+| sdkerrors.NotFoundResponseError | 404 | application/json |
+| sdkerrors.InternalServerResponseError | 500 | application/json |
+| sdkerrors.APIError | 4XX, 5XX | \*/\* |
+
+## GetAnalyticsMeta
+
+Returns the available metrics, dimensions, filter operators, and granularities for the analytics query endpoint. [Management key](https://openrouter.ai/docs/client-sdks/go/docs/guides/overview/auth/management-api-keys) required.
+
+### Example Usage
+
+```go theme={null}
+package main
+
+import(
+	"context"
+	"os"
+	openrouter "github.com/OpenRouterTeam/go-sdk"
+	"log"
+)
+
+func main() {
+    ctx := context.Background()
+
+    s := openrouter.New(
+        openrouter.WithSecurity(os.Getenv("OPENROUTER_API_KEY")),
+    )
+
+    res, err := s.Analytics.GetAnalyticsMeta(ctx)
+    if err != nil {
+        log.Fatal(err)
+    }
+    if res != nil {
+        // handle response
+    }
+}
+```
+
+### Parameters
+
+| Parameter | Type | Required | Description |
+| - | - | - | - |
+| `ctx` | [context.Context](https://pkg.go.dev/context#Context) | ✔️ | The context to use for the request. |
+| `opts` | \[][operations.Option](https://openrouter.ai/docs/client-sdks/go/models/operations/option.mdx) | ➖ | The options for this request. |
+
+### Response
+
+**[\*operations.GetAnalyticsMetaResponse](https://openrouter.ai/docs/client-sdks/go/models/operations/getanalyticsmetaresponse.mdx), error**
+
+### Errors
+
+| Error Type | Status Code | Content Type |
+| - | - | - |
+| sdkerrors.UnauthorizedResponseError | 401 | application/json |
+| sdkerrors.ForbiddenResponseError | 403 | application/json |
+| sdkerrors.InternalServerResponseError | 500 | application/json |
+| sdkerrors.APIError | 4XX, 5XX | \*/\* |
+
+## QueryAnalytics
+
+Execute an analytics query with specified metrics, dimensions, filters, and time range. [Management key](https://openrouter.ai/docs/client-sdks/go/docs/guides/overview/auth/management-api-keys) required.
+
+### Example Usage
+
+```go theme={null}
+package main
+
+import(
+	"context"
+	"os"
+	openrouter "github.com/OpenRouterTeam/go-sdk"
+	"github.com/OpenRouterTeam/go-sdk/types"
+	"github.com/OpenRouterTeam/go-sdk/models/operations"
+	"log"
+)
+
+func main() {
+    ctx := context.Background()
+
+    s := openrouter.New(
+        openrouter.WithSecurity(os.Getenv("OPENROUTER_API_KEY")),
+    )
+
+    res, err := s.Analytics.QueryAnalytics(ctx, operations.QueryAnalyticsRequest{
+        Dimensions: []string{
+            "model",
+        },
+        Granularity: openrouter.Pointer("day"),
+        Limit: openrouter.Pointer[int64](100),
+        Metrics: []string{
+            "request_count",
+        },
+        TimeRange: &operations.TimeRange{
+            End: types.MustTimeFromString("2025-01-08T00:00:00Z"),
+            Start: types.MustTimeFromString("2025-01-01T00:00:00Z"),
+        },
+    })
+    if err != nil {
+        log.Fatal(err)
+    }
+    if res != nil {
+        // handle response
+    }
+}
+```
+
+### Parameters
+
+| Parameter | Type | Required | Description |
+| - | - | - | - |
+| `ctx` | [context.Context](https://pkg.go.dev/context#Context) | ✔️ | The context to use for the request. |
+| `request` | [operations.QueryAnalyticsRequest](https://openrouter.ai/docs/client-sdks/go/models/operations/queryanalyticsrequest.mdx) | ✔️ | The request object to use for the request. |
+| `opts` | \[][operations.Option](https://openrouter.ai/docs/client-sdks/go/models/operations/option.mdx) | ➖ | The options for this request. |
+
+### Response
+
+**[\*operations.QueryAnalyticsResponse](https://openrouter.ai/docs/client-sdks/go/models/operations/queryanalyticsresponse.mdx), error**
+
+### Errors
+
+| Error Type | Status Code | Content Type |
+| - | - | - |
+| sdkerrors.BadRequestResponseError | 400 | application/json |
+| sdkerrors.UnauthorizedResponseError | 401 | application/json |
+| sdkerrors.ForbiddenResponseError | 403 | application/json |
+| sdkerrors.RequestTimeoutResponseError | 408 | application/json |
+| sdkerrors.InternalServerResponseError | 500 | application/json |
+| sdkerrors.APIError | 4XX, 5XX | \*/\* |

@@ -1,0 +1,184 @@
+> ## Documentation Index
+> Fetch the complete documentation index at: https://openrouter.ai/docs/llms.txt
+> Use this file to discover all available pages before exploring further.
+
+# Images
+
+> Images endpoints
+
+## Overview
+
+Images endpoints
+
+### Available Operations
+
+* [generate](#generate) - Generate an image
+* [list\_models](#list_models) - List image generation models
+* [list\_model\_endpoints](#list_model_endpoints) - List endpoints for an image model
+
+## generate
+
+Generates an image from a text prompt via the image generation router
+
+### Example Usage
+
+```python theme={null}
+from openrouter import OpenRouter
+import os
+
+
+with OpenRouter(
+    http_referer="<value>",
+    x_open_router_title="<value>",
+    x_open_router_categories="<value>",
+    api_key=os.getenv("OPENROUTER_API_KEY", ""),
+) as open_router:
+
+    res = open_router.images.generate(model="bytedance-seed/seedream-4.5", prompt="a red panda astronaut floating in space, studio lighting")
+
+    with res as event_stream:
+        for event in event_stream:
+            # handle event
+            print(event, flush=True)
+
+```
+
+### Parameters
+
+| Parameter | Type | Required | Description | Example |
+| - | - | - | - | - |
+| `model` | *str* | ✔️ | The image generation model to use | bytedance-seed/seedream-4.5 |
+| `prompt` | *str* | ✔️ | Text description of the desired image | a red panda astronaut floating in space, studio lighting |
+| `http_referer` | *Optional\[str]* | ➖ | The app identifier should be your app's URL and is used as the primary identifier for rankings. This is used to track API usage per application.  | |
+| `x_open_router_title` | *Optional\[str]* | ➖ | The app display name allows you to customize how your app appears in OpenRouter's dashboard.  | |
+| `x_open_router_categories` | *Optional\[str]* | ➖ | Comma-separated list of app categories (e.g. "cli-agent,cloud-agent"). Used for marketplace rankings.  | |
+| `aspect_ratio` | [Optional\[components.ImageGenerationRequestAspectRatio\]](https://openrouter.ai/docs/client-sdks/python/components/imagegenerationrequestaspectratio.mdx) | ➖ | Normalized aspect ratio of the generated image. Providers clamp to their supported subset. | 16:9 |
+| `background` | [Optional\[components.ImageGenerationRequestBackground\]](https://openrouter.ai/docs/client-sdks/python/components/imagegenerationrequestbackground.mdx) | ➖ | Background treatment. `transparent` requires an output\_format that supports alpha (png or webp). | auto |
+| `input_references` | List\[[components.ContentPartImage](https://openrouter.ai/docs/client-sdks/python/components/contentpartimage.mdx)] | ➖ | Reference images to guide image-to-image generation, as base64 data URLs or HTTP(S) URLs. | |
+| `n` | *Optional\[int]* | ➖ | Upper bound on the number of images to generate (1-10). Providers may return fewer images, and providers that only support single-image generation reject n > 1. | 1 |
+| `output_compression` | *Optional\[int]* | ➖ | Compression level (0-100) for webp/jpeg output. Ignored for png and by providers without a compression knob. | 100 |
+| `output_format` | [Optional\[components.ImageGenerationRequestOutputFormat\]](https://openrouter.ai/docs/client-sdks/python/components/imagegenerationrequestoutputformat.mdx) | ➖ | Encoding of the returned image bytes. Most models produce raster formats (png, jpeg, webp). SVG is supported by vectorization models (e.g. Quiver) — the SVG markup is UTF-8 base64-encoded in `b64_json`. | png |
+| `provider` | [Optional\[components.ImageGenerationProviderPreferences\]](https://openrouter.ai/docs/client-sdks/python/components/imagegenerationproviderpreferences.mdx) | ➖ | Provider routing preferences and provider-specific passthrough configuration. | \{ "allow\_fallbacks": false, "only": \[ "google-ai-studio" ] } |
+| `quality` | [Optional\[components.ImageGenerationRequestQuality\]](https://openrouter.ai/docs/client-sdks/python/components/imagegenerationrequestquality.mdx) | ➖ | Rendering quality. Providers without a quality knob ignore this. | high |
+| `resolution` | [Optional\[components.ImageGenerationRequestResolution\]](https://openrouter.ai/docs/client-sdks/python/components/imagegenerationrequestresolution.mdx) | ➖ | Normalized resolution tier of the generated image. Concrete pixel dimensions are derived per-provider. | 2K |
+| `seed` | *Optional\[int]* | ➖ | If specified, the generation will sample deterministically, such that repeated requests with the same seed and parameters should return the same result. Determinism is not guaranteed for all providers. | |
+| `session_id` | *Optional\[str]* | ➖ | A unique identifier for grouping related requests (e.g., a conversation or agent workflow). Used for observability grouping in Broadcast and private logging; never sent to the provider. If provided in both the request body and the x-session-id header, the body value takes precedence. Maximum of 256 characters. | session-1234 |
+| `size` | *Optional\[str]* | ➖ | Optional. A convenience shorthand for output dimensions — pass a tier ("2K", "4K") or explicit pixels ("2048x2048") and we normalize it to the right dimensions for the chosen provider. A tier size is equivalent to setting `resolution` and combines with `aspect_ratio`. An explicit pixel size is authoritative: a mismatched `resolution` or `aspect_ratio` alongside it is rejected with a 400. | 2K |
+| `stream` | *Optional\[bool]* | ➖ | If true, partial images are streamed as SSE events as they become available. Only supported by providers with native streaming (currently OpenAI). Non-streaming providers ignore this flag and return a buffered response. | |
+| `trace` | [Optional\[components.TraceConfig\]](https://openrouter.ai/docs/client-sdks/python/components/traceconfig.mdx) | ➖ | Metadata for observability and tracing. Known keys (trace\_id, trace\_name, span\_name, generation\_name, parent\_span\_id) have special handling. Additional keys are passed through as custom metadata to configured broadcast destinations. | \{ "trace\_id": "trace-abc123", "trace\_name": "my-app-trace" } |
+| `user` | *Optional\[str]* | ➖ | A stable identifier for your end-users. Used to help detect and prevent abuse. Never sent to providers verbatim: for providers whose data policy requires user IDs, it is folded into a hashed, per-account upstream user identifier. | end-user-abc123 |
+| `retries` | [Optional\[utils.RetryConfig\]](https://openrouter.ai/docs/client-sdks/python/models/utils/retryconfig.mdx) | ➖ | Configuration to override the default retry behavior of the client. | |
+
+### Response
+
+**[operations.CreateImagesResponse](https://openrouter.ai/docs/client-sdks/python/operations/createimagesresponse.mdx)**
+
+### Errors
+
+| Error Type | Status Code | Content Type |
+| - | - | - |
+| errors.BadRequestResponseError | 400 | application/json |
+| errors.UnauthorizedResponseError | 401 | application/json |
+| errors.PaymentRequiredResponseError | 402 | application/json |
+| errors.ForbiddenResponseError | 403 | application/json |
+| errors.NotFoundResponseError | 404 | application/json |
+| errors.PayloadTooLargeResponseError | 413 | application/json |
+| errors.TooManyRequestsResponseError | 429 | application/json |
+| errors.InternalServerResponseError | 500 | application/json |
+| errors.BadGatewayResponseError | 502 | application/json |
+| errors.EdgeNetworkTimeoutResponseError | 524 | application/json |
+| errors.ProviderOverloadedResponseError | 529 | application/json |
+| errors.OpenRouterDefaultError | 4XX, 5XX | \*/\* |
+
+## list\_models
+
+Lists every image generation model with its top-level supported-parameter superset and a URL to its full per-endpoint records.
+
+### Example Usage
+
+```python theme={null}
+from openrouter import OpenRouter
+import os
+
+
+with OpenRouter(
+    http_referer="<value>",
+    x_open_router_title="<value>",
+    x_open_router_categories="<value>",
+    api_key=os.getenv("OPENROUTER_API_KEY", ""),
+) as open_router:
+
+    res = open_router.images.list_models()
+
+    # Handle response
+    print(res)
+
+```
+
+### Parameters
+
+| Parameter | Type | Required | Description |
+| - | - | - | - |
+| `http_referer` | *Optional\[str]* | ➖ | The app identifier should be your app's URL and is used as the primary identifier for rankings. This is used to track API usage per application.  |
+| `x_open_router_title` | *Optional\[str]* | ➖ | The app display name allows you to customize how your app appears in OpenRouter's dashboard.  |
+| `x_open_router_categories` | *Optional\[str]* | ➖ | Comma-separated list of app categories (e.g. "cli-agent,cloud-agent"). Used for marketplace rankings.  |
+| `retries` | [Optional\[utils.RetryConfig\]](https://openrouter.ai/docs/client-sdks/python/models/utils/retryconfig.mdx) | ➖ | Configuration to override the default retry behavior of the client. |
+
+### Response
+
+**[components.ImageModelsListResponse](https://openrouter.ai/docs/client-sdks/python/components/imagemodelslistresponse.mdx)**
+
+### Errors
+
+| Error Type | Status Code | Content Type |
+| - | - | - |
+| errors.InternalServerResponseError | 500 | application/json |
+| errors.OpenRouterDefaultError | 4XX, 5XX | \*/\* |
+
+## list\_model\_endpoints
+
+Returns the full per-endpoint records for an image model: each endpoint's definitive supported parameters, pricing, and passthrough allowlist.
+
+### Example Usage
+
+```python theme={null}
+from openrouter import OpenRouter
+import os
+
+
+with OpenRouter(
+    http_referer="<value>",
+    x_open_router_title="<value>",
+    x_open_router_categories="<value>",
+    api_key=os.getenv("OPENROUTER_API_KEY", ""),
+) as open_router:
+
+    res = open_router.images.list_model_endpoints(author="bytedance-seed", slug="seedream-4.5")
+
+    # Handle response
+    print(res)
+
+```
+
+### Parameters
+
+| Parameter | Type | Required | Description | Example |
+| - | - | - | - | - |
+| `author` | *str* | ✔️ | Model author/organization | bytedance-seed |
+| `slug` | *str* | ✔️ | Model slug | seedream-4.5 |
+| `http_referer` | *Optional\[str]* | ➖ | The app identifier should be your app's URL and is used as the primary identifier for rankings. This is used to track API usage per application.  | |
+| `x_open_router_title` | *Optional\[str]* | ➖ | The app display name allows you to customize how your app appears in OpenRouter's dashboard.  | |
+| `x_open_router_categories` | *Optional\[str]* | ➖ | Comma-separated list of app categories (e.g. "cli-agent,cloud-agent"). Used for marketplace rankings.  | |
+| `retries` | [Optional\[utils.RetryConfig\]](https://openrouter.ai/docs/client-sdks/python/models/utils/retryconfig.mdx) | ➖ | Configuration to override the default retry behavior of the client. | |
+
+### Response
+
+**[components.ImageModelEndpointsResponse](https://openrouter.ai/docs/client-sdks/python/components/imagemodelendpointsresponse.mdx)**
+
+### Errors
+
+| Error Type | Status Code | Content Type |
+| - | - | - |
+| errors.NotFoundResponseError | 404 | application/json |
+| errors.InternalServerResponseError | 500 | application/json |
+| errors.OpenRouterDefaultError | 4XX, 5XX | \*/\* |

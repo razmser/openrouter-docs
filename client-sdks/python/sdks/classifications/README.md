@@ -1,0 +1,82 @@
+> ## Documentation Index
+> Fetch the complete documentation index at: https://openrouter.ai/docs/llms.txt
+> Use this file to discover all available pages before exploring further.
+
+# Classifications
+
+> Task classification market-share endpoints
+
+## Overview
+
+Task classification market-share endpoints
+
+### Available Operations
+
+* [get\_task\_classifications](#get_task_classifications) - Task classification market share
+
+## get\_task\_classifications
+
+Returns the market-share breakdown of OpenRouter traffic by task classification
+(e.g. code generation, web search, summarization) over a trailing time window.
+
+Each classification reports its share of classified sampled requests (`usage_share`)
+and classified sampled token volume (`token_share`) as fractions between 0 and 1.
+The unclassified `other` bucket is excluded. Absolute volumes are not exposed
+because the underlying data is sampled.
+
+Each classification also includes a `models` array listing the top models by
+request volume within that classification, with their within-tag usage and token shares.
+
+Classifications are grouped into macro-categories (Code, Data, Agent, General)
+with aggregate shares provided for each.
+
+Authenticate with any valid OpenRouter API key (same key used for inference).
+Rate-limited to 30 requests/minute per key and 500 requests/day per account.
+
+When republishing or quoting this data, cite as:
+"Source: OpenRouter (openrouter.ai/rankings), as of \{as\_of}."
+
+### Example Usage
+
+```python theme={null}
+from openrouter import OpenRouter
+import os
+
+
+with OpenRouter(
+    http_referer="<value>",
+    x_open_router_title="<value>",
+    x_open_router_categories="<value>",
+    api_key=os.getenv("OPENROUTER_API_KEY", ""),
+) as open_router:
+
+    res = open_router.classifications.get_task_classifications(window="7d")
+
+    # Handle response
+    print(res)
+
+```
+
+### Parameters
+
+| Parameter | Type | Required | Description | Example |
+| - | - | - | - | - |
+| `http_referer` | *Optional\[str]* | ➖ | The app identifier should be your app's URL and is used as the primary identifier for rankings. This is used to track API usage per application.  | |
+| `x_open_router_title` | *Optional\[str]* | ➖ | The app display name allows you to customize how your app appears in OpenRouter's dashboard.  | |
+| `x_open_router_categories` | *Optional\[str]* | ➖ | Comma-separated list of app categories (e.g. "cli-agent,cloud-agent"). Used for marketplace rankings.  | |
+| `window` | [Optional\[operations.Window\]](https://openrouter.ai/docs/client-sdks/python/operations/window.mdx) | ➖ | Trailing time window for the classification data. Currently only `7d` (trailing 7 days) is supported. | 7d |
+| `retries` | [Optional\[utils.RetryConfig\]](https://openrouter.ai/docs/client-sdks/python/models/utils/retryconfig.mdx) | ➖ | Configuration to override the default retry behavior of the client. | |
+
+### Response
+
+**[components.TaskClassificationResponse](https://openrouter.ai/docs/client-sdks/python/components/taskclassificationresponse.mdx)**
+
+### Errors
+
+| Error Type | Status Code | Content Type |
+| - | - | - |
+| errors.BadRequestResponseError | 400 | application/json |
+| errors.UnauthorizedResponseError | 401 | application/json |
+| errors.TooManyRequestsResponseError | 429 | application/json |
+| errors.InternalServerResponseError | 500 | application/json |
+| errors.OpenRouterDefaultError | 4XX, 5XX | \*/\* |

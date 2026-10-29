@@ -1,0 +1,652 @@
+> ## Documentation Index
+> Fetch the complete documentation index at: https://openrouter.ai/docs/llms.txt
+> Use this file to discover all available pages before exploring further.
+
+# Batch
+
+> Submit, list, poll, and delete asynchronous batches of inference requests. See https://openrouter.ai/docs/batch-quickstart.
+
+## Overview
+
+Submit, list, poll, and delete asynchronous batches of inference requests. See [https://openrouter.ai/docs/batch-quickstart](../../../../batch-quickstart.md).
+
+### Available Operations
+
+* [list](#list) - List batches
+* [createBatches](#createbatches) - Create a batch
+* [delete](#delete) - Delete a batch
+* [getBatches](#getbatches) - Get a batch
+
+## list
+
+Lists batches in the workspace of the authenticating API key, newest first. To fetch the next page, pass the previous page's `last_id` as `after`. List items omit `results`. Use `GET /batches/{id}` to get them. See the [Batch API Quickstart](../../../../batch-quickstart.md).
+
+### Example Usage
+
+```typescript theme={null}
+import { OpenRouter } from "@openrouter/sdk";
+
+const openRouter = new OpenRouter({
+  httpReferer: "<value>",
+  appTitle: "<value>",
+  appCategories: "<value>",
+  apiKey: process.env["OPENROUTER_API_KEY"] ?? "",
+});
+
+async function run() {
+  const result = await openRouter.batch.list();
+
+  for await (const page of result) {
+    console.log(page);
+  }
+}
+
+run();
+```
+
+### Standalone function
+
+The standalone function version of this method:
+
+```typescript theme={null}
+import { OpenRouterCore } from "@openrouter/sdk/core.js";
+import { batchList } from "@openrouter/sdk/funcs/batchList.js";
+
+// Use `OpenRouterCore` for best tree-shaking performance.
+// You can create one instance of it to use across an application.
+const openRouter = new OpenRouterCore({
+  httpReferer: "<value>",
+  appTitle: "<value>",
+  appCategories: "<value>",
+  apiKey: process.env["OPENROUTER_API_KEY"] ?? "",
+});
+
+async function run() {
+  const res = await batchList(openRouter);
+  if (res.ok) {
+    const { value: result } = res;
+    for await (const page of result) {
+    console.log(page);
+  }
+  } else {
+    console.log("batchList failed:", res.error);
+  }
+}
+
+run();
+```
+
+### Parameters
+
+| Parameter | Type | Required | Description |
+| - | - | - | - |
+| `request` | [operations.ListBatchesRequest](https://openrouter.ai/docs/client-sdks/typescript/models/operations/listbatchesrequest.mdx) | ✔️ | The request object to use for the request. |
+| `options` | RequestOptions | ➖ | Used to set various options for making HTTP requests. |
+| `options.fetchOptions` | [RequestInit](https://developer.mozilla.org/en-US/docs/Web/API/Request/Request#options) | ➖ | Options that are passed to the underlying HTTP request. This can be used to inject extra headers for examples. All `Request` options, except `method` and `body`, are allowed. |
+| `options.retries` | [RetryConfig](https://openrouter.ai/docs/client-sdks/typescript/lib/utils/retryconfig.mdx) | ➖ | Enables retrying HTTP requests under certain failure conditions. |
+
+### Response
+
+**Promise\<[operations.ListBatchesResponse](https://openrouter.ai/docs/client-sdks/typescript/models/operations/listbatchesresponse.mdx)>**
+
+### Errors
+
+| Error Type | Status Code | Content Type |
+| - | - | - |
+| errors.BatchErrorResponse | 400, 401, 429 | application/json |
+| errors.BatchErrorResponse | 500, 502 | application/json |
+| errors.OpenRouterDefaultError | 4XX, 5XX | \*/\* |
+
+## createBatches
+
+Creates a batch of requests that run asynchronously against a single endpoint (`/v1/chat/completions`, `/v1/responses`, `/v1/messages`, `/v1/embeddings`). Returns `202` with `status: "validating"`. Poll `GET /batches/{id}` for progress and results. See the [Batch API Quickstart](../../../../batch-quickstart.md).
+
+### Example Usage: chatCompletions
+
+```typescript theme={null}
+import { OpenRouter } from "@openrouter/sdk";
+
+const openRouter = new OpenRouter({
+  httpReferer: "<value>",
+  appTitle: "<value>",
+  appCategories: "<value>",
+  apiKey: process.env["OPENROUTER_API_KEY"] ?? "",
+});
+
+async function run() {
+  const result = await openRouter.batch.createBatches({
+    batchSubmitBody: {
+      endpoint: "/v1/chat/completions",
+      model: "openai/gpt-4o",
+      requests: [
+        {
+          body: {
+            "messages": [
+              {
+                "content": "Summarize ...",
+                "role": "user",
+              },
+            ],
+            "model": "openai/gpt-4o",
+          },
+          customId: "req-0001",
+        },
+      ],
+    },
+  });
+
+  console.log(result);
+}
+
+run();
+```
+
+### Standalone function
+
+The standalone function version of this method:
+
+```typescript theme={null}
+import { OpenRouterCore } from "@openrouter/sdk/core.js";
+import { batchCreateBatches } from "@openrouter/sdk/funcs/batchCreateBatches.js";
+
+// Use `OpenRouterCore` for best tree-shaking performance.
+// You can create one instance of it to use across an application.
+const openRouter = new OpenRouterCore({
+  httpReferer: "<value>",
+  appTitle: "<value>",
+  appCategories: "<value>",
+  apiKey: process.env["OPENROUTER_API_KEY"] ?? "",
+});
+
+async function run() {
+  const res = await batchCreateBatches(openRouter, {
+    batchSubmitBody: {
+      endpoint: "/v1/chat/completions",
+      model: "openai/gpt-4o",
+      requests: [
+        {
+          body: {
+            "messages": [
+              {
+                "content": "Summarize ...",
+                "role": "user",
+              },
+            ],
+            "model": "openai/gpt-4o",
+          },
+          customId: "req-0001",
+        },
+      ],
+    },
+  });
+  if (res.ok) {
+    const { value: result } = res;
+    console.log(result);
+  } else {
+    console.log("batchCreateBatches failed:", res.error);
+  }
+}
+
+run();
+```
+
+### Example Usage: messages
+
+```typescript theme={null}
+import { OpenRouter } from "@openrouter/sdk";
+
+const openRouter = new OpenRouter({
+  httpReferer: "<value>",
+  appTitle: "<value>",
+  appCategories: "<value>",
+  apiKey: process.env["OPENROUTER_API_KEY"] ?? "",
+});
+
+async function run() {
+  const result = await openRouter.batch.createBatches({
+    batchSubmitBody: {
+      endpoint: "/v1/messages",
+      model: "openai/gpt-5-nano",
+      requests: [
+        {
+          body: {
+            "max_tokens": 1024,
+            "messages": [
+              {
+                "content": "Summarize ...",
+                "role": "user",
+              },
+            ],
+            "model": "openai/gpt-5-nano",
+          },
+          customId: "req-0001",
+        },
+      ],
+    },
+  });
+
+  console.log(result);
+}
+
+run();
+```
+
+### Standalone function
+
+The standalone function version of this method:
+
+```typescript theme={null}
+import { OpenRouterCore } from "@openrouter/sdk/core.js";
+import { batchCreateBatches } from "@openrouter/sdk/funcs/batchCreateBatches.js";
+
+// Use `OpenRouterCore` for best tree-shaking performance.
+// You can create one instance of it to use across an application.
+const openRouter = new OpenRouterCore({
+  httpReferer: "<value>",
+  appTitle: "<value>",
+  appCategories: "<value>",
+  apiKey: process.env["OPENROUTER_API_KEY"] ?? "",
+});
+
+async function run() {
+  const res = await batchCreateBatches(openRouter, {
+    batchSubmitBody: {
+      endpoint: "/v1/messages",
+      model: "openai/gpt-5-nano",
+      requests: [
+        {
+          body: {
+            "max_tokens": 1024,
+            "messages": [
+              {
+                "content": "Summarize ...",
+                "role": "user",
+              },
+            ],
+            "model": "openai/gpt-5-nano",
+          },
+          customId: "req-0001",
+        },
+      ],
+    },
+  });
+  if (res.ok) {
+    const { value: result } = res;
+    console.log(result);
+  } else {
+    console.log("batchCreateBatches failed:", res.error);
+  }
+}
+
+run();
+```
+
+### Example Usage: providerPinned
+
+```typescript theme={null}
+import { OpenRouter } from "@openrouter/sdk";
+
+const openRouter = new OpenRouter({
+  httpReferer: "<value>",
+  appTitle: "<value>",
+  appCategories: "<value>",
+  apiKey: process.env["OPENROUTER_API_KEY"] ?? "",
+});
+
+async function run() {
+  const result = await openRouter.batch.createBatches({
+    batchSubmitBody: {
+      endpoint: "/v1/chat/completions",
+      model: "google/gemini-3.6-flash",
+      requests: [
+        {
+          body: {
+            "messages": [
+              {
+                "content": "Summarize ...",
+                "role": "user",
+              },
+            ],
+            "model": "google/gemini-3.6-flash",
+          },
+          customId: "req-0001",
+        },
+      ],
+    },
+  });
+
+  console.log(result);
+}
+
+run();
+```
+
+### Standalone function
+
+The standalone function version of this method:
+
+```typescript theme={null}
+import { OpenRouterCore } from "@openrouter/sdk/core.js";
+import { batchCreateBatches } from "@openrouter/sdk/funcs/batchCreateBatches.js";
+
+// Use `OpenRouterCore` for best tree-shaking performance.
+// You can create one instance of it to use across an application.
+const openRouter = new OpenRouterCore({
+  httpReferer: "<value>",
+  appTitle: "<value>",
+  appCategories: "<value>",
+  apiKey: process.env["OPENROUTER_API_KEY"] ?? "",
+});
+
+async function run() {
+  const res = await batchCreateBatches(openRouter, {
+    batchSubmitBody: {
+      endpoint: "/v1/chat/completions",
+      model: "google/gemini-3.6-flash",
+      requests: [
+        {
+          body: {
+            "messages": [
+              {
+                "content": "Summarize ...",
+                "role": "user",
+              },
+            ],
+            "model": "google/gemini-3.6-flash",
+          },
+          customId: "req-0001",
+        },
+      ],
+    },
+  });
+  if (res.ok) {
+    const { value: result } = res;
+    console.log(result);
+  } else {
+    console.log("batchCreateBatches failed:", res.error);
+  }
+}
+
+run();
+```
+
+### Example Usage: responses
+
+```typescript theme={null}
+import { OpenRouter } from "@openrouter/sdk";
+
+const openRouter = new OpenRouter({
+  httpReferer: "<value>",
+  appTitle: "<value>",
+  appCategories: "<value>",
+  apiKey: process.env["OPENROUTER_API_KEY"] ?? "",
+});
+
+async function run() {
+  const result = await openRouter.batch.createBatches({
+    batchSubmitBody: {
+      endpoint: "/v1/responses",
+      model: "openai/gpt-4o",
+      requests: [
+        {
+          body: {
+            "input": [
+              {
+                "content": [
+                  {
+                    "text": "Summarize ...",
+                    "type": "input_text",
+                  },
+                ],
+                "role": "user",
+              },
+            ],
+            "model": "openai/gpt-4o",
+          },
+          customId: "req-0001",
+        },
+      ],
+    },
+  });
+
+  console.log(result);
+}
+
+run();
+```
+
+### Standalone function
+
+The standalone function version of this method:
+
+```typescript theme={null}
+import { OpenRouterCore } from "@openrouter/sdk/core.js";
+import { batchCreateBatches } from "@openrouter/sdk/funcs/batchCreateBatches.js";
+
+// Use `OpenRouterCore` for best tree-shaking performance.
+// You can create one instance of it to use across an application.
+const openRouter = new OpenRouterCore({
+  httpReferer: "<value>",
+  appTitle: "<value>",
+  appCategories: "<value>",
+  apiKey: process.env["OPENROUTER_API_KEY"] ?? "",
+});
+
+async function run() {
+  const res = await batchCreateBatches(openRouter, {
+    batchSubmitBody: {
+      endpoint: "/v1/responses",
+      model: "openai/gpt-4o",
+      requests: [
+        {
+          body: {
+            "input": [
+              {
+                "content": [
+                  {
+                    "text": "Summarize ...",
+                    "type": "input_text",
+                  },
+                ],
+                "role": "user",
+              },
+            ],
+            "model": "openai/gpt-4o",
+          },
+          customId: "req-0001",
+        },
+      ],
+    },
+  });
+  if (res.ok) {
+    const { value: result } = res;
+    console.log(result);
+  } else {
+    console.log("batchCreateBatches failed:", res.error);
+  }
+}
+
+run();
+```
+
+### Parameters
+
+| Parameter | Type | Required | Description |
+| - | - | - | - |
+| `request` | [operations.CreateBatchesRequest](https://openrouter.ai/docs/client-sdks/typescript/models/operations/createbatchesrequest.mdx) | ✔️ | The request object to use for the request. |
+| `options` | RequestOptions | ➖ | Used to set various options for making HTTP requests. |
+| `options.fetchOptions` | [RequestInit](https://developer.mozilla.org/en-US/docs/Web/API/Request/Request#options) | ➖ | Options that are passed to the underlying HTTP request. This can be used to inject extra headers for examples. All `Request` options, except `method` and `body`, are allowed. |
+| `options.retries` | [RetryConfig](https://openrouter.ai/docs/client-sdks/typescript/lib/utils/retryconfig.mdx) | ➖ | Enables retrying HTTP requests under certain failure conditions. |
+
+### Response
+
+**Promise\<[models.BatchObject](https://openrouter.ai/docs/client-sdks/typescript/models/batchobject.mdx)>**
+
+### Errors
+
+| Error Type | Status Code | Content Type |
+| - | - | - |
+| errors.BatchErrorResponse | 400, 401, 402, 403, 404, 413, 422, 429 | application/json |
+| errors.BatchErrorResponse | 500, 502 | application/json |
+| errors.OpenRouterDefaultError | 4XX, 5XX | \*/\* |
+
+## delete
+
+Deletes a batch in a terminal status (`completed`, `failed`, `expired`, or `cancelled`) and its stored requests and results. Batches still in progress return `409`. Billing and usage records are kept. See the [Batch API Quickstart](../../../../batch-quickstart.md).
+
+### Example Usage
+
+```typescript theme={null}
+import { OpenRouter } from "@openrouter/sdk";
+
+const openRouter = new OpenRouter({
+  httpReferer: "<value>",
+  appTitle: "<value>",
+  appCategories: "<value>",
+  apiKey: process.env["OPENROUTER_API_KEY"] ?? "",
+});
+
+async function run() {
+  const result = await openRouter.batch.delete({
+    id: "batch_abc123",
+  });
+
+  console.log(result);
+}
+
+run();
+```
+
+### Standalone function
+
+The standalone function version of this method:
+
+```typescript theme={null}
+import { OpenRouterCore } from "@openrouter/sdk/core.js";
+import { batchDelete } from "@openrouter/sdk/funcs/batchDelete.js";
+
+// Use `OpenRouterCore` for best tree-shaking performance.
+// You can create one instance of it to use across an application.
+const openRouter = new OpenRouterCore({
+  httpReferer: "<value>",
+  appTitle: "<value>",
+  appCategories: "<value>",
+  apiKey: process.env["OPENROUTER_API_KEY"] ?? "",
+});
+
+async function run() {
+  const res = await batchDelete(openRouter, {
+    id: "batch_abc123",
+  });
+  if (res.ok) {
+    const { value: result } = res;
+    console.log(result);
+  } else {
+    console.log("batchDelete failed:", res.error);
+  }
+}
+
+run();
+```
+
+### Parameters
+
+| Parameter | Type | Required | Description |
+| - | - | - | - |
+| `request` | [operations.DeleteBatchRequest](https://openrouter.ai/docs/client-sdks/typescript/models/operations/deletebatchrequest.mdx) | ✔️ | The request object to use for the request. |
+| `options` | RequestOptions | ➖ | Used to set various options for making HTTP requests. |
+| `options.fetchOptions` | [RequestInit](https://developer.mozilla.org/en-US/docs/Web/API/Request/Request#options) | ➖ | Options that are passed to the underlying HTTP request. This can be used to inject extra headers for examples. All `Request` options, except `method` and `body`, are allowed. |
+| `options.retries` | [RetryConfig](https://openrouter.ai/docs/client-sdks/typescript/lib/utils/retryconfig.mdx) | ➖ | Enables retrying HTTP requests under certain failure conditions. |
+
+### Response
+
+**Promise\<[models.BatchDeletedObject](https://openrouter.ai/docs/client-sdks/typescript/models/batchdeletedobject.mdx)>**
+
+### Errors
+
+| Error Type | Status Code | Content Type |
+| - | - | - |
+| errors.BatchErrorResponse | 401, 404, 409, 429 | application/json |
+| errors.BatchErrorResponse | 500, 502 | application/json |
+| errors.OpenRouterDefaultError | 4XX, 5XX | \*/\* |
+
+## getBatches
+
+Returns a batch with its status and request counts. Batches in a terminal status include `results`. Failed batches report the reason in `error.message`. See the [Batch API Quickstart](../../../../batch-quickstart.md).
+
+### Example Usage
+
+```typescript theme={null}
+import { OpenRouter } from "@openrouter/sdk";
+
+const openRouter = new OpenRouter({
+  httpReferer: "<value>",
+  appTitle: "<value>",
+  appCategories: "<value>",
+  apiKey: process.env["OPENROUTER_API_KEY"] ?? "",
+});
+
+async function run() {
+  const result = await openRouter.batch.getBatches({
+    id: "batch_abc123",
+  });
+
+  console.log(result);
+}
+
+run();
+```
+
+### Standalone function
+
+The standalone function version of this method:
+
+```typescript theme={null}
+import { OpenRouterCore } from "@openrouter/sdk/core.js";
+import { batchGetBatches } from "@openrouter/sdk/funcs/batchGetBatches.js";
+
+// Use `OpenRouterCore` for best tree-shaking performance.
+// You can create one instance of it to use across an application.
+const openRouter = new OpenRouterCore({
+  httpReferer: "<value>",
+  appTitle: "<value>",
+  appCategories: "<value>",
+  apiKey: process.env["OPENROUTER_API_KEY"] ?? "",
+});
+
+async function run() {
+  const res = await batchGetBatches(openRouter, {
+    id: "batch_abc123",
+  });
+  if (res.ok) {
+    const { value: result } = res;
+    console.log(result);
+  } else {
+    console.log("batchGetBatches failed:", res.error);
+  }
+}
+
+run();
+```
+
+### Parameters
+
+| Parameter | Type | Required | Description |
+| - | - | - | - |
+| `request` | [operations.GetBatchesRequest](https://openrouter.ai/docs/client-sdks/typescript/models/operations/getbatchesrequest.mdx) | ✔️ | The request object to use for the request. |
+| `options` | RequestOptions | ➖ | Used to set various options for making HTTP requests. |
+| `options.fetchOptions` | [RequestInit](https://developer.mozilla.org/en-US/docs/Web/API/Request/Request#options) | ➖ | Options that are passed to the underlying HTTP request. This can be used to inject extra headers for examples. All `Request` options, except `method` and `body`, are allowed. |
+| `options.retries` | [RetryConfig](https://openrouter.ai/docs/client-sdks/typescript/lib/utils/retryconfig.mdx) | ➖ | Enables retrying HTTP requests under certain failure conditions. |
+
+### Response
+
+**Promise\<[models.BatchObject](https://openrouter.ai/docs/client-sdks/typescript/models/batchobject.mdx)>**
+
+### Errors
+
+| Error Type | Status Code | Content Type |
+| - | - | - |
+| errors.BatchPaymentRequiredResponseError | 402 | application/json |
+| errors.BatchErrorResponse | 401, 404, 410, 429 | application/json |
+| errors.BatchErrorResponse | 500, 502 | application/json |
+| errors.OpenRouterDefaultError | 4XX, 5XX | \*/\* |
