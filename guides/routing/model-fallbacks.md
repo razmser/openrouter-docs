@@ -100,7 +100,7 @@ By default, any error can trigger the use of a fallback model, including:
 
 Requests are priced using the model that was ultimately used, which will be returned in the `model` attribute of the response body.
 
-This applies to [`:free` models](https://openrouter.ai/docs/guides/routing/model-variants/free) too. If a `:free` model is followed by a paid model in `models` and OpenRouter falls back to the paid model, you're billed at the paid model's price. To keep a request free, list only `:free` models.
+This applies to [`:free` models](model-variants/free.md) too. If a `:free` model is followed by a paid model in `models` and OpenRouter falls back to the paid model, you're billed at the paid model's price. To keep a request free, list only `:free` models.
 
 ## Using with the Anthropic Messages API
 

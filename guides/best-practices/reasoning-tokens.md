@@ -54,7 +54,7 @@ To avoid it, set `max_tokens` well above the expected reasoning length, or cap r
 
 ### Discovering per-model reasoning options
 
-Each model in [`GET /api/v1/models`](https://openrouter.ai/docs/api/api-reference/models/list-all-models-and-their-properties) may include a `reasoning` object describing which effort levels it accepts and whether reasoning is mandatory:
+Each model in [`GET /api/v1/models`](../../api/api-reference/models/list-all-models-and-their-properties.md) may include a `reasoning` object describing which effort levels it accepts and whether reasoning is mandatory:
 
 ```json lines theme={null}
 {
@@ -279,7 +279,7 @@ When `thinking: { type: "enabled", budget_tokens }` and `output_config.effort` a
 
 > [!NOTE]
 >
-> OpenAI models expose two knobs, `reasoning.effort` and `text.verbosity`, and the Messages API request shape has one. `output_config.effort` maps to `reasoning.effort` only, and it is not sent as `text.verbosity`. Anthropic's `xhigh` and `max` levels stay reasoning efforts and are translated to the model's [supported reasoning efforts](#discovering-per-model-reasoning-options). To set OpenAI response verbosity, use the [`verbosity`](https://openrouter.ai/docs/api_reference/parameters#verbosity) parameter on the Chat Completions or Responses API.
+> OpenAI models expose two knobs, `reasoning.effort` and `text.verbosity`, and the Messages API request shape has one. `output_config.effort` maps to `reasoning.effort` only, and it is not sent as `text.verbosity`. Anthropic's `xhigh` and `max` levels stay reasoning efforts and are translated to the model's [supported reasoning efforts](#discovering-per-model-reasoning-options). To set OpenAI response verbosity, use the [`verbosity`](../../api_reference/parameters.md#verbosity) parameter on the Chat Completions or Responses API.
 
 ## Changing Effort Mid-Conversation
 

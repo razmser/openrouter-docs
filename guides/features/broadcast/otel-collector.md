@@ -169,7 +169,7 @@ Root spans also carry it under `trace.metadata.openrouter_cost_allocation.*`. Re
 
 ### Raw provider usage
 
-Unlike the quantities above, [`upstream_raw_response_usage`](https://openrouter.ai/docs/guides/features/broadcast#raw-provider-usage) is not flattened into one attribute per provider field. It is sent as a single `stringValue` attribute holding JSON, because its keys are provider-controlled and can change without notice:
+Unlike the quantities above, [`upstream_raw_response_usage`](../broadcast.md#raw-provider-usage) is not flattened into one attribute per provider field. It is sent as a single `stringValue` attribute holding JSON, because its keys are provider-controlled and can change without notice:
 
 ```json theme={null}
 {

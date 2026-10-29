@@ -106,7 +106,7 @@
 > 1. `:nitro` - Providers will be sorted by throughput rather than the default sort, optimizing for faster response times. [Learn more](guides/routing/model-variants/nitro.md).
 > 2. `:floor` - Providers will be sorted by price rather than the default sort, prioritizing the most cost-effective options. [Learn more](guides/routing/model-variants/floor.md).
 > 3. `:exacto` - Providers will be sorted using quality-first signals tuned for tool-calling reliability. [Learn more](guides/routing/model-variants/exacto.md).
-> 4. `:online` (deprecated) - All requests will run a query to extract web results that are attached to the prompt. Use the [`openrouter:web_search` server tool](https://openrouter.ai/docs/guides/features/server-tools/web-search) instead. [Learn more](guides/routing/model-variants/online.md).
+> 4. `:online` (deprecated) - All requests will run a query to extract web results that are attached to the prompt. Use the [`openrouter:web_search` server tool](guides/features/server-tools/web-search.md) instead. [Learn more](guides/routing/model-variants/online.md).
 
 > **I am an inference provider, how can I get listed on OpenRouter?**
 >

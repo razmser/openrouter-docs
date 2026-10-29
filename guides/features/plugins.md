@@ -16,7 +16,7 @@ OpenRouter currently supports the following plugins:
 
 | Plugin | Description | Docs |
 | - | - | - |
-| **Web Search** (deprecated) | Augment LLM responses with real-time web search results. Use the [`openrouter:web_search` server tool](https://openrouter.ai/docs/guides/features/server-tools/web-search) instead. | [Web Search](plugins/web-search.md) |
+| **Web Search** (deprecated) | Augment LLM responses with real-time web search results. Use the [`openrouter:web_search` server tool](server-tools/web-search.md) instead. | [Web Search](plugins/web-search.md) |
 | **PDF Inputs** | Parse and extract content from uploaded PDF files | [PDF Inputs](../overview/multimodal/pdfs.md) |
 | **Response Healing** | Automatically fix malformed JSON responses from LLMs | [Response Healing](plugins/response-healing.md) |
 | **Alignment** (beta) | Check every assistant message against rules sent with the request, in audit or enforce mode | [Alignment](plugins/alignment.md) |
@@ -103,7 +103,7 @@ This will turn off the web search plugin for that particular request, even if it
 >
 > **Deprecated**
 >
-> The `:online` variant and the web search plugin are deprecated. Use the [`openrouter:web_search` server tool](https://openrouter.ai/docs/guides/features/server-tools/web-search) instead.
+> The `:online` variant and the web search plugin are deprecated. Use the [`openrouter:web_search` server tool](server-tools/web-search.md) instead.
 
 Some plugins have convenient model variant shortcuts. For example, appending `:online` to any model ID enables web search:
 

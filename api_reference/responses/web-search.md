@@ -12,7 +12,7 @@ The Responses API supports web search integration, allowing models to access rea
 >
 > **Deprecated Plugin Approach**
 >
-> The web search plugin (`plugins: [{ id: "web" }]`) shown below is deprecated. Use the [`openrouter:web_search` server tool](https://openrouter.ai/docs/guides/features/server-tools/web-search) instead, which works with both the Chat Completions and Responses APIs via the `tools` array.
+> The web search plugin (`plugins: [{ id: "web" }]`) shown below is deprecated. Use the [`openrouter:web_search` server tool](../../guides/features/server-tools/web-search.md) instead, which works with both the Chat Completions and Responses APIs via the `tools` array.
 
 ## Web Search Plugin
 
@@ -105,7 +105,7 @@ On SpaceXAI models (e.g. `x-ai/grok-4.3`), web search sends only SpaceXAI's `web
 }
 ```
 
-The same object is accepted as `parameters.x_search` on the [`openrouter:web_search` server tool](https://openrouter.ai/docs/guides/features/server-tools/web-search#x-search-spacexai). The legacy top-level `x_search_filter` request field still enables X search for backward compatibility. X search is opt-in because SpaceXAI bills it per item returned starting September 21, 2026 at 12:00 PM PT ($5 per 1,000 posts fetched and $10 per 1,000 user profiles fetched, replacing \$5 per 1,000 tool calls).
+The same object is accepted as `parameters.x_search` on the [`openrouter:web_search` server tool](../../guides/features/server-tools/web-search.md#x-search-spacexai). The legacy top-level `x_search_filter` request field still enables X search for backward compatibility. X search is opt-in because SpaceXAI bills it per item returned starting September 21, 2026 at 12:00 PM PT ($5 per 1,000 posts fetched and $10 per 1,000 user profiles fetched, replacing \$5 per 1,000 tool calls).
 
 | Parameter | Type | Description |
 | - | - | - |
@@ -192,7 +192,7 @@ print(result)
 >
 > **Deprecated**
 >
-> The `:online` variant is deprecated. Use the [`openrouter:web_search` server tool](https://openrouter.ai/docs/guides/features/server-tools/web-search) instead.
+> The `:online` variant is deprecated. Use the [`openrouter:web_search` server tool](../../guides/features/server-tools/web-search.md) instead.
 
 Some models have built-in web search capabilities using the `:online` variant:
 

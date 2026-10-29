@@ -10,7 +10,7 @@
 >
 > **Try Web Search Server Tool**
 >
-> For improved quality results, try the [`openrouter:web_search` server tool](https://openrouter.ai/docs/guides/features/server-tools/web-search). Server tools give the model control over when and how often to search, rather than always running once per request.
+> For improved quality results, try the [`openrouter:web_search` server tool](../server-tools/web-search.md). Server tools give the model control over when and how often to search, rather than always running once per request.
 
 You can incorporate relevant web search results for *any* model on OpenRouter by activating and customizing the `web` plugin, or by appending `:online` to the model slug:
 
@@ -168,7 +168,7 @@ X search is opt-in. With native web search enabled on a SpaceXAI model, OpenRout
 }
 ```
 
-The same object is accepted as `parameters.x_search` on the [`openrouter:web_search` server tool](https://openrouter.ai/docs/guides/features/server-tools/web-search), which is the preferred surface.
+The same object is accepted as `parameters.x_search` on the [`openrouter:web_search` server tool](../server-tools/web-search.md), which is the preferred surface.
 
 > [!NOTE]
 >

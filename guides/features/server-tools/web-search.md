@@ -343,7 +343,7 @@ All pricing is in addition to standard LLM token costs for processing the search
 
 > [!NOTE]
 >
-> The [web search plugin](../plugins/web-search.md) (`plugins: [{ id: "web" }]`) and the [`:online` variant](https://openrouter.ai/docs/guides/routing/model-variants/online) are deprecated. Use the `openrouter:web_search` server tool instead.
+> The [web search plugin](../plugins/web-search.md) (`plugins: [{ id: "web" }]`) and the [`:online` variant](../../routing/model-variants/online.md) are deprecated. Use the `openrouter:web_search` server tool instead.
 
 The key differences:
 

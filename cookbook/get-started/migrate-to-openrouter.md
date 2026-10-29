@@ -388,14 +388,14 @@ Do the migration now. Do not stop after giving advice. Make the code changes, up
 The prompt picks a different path per stack so the migration stays minimal:
 
 * **OpenAI SDK** (TypeScript or Python) — retarget `baseURL` / `base_url` to `https://openrouter.ai/api/v1` and swap model IDs. See [OpenAI SDK](../../guides/community/openai-sdk.md).
-* **Vercel AI SDK** — swap the provider for [`@openrouter/ai-sdk-provider`](https://openrouter.ai/docs/guides/community/vercel-ai-sdk) while keeping `generateText`, `streamText`, tools, and UI stream protocols intact.
+* **Vercel AI SDK** — swap the provider for [`@openrouter/ai-sdk-provider`](../../guides/community/vercel-ai-sdk.md) while keeping `generateText`, `streamText`, tools, and UI stream protocols intact.
 * **Vercel AI Gateway** — replace `gateway(...)` and `AI_GATEWAY_API_KEY` with the OpenRouter provider and `OPENROUTER_API_KEY`, including the user-facing setup text.
 * **Mastra** — keep Mastra and switch model strings to `openrouter/provider/model`. See [Mastra](../../guides/community/mastra.md).
 * **Anthropic SDK** — translate Claude message content to OpenRouter chat completions or the native OpenRouter SDK.
 * **Anthropic Agent SDK** — keep the agent loop and point it at OpenRouter with `ANTHROPIC_BASE_URL` and `ANTHROPIC_AUTH_TOKEN`. See [Anthropic Agent SDK](../../guides/community/anthropic-agent-sdk.md).
 * **Raw HTTP and unlisted stacks** — retarget OpenAI-compatible calls and preserve route shapes, streaming, and tool semantics.
 
-**OpenRouter Agent SDK (optional)** — when your project has server-side tool execution, multi-turn agent loops, or custom orchestration, the prompt can move that boundary to [`@openrouter/agent`](https://openrouter.ai/docs/agent-sdk/overview). It recommends this only when the evidence is there and asks before making the change; otherwise it stays on the least-disruptive provider path above.
+**OpenRouter Agent SDK (optional)** — when your project has server-side tool execution, multi-turn agent loops, or custom orchestration, the prompt can move that boundary to [`@openrouter/agent`](../../agent-sdk/overview.md). It recommends this only when the evidence is there and asks before making the change; otherwise it stays on the least-disruptive provider path above.
 
 For other new OpenRouter code, the prompt prefers `@openrouter/sdk` for platform APIs and the `openrouter` package for Python.
 

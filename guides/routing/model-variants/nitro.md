@@ -22,11 +22,11 @@ Append `:nitro` to any model ID:
 
 `:nitro` does two things:
 
-1. **Sorts all eligible endpoints by throughput**, the same effect as setting [`provider.sort` to `"throughput"`](https://openrouter.ai/docs/guides/routing/provider-selection#provider-sorting).
-2. **Admits priority service tier endpoints** into the eligible pool. Unlike the [`service_tier: "priority"` parameter](https://openrouter.ai/docs/guides/features/service-tiers), priority endpoints get no special treatment: they compete with every other endpoint on measured throughput, and win only when they are actually the fastest.
+1. **Sorts all eligible endpoints by throughput**, the same effect as setting [`provider.sort` to `"throughput"`](../provider-selection.md#provider-sorting).
+2. **Admits priority service tier endpoints** into the eligible pool. Unlike the [`service_tier: "priority"` parameter](../../features/service-tiers.md), priority endpoints get no special treatment: they compete with every other endpoint on measured throughput, and win only when they are actually the fastest.
 
 Because priority tier endpoints are billed at priority rates, a `:nitro` request served by a priority endpoint is charged that endpoint's priority pricing. As always, billing follows the tier the provider actually serves: if the provider sheds the request to its default tier, you're billed the default rate. See [Service Tiers](../../features/service-tiers.md) for the full comparison of tier-selection options.
 
-`:nitro` does not admit `ultrafast` endpoints. To use OpenAI's [Ultrafast mode](https://developers.openai.com/api/docs/guides/ultrafast-mode) tier, set [`service_tier: "ultrafast"`](https://openrouter.ai/docs/guides/features/service-tiers) or name the `openai/ultrafast` endpoint slug in `provider.order` or `provider.only`.
+`:nitro` does not admit `ultrafast` endpoints. To use OpenAI's [Ultrafast mode](https://developers.openai.com/api/docs/guides/ultrafast-mode) tier, set [`service_tier: "ultrafast"`](../../features/service-tiers.md) or name the `openai/ultrafast` endpoint slug in `provider.order` or `provider.only`.
 
 If you want throughput sorting without priority tier eligibility, set `provider.sort` to `"throughput"` instead of using `:nitro`.

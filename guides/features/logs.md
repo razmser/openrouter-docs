@@ -56,8 +56,8 @@ The same data is available programmatically. Both endpoints take the generation 
 
 | Endpoint | Returns |
 | - | - |
-| [`GET /api/v1/generation`](https://openrouter.ai/docs/api/api-reference/generations/get-request-&-usage-metadata-for-a-generation) | The request and usage metadata shown in the detail sheet: model, provider, tokens, cost, latency, and finish reason. |
-| [`GET /api/v1/generation/content`](https://openrouter.ai/docs/api/api-reference/generations/get-stored-prompt-completion-and-error-content-for-a-generation) | The stored prompt, completion, and error content. Requires [Input & Output Logging](input-output-logging.md) to have been enabled when the generation was made. |
+| [`GET /api/v1/generation`](../../api/api-reference/generations/get-request-&-usage-metadata-for-a-generation.md) | The request and usage metadata shown in the detail sheet: model, provider, tokens, cost, latency, and finish reason. |
+| [`GET /api/v1/generation/content`](../../api/api-reference/generations/get-stored-prompt-completion-and-error-content-for-a-generation.md) | The stored prompt, completion, and error content. Requires [Input & Output Logging](input-output-logging.md) to have been enabled when the generation was made. |
 
 ## Related
 

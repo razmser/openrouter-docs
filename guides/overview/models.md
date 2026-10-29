@@ -50,7 +50,7 @@ curl "https://openrouter.ai/api/v1/models?output_modalities=decisions"
 curl "https://openrouter.ai/api/v1/models?output_modalities=all"
 ```
 
-The same parameter is available on the [`/v1/models/count`](https://openrouter.ai/docs/api/api-reference/models/get-total-count-of-available-models) endpoint so that counts stay consistent with list results.
+The same parameter is available on the [`/v1/models/count`](../../api/api-reference/models/get-total-count-of-available-models.md) endpoint so that counts stay consistent with list results.
 
 ### `supported_parameters`
 

@@ -26,7 +26,7 @@ Free variants provide access to models without cost, but may have different rate
 >
 > **Fallbacks to paid models are billed**
 >
-> If you list a `:free` model in a [`models` fallback array](https://openrouter.ai/docs/guides/routing/model-fallbacks), OpenRouter tries the next model in the array when the free model is rate-limited, unavailable, or has no endpoint that supports your request. Each model is billed at its own price, so a fallback to a paid model incurs charges even though the first model was `:free`. To keep a request free, list only `:free` models in `models`, or use the [Free Models Router](../routers/free-router.md) (`openrouter/free`) on its own, which falls back only to other free models.
+> If you list a `:free` model in a [`models` fallback array](../model-fallbacks.md), OpenRouter tries the next model in the array when the free model is rate-limited, unavailable, or has no endpoint that supports your request. Each model is billed at its own price, so a fallback to a paid model incurs charges even though the first model was `:free`. To keep a request free, list only `:free` models in `models`, or use the [Free Models Router](../routers/free-router.md) (`openrouter/free`) on its own, which falls back only to other free models.
 
 ## Related Resources
 

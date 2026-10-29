@@ -46,9 +46,9 @@ The same aggregates are available programmatically with a [Management API key](.
 
 | Endpoint | Returns |
 | - | - |
-| [`GET /api/v1/analytics/meta`](https://openrouter.ai/docs/api/api-reference/analytics/get-available-analytics-metrics-and-dimensions) | The metrics, dimensions, filter operators, and granularities the query endpoint accepts. |
-| [`POST /api/v1/analytics/query`](https://openrouter.ai/docs/api/api-reference/analytics/query-analytics-data) | The programmatic equivalent of Explore. Pick a metric, group by dimensions, filter, and choose a time granularity. |
-| [`GET /api/v1/activity`](https://openrouter.ai/docs/api/api-reference/analytics/get-user-activity-grouped-by-endpoint) | Daily usage and spend grouped by model endpoint. |
+| [`GET /api/v1/analytics/meta`](../../api/api-reference/analytics/get-available-analytics-metrics-and-dimensions.md) | The metrics, dimensions, filter operators, and granularities the query endpoint accepts. |
+| [`POST /api/v1/analytics/query`](../../api/api-reference/analytics/query-analytics-data.md) | The programmatic equivalent of Explore. Pick a metric, group by dimensions, filter, and choose a time granularity. |
+| [`GET /api/v1/activity`](../../api/api-reference/analytics/get-user-activity-grouped-by-endpoint.md) | Daily usage and spend grouped by model endpoint. |
 
 For a worked example of running a cost review against the query endpoint, see [Analytics cost control](../../cookbook/administration/analytics-cost-control.md).
 
