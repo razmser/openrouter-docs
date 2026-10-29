@@ -2,9 +2,9 @@
 
 Markdown mirror of [OpenRouter's documentation](https://openrouter.ai/docs/quickstart).
 
-Contains **518 pages**, discovered from the [Markdown index](https://openrouter.ai/docs/llms.txt) and [documentation sitemap](https://openrouter.ai/docs/sitemap.xml).
+Contains **518 pages**, discovered from the [page index](https://openrouter.ai/docs/llms.txt) and [supplementary index](https://openrouter.ai/docs/sitemap.xml).
 
-Page paths follow the upstream `/docs/` URLs. Links to mirrored pages point to local files; external links and images remain online. Code examples and OpenAPI blocks are preserved.
+Links to mirrored pages point to local files; external links and images remain online. Code examples and OpenAPI blocks are preserved.
 
 Generated files are replaced by the next successful sync. Original content belongs to OpenRouter and its respective authors; this mirror grants no additional rights.
 
