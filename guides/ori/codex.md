@@ -12,7 +12,7 @@ Ori Codex is the Codex you already use, on OpenRouter. It is part of [Ori Harnes
 
 Ori Codex in 43 seconds: install, set up, pick a model, and reset.
 
-> **Video transcript**
+> [accordion] Video transcript
 >
 > You already use Codex. Now meet Ori Codex. It's the same Codex, on OpenRouter.
 >
@@ -42,7 +42,7 @@ Ori uses the Codex CLI on your `PATH`, and asks to install it if it's missing. T
 
 Set up Ori Codex step by step, in one minute.
 
-> **Video transcript**
+> [accordion] Video transcript
 >
 > Here's how to set up Ori Codex. It takes about a minute.
 >

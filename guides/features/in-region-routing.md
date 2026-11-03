@@ -27,17 +27,17 @@ const openRouter = new OpenRouter({
   serverURL: 'https://eu.openrouter.ai/api/v1',
 });
 
-const completion = await openRouter.chat.send({
-  chatRequest: {
+const response = await openRouter.responses.send({
+  responsesRequest: {
     model: 'anthropic/claude-sonnet-5',
-    messages: [{ role: 'user', content: 'Hello' }],
+    input: 'Hello',
     stream: false,
   },
 });
 ```
 
 ```typescript title="TypeScript (fetch)" lines theme={null}
-fetch('https://eu.openrouter.ai/api/v1/chat/completions', {
+fetch('https://eu.openrouter.ai/api/v1/responses', {
   method: 'POST',
   headers: {
     'Authorization': 'Bearer <OPENROUTER_API_KEY>',
@@ -45,7 +45,7 @@ fetch('https://eu.openrouter.ai/api/v1/chat/completions', {
   },
   body: JSON.stringify({
     model: 'anthropic/claude-sonnet-5',
-    messages: [{ role: 'user', content: 'Hello' }],
+    input: 'Hello',
   }),
 });
 ```
@@ -58,19 +58,19 @@ headers = {
   'Content-Type': 'application/json',
 }
 
-response = requests.post('https://eu.openrouter.ai/api/v1/chat/completions', headers=headers, json={
+response = requests.post('https://eu.openrouter.ai/api/v1/responses', headers=headers, json={
   'model': 'anthropic/claude-sonnet-5',
-  'messages': [{ 'role': 'user', 'content': 'Hello' }],
+  'input': 'Hello',
 })
 ```
 
 ```bash title="cURL" lines theme={null}
-curl https://eu.openrouter.ai/api/v1/chat/completions \
+curl https://eu.openrouter.ai/api/v1/responses \
   -H "Authorization: Bearer <OPENROUTER_API_KEY>" \
   -H "Content-Type: application/json" \
   -d '{
     "model": "anthropic/claude-sonnet-5",
-    "messages": [{"role": "user", "content": "Hello"}]
+    "input": "Hello"
   }'
 ```
 

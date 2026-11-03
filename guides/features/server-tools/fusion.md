@@ -22,7 +22,7 @@ This is the same pipeline behind the [`openrouter/fusion` model alias](../../rou
 
 > [!NOTE]
 >
-> Fusion in the `tools` array works on `/chat/completions` today, but it's slower there than on the [Responses API](../../../api_reference/responses/overview.md). For latency-sensitive use, send the same `tools: [{ type: "openrouter:fusion" }]` payload to the Responses API instead.
+> Fusion in the `tools` array also works on `/chat/completions`, but it's slower there than on the [Responses API](../../../api_reference/responses/overview.md) used in the examples above. For latency-sensitive use, stay on the Responses API.
 
 ## When does the model invoke it?
 

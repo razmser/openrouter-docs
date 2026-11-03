@@ -229,6 +229,114 @@ Counts and per-kind costs are emitted only when OpenRouter can show they match w
 
 This field is in beta: its shape may change before a dedicated cost-allocation destination ships.
 
+### Router timing
+
+Broadcast includes router timing for Chat Completions, Responses, Messages, and Completions requests. These fields separate OpenRouter processing time, provider time, client wait time, and request-specific processing. Embeddings, rerank, image, video, audio, and batch requests do not include router timing yet.
+
+The values are the same ones OpenRouter records for the request. On a completed request, the `_ms` fields add up to the request's end-to-end time. On a request without a completion time, such as one the client cancelled or one that failed after dispatch, they cover only the part measured. Broadcast does not send a total or a per-phase breakdown.
+
+Router timing is sent on the root generation only. Destinations that receive a metadata object get each value as `openrouter_router_timing_<field>`. OTLP destinations get the same names dotted, `openrouter.router_timing.<field>`, under the destination's OpenRouter prefix. Destinations that store the raw trace, such as S3, get the values as a `routerTiming` object.
+
+All values are whole milliseconds, except `attempt_count`.
+
+| Field | What it measures | When it is left out |
+| - | - | - |
+| `router_ms` | OpenRouter's own time, before and after the first provider dispatch, including the time between provider attempts on a fallback. Time spent on guardrails, server tools, routing models, and file or media processing, provider time, and time spent waiting on the client are not counted. | Left out when OpenRouter has no dispatch window for the request, such as a successful request that reached the provider through a path that did not record the dispatch. Its router timing then carries only `attempt_count`. |
+| `provider_ms` | The provider's time on the attempt that served the response, less the time spent waiting on the client. Includes time spent creating a prompt cache the request asked for. | Left out when the request never reached a provider, or when it has no completion time (the client cancelled or disconnected before the last byte, or the request failed after dispatch). In both cases it is still sent if a prompt cache was created before the dispatch, and then carries only that time. When OpenRouter cannot tell which attempt served the response, for example on a request with more than 32 provider attempts, it carries all of the request's provider time. |
+| `provider_failed_ms` | The provider's time on attempts that did not serve the response, such as an attempt that returned an error before a fallback. When the last attempt failed too, all provider time is counted here. `provider_ms` + `provider_failed_ms` is the request's total provider time. | Left out when the request never reached a provider or has no completion time, and when OpenRouter cannot tell which attempt served the response. In that last case `provider_ms` carries all provider time. Sent as `0` when no attempt failed. |
+| `client_wait_ms` | Time spent waiting for the client to accept data or the end of the stream. | Sent only when a wait was recorded; treat it as `0` otherwise. |
+| `guardrails_ms`, `tools_ms`, `routing_models_ms`, `media_ms` | Time spent on guardrails, server tools, routing models, and file or media processing. On a request that did not complete, only the part before the first dispatch. | Left out when `router_ms` is left out, or when OpenRouter did not record the pre-dispatch breakdown these fields are cut from. A measured `0` is sent as `0`. |
+| `attempt_count` | How many provider dispatches the request made, including failed attempts. `0` means it never reached a provider. | Sent whenever the request has a dispatch count, including on a request whose router timing carries no other field. |
+
+A value OpenRouter did not measure is left out, never sent as `0`. Check whether a field is present before including it in charts. A request's time splits into four parts:
+
+* **OpenRouter**: `router_ms`.
+* **Provider**: `provider_ms` + `provider_failed_ms`.
+* **Client**: `client_wait_ms`, or `0` when it is left out.
+* **Request-specific processing**: `guardrails_ms` + `tools_ms` + `routing_models_ms` + `media_ms`.
+
+The [Webhook](broadcast/webhook.md) destination sends OTLP JSON, so each value is a span attribute on the root span, under `trace.metadata.openrouter.router_timing.<field>`. The following request's first provider returned an error after 300 ms, so it fell back to a second provider. It took 2000 ms (43 + 1600 + 300 + 42 + 15 + 0 + 0 + 0):
+
+```json theme={null}
+{
+  "attributes": [
+    {
+      "key": "trace.metadata.openrouter.router_timing.router_ms",
+      "value": { "doubleValue": 43 }
+    },
+    {
+      "key": "trace.metadata.openrouter.router_timing.provider_ms",
+      "value": { "doubleValue": 1600 }
+    },
+    {
+      "key": "trace.metadata.openrouter.router_timing.provider_failed_ms",
+      "value": { "doubleValue": 300 }
+    },
+    {
+      "key": "trace.metadata.openrouter.router_timing.client_wait_ms",
+      "value": { "doubleValue": 42 }
+    },
+    {
+      "key": "trace.metadata.openrouter.router_timing.guardrails_ms",
+      "value": { "doubleValue": 15 }
+    },
+    {
+      "key": "trace.metadata.openrouter.router_timing.tools_ms",
+      "value": { "doubleValue": 0 }
+    },
+    {
+      "key": "trace.metadata.openrouter.router_timing.routing_models_ms",
+      "value": { "doubleValue": 0 }
+    },
+    {
+      "key": "trace.metadata.openrouter.router_timing.media_ms",
+      "value": { "doubleValue": 0 }
+    },
+    {
+      "key": "trace.metadata.openrouter.router_timing.attempt_count",
+      "value": { "doubleValue": 2 }
+    }
+  ]
+}
+```
+
+The following request was blocked by a guardrail after 70 ms, before reaching a provider. The provider and client timing fields are omitted.
+
+```json theme={null}
+{
+  "attributes": [
+    {
+      "key": "trace.metadata.openrouter.router_timing.router_ms",
+      "value": { "doubleValue": 30 }
+    },
+    {
+      "key": "trace.metadata.openrouter.router_timing.guardrails_ms",
+      "value": { "doubleValue": 40 }
+    },
+    {
+      "key": "trace.metadata.openrouter.router_timing.tools_ms",
+      "value": { "doubleValue": 0 }
+    },
+    {
+      "key": "trace.metadata.openrouter.router_timing.routing_models_ms",
+      "value": { "doubleValue": 0 }
+    },
+    {
+      "key": "trace.metadata.openrouter.router_timing.media_ms",
+      "value": { "doubleValue": 0 }
+    },
+    {
+      "key": "trace.metadata.openrouter.router_timing.attempt_count",
+      "value": { "doubleValue": 0 }
+    }
+  ]
+}
+```
+
+Broadcast waits up to 10 seconds after the response is generated for the client to finish reading it. When the client is slower than that, the trace is sent with no router timing at all, so the wait never delays delivery to your destination by more than 10 seconds.
+
+`openrouter_router_latency_ms` (`openrouter.router_latency_ms` on OTLP destinations) is still sent, unchanged. It is an older measure: wall-clock time less the provider's time to first token, so it counts streaming time after the first token as router time, and it is sent only for successful requests. Prefer the router timing values; `openrouter_router_latency_ms` will be removed after an announcement.
+
 ### Large Trace Values
 
 This applies to the OpenTelemetry-based destinations (Arize, Elastic, Grafana, Langfuse, LangSmith, New Relic, OpenInference, OTel Collector, Phoenix, Ramp, Sentry, and Webhook). Other destinations are not bounded this way and emit no truncation markers.
@@ -401,7 +509,7 @@ Each row is a destination. Each column is a field from the [trace payload](#trac
 
 Some field names appear at both the top level of the trace and inside each `observations[]` entry (the per-request span). Where that matters, the column header says `(trace)` or `(span)`.
 
-> **Trace identity**
+> [accordion] Trace identity
 >
 > | Destination | `id` | `userId` | `sessionId` | `apiKeyName` | `name` |
 > | - | - | - | - | - | - |
@@ -425,7 +533,7 @@ Some field names appear at both the top level of the trace and inside each `obse
 > | W\&B Weave | | | | | |
 > | Webhook | | | | | |
 
-> **Account identity**
+> [accordion] Account identity
 >
 > | Destination | `entityId` | `organizationId` | `creatorUserId` |
 > | - | - | - | - |
@@ -449,7 +557,7 @@ Some field names appear at both the top level of the trace and inside each `obse
 > | W\&B Weave | | | |
 > | Webhook | | | |
 
-> **Span identity**
+> [accordion] Span identity
 >
 > | Destination | `id` | `parentObservationId` | `name` |
 > | - | - | - | - |
@@ -473,7 +581,9 @@ Some field names appear at both the top level of the trace and inside each `obse
 > | W\&B Weave | — | — | — |
 > | Webhook | | — | |
 
-> **Timing and latency**
+> [accordion] Timing and latency
+>
+> Every destination that receives `routerLatencyMs` also receives the [router timing](#router-timing) values, on the root generation, as `openrouter_router_timing_<field>` or, on OTLP destinations, `openrouter.router_timing.<field>`.
 >
 > | Destination | `timestamp` | `startTime` | `endTime` | `routerLatencyMs` | `timeline` (raw object) |
 > | - | - | - | - | - | - |
@@ -497,7 +607,7 @@ Some field names appear at both the top level of the trace and inside each `obse
 > | W\&B Weave | | — | | | — |
 > | Webhook | — | | | | — |
 
-> **Derived latency metrics**
+> [accordion] Derived latency metrics
 >
 > These two keys are computed by OpenRouter from the `timeline` milestones rather than being fields of the trace, so they are not listed in the tables above. Destinations that receive a metadata bag get them as `openrouter_provider_time_to_first_token_ms` and `openrouter_inter_token_latency_ms`; OTLP destinations get the same names dotted (`openrouter.inter_token_latency_ms`).
 >
@@ -529,7 +639,7 @@ Some field names appear at both the top level of the trace and inside each `obse
 >
 > Every documented destination receives both.
 
-> **Prompt and completion content**
+> [accordion] Prompt and completion content
 >
 > | Destination | `input` (trace) | `output` (trace) | `input` (span) | `output` (span) |
 > | - | - | - | - | - |
@@ -553,7 +663,7 @@ Some field names appear at both the top level of the trace and inside each `obse
 > | W\&B Weave | — | — | | |
 > | Webhook | | | | |
 
-> **Model and provider**
+> [accordion] Model and provider
 >
 > | Destination | `model` | `modelParameters` | `providerName` | `providerSlug` |
 > | - | - | - | - | - |
@@ -577,7 +687,7 @@ Some field names appear at both the top level of the trace and inside each `obse
 > | W\&B Weave | | | | |
 > | Webhook | | | | |
 
-> **Token counts**
+> [accordion] Token counts
 >
 > | Destination | `promptTokens` | `completionTokens` | `totalTokens` |
 > | - | - | - | - |
@@ -601,7 +711,7 @@ Some field names appear at both the top level of the trace and inside each `obse
 > | W\&B Weave | | | |
 > | Webhook | | | |
 
-> **Prompt token breakdown**
+> [accordion] Prompt token breakdown
 >
 > | Destination | `cachedTokens` | `audioTokens` | `videoTokens` |
 > | - | - | - | - |
@@ -625,7 +735,7 @@ Some field names appear at both the top level of the trace and inside each `obse
 > | W\&B Weave | | | |
 > | Webhook | | | |
 
-> **Completion token breakdown**
+> [accordion] Completion token breakdown
 >
 > | Destination | `reasoningTokens` | `imageTokens` |
 > | - | - | - |
@@ -649,7 +759,7 @@ Some field names appear at both the top level of the trace and inside each `obse
 > | W\&B Weave | | |
 > | Webhook | | |
 
-> **Cost**
+> [accordion] Cost
 >
 > | Destination | `inputCost` | `outputCost` | `totalCost` |
 > | - | - | - | - |
@@ -673,7 +783,7 @@ Some field names appear at both the top level of the trace and inside each `obse
 > | W\&B Weave | | | |
 > | Webhook | | | |
 
-> **Unit prices**
+> [accordion] Unit prices
 >
 > | Destination | `inputUnitPrice` | `outputUnitPrice` |
 > | - | - | - |
@@ -697,7 +807,7 @@ Some field names appear at both the top level of the trace and inside each `obse
 > | W\&B Weave | | |
 > | Webhook | | |
 
-> **Status**
+> [accordion] Status
 >
 > | Destination | `level` | `statusCode` | `statusMessage` |
 > | - | - | - | - |
@@ -721,7 +831,7 @@ Some field names appear at both the top level of the trace and inside each `obse
 > | W\&B Weave | — | — | — |
 > | Webhook | | — | |
 
-> **Finish reason**
+> [accordion] Finish reason
 >
 > | Destination | `finishReason` | `normalizedFinishReason` |
 > | - | - | - |
@@ -745,7 +855,7 @@ Some field names appear at both the top level of the trace and inside each `obse
 > | W\&B Weave | | |
 > | Webhook | | |
 
-> **Cost allocation (beta)**
+> [accordion] Cost allocation (beta)
 >
 > `openrouter_cost_allocation` is added to the trace metadata and the generation span's metadata only for destinations with the **Cost allocation** opt-in, so it reaches a destination exactly where that destination receives `metadata` in the next table. OTLP destinations flatten it to attributes such as `openrouter_cost_allocation.input_tokens`; see [Cost allocation](#cost-allocation-beta) for the fields.
 >
@@ -771,7 +881,7 @@ Some field names appear at both the top level of the trace and inside each `obse
 > | W\&B Weave | | — |
 > | Webhook | | |
 
-> **Metadata and tags**
+> [accordion] Metadata and tags
 >
 > | Destination | `metadata` (trace) | `tags` | `metadata` (span) | `type` | `version` |
 > | - | - | - | - | - | - |

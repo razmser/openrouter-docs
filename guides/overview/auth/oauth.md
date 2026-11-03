@@ -161,28 +161,24 @@ const openRouter = new OpenRouter({
   apiKey: key, // The key from Step 2
 });
 
-const completion = await openRouter.chat.send({
-  chatRequest: {
+const response = await openRouter.responses.send({
+  responsesRequest: {
     model: '~openai/gpt-sol-latest',
-    messages: [
-      {
-        role: 'user',
-        content: 'Hello!',
-      },
-    ],
+    input: 'Hello!',
     stream: false,
   },
 });
 
-if (completion instanceof ReadableStream) {
+if (!('output' in response)) {
   throw new Error('Expected a non-streaming response');
 }
 
-console.log(completion.choices[0].message);
+const message = [...response.output].reverse().find((item) => item.type === 'message');
+console.log(message?.content.find((part) => part.type === 'output_text')?.text);
 ```
 
 ```typescript title="TypeScript (fetch)" lines theme={null}
-fetch('https://openrouter.ai/api/v1/chat/completions', {
+fetch('https://openrouter.ai/api/v1/responses', {
   method: 'POST',
   headers: {
     Authorization: `Bearer ${key}`,
@@ -190,12 +186,7 @@ fetch('https://openrouter.ai/api/v1/chat/completions', {
   },
   body: JSON.stringify({
     model: '~openai/gpt-sol-latest',
-    messages: [
-      {
-        role: 'user',
-        content: 'Hello!',
-      },
-    ],
+    input: 'Hello!',
   }),
 });
 ```

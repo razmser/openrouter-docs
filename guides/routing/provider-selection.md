@@ -6,9 +6,9 @@
 
 > Route requests to the best provider
 
-OpenRouter routes requests to the best available providers for your model. By default, [requests are load balanced](#price-based-load-balancing-default-strategy) across the top providers to maximize uptime.
+OpenRouter routes requests to the best available providers for your model. By default, [OpenRouter routes each request](#default-routing) based on each provider's measured price, throughput, latency, and reliability.
 
-You can customize how your requests are routed using the `provider` object in the request body for [Chat Completions](../../api/api-reference/chat/create-a-chat-completion.md).
+You can customize how your requests are routed using the `provider` object in the request body for the [Responses API](../../api_reference/responses/overview.md) and [Chat Completions](../../api/api-reference/chat/create-a-chat-completion.md).
 
 The `provider` object can contain the following fields:
 
@@ -34,39 +34,38 @@ The `provider` object can contain the following fields:
 >
 > OpenRouter supports in-region routing in the EU and US on the Business and Enterprise plans. There is no provider preference or setting to turn on: send the request to `https://eu.openrouter.ai` or `https://us.openrouter.ai`, and its prompts and completions are processed entirely within that region. Learn more in the [In-Region Routing guide](../features/in-region-routing.md).
 
-## Price-Based Load Balancing (Default Strategy)
+## Default Routing
 
-For each model in your request, OpenRouter's default behavior is to load balance requests across providers, prioritizing price.
+For each model in your request, OpenRouter picks a provider by comparing what a good response would actually cost you at each one, not by list price alone. Each input is measured from recent production traffic, so routing reacts within minutes when a provider gets faster, slower, or less reliable:
 
-If you are more sensitive to throughput than price, you can use the `sort` field to explicitly prioritize throughput.
+* **Effective price**: the price the provider actually charges, reflecting its real cache hit rate and its typical mix of input and output tokens.
+* **Throughput**: end-to-end output tokens per second. A faster provider can charge more and still win your request.
+* **Time to first token (TTFT)**: how long you wait before the response starts streaming.
+* **Rate limits**: how often the provider rejects requests with a 429 because it is out of capacity.
+* **Reliability**: how often requests fail because of the provider.
+* **Quality**: whether the provider's tool calls come back well formed.
+
+Providers close to the best share most of the traffic, and each request picks one at random, weighted by those shares. Providers far behind still get a small share, so routing notices when they improve. On top of the shares:
+
+* A provider whose errors or 429s are far worse than the model's other providers gets no traffic until it recovers.
+* Routing learns how much load each provider can take before it returns 429s, and sends the rest to other providers.
+* A burst of 429s or a jump in latency briefly lowers a provider's share.
+
+If a request fails, the retry is picked the same way from the providers that are left. Follow-up requests in a conversation stay with the same provider while its [prompt cache](../best-practices/prompt-caching.md) is warm.
+
+For more detail on each input, see [How OpenRouter Routes Traffic Between Providers](../providers/traffic-routing.md).
 
 > [!TIP]
 >
-> When you send a request with `tools` or `tool_choice`, OpenRouter makes a best effort to route to providers known to support tool use. Similarly, if you set a `max_tokens`, then OpenRouter will only route to providers that support a response of that length.
+> When you send a request with `tools` or `tool_choice`, OpenRouter makes a best effort to route to providers known to support tool use. Similarly, if you set `max_output_tokens` (or `max_tokens` on Chat Completions), then OpenRouter will only route to providers that support a response of that length.
 
-Here is OpenRouter's default load balancing strategy:
-
-1. Prioritize providers that have not seen significant outages in the last 30 seconds.
-2. For the stable providers, look at the lowest-cost candidates and select one weighted by inverse square of the price (example below).
-3. Use the remaining providers as fallbacks.
-
-> [!NOTE]
->
-> **A Load Balancing Example**
->
-> If Provider A costs \$1 per million tokens, Provider B costs \$2, and Provider C costs \$3, and Provider B recently saw a few outages.
->
-> * Your request is most likely routed to Provider A first. Provider A is 9x more likely than Provider C to be routed to first, because each provider is weighted by the inverse square of its price: $1 / 1^2 = 1$ for Provider A vs. $1 / 3^2 = 1/9$ for Provider C.
-> * If Provider A fails, then Provider C will be tried next.
-> * If Provider C also fails, Provider B will be tried last.
-
-If you have `sort` or `order` set in your provider preferences, load balancing will be disabled.
+Default routing applies whenever you leave the choice of provider to OpenRouter. It is bypassed when you set `sort` (or a default provider sort in your [account settings](https://openrouter.ai/settings/preferences)), use the `:floor` or `:nitro` shortcuts, set `order`, or use your own provider key. If you set `only` or `ignore` and two or more providers remain, default routing picks among them.
 
 ## Provider Sorting
 
-As described above, OpenRouter load balances based on price, while taking uptime into account.
+As described above, default routing balances price against throughput, latency, and reliability.
 
-If you instead want to *explicitly* prioritize a particular provider attribute, you can include the `sort` field in the `provider` preferences. Load balancing will be disabled, and the router will try providers in order.
+If you instead want to *explicitly* prioritize a particular provider attribute, you can include the `sort` field in the `provider` preferences. Default routing is bypassed, and the router will try providers in that order.
 
 The three sort options are:
 
@@ -81,10 +80,10 @@ const openRouter = new OpenRouter({
   apiKey: '<OPENROUTER_API_KEY>',
 });
 
-const completion = await openRouter.chat.send({
-  chatRequest: {
+const response = await openRouter.responses.send({
+  responsesRequest: {
     model: 'meta-llama/llama-3.3-70b-instruct',
-    messages: [{ role: 'user', content: 'Hello' }],
+    input: 'Hello',
     provider: {
       sort: 'throughput',
     },
@@ -94,7 +93,7 @@ const completion = await openRouter.chat.send({
 ```
 
 ```typescript title="TypeScript (fetch)" lines theme={null}
-fetch('https://openrouter.ai/api/v1/chat/completions', {
+fetch('https://openrouter.ai/api/v1/responses', {
   method: 'POST',
   headers: {
     'Authorization': 'Bearer <OPENROUTER_API_KEY>',
@@ -104,7 +103,7 @@ fetch('https://openrouter.ai/api/v1/chat/completions', {
   },
   body: JSON.stringify({
     model: 'meta-llama/llama-3.3-70b-instruct',
-    messages: [{ role: 'user', content: 'Hello' }],
+    input: 'Hello',
     provider: {
       sort: 'throughput',
     },
@@ -122,18 +121,18 @@ headers = {
   'Content-Type': 'application/json',
 }
 
-response = requests.post('https://openrouter.ai/api/v1/chat/completions', headers=headers, json={
+response = requests.post('https://openrouter.ai/api/v1/responses', headers=headers, json={
   'model': 'meta-llama/llama-3.3-70b-instruct',
-  'messages': [{ 'role': 'user', 'content': 'Hello' }],
+  'input': 'Hello',
   'provider': {
     'sort': 'throughput',
   },
 })
 ```
 
-To *always* prioritize low prices, and not apply any load balancing, set `sort` to `"price"`.
+To *always* prioritize low prices instead of using default routing, set `sort` to `"price"`.
 
-To *always* prioritize low latency, and not apply any load balancing, set `sort` to `"latency"`.
+To *always* prioritize low latency instead of using default routing, set `sort` to `"latency"`.
 
 ## Nitro Shortcut
 
@@ -146,17 +145,17 @@ const openRouter = new OpenRouter({
   apiKey: '<OPENROUTER_API_KEY>',
 });
 
-const completion = await openRouter.chat.send({
-  chatRequest: {
+const response = await openRouter.responses.send({
+  responsesRequest: {
     model: 'meta-llama/llama-3.3-70b-instruct:nitro',
-    messages: [{ role: 'user', content: 'Hello' }],
+    input: 'Hello',
     stream: false,
   },
 });
 ```
 
 ```typescript title="TypeScript (fetch)" lines theme={null}
-fetch('https://openrouter.ai/api/v1/chat/completions', {
+fetch('https://openrouter.ai/api/v1/responses', {
   method: 'POST',
   headers: {
     'Authorization': 'Bearer <OPENROUTER_API_KEY>',
@@ -166,7 +165,7 @@ fetch('https://openrouter.ai/api/v1/chat/completions', {
   },
   body: JSON.stringify({
     model: 'meta-llama/llama-3.3-70b-instruct:nitro',
-    messages: [{ role: 'user', content: 'Hello' }],
+    input: 'Hello',
   }),
 });
 ```
@@ -181,9 +180,9 @@ headers = {
   'Content-Type': 'application/json',
 }
 
-response = requests.post('https://openrouter.ai/api/v1/chat/completions', headers=headers, json={
+response = requests.post('https://openrouter.ai/api/v1/responses', headers=headers, json={
   'model': 'meta-llama/llama-3.3-70b-instruct:nitro',
-  'messages': [{ 'role': 'user', 'content': 'Hello' }],
+  'input': 'Hello',
 })
 ```
 
@@ -198,17 +197,17 @@ const openRouter = new OpenRouter({
   apiKey: '<OPENROUTER_API_KEY>',
 });
 
-const completion = await openRouter.chat.send({
-  chatRequest: {
+const response = await openRouter.responses.send({
+  responsesRequest: {
     model: 'meta-llama/llama-3.3-70b-instruct:floor',
-    messages: [{ role: 'user', content: 'Hello' }],
+    input: 'Hello',
     stream: false,
   },
 });
 ```
 
 ```typescript title="TypeScript (fetch)" lines theme={null}
-fetch('https://openrouter.ai/api/v1/chat/completions', {
+fetch('https://openrouter.ai/api/v1/responses', {
   method: 'POST',
   headers: {
     'Authorization': 'Bearer <OPENROUTER_API_KEY>',
@@ -218,7 +217,7 @@ fetch('https://openrouter.ai/api/v1/chat/completions', {
   },
   body: JSON.stringify({
     model: 'meta-llama/llama-3.3-70b-instruct:floor',
-    messages: [{ role: 'user', content: 'Hello' }],
+    input: 'Hello',
   }),
 });
 ```
@@ -233,15 +232,15 @@ headers = {
   'Content-Type': 'application/json',
 }
 
-response = requests.post('https://openrouter.ai/api/v1/chat/completions', headers=headers, json={
+response = requests.post('https://openrouter.ai/api/v1/responses', headers=headers, json={
   'model': 'meta-llama/llama-3.3-70b-instruct:floor',
-  'messages': [{ 'role': 'user', 'content': 'Hello' }],
+  'input': 'Hello',
 })
 ```
 
 ## Advanced Sorting with Partition
 
-When using [model fallbacks](routers/auto-router.md), the `sort` field can be specified as an object with additional options to control how endpoints are sorted across multiple models.
+When using [model fallbacks](model-fallbacks.md), the `sort` field can be specified as an object with additional options to control how endpoints are sorted across multiple models.
 
 | Field | Type | Default | Description |
 | - | - | - | - |
@@ -267,14 +266,14 @@ const openRouter = new OpenRouter({
   apiKey: '<OPENROUTER_API_KEY>',
 });
 
-const completion = await openRouter.chat.send({
-  chatRequest: {
+const response = await openRouter.responses.send({
+  responsesRequest: {
     models: [
       'anthropic/claude-sonnet-4.5',
       'openai/gpt-5-mini',
       'google/gemini-3-flash-preview',
     ],
-    messages: [{ role: 'user', content: 'Hello' }],
+    input: 'Hello',
     provider: {
       sort: {
         by: 'throughput',
@@ -287,7 +286,7 @@ const completion = await openRouter.chat.send({
 ```
 
 ```typescript title="TypeScript (fetch)" expandable lines theme={null}
-fetch('https://openrouter.ai/api/v1/chat/completions', {
+fetch('https://openrouter.ai/api/v1/responses', {
   method: 'POST',
   headers: {
     'Authorization': 'Bearer <OPENROUTER_API_KEY>',
@@ -299,7 +298,7 @@ fetch('https://openrouter.ai/api/v1/chat/completions', {
       'openai/gpt-5-mini',
       'google/gemini-3-flash-preview',
     ],
-    messages: [{ role: 'user', content: 'Hello' }],
+    input: 'Hello',
     provider: {
       sort: {
         by: 'throughput',
@@ -318,13 +317,13 @@ headers = {
   'Content-Type': 'application/json',
 }
 
-response = requests.post('https://openrouter.ai/api/v1/chat/completions', headers=headers, json={
+response = requests.post('https://openrouter.ai/api/v1/responses', headers=headers, json={
   'models': [
     'anthropic/claude-sonnet-4.5',
     'openai/gpt-5-mini',
     'google/gemini-3-flash-preview',
   ],
-  'messages': [{ 'role': 'user', 'content': 'Hello' }],
+  'input': 'Hello',
   'provider': {
     'sort': {
       'by': 'throughput',
@@ -335,7 +334,7 @@ response = requests.post('https://openrouter.ai/api/v1/chat/completions', header
 ```
 
 ```bash title="cURL" lines theme={null}
-curl https://openrouter.ai/api/v1/chat/completions \
+curl https://openrouter.ai/api/v1/responses \
   -H "Authorization: Bearer <OPENROUTER_API_KEY>" \
   -H "Content-Type: application/json" \
   -d '{
@@ -344,7 +343,7 @@ curl https://openrouter.ai/api/v1/chat/completions \
       "openai/gpt-5-mini",
       "google/gemini-3-flash-preview"
     ],
-    "messages": [{ "role": "user", "content": "Hello" }],
+    "input": "Hello",
     "provider": {
       "sort": {
         "by": "throughput",
@@ -398,14 +397,14 @@ const openRouter = new OpenRouter({
   apiKey: '<OPENROUTER_API_KEY>',
 });
 
-const completion = await openRouter.chat.send({
-  chatRequest: {
+const response = await openRouter.responses.send({
+  responsesRequest: {
     models: [
       'anthropic/claude-sonnet-4.5',
       'openai/gpt-5-mini',
       'google/gemini-3-flash-preview',
     ],
-    messages: [{ role: 'user', content: 'Hello' }],
+    input: 'Hello',
     provider: {
       sort: {
         by: 'price',
@@ -421,7 +420,7 @@ const completion = await openRouter.chat.send({
 ```
 
 ```typescript title="TypeScript (fetch)" expandable lines theme={null}
-fetch('https://openrouter.ai/api/v1/chat/completions', {
+fetch('https://openrouter.ai/api/v1/responses', {
   method: 'POST',
   headers: {
     'Authorization': 'Bearer <OPENROUTER_API_KEY>',
@@ -433,7 +432,7 @@ fetch('https://openrouter.ai/api/v1/chat/completions', {
       'openai/gpt-5-mini',
       'google/gemini-3-flash-preview',
     ],
-    messages: [{ role: 'user', content: 'Hello' }],
+    input: 'Hello',
     provider: {
       sort: {
         by: 'price',
@@ -455,13 +454,13 @@ headers = {
   'Content-Type': 'application/json',
 }
 
-response = requests.post('https://openrouter.ai/api/v1/chat/completions', headers=headers, json={
+response = requests.post('https://openrouter.ai/api/v1/responses', headers=headers, json={
   'models': [
     'anthropic/claude-sonnet-4.5',
     'openai/gpt-5-mini',
     'google/gemini-3-flash-preview',
   ],
-  'messages': [{ 'role': 'user', 'content': 'Hello' }],
+  'input': 'Hello',
   'provider': {
     'sort': {
       'by': 'price',
@@ -475,7 +474,7 @@ response = requests.post('https://openrouter.ai/api/v1/chat/completions', header
 ```
 
 ```bash title="cURL" lines theme={null}
-curl https://openrouter.ai/api/v1/chat/completions \
+curl https://openrouter.ai/api/v1/responses \
   -H "Authorization: Bearer <OPENROUTER_API_KEY>" \
   -H "Content-Type: application/json" \
   -d '{
@@ -484,7 +483,7 @@ curl https://openrouter.ai/api/v1/chat/completions \
       "openai/gpt-5-mini",
       "google/gemini-3-flash-preview"
     ],
-    "messages": [{ "role": "user", "content": "Hello" }],
+    "input": "Hello",
     "provider": {
       "sort": {
         "by": "price",
@@ -508,13 +507,13 @@ const openRouter = new OpenRouter({
   apiKey: '<OPENROUTER_API_KEY>',
 });
 
-const completion = await openRouter.chat.send({
-  chatRequest: {
+const response = await openRouter.responses.send({
+  responsesRequest: {
     models: [
       'anthropic/claude-sonnet-4.5',
       'openai/gpt-5-mini',
     ],
-    messages: [{ role: 'user', content: 'Hello' }],
+    input: 'Hello',
     provider: {
       sort: {
         by: 'price',
@@ -530,7 +529,7 @@ const completion = await openRouter.chat.send({
 ```
 
 ```typescript title="TypeScript (fetch)" expandable lines theme={null}
-fetch('https://openrouter.ai/api/v1/chat/completions', {
+fetch('https://openrouter.ai/api/v1/responses', {
   method: 'POST',
   headers: {
     'Authorization': 'Bearer <OPENROUTER_API_KEY>',
@@ -541,7 +540,7 @@ fetch('https://openrouter.ai/api/v1/chat/completions', {
       'anthropic/claude-sonnet-4.5',
       'openai/gpt-5-mini',
     ],
-    messages: [{ role: 'user', content: 'Hello' }],
+    input: 'Hello',
     provider: {
       sort: {
         by: 'price',
@@ -563,12 +562,12 @@ headers = {
   'Content-Type': 'application/json',
 }
 
-response = requests.post('https://openrouter.ai/api/v1/chat/completions', headers=headers, json={
+response = requests.post('https://openrouter.ai/api/v1/responses', headers=headers, json={
   'models': [
     'anthropic/claude-sonnet-4.5',
     'openai/gpt-5-mini',
   ],
-  'messages': [{ 'role': 'user', 'content': 'Hello' }],
+  'input': 'Hello',
   'provider': {
     'sort': {
       'by': 'price',
@@ -582,7 +581,7 @@ response = requests.post('https://openrouter.ai/api/v1/chat/completions', header
 ```
 
 ```bash title="cURL" lines theme={null}
-curl https://openrouter.ai/api/v1/chat/completions \
+curl https://openrouter.ai/api/v1/responses \
   -H "Authorization: Bearer <OPENROUTER_API_KEY>" \
   -H "Content-Type: application/json" \
   -d '{
@@ -590,7 +589,7 @@ curl https://openrouter.ai/api/v1/chat/completions \
       "anthropic/claude-sonnet-4.5",
       "openai/gpt-5-mini"
     ],
-    "messages": [{ "role": "user", "content": "Hello" }],
+    "input": "Hello",
     "provider": {
       "sort": {
         "by": "price",
@@ -614,10 +613,10 @@ const openRouter = new OpenRouter({
   apiKey: '<OPENROUTER_API_KEY>',
 });
 
-const completion = await openRouter.chat.send({
-  chatRequest: {
+const response = await openRouter.responses.send({
+  responsesRequest: {
     model: 'deepseek/deepseek-v3.2',
-    messages: [{ role: 'user', content: 'Hello' }],
+    input: 'Hello',
     provider: {
       preferredMaxLatency: {
         p50: 1, // Prefer providers with <1 second latency for 50% of requests in last 5 minutes
@@ -635,7 +634,7 @@ const completion = await openRouter.chat.send({
 ```
 
 ```typescript title="TypeScript (fetch)" expandable lines theme={null}
-fetch('https://openrouter.ai/api/v1/chat/completions', {
+fetch('https://openrouter.ai/api/v1/responses', {
   method: 'POST',
   headers: {
     'Authorization': 'Bearer <OPENROUTER_API_KEY>',
@@ -643,7 +642,7 @@ fetch('https://openrouter.ai/api/v1/chat/completions', {
   },
   body: JSON.stringify({
     model: 'deepseek/deepseek-v3.2',
-    messages: [{ role: 'user', content: 'Hello' }],
+    input: 'Hello',
     provider: {
       preferred_max_latency: {
         p50: 1, // Prefer providers with <1 second latency for 50% of requests in last 5 minutes
@@ -667,9 +666,9 @@ headers = {
   'Content-Type': 'application/json',
 }
 
-response = requests.post('https://openrouter.ai/api/v1/chat/completions', headers=headers, json={
+response = requests.post('https://openrouter.ai/api/v1/responses', headers=headers, json={
   'model': 'deepseek/deepseek-v3.2',
-  'messages': [{ 'role': 'user', 'content': 'Hello' }],
+  'input': 'Hello',
   'provider': {
     'preferred_max_latency': {
       'p50': 1, # Prefer providers with <1 second latency for 50% of requests in last 5 minutes
@@ -685,12 +684,12 @@ response = requests.post('https://openrouter.ai/api/v1/chat/completions', header
 ```
 
 ```bash title="cURL" lines theme={null}
-curl https://openrouter.ai/api/v1/chat/completions \
+curl https://openrouter.ai/api/v1/responses \
   -H "Authorization: Bearer <OPENROUTER_API_KEY>" \
   -H "Content-Type: application/json" \
   -d '{
     "model": "deepseek/deepseek-v3.2",
-    "messages": [{ "role": "user", "content": "Hello" }],
+    "input": "Hello",
     "provider": {
       "preferred_max_latency": {
         "p50": 1,
@@ -716,14 +715,14 @@ const openRouter = new OpenRouter({
   apiKey: '<OPENROUTER_API_KEY>',
 });
 
-const completion = await openRouter.chat.send({
-  chatRequest: {
+const response = await openRouter.responses.send({
+  responsesRequest: {
     models: [
       'anthropic/claude-sonnet-4.5',
       'openai/gpt-5-mini',
       'google/gemini-3-flash-preview',
     ],
-    messages: [{ role: 'user', content: 'Hello' }],
+    input: 'Hello',
     provider: {
       sort: {
         by: 'price',
@@ -736,7 +735,7 @@ const completion = await openRouter.chat.send({
 ```
 
 ```typescript title="TypeScript (fetch)" expandable lines theme={null}
-fetch('https://openrouter.ai/api/v1/chat/completions', {
+fetch('https://openrouter.ai/api/v1/responses', {
   method: 'POST',
   headers: {
     'Authorization': 'Bearer <OPENROUTER_API_KEY>',
@@ -748,7 +747,7 @@ fetch('https://openrouter.ai/api/v1/chat/completions', {
       'openai/gpt-5-mini',
       'google/gemini-3-flash-preview',
     ],
-    messages: [{ role: 'user', content: 'Hello' }],
+    input: 'Hello',
     provider: {
       sort: {
         by: 'price',
@@ -767,13 +766,13 @@ headers = {
   'Content-Type': 'application/json',
 }
 
-response = requests.post('https://openrouter.ai/api/v1/chat/completions', headers=headers, json={
+response = requests.post('https://openrouter.ai/api/v1/responses', headers=headers, json={
   'models': [
     'anthropic/claude-sonnet-4.5',
     'openai/gpt-5-mini',
     'google/gemini-3-flash-preview',
   ],
-  'messages': [{ 'role': 'user', 'content': 'Hello' }],
+  'input': 'Hello',
   'provider': {
     'sort': {
       'by': 'price',
@@ -784,7 +783,7 @@ response = requests.post('https://openrouter.ai/api/v1/chat/completions', header
 ```
 
 ```bash title="cURL" lines theme={null}
-curl https://openrouter.ai/api/v1/chat/completions \
+curl https://openrouter.ai/api/v1/responses \
   -H "Authorization: Bearer <OPENROUTER_API_KEY>" \
   -H "Content-Type: application/json" \
   -d '{
@@ -793,7 +792,7 @@ curl https://openrouter.ai/api/v1/chat/completions \
       "openai/gpt-5-mini",
       "google/gemini-3-flash-preview"
     ],
-    "messages": [{ "role": "user", "content": "Hello" }],
+    "input": "Hello",
     "provider": {
       "sort": {
         "by": "price",
@@ -803,7 +802,7 @@ curl https://openrouter.ai/api/v1/chat/completions \
   }'
 ```
 
-In this example, if you have a BYOK key configured for OpenAI but not for Anthropic, OpenRouter can route to the GPT-4o endpoint using your own key even though Claude is listed first. Without `partition: "none"`, the router would always try Claude's endpoints first before falling back to GPT-4o.
+In this example, if you have a BYOK key configured for OpenAI but not for Anthropic, OpenRouter can route to the GPT-5 mini endpoint using your own key even though Claude is listed first. Without `partition: "none"`, the router would always try Claude's endpoints first before falling back to GPT-5 mini.
 
 > [!NOTE]
 >
@@ -817,7 +816,7 @@ You can set the providers that OpenRouter will prioritize for your request using
 | - | - | - | - |
 | `order` | string\[] | - | List of provider slugs to try in order (e.g. `["anthropic", "openai"]`). |
 
-The router will prioritize providers in this list, and in this order, for the model you're using. The order also outranks the priority your [BYOK keys](../overview/auth/byok.md#byok-with-provider-ordering) would otherwise get: within each provider you name, your own key is tried before OpenRouter's shared capacity. If you don't set this field, the router will [load balance](#price-based-load-balancing-default-strategy) across the top providers to maximize uptime.
+The router will prioritize providers in this list, and in this order, for the model you're using. The order also outranks the priority your [BYOK keys](../overview/auth/byok.md#byok-with-provider-ordering) would otherwise get: within each provider you name, your own key is tried before OpenRouter's shared capacity. If you don't set this field, the router uses [default routing](#default-routing).
 
 > [!TIP]
 >
@@ -836,10 +835,10 @@ const openRouter = new OpenRouter({
   apiKey: '<OPENROUTER_API_KEY>',
 });
 
-const completion = await openRouter.chat.send({
-  chatRequest: {
+const response = await openRouter.responses.send({
+  responsesRequest: {
     model: 'mistralai/mistral-small-3.2-24b-instruct',
-    messages: [{ role: 'user', content: 'Hello' }],
+    input: 'Hello',
     provider: {
       order: ['openai', 'deepinfra'],
     },
@@ -849,7 +848,7 @@ const completion = await openRouter.chat.send({
 ```
 
 ```typescript title="TypeScript (fetch)" lines theme={null}
-fetch('https://openrouter.ai/api/v1/chat/completions', {
+fetch('https://openrouter.ai/api/v1/responses', {
   method: 'POST',
   headers: {
     'Authorization': 'Bearer <OPENROUTER_API_KEY>',
@@ -859,7 +858,7 @@ fetch('https://openrouter.ai/api/v1/chat/completions', {
   },
   body: JSON.stringify({
     model: 'mistralai/mistral-small-3.2-24b-instruct',
-    messages: [{ role: 'user', content: 'Hello' }],
+    input: 'Hello',
     provider: {
       order: ['openai', 'deepinfra'],
     },
@@ -877,9 +876,9 @@ headers = {
   'Content-Type': 'application/json',
 }
 
-response = requests.post('https://openrouter.ai/api/v1/chat/completions', headers=headers, json={
+response = requests.post('https://openrouter.ai/api/v1/responses', headers=headers, json={
   'model': 'mistralai/mistral-small-3.2-24b-instruct',
-  'messages': [{ 'role': 'user', 'content': 'Hello' }],
+  'input': 'Hello',
   'provider': {
     'order': ['openai', 'deepinfra'],
   },
@@ -897,10 +896,10 @@ const openRouter = new OpenRouter({
   apiKey: '<OPENROUTER_API_KEY>',
 });
 
-const completion = await openRouter.chat.send({
-  chatRequest: {
+const response = await openRouter.responses.send({
+  responsesRequest: {
     model: 'mistralai/mistral-small-3.2-24b-instruct',
-    messages: [{ role: 'user', content: 'Hello' }],
+    input: 'Hello',
     provider: {
       order: ['openai', 'deepinfra'],
       allowFallbacks: false,
@@ -911,7 +910,7 @@ const completion = await openRouter.chat.send({
 ```
 
 ```typescript title="TypeScript (fetch)" lines theme={null}
-fetch('https://openrouter.ai/api/v1/chat/completions', {
+fetch('https://openrouter.ai/api/v1/responses', {
   method: 'POST',
   headers: {
     'Authorization': 'Bearer <OPENROUTER_API_KEY>',
@@ -921,7 +920,7 @@ fetch('https://openrouter.ai/api/v1/chat/completions', {
   },
   body: JSON.stringify({
     model: 'mistralai/mistral-small-3.2-24b-instruct',
-    messages: [{ role: 'user', content: 'Hello' }],
+    input: 'Hello',
     provider: {
       order: ['openai', 'deepinfra'],
       allow_fallbacks: false,
@@ -940,9 +939,9 @@ headers = {
   'Content-Type': 'application/json',
 }
 
-response = requests.post('https://openrouter.ai/api/v1/chat/completions', headers=headers, json={
+response = requests.post('https://openrouter.ai/api/v1/responses', headers=headers, json={
   'model': 'mistralai/mistral-small-3.2-24b-instruct',
-  'messages': [{ 'role': 'user', 'content': 'Hello' }],
+  'input': 'Hello',
   'provider': {
     'order': ['openai', 'deepinfra'],
     'allow_fallbacks': False,
@@ -985,10 +984,10 @@ const openRouter = new OpenRouter({
   apiKey: '<OPENROUTER_API_KEY>',
 });
 
-const completion = await openRouter.chat.send({
-  chatRequest: {
+const response = await openRouter.responses.send({
+  responsesRequest: {
     model: 'google/gemma-4-31b-it',
-    messages: [{ role: 'user', content: 'Hello' }],
+    input: 'Hello',
     provider: {
       order: ['deepinfra/turbo'],
       allowFallbacks: false,
@@ -999,7 +998,7 @@ const completion = await openRouter.chat.send({
 ```
 
 ```typescript title="TypeScript (fetch)" lines theme={null}
-fetch('https://openrouter.ai/api/v1/chat/completions', {
+fetch('https://openrouter.ai/api/v1/responses', {
   method: 'POST',
   headers: {
     'Authorization': 'Bearer <OPENROUTER_API_KEY>',
@@ -1009,7 +1008,7 @@ fetch('https://openrouter.ai/api/v1/chat/completions', {
   },
   body: JSON.stringify({
     model: 'google/gemma-4-31b-it',
-    messages: [{ role: 'user', content: 'Hello' }],
+    input: 'Hello',
     provider: {
       order: ['deepinfra/turbo'],
       allow_fallbacks: false,
@@ -1028,9 +1027,9 @@ headers = {
   'Content-Type': 'application/json',
 }
 
-response = requests.post('https://openrouter.ai/api/v1/chat/completions', headers=headers, json={
+response = requests.post('https://openrouter.ai/api/v1/responses', headers=headers, json={
   'model': 'google/gemma-4-31b-it',
-  'messages': [{ 'role': 'user', 'content': 'Hello' }],
+  'input': 'Hello',
   'provider': {
     'order': ['deepinfra/turbo'],
     'allow_fallbacks': False,
@@ -1056,7 +1055,7 @@ With the default routing strategy, providers that don't support all the [LLM par
 
 ### Default parameter preferences
 
-Even when `require_parameters` is `false`, a small set of parameters is used as a soft preference when choosing between providers of the same model: `tools`, `response_format` (including structured outputs), and `verbosity`. If some of a model's providers support one of these parameters and others don't, the request is only routed to the supporting providers. If none of a model's providers support the parameter, the request is still routed to that model and the parameter is ignored — this preference never removes a model from your request's candidate list (such as the [`models` fallback list](model-fallbacks.md)).
+Even when `require_parameters` is `false`, a small set of parameters is used as a soft preference when choosing between providers of the same model: `tools`, the response format (`text.format` on the Responses API, `response_format` on Chat Completions, including structured outputs), and `verbosity`. If some of a model's providers support one of these parameters and others don't, the request is only routed to the supporting providers. If none of a model's providers support the parameter, the request is still routed to that model and the parameter is ignored — this preference never removes a model from your request's candidate list (such as the [`models` fallback list](model-fallbacks.md)).
 
 ### Example: Excluding providers that don't support JSON formatting
 
@@ -1069,20 +1068,20 @@ const openRouter = new OpenRouter({
   apiKey: '<OPENROUTER_API_KEY>',
 });
 
-const completion = await openRouter.chat.send({
-  chatRequest: {
-    messages: [{ role: 'user', content: 'Hello' }],
+const response = await openRouter.responses.send({
+  responsesRequest: {
+    input: 'Hello',
     provider: {
       requireParameters: true,
     },
-    responseFormat: { type: 'json_object' },
+    text: { format: { type: 'json_object' } },
     stream: false,
   },
 });
 ```
 
 ```typescript title="TypeScript (fetch)" lines theme={null}
-fetch('https://openrouter.ai/api/v1/chat/completions', {
+fetch('https://openrouter.ai/api/v1/responses', {
   method: 'POST',
   headers: {
     'Authorization': 'Bearer <OPENROUTER_API_KEY>',
@@ -1091,11 +1090,11 @@ fetch('https://openrouter.ai/api/v1/chat/completions', {
     'Content-Type': 'application/json',
   },
   body: JSON.stringify({
-    messages: [{ role: 'user', content: 'Hello' }],
+    input: 'Hello',
     provider: {
       require_parameters: true,
     },
-    response_format: { type: 'json_object' },
+    text: { format: { type: 'json_object' } },
   }),
 });
 ```
@@ -1110,12 +1109,12 @@ headers = {
   'Content-Type': 'application/json',
 }
 
-response = requests.post('https://openrouter.ai/api/v1/chat/completions', headers=headers, json={
-  'messages': [{ 'role': 'user', 'content': 'Hello' }],
+response = requests.post('https://openrouter.ai/api/v1/responses', headers=headers, json={
+  'input': 'Hello',
   'provider': {
     'require_parameters': True,
   },
-  'response_format': { 'type': 'json_object' },
+  'text': { 'format': { 'type': 'json_object' } },
 })
 ```
 
@@ -1149,9 +1148,9 @@ const openRouter = new OpenRouter({
   apiKey: '<OPENROUTER_API_KEY>',
 });
 
-const completion = await openRouter.chat.send({
-  chatRequest: {
-    messages: [{ role: 'user', content: 'Hello' }],
+const response = await openRouter.responses.send({
+  responsesRequest: {
+    input: 'Hello',
     provider: {
       dataCollection: 'deny', // or "allow"
     },
@@ -1161,7 +1160,7 @@ const completion = await openRouter.chat.send({
 ```
 
 ```typescript title="TypeScript (fetch)" lines theme={null}
-fetch('https://openrouter.ai/api/v1/chat/completions', {
+fetch('https://openrouter.ai/api/v1/responses', {
   method: 'POST',
   headers: {
     'Authorization': 'Bearer <OPENROUTER_API_KEY>',
@@ -1170,7 +1169,7 @@ fetch('https://openrouter.ai/api/v1/chat/completions', {
     'Content-Type': 'application/json',
   },
   body: JSON.stringify({
-    messages: [{ role: 'user', content: 'Hello' }],
+    input: 'Hello',
     provider: {
       data_collection: 'deny', // or "allow"
     },
@@ -1188,8 +1187,8 @@ headers = {
   'Content-Type': 'application/json',
 }
 
-response = requests.post('https://openrouter.ai/api/v1/chat/completions', headers=headers, json={
-  'messages': [{ 'role': 'user', 'content': 'Hello' }],
+response = requests.post('https://openrouter.ai/api/v1/responses', headers=headers, json={
+  'input': 'Hello',
   'provider': {
     'data_collection': 'deny', # or "allow"
   },
@@ -1198,13 +1197,13 @@ response = requests.post('https://openrouter.ai/api/v1/chat/completions', header
 
 ## Zero Data Retention Enforcement
 
-You can enforce Zero Data Retention (ZDR) on a per-request basis using the `zdr` parameter, ensuring your request only routes to endpoints that do not retain prompts.
+You can enforce Zero Data Retention (ZDR) on a per-request basis using the `zdr` parameter, ensuring your request only routes to ZDR endpoints, or to Safety Retention endpoints if your settings allow them.
 
 | Field | Type | Default | Description |
 | - | - | - | - |
 | `zdr` | boolean | - | Restrict routing to only ZDR (Zero Data Retention) endpoints. |
 
-When `zdr` is set to `true`, the request will only be routed to endpoints that have a Zero Data Retention policy. When `zdr` is `false` or not provided, it has no effect on routing.
+When `zdr` is set to `true`, the request will only be routed to ZDR endpoints. Safety Retention endpoints (which may retain prompts and responses from any request, only to prevent abuse, and don't train on them) are also eligible unless your privacy settings or guardrail are set to **ZDR only**. See [Allowing or excluding Safety Retention](../features/zdr.md#allowing-or-excluding-safety-retention). When `zdr` is `false` or not provided, it has no effect on routing.
 
 `zdr` filters model inference endpoints. The [Advisor](../features/server-tools/advisor.md) and [Subagent](../features/server-tools/subagent.md) server tools forward your `provider` preferences, including `zdr`, to their inner generations. Tool backends are not filtered by `zdr`. See [Privacy and regional availability](../features/server-tools.md#privacy-and-regional-availability).
 
@@ -1225,10 +1224,10 @@ const openRouter = new OpenRouter({
   apiKey: '<OPENROUTER_API_KEY>',
 });
 
-const completion = await openRouter.chat.send({
-  chatRequest: {
-    model: 'gpt-4',
-    messages: [{ role: 'user', content: 'Hello' }],
+const response = await openRouter.responses.send({
+  responsesRequest: {
+    model: 'openai/gpt-5-mini',
+    input: 'Hello',
     provider: {
       zdr: true,
     },
@@ -1238,7 +1237,7 @@ const completion = await openRouter.chat.send({
 ```
 
 ```typescript title="TypeScript (fetch)" lines theme={null}
-fetch('https://openrouter.ai/api/v1/chat/completions', {
+fetch('https://openrouter.ai/api/v1/responses', {
   method: 'POST',
   headers: {
     'Authorization': 'Bearer <OPENROUTER_API_KEY>',
@@ -1247,8 +1246,8 @@ fetch('https://openrouter.ai/api/v1/chat/completions', {
     'Content-Type': 'application/json',
   },
   body: JSON.stringify({
-    model: 'gpt-4',
-    messages: [{ role: 'user', content: 'Hello' }],
+    model: 'openai/gpt-5-mini',
+    input: 'Hello',
     provider: {
       zdr: true,
     },
@@ -1266,9 +1265,9 @@ headers = {
   'Content-Type': 'application/json',
 }
 
-response = requests.post('https://openrouter.ai/api/v1/chat/completions', headers=headers, json={
-  'model': 'gpt-4',
-  'messages': [{ 'role': 'user', 'content': 'Hello' }],
+response = requests.post('https://openrouter.ai/api/v1/responses', headers=headers, json={
+  'model': 'openai/gpt-5-mini',
+  'input': 'Hello',
   'provider': {
     'zdr': True,
   },
@@ -1300,10 +1299,10 @@ const openRouter = new OpenRouter({
   apiKey: '<OPENROUTER_API_KEY>',
 });
 
-const completion = await openRouter.chat.send({
-  chatRequest: {
+const response = await openRouter.responses.send({
+  responsesRequest: {
     model: 'meta-llama/llama-3.3-70b-instruct',
-    messages: [{ role: 'user', content: 'Hello' }],
+    input: 'Hello',
     provider: {
       enforceDistillableText: true,
     },
@@ -1313,7 +1312,7 @@ const completion = await openRouter.chat.send({
 ```
 
 ```typescript title="TypeScript (fetch)" lines theme={null}
-fetch('https://openrouter.ai/api/v1/chat/completions', {
+fetch('https://openrouter.ai/api/v1/responses', {
   method: 'POST',
   headers: {
     'Authorization': 'Bearer <OPENROUTER_API_KEY>',
@@ -1323,7 +1322,7 @@ fetch('https://openrouter.ai/api/v1/chat/completions', {
   },
   body: JSON.stringify({
     model: 'meta-llama/llama-3.3-70b-instruct',
-    messages: [{ role: 'user', content: 'Hello' }],
+    input: 'Hello',
     provider: {
       enforce_distillable_text: true,
     },
@@ -1341,9 +1340,9 @@ headers = {
   'Content-Type': 'application/json',
 }
 
-response = requests.post('https://openrouter.ai/api/v1/chat/completions', headers=headers, json={
+response = requests.post('https://openrouter.ai/api/v1/responses', headers=headers, json={
   'model': 'meta-llama/llama-3.3-70b-instruct',
-  'messages': [{ 'role': 'user', 'content': 'Hello' }],
+  'input': 'Hello',
   'provider': {
     'enforce_distillable_text': True,
   },
@@ -1352,7 +1351,7 @@ response = requests.post('https://openrouter.ai/api/v1/chat/completions', header
 
 ## Disabling Fallbacks
 
-To guarantee that your request is only served by the top (lowest-cost) provider, you can disable fallbacks.
+To guarantee that your request is only served by the top-ranked provider, you can disable fallbacks.
 
 This is combined with the `order` field from [Ordering Specific Providers](#ordering-specific-providers) to restrict the providers that OpenRouter will prioritize to just your chosen list.
 
@@ -1363,9 +1362,9 @@ const openRouter = new OpenRouter({
   apiKey: '<OPENROUTER_API_KEY>',
 });
 
-const completion = await openRouter.chat.send({
-  chatRequest: {
-    messages: [{ role: 'user', content: 'Hello' }],
+const response = await openRouter.responses.send({
+  responsesRequest: {
+    input: 'Hello',
     provider: {
       allowFallbacks: false,
     },
@@ -1375,7 +1374,7 @@ const completion = await openRouter.chat.send({
 ```
 
 ```typescript title="TypeScript (fetch)" lines theme={null}
-fetch('https://openrouter.ai/api/v1/chat/completions', {
+fetch('https://openrouter.ai/api/v1/responses', {
   method: 'POST',
   headers: {
     'Authorization': 'Bearer <OPENROUTER_API_KEY>',
@@ -1384,7 +1383,7 @@ fetch('https://openrouter.ai/api/v1/chat/completions', {
     'Content-Type': 'application/json',
   },
   body: JSON.stringify({
-    messages: [{ role: 'user', content: 'Hello' }],
+    input: 'Hello',
     provider: {
       allow_fallbacks: false,
     },
@@ -1402,8 +1401,8 @@ headers = {
   'Content-Type': 'application/json',
 }
 
-response = requests.post('https://openrouter.ai/api/v1/chat/completions', headers=headers, json={
-  'messages': [{ 'role': 'user', 'content': 'Hello' }],
+response = requests.post('https://openrouter.ai/api/v1/responses', headers=headers, json={
+  'input': 'Hello',
   'provider': {
     'allow_fallbacks': False,
   },
@@ -1418,6 +1417,8 @@ You can allow only specific providers for a request by setting the `only` field 
 | - | - | - | - |
 | `only` | string\[] | - | List of provider slugs to allow for this request. |
 
+If two or more of the allowed providers can serve the model, [default routing](#default-routing) picks among them.
+
 > [!WARNING]
 >
 > Only allowing some providers may significantly reduce fallback options and limit request recovery.
@@ -1430,9 +1431,9 @@ You can allow only specific providers for a request by setting the `only` field 
 >
 > Note that when you allow providers for a specific request, both restrictions apply: your account-wide allowed providers act as the ceiling, and the request's `only` list narrows within it. If no provider satisfies both, the request fails with a 404.
 
-### Example: Allowing Azure for a request calling GPT-4 Omni
+### Example: Allowing Azure for a request calling GPT-5 mini
 
-Here's an example that will only use Azure for a request calling GPT-4 Omni:
+Here's an example that will only use Azure for a request calling GPT-5 mini:
 
 ```typescript title="TypeScript SDK" lines theme={null}
 import { OpenRouter } from '@openrouter/sdk';
@@ -1441,10 +1442,10 @@ const openRouter = new OpenRouter({
   apiKey: '<OPENROUTER_API_KEY>',
 });
 
-const completion = await openRouter.chat.send({
-  chatRequest: {
+const response = await openRouter.responses.send({
+  responsesRequest: {
     model: 'openai/gpt-5-mini',
-    messages: [{ role: 'user', content: 'Hello' }],
+    input: 'Hello',
     provider: {
       only: ['azure'],
     },
@@ -1454,7 +1455,7 @@ const completion = await openRouter.chat.send({
 ```
 
 ```typescript title="TypeScript (fetch)" lines theme={null}
-fetch('https://openrouter.ai/api/v1/chat/completions', {
+fetch('https://openrouter.ai/api/v1/responses', {
   method: 'POST',
   headers: {
     'Authorization': 'Bearer <OPENROUTER_API_KEY>',
@@ -1464,7 +1465,7 @@ fetch('https://openrouter.ai/api/v1/chat/completions', {
   },
   body: JSON.stringify({
     model: 'openai/gpt-5-mini',
-    messages: [{ role: 'user', content: 'Hello' }],
+    input: 'Hello',
     provider: {
       only: ['azure'],
     },
@@ -1482,9 +1483,9 @@ headers = {
   'Content-Type': 'application/json',
 }
 
-response = requests.post('https://openrouter.ai/api/v1/chat/completions', headers=headers, json={
+response = requests.post('https://openrouter.ai/api/v1/responses', headers=headers, json={
   'model': 'openai/gpt-5-mini',
-  'messages': [{ 'role': 'user', 'content': 'Hello' }],
+  'input': 'Hello',
   'provider': {
     'only': ['azure'],
   },
@@ -1498,6 +1499,8 @@ You can ignore providers for a request by setting the `ignore` field in the `pro
 | Field | Type | Default | Description |
 | - | - | - | - |
 | `ignore` | string\[] | - | List of provider slugs to skip for this request. |
+
+If two or more providers remain, [default routing](#default-routing) picks among them.
 
 > [!WARNING]
 >
@@ -1522,10 +1525,10 @@ const openRouter = new OpenRouter({
   apiKey: '<OPENROUTER_API_KEY>',
 });
 
-const completion = await openRouter.chat.send({
-  chatRequest: {
+const response = await openRouter.responses.send({
+  responsesRequest: {
     model: 'meta-llama/llama-3.3-70b-instruct',
-    messages: [{ role: 'user', content: 'Hello' }],
+    input: 'Hello',
     provider: {
       ignore: ['deepinfra'],
     },
@@ -1535,7 +1538,7 @@ const completion = await openRouter.chat.send({
 ```
 
 ```typescript title="TypeScript (fetch)" lines theme={null}
-fetch('https://openrouter.ai/api/v1/chat/completions', {
+fetch('https://openrouter.ai/api/v1/responses', {
   method: 'POST',
   headers: {
     'Authorization': 'Bearer <OPENROUTER_API_KEY>',
@@ -1545,7 +1548,7 @@ fetch('https://openrouter.ai/api/v1/chat/completions', {
   },
   body: JSON.stringify({
     model: 'meta-llama/llama-3.3-70b-instruct',
-    messages: [{ role: 'user', content: 'Hello' }],
+    input: 'Hello',
     provider: {
       ignore: ['deepinfra'],
     },
@@ -1563,9 +1566,9 @@ headers = {
   'Content-Type': 'application/json',
 }
 
-response = requests.post('https://openrouter.ai/api/v1/chat/completions', headers=headers, json={
+response = requests.post('https://openrouter.ai/api/v1/responses', headers=headers, json={
   'model': 'meta-llama/llama-3.3-70b-instruct',
-  'messages': [{ 'role': 'user', 'content': 'Hello' }],
+  'input': 'Hello',
   'provider': {
     'ignore': ['deepinfra'],
   },
@@ -1588,7 +1591,7 @@ Providers can support various quantization levels for open-weight models.
 
 ### Quantization Levels
 
-By default, requests are load-balanced across all available providers, ordered by price. To filter providers by quantization level, specify the `quantizations` field in the `provider` parameter with the following values:
+By default, requests use [default routing](#default-routing) across all available providers. To filter providers by quantization level, specify the `quantizations` field in the `provider` parameter with the following values:
 
 * `int4`: Integer (4 bit)
 * `int8`: Integer (8 bit)
@@ -1614,10 +1617,10 @@ const openRouter = new OpenRouter({
   apiKey: '<OPENROUTER_API_KEY>',
 });
 
-const completion = await openRouter.chat.send({
-  chatRequest: {
+const response = await openRouter.responses.send({
+  responsesRequest: {
     model: 'meta-llama/llama-3.1-8b-instruct',
-    messages: [{ role: 'user', content: 'Hello' }],
+    input: 'Hello',
     provider: {
       quantizations: ['fp8'],
     },
@@ -1627,7 +1630,7 @@ const completion = await openRouter.chat.send({
 ```
 
 ```typescript title="TypeScript (fetch)" lines theme={null}
-fetch('https://openrouter.ai/api/v1/chat/completions', {
+fetch('https://openrouter.ai/api/v1/responses', {
   method: 'POST',
   headers: {
     'Authorization': 'Bearer <OPENROUTER_API_KEY>',
@@ -1637,7 +1640,7 @@ fetch('https://openrouter.ai/api/v1/chat/completions', {
   },
   body: JSON.stringify({
     model: 'meta-llama/llama-3.1-8b-instruct',
-    messages: [{ role: 'user', content: 'Hello' }],
+    input: 'Hello',
     provider: {
       quantizations: ['fp8'],
     },
@@ -1655,9 +1658,9 @@ headers = {
   'Content-Type': 'application/json',
 }
 
-response = requests.post('https://openrouter.ai/api/v1/chat/completions', headers=headers, json={
+response = requests.post('https://openrouter.ai/api/v1/responses', headers=headers, json={
   'model': 'meta-llama/llama-3.1-8b-instruct',
-  'messages': [{ 'role': 'user', 'content': 'Hello' }],
+  'input': 'Hello',
   'provider': {
     'quantizations': ['fp8'],
   },
@@ -1694,7 +1697,7 @@ When using Anthropic models (Claude), you can request specific beta features by 
 > OpenRouter manages some Anthropic features automatically:
 >
 > * **Prompt caching and extended context** are enabled based on model capabilities
-> * **Structured outputs for JSON schema response format** (`response_format.type: "json_schema"`) — the header is automatically applied
+> * **Structured outputs for JSON schema response format** (`text.format.type: "json_schema"`, or `response_format.type: "json_schema"` on Chat Completions) — the header is automatically applied
 > * **Fine-grained tool streaming** — for every streamed request (`stream: true`) that includes user-defined tools, OpenRouter sets `eager_input_streaming: true` on each tool so Anthropic emits tool arguments as a sequence of incremental chunks rather than buffering them. This matches the streaming behavior already exposed by other providers. See [Anthropic's fine-grained tool streaming docs](https://platform.claude.com/docs/en/agents-and-tools/tool-use/fine-grained-tool-streaming) for details.
 >
 > For **strict tool use** (`strict: true` on tools), you must explicitly pass the `structured-outputs-2025-11-13` header. Without this header, OpenRouter will strip the `strict` field and route normally.
@@ -1708,11 +1711,11 @@ const openRouter = new OpenRouter({
   apiKey: '<OPENROUTER_API_KEY>',
 });
 
-const completion = await openRouter.chat.send(
+const response = await openRouter.responses.send(
   {
-    chatRequest: {
+    responsesRequest: {
       model: 'anthropic/claude-sonnet-4.5',
-      messages: [{ role: 'user', content: 'Solve this step by step: What is 15% of 240?' }],
+      input: 'Solve this step by step: What is 15% of 240?',
       stream: true,
     },
   },
@@ -1725,7 +1728,7 @@ const completion = await openRouter.chat.send(
 ```
 
 ```typescript title="TypeScript (fetch)" lines theme={null}
-fetch('https://openrouter.ai/api/v1/chat/completions', {
+fetch('https://openrouter.ai/api/v1/responses', {
   method: 'POST',
   headers: {
     'Authorization': 'Bearer <OPENROUTER_API_KEY>',
@@ -1734,7 +1737,7 @@ fetch('https://openrouter.ai/api/v1/chat/completions', {
   },
   body: JSON.stringify({
     model: 'anthropic/claude-sonnet-4.5',
-    messages: [{ role: 'user', content: 'Solve this step by step: What is 15% of 240?' }],
+    input: 'Solve this step by step: What is 15% of 240?',
     stream: true,
   }),
 });
@@ -1749,9 +1752,9 @@ headers = {
   'x-anthropic-beta': 'interleaved-thinking-2025-05-14',
 }
 
-response = requests.post('https://openrouter.ai/api/v1/chat/completions', headers=headers, json={
+response = requests.post('https://openrouter.ai/api/v1/responses', headers=headers, json={
   'model': 'anthropic/claude-sonnet-4.5',
-  'messages': [{ 'role': 'user', 'content': 'Solve this step by step: What is 15% of 240?' }],
+  'input': 'Solve this step by step: What is 15% of 240?',
   'stream': True,
 })
 ```

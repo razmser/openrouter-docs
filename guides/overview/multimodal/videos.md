@@ -23,7 +23,7 @@ OpenRouter supports both **direct URLs** and **base64-encoded data URLs** for vi
 
 ## Video Inputs
 
-You can send video files to compatible models through the `/api/v1/chat/completions` API using the `video_url` content type. The `url` can be either a URL or a base64-encoded data URL. Only models with video processing capabilities handle these requests.
+You can send video files to compatible models through the [Responses API](../../../api_reference/responses/overview.md) (`/api/v1/responses`) using the `input_video` content type. The `video_url` can be either a URL or a base64-encoded data URL. Only models with video processing capabilities handle these requests.
 
 You can search for models that support video by filtering to video input modality on our [Models page](../models.md).
 
@@ -54,21 +54,21 @@ For supported models, mode selection guidance, and token accounting details, ref
 
 The `processing` field is supported in two OpenRouter APIs:
 
-* **Chat Completions API** (`/api/v1/chat/completions`): on the `video_url` content part
 * **Responses API** (`/api/v1/responses`): on the `input_video` content part
+* **Chat Completions API** (`/api/v1/chat/completions`): on the `video_url` content part
 
 The Messages API (`/api/v1/messages`) does not support video inputs.
 
-#### Chat Completions API
-
 #### Responses API
+
+#### Chat Completions API
 
 #### Response handling per API
 
 When agentic processing is used, the model's internal video navigation steps are returned as encrypted reasoning rather than as tool calls, and the response finishes normally. The exact shape depends on the API:
 
-* **Chat Completions API**: The navigation steps appear as encrypted `reasoning_details` entries on the assistant message, and the response finishes with `finish_reason: "stop"`. To preserve the video context on follow-up turns, send the assistant message back with its `reasoning_details` intact, as with other [reasoning token](../../best-practices/reasoning-tokens.md) round-tripping.
 * **Responses API**: The navigation steps appear as `reasoning` output items with `encrypted_content`. To preserve the video context on follow-up turns, echo the response's output items (including the `reasoning` items) back in the `input` of the next request.
+* **Chat Completions API**: The navigation steps appear as encrypted `reasoning_details` entries on the assistant message, and the response finishes with `finish_reason: "stop"`. To preserve the video context on follow-up turns, send the assistant message back with its `reasoning_details` intact, as with other [reasoning token](../../best-practices/reasoning-tokens.md) round-tripping.
 
 ## Supported Video Formats
 

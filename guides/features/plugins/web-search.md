@@ -174,7 +174,7 @@ The same object is accepted as `parameters.x_search` on the [`openrouter:web_sea
 >
 > **Why opt-in.** SpaceXAI announced that starting September 21, 2026 at 12:00 PM PT, X Search is billed per item returned instead of per tool call: $5 per 1,000 posts fetched and $10 per 1,000 user profiles fetched, replacing the previous \$5 per 1,000 tool calls. Web search pricing is unchanged. Because a single X search can now return many billable items, OpenRouter no longer adds `x_search` automatically.
 
-> **Legacy top-level x\_search\_filter**
+> [accordion] Legacy top-level x\_search\_filter
 >
 > Requests that pass `x_search_filter` as a top-level parameter keep working and are treated as an X search opt-in with the same filters. Prefer the `x_search` object shown above. When both are set, `x_search` wins.
 >

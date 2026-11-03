@@ -20,6 +20,8 @@ Body Builder uses AI to understand your intent and generate valid OpenRouter API
 
 The TypeScript SDK example imports Zod for runtime validation. Install it as a direct dependency alongside the SDK: `npm install @openrouter/sdk zod`.
 
+Body Builder currently accepts and returns Chat Completions request shapes, so these examples intentionally use `/api/v1/chat/completions` rather than the Responses API.
+
 ```typescript title="TypeScript SDK" lines theme={null}
 import { OpenRouter } from '@openrouter/sdk';
 import { z } from 'zod';

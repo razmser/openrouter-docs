@@ -22,7 +22,7 @@ The following steps will help you build the question set up front, run the whole
 >
 > * Your existing TypeScript app runs on Node.js or Bun as an ES module (step 3 uses top-level `await`), has `@types/node` or `@types/bun` for `process` and `fetch`, and keeps the items to classify in an array of strings named `posts`.
 > * You've configured `OPENROUTER_API_KEY` and have `zod` 4 installed, since this page imports it directly.
-> * You've followed the [Jev tutorial](../../guides/community/jev-tutorial.md) or read the [Decisions API reference](https://openrouter.ai/docs/api/api-reference/alphadecisions/submit-a-decisions-questions-and-answers-request.md) once, so the `state` and `questions` request shape is familiar.
+> * You've followed the [Jev tutorial](../../guides/community/jev-tutorial.md) or read the [Decisions API reference](../../api/api-reference/alphadecisions/submit-a-decisions-request.md) once, so the `state` and `questions` request shape is familiar.
 > * Keep the [rate limits page](../../api_reference/limits.md) open for the status codes that step 3 retries.
 
 ## 1. Build the label set as Jev questions
@@ -74,7 +74,7 @@ const questions = {
 
 A per-item classification calls the Decisions endpoint, passes it the post and the questions, checks that its response looks right before trusting it, and returns the category, its confidence, the tag probabilities, and the usage figures. Rate limit, server error, or dropped connection throws a `RetryableError` so step 3 can back off and try again. Anything else throws a plain error so the item fails instead of repeating.
 
-The [Decisions schema](https://openrouter.ai/docs/api/api-reference/alphadecisions/submit-a-decisions-questions-and-answers-request.md) marks `confidence` and `usage.cost` as optional. Missing `confidence` stays `undefined`, and step 4 will route those items to review. If there's no `usage.cost`, then the response is rejected rather than being counted as free.
+The [Decisions schema](../../api/api-reference/alphadecisions/submit-a-decisions-request.md) marks `confidence` and `usage.cost` as optional. Missing `confidence` stays `undefined`, and step 4 will route those items to review. If there's no `usage.cost`, then the response is rejected rather than being counted as free.
 
 ```typescript lines theme={null}
 import { z } from 'zod';
@@ -371,5 +371,5 @@ Here are a few things you can try next:
 * [Cut LLM Cost with a Jev-Verified Cascade](jev-verified-cascade.md) to verify generated answers with a `choice` question
 * [Jev documentation hub](../../guides/community/jev.md) for every Jev page on OpenRouter and the TypeSafe docs on writing questions and choosing thresholds
 * [TypeSafe SDK guide](../../guides/community/typesafe-sdk.md) to call Jev through the TypeSafe JS or Python SDK instead of raw `fetch`
-* [Decisions API reference](https://openrouter.ai/docs/api/api-reference/alphadecisions/submit-a-decisions-questions-and-answers-request.md)
+* [Decisions API reference](../../api/api-reference/alphadecisions/submit-a-decisions-request.md)
 * [Other decision models on OpenRouter](https://openrouter.ai/models?output_modalities=decisions) from OpenAI, Microsoft, Perplexity, Cloudflare, and others take the same Decisions API request: change `model` and re-check your thresholds on a labeled sample

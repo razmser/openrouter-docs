@@ -30,7 +30,7 @@ In the examples below, the OpenRouter-specific headers are optional. Setting the
 
 ## Using the OpenRouter API
 
-The most direct way to use OpenRouter. Send standard HTTP requests to the `/api/v1/chat/completions` endpoint. It works with any language or framework.
+The most direct way to use OpenRouter. Send standard HTTP requests to the [`/api/v1/responses`](api_reference/responses/overview.md) endpoint. It works with any language or framework.
 
 > [!TIP]
 >
@@ -45,7 +45,7 @@ import requests
 import json
 
 response = requests.post(
-  url="https://openrouter.ai/api/v1/chat/completions",
+  url="https://openrouter.ai/api/v1/responses",
   headers={
     "Authorization": "Bearer <OPENROUTER_API_KEY>",
     "HTTP-Referer": "<YOUR_SITE_URL>", # Optional. Site URL for rankings on openrouter.ai.
@@ -53,18 +53,13 @@ response = requests.post(
   },
   data=json.dumps({
     "model": "~openai/gpt-sol-latest",
-    "messages": [
-      {
-        "role": "user",
-        "content": "What is the meaning of life?"
-      }
-    ]
+    "input": "What is the meaning of life?"
   })
 )
 ```
 
 ```typescript title="TypeScript (fetch)" lines theme={null}
-fetch('https://openrouter.ai/api/v1/chat/completions', {
+fetch('https://openrouter.ai/api/v1/responses', {
   method: 'POST',
   headers: {
     Authorization: 'Bearer <OPENROUTER_API_KEY>',
@@ -74,28 +69,18 @@ fetch('https://openrouter.ai/api/v1/chat/completions', {
   },
   body: JSON.stringify({
     model: '~openai/gpt-sol-latest',
-    messages: [
-      {
-        role: 'user',
-        content: 'What is the meaning of life?',
-      },
-    ],
+    input: 'What is the meaning of life?',
   }),
 });
 ```
 
 ```shell title="Shell" lines theme={null}
-curl https://openrouter.ai/api/v1/chat/completions \
+curl https://openrouter.ai/api/v1/responses \
   -H "Content-Type: application/json" \
   -H "Authorization: Bearer $OPENROUTER_API_KEY" \
   -d '{
   "model": "~openai/gpt-sol-latest",
-  "messages": [
-    {
-      "role": "user",
-      "content": "What is the meaning of life?"
-    }
-  ]
+  "input": "What is the meaning of life?"
 }'
 ```
 
@@ -103,7 +88,7 @@ The API also supports [streaming](api_reference/streaming.md). You can also use 
 
 > [!NOTE]
 >
-> For EU in-region routing on Business or Enterprise, send chat completion requests to `https://eu.openrouter.ai/api/v1/chat/completions`, or set your SDK's base URL to `https://eu.openrouter.ai/api/v1`, with an EU-eligible model. [EU in-region routing on Business](https://openrouter.ai/business/eu) explains what is processed in Europe, what may be stored or processed in the US, and how BYOK requests are handled.
+> For EU in-region routing on Business or Enterprise, send requests to `https://eu.openrouter.ai/api/v1/responses`, or set your SDK's base URL to `https://eu.openrouter.ai/api/v1`, with an EU-eligible model. [EU in-region routing on Business](https://openrouter.ai/business/eu) explains what is processed in Europe, what may be stored or processed in the US, and how BYOK requests are handled.
 
 ***
 
@@ -148,23 +133,22 @@ const client = new OpenRouter({
   appTitle: '<YOUR_SITE_NAME>', // Optional. Site title for rankings on openrouter.ai.
 });
 
-const completion = await client.chat.send({
-  chatRequest: {
+const response = await client.responses.send({
+  responsesRequest: {
     model: '~openai/gpt-sol-latest',
-    messages: [
-      {
-        role: 'user',
-        content: 'What is the meaning of life?',
-      },
-    ],
+    input: 'What is the meaning of life?',
   },
 });
 
-if (completion instanceof ReadableStream) {
+if (!('output' in response)) {
   throw new Error('Expected a non-streaming response');
 }
+if (response.status !== 'completed') {
+  throw new Error(response.error?.message ?? `Response ended as ${response.status}`);
+}
 
-console.log(completion.choices[0].message.content);
+const message = response.output.find((item) => item.type === 'message');
+console.log(message?.content.find((part) => part.type === 'output_text')?.text);
 ```
 
 ```python title="Python" lines theme={null}
@@ -172,14 +156,17 @@ from openrouter import OpenRouter
 import os
 
 with OpenRouter(api_key=os.getenv("OPENROUTER_API_KEY")) as client:
-    response = client.chat.send(
+    response = client.responses.send(
         model="~openai/gpt-sol-latest",
-        messages=[
-            {"role": "user", "content": "What is the meaning of life?"}
-        ],
+        input="What is the meaning of life?",
     )
 
-    print(response.choices[0].message.content)
+    if response.status != "completed":
+        message = response.error.message if response.error else f"Response ended as {response.status}"
+        raise RuntimeError(message)
+
+    message = next(item for item in response.output if item.type == "message")
+    print(next(part.text for part in message.content if part.type == "output_text"))
 ```
 
 See the full [Client SDKs documentation](client-sdks/overview.md) for streaming, embeddings, and the complete API reference.
@@ -266,17 +253,12 @@ const openai = new OpenAI({
 });
 
 async function main() {
-  const completion = await openai.chat.completions.create({
+  const response = await openai.responses.create({
     model: '~openai/gpt-sol-latest',
-    messages: [
-      {
-        role: 'user',
-        content: 'What is the meaning of life?',
-      },
-    ],
+    input: 'What is the meaning of life?',
   });
 
-  console.log(completion.choices[0].message);
+  console.log(response.output_text);
 }
 
 main();
@@ -290,21 +272,16 @@ client = OpenAI(
   api_key="<OPENROUTER_API_KEY>",
 )
 
-completion = client.chat.completions.create(
+response = client.responses.create(
   extra_headers={
     "HTTP-Referer": "<YOUR_SITE_URL>", # Optional. Site URL for rankings on openrouter.ai.
     "X-OpenRouter-Title": "<YOUR_SITE_NAME>", # Optional. Site title for rankings on openrouter.ai.
   },
   model="~openai/gpt-sol-latest",
-  messages=[
-    {
-      "role": "user",
-      "content": "What is the meaning of life?"
-    }
-  ]
+  input="What is the meaning of life?"
 )
 
-print(completion.choices[0].message.content)
+print(response.output_text)
 ```
 
 ## Using third-party SDKs

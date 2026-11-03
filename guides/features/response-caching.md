@@ -10,7 +10,7 @@ Response caching allows you to cache responses for identical API requests. When 
 
 Response caching is **model-agnostic** and works with every model available on OpenRouter across all [supported endpoints](#supported-endpoints), regardless of provider. Caching operates at the OpenRouter layer before the request reaches any provider, so no provider-side support is required.
 
-Both streaming and non-streaming requests are eligible for caching. Only successful (`200 OK`) responses are cached. Error responses, rate limit responses, and partial results are never cached. Responses containing tool calls are cached normally since they are part of a successful completion. For streaming requests, the cached response is replayed through the same streaming pipeline, so the client receives the same content chunks on a cache hit. The `id` field, `created` timestamp, and `X-Generation-Id` response header in each chunk reflect the new cache-hit generation record, not the original.
+Both streaming and non-streaming requests are eligible for caching. Only successful (`200 OK`) responses are cached. Error responses, rate limit responses, and partial results are never cached. Responses containing tool calls are cached normally since they are part of a successful completion. For streaming requests, the cached response is replayed through the same streaming pipeline, so the client receives the same content chunks on a cache hit. Each chunk's `id`, `created` timestamp, and `X-Generation-Id` response header identify the new cache-hit generation record.
 
 ## Enabling caching
 
@@ -31,11 +31,27 @@ X-OpenRouter-Cache-TTL: 300
 ```json title="Response Body (MISS)" lines theme={null}
 {
   "id": "gen-abc123",
+  "object": "response",
   "model": "google/gemini-2.5-flash",
-  "choices": ["..."],
+  "status": "completed",
+  "output": [
+    {
+      "id": "msg_abc123",
+      "type": "message",
+      "status": "completed",
+      "role": "assistant",
+      "content": [
+        {
+          "type": "output_text",
+          "text": "People define life's meaning in many ways.",
+          "annotations": []
+        }
+      ]
+    }
+  ],
   "usage": {
-    "prompt_tokens": 15,
-    "completion_tokens": 120,
+    "input_tokens": 15,
+    "output_tokens": 120,
     "total_tokens": 135
   }
 }
@@ -55,12 +71,28 @@ X-OpenRouter-Cache-Source-Id: gen-abc123
 ```json title="Response Body (HIT)" lines theme={null}
 {
   "id": "gen-def456",
-  "created": 1746000012,
+  "object": "response",
+  "created_at": 1746000012,
   "model": "google/gemini-2.5-flash",
-  "choices": ["..."],
+  "status": "completed",
+  "output": [
+    {
+      "id": "msg_abc123",
+      "type": "message",
+      "status": "completed",
+      "role": "assistant",
+      "content": [
+        {
+          "type": "output_text",
+          "text": "People define life's meaning in many ways.",
+          "annotations": []
+        }
+      ]
+    }
+  ],
   "usage": {
-    "prompt_tokens": 0,
-    "completion_tokens": 0,
+    "input_tokens": 0,
+    "output_tokens": 0,
     "total_tokens": 0
   }
 }
@@ -103,7 +135,7 @@ Cache is **scoped to your API key**. Different API keys, even under the same acc
 
 The cache key is derived from your **API key**, **model**, **endpoint type**, **streaming mode**, and a **SHA-256 hash of the request body**. Streaming and non-streaming requests are cached separately, so a `stream: true` request will not return a cached non-streaming response and vice versa. The request body is normalized before hashing, so extra whitespace does not affect the cache key. However, the property order of the JSON body is significant:
 
-* Different property ordering in logically identical JSON (e.g. `{"model":"x","messages":[]}` vs `{"messages":[],"model":"x"}`) will produce different cache keys
+* Different property ordering in logically identical JSON (e.g. `{"model":"x","input":[]}` vs `{"input":[],"model":"x"}`) will produce different cache keys
 * Omitting optional fields vs. explicitly sending defaults (e.g. `temperature: 1.0`) produces different keys
 * [Attribution headers](../../app-attribution.md#attribution-headers) (e.g. `HTTP-Referer`, `X-Title`) and [provider-specific headers](../routing/provider-selection.md#provider-specific-headers) are **not** part of the cache key
 * Multimodal requests (images, audio, video, file attachments) are eligible for caching. The full request body, including base64-encoded content, is included in the hash
@@ -176,7 +208,7 @@ The new cache entry uses the TTL from the current request's `X-OpenRouter-Cache-
 
 ## Billing
 
-Cache hits are **free**. No tokens are consumed and all billable usage counters are reported as `0`. For chat completions and Responses endpoints, `usage.prompt_tokens`, `usage.completion_tokens`, and `usage.total_tokens` are zeroed. For the Embeddings endpoint, `usage.prompt_tokens` and `usage.total_tokens` are zeroed (`completion_tokens` is not present in embeddings responses). For the Anthropic Messages endpoint, `usage.input_tokens` and `usage.output_tokens` are zeroed. You are only billed for the original request that populates the cache (a cache `MISS`).
+Cache hits are **free**. No tokens are consumed and all billable usage counters are reported as `0`. For the Responses endpoint, `usage.input_tokens`, `usage.output_tokens`, and `usage.total_tokens` are zeroed. For the Chat Completions endpoint, `usage.prompt_tokens`, `usage.completion_tokens`, and `usage.total_tokens` are zeroed. For the Embeddings endpoint, `usage.prompt_tokens` and `usage.total_tokens` are zeroed (`completion_tokens` is not present in embeddings responses). For the Anthropic Messages endpoint, `usage.input_tokens` and `usage.output_tokens` are zeroed. You are only billed for the original request that populates the cache (a cache `MISS`).
 
 Cache hits do not count toward provider rate limits since the request never reaches a provider.
 
@@ -188,21 +220,21 @@ Cache hits do not count toward provider rate limits since the request never reac
 
 ## Data retention
 
-Cached responses are stored in edge infrastructure, retained only for the TTL duration, and automatically evicted upon expiry. Cached data is accessible only via the API key that triggered the caching–no other key, account, or organization can retrieve it. Cached data is not used for training or shared with third parties.
+Cached responses are stored in edge infrastructure for at most the configured TTL and may be evicted earlier. Only the API key that enabled caching can retrieve them. OpenRouter does not use cached data for training or share it with third parties.
 
 ## Use cases
 
 ### Agent workflows
 
-When an agent workflow fails partway through, you can resume from the point of failure without re-running and re-paying for identical earlier requests. Enable caching at the start of the workflow and all prior steps return immediately from cache on retry.
+When an agent workflow fails partway through, you can resume from the point of failure without re-running and re-paying for identical earlier requests that remain cached. Enable caching at the start of the workflow so retries can reuse prior steps; an evicted entry runs again normally.
 
 ### Unit testing
 
-Get repeatable responses for your test suite. After the initial run populates the cache, subsequent identical requests return the same cached response every time at zero cost. For deterministic first-run results, use `temperature: 0` or a fixed `seed`.
+Get repeatable responses for your test suite. After the initial run populates the cache, subsequent identical requests return the same response at zero cost while the entry remains cached. For deterministic results after a cache miss, use `temperature: 0` or a fixed `seed`.
 
 ### Repeated identical requests
 
-If your application makes the same request multiple times (same model, same messages, same parameters), caching ensures only the first call hits the provider. Subsequent identical calls return immediately from cache at zero cost.
+If your application makes the same request multiple times (same model, same input, same parameters), subsequent calls return immediately at zero cost while the response remains cached. A call after expiry or early eviction hits the provider again and repopulates the cache.
 
 ### Monitoring cache effectiveness
 

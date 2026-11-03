@@ -4,7 +4,7 @@
 
 # Update a private provider
 
-> Update a private provider’s details or declared data policy. The name and slug cannot change. Refuses (409) a data-policy change while OpenRouter pins the declared policy on one of its endpoints. [Management key](../../../guides/overview/auth/management-api-keys.md) required.
+> Update a private provider’s display name or base URL. The name and slug cannot change, and the data policy is fixed by OpenRouter, so a body with no editable field is rejected (400). [Management key](../../../guides/overview/auth/management-api-keys.md) required.
 
 
 
@@ -128,6 +128,8 @@ tags:
     name: Workspaces
   - description: Alpha feature endpoints for Decisions requests
     name: alpha.decisions
+  - description: Alpha feature endpoints for Extractions requests
+    name: alpha.extractions
 externalDocs:
   description: OpenRouter Documentation
   url: https://openrouter.ai/docs
@@ -138,9 +140,9 @@ paths:
         - Private Providers
       summary: Update a private provider
       description: >-
-        Update a private provider’s details or declared data policy. The name
-        and slug cannot change. Refuses (409) a data-policy change while
-        OpenRouter pins the declared policy on one of its endpoints. [Management
+        Update a private provider’s display name or base URL. The name and slug
+        cannot change, and the data policy is fixed by OpenRouter, so a body
+        with no editable field is rejected (400). [Management
         key](/docs/guides/overview/auth/management-api-keys) required.
       operationId: updatePrivateProvider
       parameters:
@@ -281,24 +283,6 @@ components:
           example: https://inference.example.com/v1
           minLength: 1
           type: string
-        data_policy:
-          properties:
-            prompt_retention_days:
-              description: >-
-                Days prompts are retained. Must be `null` unless
-                `retains_prompts` is true.
-              maximum: 3650
-              minimum: 1
-              type:
-                - integer
-                - 'null'
-            retains_prompts:
-              description: Whether the provider retains prompts or completions.
-              type: boolean
-            training:
-              description: Whether the provider trains on prompts.
-              type: boolean
-          type: object
         display_name:
           example: Acme
           maxLength: 80
@@ -309,10 +293,6 @@ components:
       example:
         base_url: https://inference.example.com/v1
         created_at: '2026-10-06T12:00:00.000Z'
-        data_policy:
-          prompt_retention_days: null
-          retains_prompts: false
-          training: false
         display_name: Acme
         name: Acme
         slug: acme
@@ -330,31 +310,6 @@ components:
             - 'null'
         created_at:
           type: string
-        data_policy:
-          description: Your declared data policy, or `null` when none was declared.
-          properties:
-            prompt_retention_days:
-              description: >-
-                Days prompts are retained. Must be `null` unless
-                `retains_prompts` is true.
-              maximum: 3650
-              minimum: 1
-              type:
-                - integer
-                - 'null'
-            retains_prompts:
-              description: Whether the provider retains prompts or completions.
-              type: boolean
-            training:
-              description: Whether the provider trains on prompts.
-              type: boolean
-          required:
-            - training
-            - retains_prompts
-            - prompt_retention_days
-          type:
-            - object
-            - 'null'
         display_name:
           description: Human-readable provider name shown in the UI.
           example: Acme
@@ -375,7 +330,6 @@ components:
         - slug
         - display_name
         - base_url
-        - data_policy
         - created_at
       type: object
     BadRequestResponse:

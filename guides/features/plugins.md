@@ -26,7 +26,7 @@ OpenRouter currently supports the following plugins:
 
 ## Enabling Plugins via API
 
-Plugins are enabled by adding a `plugins` array to your chat completions request. Each plugin is identified by its `id` and can include optional configuration parameters.
+Plugins are enabled by adding a `plugins` array to your [Responses API](../../api_reference/responses/overview.md) request. Each plugin is identified by its `id` and can include optional configuration parameters.
 
 ## Using Multiple Plugins
 
@@ -35,14 +35,17 @@ You can enable multiple plugins in a single request:
 ```json lines theme={null}
 {
   "model": "openai/gpt-5.2",
-  "messages": [...],
+  "input": [...],
   "plugins": [
     { "id": "web", "max_results": 3 },
     { "id": "response-healing" }
   ],
-  "response_format": {
-    "type": "json_schema",
-    "json_schema": { ... }
+  "text": {
+    "format": {
+      "type": "json_schema",
+      "name": "...",
+      "schema": { ... }
+    }
   }
 }
 ```
@@ -88,7 +91,7 @@ If a plugin is enabled by default in your account settings, you can disable it f
 ```json lines theme={null}
 {
   "model": "openai/gpt-5.2",
-  "messages": [...],
+  "input": [...],
   "plugins": [
     { "id": "web", "enabled": false }
   ]

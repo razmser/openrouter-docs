@@ -128,6 +128,8 @@ tags:
     name: Workspaces
   - description: Alpha feature endpoints for Decisions requests
     name: alpha.decisions
+  - description: Alpha feature endpoints for Extractions requests
+    name: alpha.extractions
 externalDocs:
   description: OpenRouter Documentation
   url: https://openrouter.ai/docs
@@ -242,32 +244,7 @@ paths:
                         type: array
                       operators:
                         items:
-                          properties:
-                            name:
-                              description: Operator identifier used in filter definitions
-                              enum:
-                                - eq
-                                - neq
-                                - in
-                                - not_in
-                                - gt
-                                - gte
-                                - lt
-                                - lte
-                              example: eq
-                              type: string
-                            value_type:
-                              description: >-
-                                Whether the operator expects a single value or
-                                an array
-                              enum:
-                                - scalar
-                                - array
-                              type: string
-                          required:
-                            - name
-                            - value_type
-                          type: object
+                          $ref: '#/components/schemas/Operator'
                         type: array
                     required:
                       - metrics
@@ -311,6 +288,31 @@ paths:
           description: Internal Server Error - Unexpected server error
 components:
   schemas:
+    Operator:
+      properties:
+        name:
+          description: Operator identifier used in filter definitions
+          enum:
+            - eq
+            - neq
+            - in
+            - not_in
+            - gt
+            - gte
+            - lt
+            - lte
+          example: eq
+          type: string
+        value_type:
+          description: Whether the operator expects a single value or an array
+          enum:
+            - scalar
+            - array
+          type: string
+      required:
+        - name
+        - value_type
+      type: object
     UnauthorizedResponse:
       description: Unauthorized - Authentication required or invalid credentials
       example:

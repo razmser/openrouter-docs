@@ -128,6 +128,8 @@ tags:
     name: Workspaces
   - description: Alpha feature endpoints for Decisions requests
     name: alpha.decisions
+  - description: Alpha feature endpoints for Extractions requests
+    name: alpha.extractions
 externalDocs:
   description: OpenRouter Documentation
   url: https://openrouter.ai/docs
@@ -1804,6 +1806,26 @@ components:
       allOf:
         - $ref: '#/components/schemas/BaseResponsesResult'
         - properties:
+            access_programs:
+              default: null
+              description: >-
+                Access program the upstream provider reported for this response
+                (OpenAI `access_programs`). `null` when the provider reported
+                none, including OpenAI's implicit Standard program.
+              example:
+                cyber: standard
+              properties:
+                cyber:
+                  enum:
+                    - standard
+                    - daybreak_blue
+                    - daybreak_red
+                  type: string
+              required:
+                - cyber
+              type:
+                - object
+                - 'null'
             alignment:
               $ref: '#/components/schemas/Alignment'
             error:

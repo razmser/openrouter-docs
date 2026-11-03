@@ -20,7 +20,7 @@ This is ideal for:
 
 ## Usage
 
-Send a chat completion request with a `~author/family-latest` slug as the model:
+Send a [Responses API](../../../api_reference/responses/overview.md) request with a `~author/family-latest` slug as the model:
 
 ```typescript title="TypeScript SDK" lines theme={null}
 import { OpenRouter } from '@openrouter/sdk';
@@ -29,29 +29,25 @@ const openRouter = new OpenRouter({
   apiKey: '<OPENROUTER_API_KEY>',
 });
 
-const completion = await openRouter.chat.send({
-  chatRequest: {
+const response = await openRouter.responses.send({
+  responsesRequest: {
     model: '~anthropic/claude-opus-latest',
-    messages: [
-      {
-        role: 'user',
-        content: 'Summarize this in one sentence: ...',
-      },
-    ],
+    input: 'Summarize this in one sentence: ...',
   },
 });
 
-if (completion instanceof ReadableStream) {
+if (!('output' in response)) {
   throw new Error('Expected a non-streaming response');
 }
 
-console.log(completion.choices[0].message.content);
+const message = [...response.output].reverse().find((item) => item.type === 'message');
+console.log(message?.content.find((part) => part.type === 'output_text')?.text);
 // The `model` field reflects the concrete version that served the request.
-console.log('Resolved to:', completion.model);
+console.log('Resolved to:', response.model);
 ```
 
 ```typescript title="TypeScript (fetch)" lines theme={null}
-const response = await fetch('https://openrouter.ai/api/v1/chat/completions', {
+const response = await fetch('https://openrouter.ai/api/v1/responses', {
   method: 'POST',
   headers: {
     'Authorization': 'Bearer <OPENROUTER_API_KEY>',
@@ -59,12 +55,7 @@ const response = await fetch('https://openrouter.ai/api/v1/chat/completions', {
   },
   body: JSON.stringify({
     model: '~anthropic/claude-opus-latest',
-    messages: [
-      {
-        role: 'user',
-        content: 'Summarize this in one sentence: ...',
-      },
-    ],
+    input: 'Summarize this in one sentence: ...',
   }),
 });
 
@@ -77,19 +68,14 @@ import requests
 import json
 
 response = requests.post(
-  url="https://openrouter.ai/api/v1/chat/completions",
+  url="https://openrouter.ai/api/v1/responses",
   headers={
     "Authorization": "Bearer <OPENROUTER_API_KEY>",
     "Content-Type": "application/json",
   },
   data=json.dumps({
     "model": "~anthropic/claude-opus-latest",
-    "messages": [
-      {
-        "role": "user",
-        "content": "Summarize this in one sentence: ..."
-      }
-    ]
+    "input": "Summarize this in one sentence: ..."
   })
 )
 
@@ -98,12 +84,12 @@ print('Resolved to:', data['model'])
 ```
 
 ```bash title="cURL" lines theme={null}
-curl https://openrouter.ai/api/v1/chat/completions \
+curl https://openrouter.ai/api/v1/responses \
   -H "Authorization: Bearer $OPENROUTER_API_KEY" \
   -H "Content-Type: application/json" \
   -d '{
     "model": "~anthropic/claude-opus-latest",
-    "messages": [{"role": "user", "content": "Hello!"}]
+    "input": "Hello!"
   }'
 ```
 
@@ -114,18 +100,24 @@ The response's `model` field reflects the concrete model that actually served th
 ```json lines theme={null}
 {
   "id": "gen-...",
+  "object": "response",
   "model": "anthropic/claude-opus-4.8",
-  "choices": [
+  "status": "completed",
+  "output": [
     {
-      "message": {
-        "role": "assistant",
-        "content": "..."
-      }
+      "type": "message",
+      "role": "assistant",
+      "content": [
+        {
+          "type": "output_text",
+          "text": "..."
+        }
+      ]
     }
   ],
   "usage": {
-    "prompt_tokens": 12,
-    "completion_tokens": 85,
+    "input_tokens": 12,
+    "output_tokens": 85,
     "total_tokens": 97
   }
 }
@@ -195,4 +187,4 @@ You can see the exact slug your last request resolved to in the response's `mode
 * [Auto Router](auto-router.md) - Cross-model intelligent selection (paid models)
 * [Free Models Router](free-router.md) - Route to available free models
 * [Model Variants](../model-variants/free.md) - `:free`, `:nitro`, and other suffixes
-* [API Reference: Chat Completions](../../../api/api-reference/chat/create-a-chat-completion.md)
+* [API Reference: Responses](../../../api_reference/responses/overview.md)

@@ -29,6 +29,8 @@ Entries on this page are generated automatically from [OpenAPI specification](ap
 * [`PATCH /private-endpoints/{id}`](api/api-reference/private-endpoints/update-a-private-endpoint.md): description updated
 * [`PUT /private-endpoints/{id}/parameters`](api/api-reference/private-endpoints/set-private-endpoint-supported-parameters-deprecated.md): deprecated property\_added; description updated
 * [`PUT /private-endpoints/{id}/pricing`](api/api-reference/private-endpoints/set-private-endpoint-pricing-deprecated.md): deprecated property\_added; description updated
+* [`GET /byok`](api/api-reference/byok/list-byok-provider-credentials.md): parameter `provider` updated
+* [`POST /keys`](api/api-reference/api-keys/create-a-new-api-key.md): description updated
 
 ## New schemas
 
@@ -108,6 +110,64 @@ Entries on this page are generated automatically from [OpenAPI specification](ap
   * Used by [`POST /private-providers`](api/api-reference/private-providers/create-a-private-provider.md)
 * `UpdatePrivateProviderRequest`: minLength property\_added; property `prompt_retention_days` updated; maxLength property\_added
   * Used by [`PATCH /private-providers/{slug}`](api/api-reference/private-providers/update-a-private-provider.md)
+* `BYOKProviderSlug`: enum property\_added
+
+  **4 endpoints using this schema**
+
+  * [`GET /byok`](api/api-reference/byok/list-byok-provider-credentials.md)
+  * [`GET /byok/{id}`](api/api-reference/byok/get-a-byok-provider-credential.md)
+  * [`PATCH /byok/{id}`](api/api-reference/byok/update-a-byok-provider-credential.md)
+  * [`POST /byok`](api/api-reference/byok/create-a-byok-provider-credential.md)
+* `MessagesStartEvent`: property `provider` updated
+  * Used by [`POST /messages`](api/api-reference/anthropic-messages/create-a-message.md)
+* `ProviderName`: enum property\_added
+
+  **14 endpoints using this schema**
+
+  * [`GET /endpoints/zdr`](api/api-reference/endpoints/preview-the-impact-of-zdr-on-the-available-endpoints.md)
+  * [`GET /models/{author}/{slug}/endpoints`](api/api-reference/endpoints/list-all-endpoints-for-a-model.md)
+  * [`POST /api/alpha/decisions`](api/api-reference/alphadecisions/submit-a-decisions-request.md)
+  * [`POST /batches`](api/api-reference/batch/create-a-batch.md)
+  * [`POST /chat/completions`](api/api-reference/chat/create-a-chat-completion.md)
+  * [`POST /embeddings`](api/api-reference/embeddings/submit-an-embedding-request.md)
+  * [`POST /images`](api/api-reference/images/generate-an-image.md)
+  * [`POST /messages`](api/api-reference/anthropic-messages/create-a-message.md)
+  * [`POST /presets/{slug}/chat/completions`](api/api-reference/presets/create-a-preset-from-a-chat-completions-request-body.md)
+  * [`POST /presets/{slug}/messages`](api/api-reference/presets/create-a-preset-from-a-messages-request-body.md)
+  * [`POST /presets/{slug}/responses`](api/api-reference/presets/create-a-preset-from-a-responses-request-body.md)
+  * [`POST /rerank`](api/api-reference/rerank/submit-a-rerank-request.md)
+  * [`POST /responses`](api/api-reference/responses/create-a-response.md)
+  * [`POST /systemone`](api/api-reference/systemone/submit-a-system-one-request.md)
+* `ProviderOptions`: new property `kt`
+
+  **14 endpoints using this schema**
+
+  * [`POST /api/alpha/decisions`](api/api-reference/alphadecisions/submit-a-decisions-request.md)
+  * [`POST /audio/speech`](api/api-reference/tts/create-speech.md)
+  * [`POST /audio/transcriptions`](api/api-reference/stt/create-transcription.md)
+  * [`POST /chat/completions`](api/api-reference/chat/create-a-chat-completion.md)
+  * [`POST /embeddings`](api/api-reference/embeddings/submit-an-embedding-request.md)
+  * [`POST /images`](api/api-reference/images/generate-an-image.md)
+  * [`POST /messages`](api/api-reference/anthropic-messages/create-a-message.md)
+  * [`POST /presets/{slug}/chat/completions`](api/api-reference/presets/create-a-preset-from-a-chat-completions-request-body.md)
+  * [`POST /presets/{slug}/messages`](api/api-reference/presets/create-a-preset-from-a-messages-request-body.md)
+  * [`POST /presets/{slug}/responses`](api/api-reference/presets/create-a-preset-from-a-responses-request-body.md)
+  * [`POST /rerank`](api/api-reference/rerank/submit-a-rerank-request.md)
+  * [`POST /responses`](api/api-reference/responses/create-a-response.md)
+  * [`POST /systemone`](api/api-reference/systemone/submit-a-system-one-request.md)
+  * [`POST /videos`](api/api-reference/video-generation/submit-a-video-generation-request.md)
+* `ProviderResponse`: enum property\_added
+  * Used by [`GET /generation`](api/api-reference/generations/get-request-&-usage-metadata-for-a-generation.md)
+* `JevRouterPlugin`: description updated
+
+  **6 endpoints using this schema**
+
+  * [`POST /chat/completions`](api/api-reference/chat/create-a-chat-completion.md)
+  * [`POST /messages`](api/api-reference/anthropic-messages/create-a-message.md)
+  * [`POST /presets/{slug}/chat/completions`](api/api-reference/presets/create-a-preset-from-a-chat-completions-request-body.md)
+  * [`POST /presets/{slug}/messages`](api/api-reference/presets/create-a-preset-from-a-messages-request-body.md)
+  * [`POST /presets/{slug}/responses`](api/api-reference/presets/create-a-preset-from-a-responses-request-body.md)
+  * [`POST /responses`](api/api-reference/responses/create-a-response.md)
 
 **October 28, 2026**
 

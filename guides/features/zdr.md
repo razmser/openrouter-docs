@@ -10,7 +10,32 @@
 >
 > **Planned update (October 27, 2026):** OpenRouter will screen all inference requests, including ZDR traffic, for child sexual abuse material (CSAM) in flight. Content flagged as potential CSAM may be retained for human review, reporting, and preservation where required by law. This does not permit general retention or use for model training. [Read the announcement](https://openrouter.ai/blog/announcements/csam-screening). We're updating this page and our related terms.
 
-Zero Data Retention (ZDR) means that a provider will not store your data for any period of time.
+Zero Data Retention (ZDR) means no routine storage of prompts or responses after processing, apart from the CSAM exception described on this page.
+
+## Data policy tiers
+
+OpenRouter describes every endpoint's data policy with three tiers:
+
+| Tier | What it means | Is your data trained on? |
+| - | - | - |
+| **ZDR** | No routine storage after processing, as described on this page. | No |
+| **Safety Retention** | OpenRouter or a provider may retain prompts and responses from any request, whether flagged or not, only to detect, investigate, and prevent abuse. | No |
+| **Retention and Training** | Data may be stored and used for training under the applicable provider policy. | May be, under the provider's policy |
+
+Safety Retention limits why data can be kept. It does not require a request to be flagged before it can be stored.
+
+## Allowing or excluding Safety Retention
+
+When ZDR is enforced in your privacy settings or a guardrail, you choose whether Safety Retention endpoints are also allowed. The choice is separate for **Google** models and **All other models**, the two groups where Safety Retention endpoints exist today.
+
+* **Allow Safety Retention:** ZDR-enforced requests can use ZDR endpoints and Safety Retention endpoints.
+* **ZDR only:** ZDR-enforced requests use ZDR endpoints only. Safety Retention endpoints are excluded, so some models may be unavailable.
+
+Set this in your [privacy settings](https://openrouter.ai/settings/privacy) or in a guardrail's settings. A guardrail can only be stricter than your account setting: if your account is set to ZDR only, a guardrail can't allow Safety Retention. If you haven't chosen, self-serve accounts allow Safety Retention and enterprise accounts use ZDR only.
+
+In the API, `zdr: true` on a request follows the same account and guardrail choice. The guardrail fields are `allow_safety_retention_google` and `allow_safety_retention_other` in the [Guardrails API](../../api/api-reference/guardrails/create-a-guardrail.md).
+
+When ZDR isn't enforced, Safety Retention endpoints are available like any other endpoint that doesn't train on your data.
 
 OpenRouter has [privacy settings](https://openrouter.ai/settings/privacy) that, when enabled, only allow you to route to endpoints that have a Zero Data Retention policy. You can enforce ZDR globally, per model group, per guardrail, or per request.
 
@@ -44,7 +69,7 @@ The five model group scopes are:
 | - | - |
 | **Anthropic** | Removes first-party Anthropic endpoints (Bedrock and Vertex remain available) |
 | **OpenAI** | Removes first-party OpenAI endpoints (Azure remains available) |
-| **Google** | Removes AI Studio endpoints (Vertex remains available) |
+| **Google** | Removes AI Studio endpoints. Vertex endpoints that use Safety Retention remain available only if Safety Retention is allowed (see [Google Safety Retention](#google-safety-retention)) |
 | **SpaceXAI** | Removes non-ZDR SpaceXAI endpoints (the ZDR SpaceXAI endpoint remains available) |
 | **All other models** | Removes all other non-ZDR endpoints |
 
@@ -76,6 +101,21 @@ In the API, these are represented as separate fields on the guardrail object:
 >
 > The legacy `enforce_zdr` field is deprecated. When provided, its value is copied into any per-model-group fields that are not explicitly set on the request. Use the per-model-group fields directly for new integrations.
 
+## Google Safety Retention
+
+Starting October 18, 2026, Google requires Safety Retention for Google models served through Vertex. With Safety Retention, Google doesn't retain prompts by default, but it may retain prompts that its safety classifiers flag, for up to 90 days, for abuse monitoring. Google doesn't use retained prompts for training. These endpoints don't meet a strict Zero Data Retention requirement.
+
+When you enforce ZDR for Google models, you choose how OpenRouter treats these endpoints in your [privacy settings](https://openrouter.ai/settings/privacy) or on a guardrail:
+
+| Choice | Effect |
+| - | - |
+| **ZDR only** | Excludes endpoints that use Safety Retention. Most Google models become unavailable. |
+| **Allow Safety Retention** | Lets ZDR-enforced requests use endpoints that use Safety Retention. |
+
+If you don't choose, enterprise accounts default to **ZDR only** and all other accounts default to **Allow Safety Retention**. On guardrails, use `allow_safety_retention_google` for Google models and `allow_safety_retention_other` for other models that use Safety Retention, such as open-weight models on Vertex. A guardrail can't allow Safety Retention when your account setting is **ZDR only**.
+
+On a model page, the provider details for an endpoint that uses Safety Retention show **ZDR compatible: Only with Safety Retention allowed**.
+
 ## Per-Request ZDR Enforcement
 
 In addition to account-level and guardrail-level settings, you can enforce Zero Data Retention on a per-request basis using the `zdr` parameter in your API calls.
@@ -98,7 +138,7 @@ Include the `zdr` parameter in your provider preferences:
 }
 ```
 
-When `zdr` is set to `true`, the request will only be routed to endpoints that have a Zero Data Retention policy. When `zdr` is `false` or not provided, ZDR enforcement still applies if enabled in your account or guardrail settings.
+When `zdr` is set to `true`, the request will only be routed to ZDR endpoints, plus Safety Retention endpoints if your settings allow them (see [Allowing or excluding Safety Retention](#allowing-or-excluding-safety-retention)). When `zdr` is `false` or not provided, ZDR enforcement still applies if enabled in your account or guardrail settings.
 
 ## ZDR with BYOK Keys
 
@@ -134,11 +174,11 @@ Declaring ZDR keeps the private endpoint in your organization's ZDR routing pool
 
 ### Declared non-ZDR
 
-Declaring non-ZDR records an explicit attestation that the upstream retains data. Under a ZDR requirement it routes the same way as **Not declared** today. The difference is the fact preserved for your audit trail: **Declared non-ZDR** is known and attested, **Not declared** is unknown.
+Declaring non-ZDR records an explicit attestation that the upstream retains data. Under a ZDR requirement it routes the same way as **Not declared**. The difference is what your audit trail records: **Declared non-ZDR** is known and attested, **Not declared** is unknown.
 
 ### Existing private endpoints
 
-Existing private endpoints keep their current classification. Introducing this setting did not bulk-migrate them, so a private endpoint created before the setting existed behaves exactly as it did. Editing its declaration applies the rules above, subject to the override precedence below.
+A private endpoint created before this setting existed keeps its current classification and behaves as it did. Editing its declaration applies the rules above, subject to the override precedence below.
 
 > [!NOTE]
 >
@@ -146,7 +186,7 @@ Existing private endpoints keep their current classification. Introducing this s
 >
 > An explicit OpenRouter data-policy override set by our team remains authoritative over your declaration. If OpenRouter has assigned a specific data policy to your private endpoint, that policy decides eligibility regardless of what you declared.
 >
-> A declaration is your attestation about your agreement with the upstream. OpenRouter records it and routes on it. It is not independent verification by OpenRouter of the upstream's contractual behavior.
+> A declaration is your attestation about your agreement with the upstream. OpenRouter records it and routes on it, and does not independently verify the upstream's contractual behavior.
 
 ## OpenRouter's Retention Policy
 
@@ -154,4 +194,4 @@ For inference content covered by OpenRouter's ZDR policy, we do not retain promp
 
 ## Zero Retention Endpoints
 
-The following endpoints have a ZDR policy. Note that this list is also available progammatically via [https://openrouter.ai/api/v1/endpoints/zdr](https://openrouter.ai/api/v1/endpoints/zdr). It is automatically updated when there are changes to a provider's data policy.:
+The following endpoints are eligible when ZDR is enforced. Note that this list is also available programmatically via [https://openrouter.ai/api/v1/endpoints/zdr](https://openrouter.ai/api/v1/endpoints/zdr). It is automatically updated when there are changes to a provider's data policy. It also includes Safety Retention endpoints, which are used only if you [allow Safety Retention](#allowing-or-excluding-safety-retention). The [provider logging](../privacy/provider-logging.md#data-retention--logging) table shows which providers use Safety Retention.

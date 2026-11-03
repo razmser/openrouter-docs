@@ -128,6 +128,8 @@ tags:
     name: Workspaces
   - description: Alpha feature endpoints for Decisions requests
     name: alpha.decisions
+  - description: Alpha feature endpoints for Extractions requests
+    name: alpha.extractions
 externalDocs:
   description: OpenRouter Documentation
   url: https://openrouter.ai/docs
@@ -184,6 +186,11 @@ paths:
                   description: >-
                     GPT-4 is a large multimodal model that can solve difficult
                     problems with greater accuracy.
+                  endpoints:
+                    - /api/v1/chat/completions
+                    - /api/v1/completions
+                    - /api/v1/messages
+                    - /api/v1/responses
                   expiration_date: null
                   id: openai/gpt-4
                   knowledge_cutoff: null
@@ -259,6 +266,11 @@ components:
           description: >-
             GPT-4 is a large multimodal model that can solve difficult problems
             with greater accuracy.
+          endpoints:
+            - /api/v1/chat/completions
+            - /api/v1/completions
+            - /api/v1/messages
+            - /api/v1/responses
           expiration_date: null
           id: openai/gpt-4
           knowledge_cutoff: null
@@ -426,6 +438,19 @@ components:
             GPT-4 is a large multimodal model that can solve difficult problems
             with greater accuracy.
           type: string
+        endpoints:
+          description: >-
+            Request API paths that serve this model, derived from the same
+            modality and adapter rules the routers use. A model served only
+            through an alpha surface lists only that path.
+          example:
+            - /api/v1/chat/completions
+            - /api/v1/completions
+            - /api/v1/messages
+            - /api/v1/responses
+          items:
+            type: string
+          type: array
         expiration_date:
           description: >-
             The date after which the model may be removed. ISO 8601 date string
@@ -495,6 +520,7 @@ components:
         - default_parameters
         - supported_voices
         - links
+        - endpoints
       type: object
     ForbiddenResponseErrorData:
       description: Error data for ForbiddenResponse

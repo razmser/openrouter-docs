@@ -6,7 +6,7 @@
 
 > Route requests with quality-first provider sorting
 
-Exacto is a virtual model variant that explicitly applies quality-first provider sorting. When you add `:exacto` to a model slug, OpenRouter prefers providers with stronger tool-calling quality signals for that model instead of using the default price-weighted ordering.
+Exacto is a virtual model variant that explicitly applies quality-first provider sorting. When you add `:exacto` to a model slug, OpenRouter prefers providers with stronger tool-calling quality signals for that model instead of using [default routing](../provider-selection.md#default-routing).
 
 ## Using the Exacto variant
 
@@ -19,24 +19,20 @@ const openRouter = new OpenRouter({
   apiKey: process.env.OPENROUTER_API_KEY,
 });
 
-const completion = await openRouter.chat.send({
-  chatRequest: {
+const response = await openRouter.responses.send({
+  responsesRequest: {
     model: "moonshotai/kimi-k2-0905:exacto",
-    messages: [
-      {
-        role: "user",
-        content: "Draft a concise changelog entry for the Exacto launch.",
-      },
-    ],
+    input: "Draft a concise changelog entry for the Exacto launch.",
     stream: false,
   },
 });
 
-if (completion instanceof ReadableStream) {
+if (!('output' in response)) {
   throw new Error('Expected a non-streaming response');
 }
 
-console.log(completion.choices[0].message.content);
+const message = [...response.output].reverse().find((item) => item.type === "message");
+console.log(message?.content.find((part) => part.type === "output_text")?.text);
 ```
 
 ```typescript title="TypeScript (OpenAI SDK)" lines theme={null}
@@ -47,29 +43,19 @@ const client = new OpenAI({
   apiKey: process.env.OPENROUTER_API_KEY,
 });
 
-const completion = await client.chat.completions.create({
+const response = await client.responses.create({
   model: "moonshotai/kimi-k2-0905:exacto",
-  messages: [
-    {
-      role: "user",
-      content: "Draft a concise changelog entry for the Exacto launch.",
-    },
-  ],
+  input: "Draft a concise changelog entry for the Exacto launch.",
 });
 ```
 
 ```shell title="cURL" lines theme={null}
-curl https://openrouter.ai/api/v1/chat/completions \
+curl https://openrouter.ai/api/v1/responses \
   -H "Content-Type: application/json" \
   -H "Authorization: Bearer $OPENROUTER_API_KEY" \
   -d '{
   "model": "moonshotai/kimi-k2-0905:exacto",
-  "messages": [
-    {
-      "role": "user",
-      "content": "Summarize the latest release notes for me."
-    }
-  ]
+  "input": "Summarize the latest release notes for me."
 }'
 ```
 
@@ -85,7 +71,7 @@ Exacto is a routing shortcut for quality-first provider ordering. Unlike standar
 
 ### Why we built it
 
-Providers serving the same model can vary meaningfully in tool-use behavior. Exacto gives you an explicit, request-level way to prefer higher-quality providers when you care more about tool-calling reliability than the default price-weighted route.
+Providers serving the same model can vary meaningfully in tool-use behavior. Exacto gives you an explicit, request-level way to prefer higher-quality providers when you care more about tool-calling reliability than default routing.
 
 ### Recommended use cases
 

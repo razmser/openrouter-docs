@@ -59,12 +59,25 @@ All parameters except `model` are passed directly to the underlying image genera
 
 ## Response
 
+The generated image is returned as its own item in the response `output` array, before the model's `message`:
+
+```json lines theme={null}
+{
+  "type": "openrouter:image_generation",
+  "id": "ig_abc123",
+  "status": "completed",
+  "result": "data:image/png;base64,...",
+  "imageUrl": "data:image/png;base64,...",
+  "prompt": "A futuristic city at sunset"
+}
+```
+
 When the model calls the image generation tool, it receives a response like:
 
 ```json lines theme={null}
 {
   "status": "ok",
-  "imageUrl": "https://..."
+  "imageUrl": "data:image/png;base64,..."
 }
 ```
 
@@ -77,9 +90,9 @@ If generation fails, the response includes an error:
 }
 ```
 
-## Works with the Responses API
+## Example with Parameters
 
-The image generation server tool also works with the Responses API:
+Pass `parameters` on the tool entry to configure it:
 
 ## Pricing
 

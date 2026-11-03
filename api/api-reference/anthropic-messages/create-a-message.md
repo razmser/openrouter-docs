@@ -128,6 +128,8 @@ tags:
     name: Workspaces
   - description: Alpha feature endpoints for Decisions requests
     name: alpha.decisions
+  - description: Alpha feature endpoints for Extractions requests
+    name: alpha.extractions
 externalDocs:
   description: OpenRouter Documentation
   url: https://openrouter.ai/docs
@@ -1987,8 +1989,10 @@ components:
             each at most 1024 characters, with 65536 total characters across all
             patterns. When omitted or empty, every model in the pool is a
             candidate; when no pool model matches, the list is ignored and the
-            whole pool is used (`excluded_models` still apply). `allowed_models`
-            is an alias; entries from both fields are combined.
+            whole pool is used (`excluded_models` still apply). When no entry
+            matches any catalog model, for example a misspelled slug, the
+            request fails with 404 instead. `allowed_models` is an alias;
+            entries from both fields are combined.
           example:
             - anthropic/*
             - openai/gpt-5.6-sol
@@ -3892,6 +3896,7 @@ components:
         - Io Net
         - Inferact vLLM
         - Inflection
+        - KT
         - Liquid
         - Makora
         - Mara
@@ -3959,9 +3964,10 @@ components:
       type: string
     ProviderOptions:
       description: >-
-        Provider-specific options keyed by provider slug. Only options for the
-        matched provider are forwarded; the rest are ignored. Unrecognized keys
-        are silently dropped.
+        Provider-specific options keyed by provider slug. The provider segment
+        is case-insensitive; an endpoint tag after `/` must match the endpoint
+        slug exactly. Only options for the matched provider are forwarded; the
+        rest are ignored. Unrecognized keys are silently dropped.
       example:
         openai:
           max_tokens: 1000
@@ -4174,6 +4180,9 @@ components:
           additionalProperties: {}
           type: object
         krea:
+          additionalProperties: {}
+          type: object
+        kt:
           additionalProperties: {}
           type: object
         lambda:
@@ -5654,6 +5663,7 @@ components:
                 - Io Net
                 - Inferact vLLM
                 - Inflection
+                - KT
                 - Liquid
                 - Makora
                 - Mara

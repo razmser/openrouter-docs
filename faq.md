@@ -8,7 +8,7 @@
 
 ## Getting started
 
-> **Why should I use OpenRouter?**
+> [accordion] Why should I use OpenRouter?
 >
 > OpenRouter provides a unified API to access all the major LLM models on the
 > market. It also allows users to aggregate their billing in one place and
@@ -20,7 +20,7 @@
 >
 > [Learn more in our Quickstart guide](quickstart.md).
 
-> **How do I get started with OpenRouter?**
+> [accordion] How do I get started with OpenRouter?
 >
 > To get started, create an account and add credits on the
 > [Credits](https://openrouter.ai/settings/credits) page. Credits are simply
@@ -32,14 +32,14 @@
 > and start using the API. You can read our [quickstart](quickstart.md)
 > or [enterprise](cookbook/get-started/enterprise-quickstart.md) guide for code samples and more.
 
-> **How do I get support?**
+> [accordion] How do I get support?
 >
 > The best way to get technical support is to join our
 > [Discord](https://discord.gg/openrouter) and ask the community in the #help forum.
 >
 > For billing and account management questions, please contact us at [support@openrouter.ai](mailto:support@openrouter.ai).
 
-> **How do I get billed for my usage on OpenRouter?**
+> [accordion] How do I get billed for my usage on OpenRouter?
 >
 > For each model we have the pricing displayed per million tokens. There is
 > usually a different price for prompt and completion tokens. There are also
@@ -55,7 +55,7 @@
 
 ## Pricing and fees
 
-> **What are the fees for using OpenRouter?**
+> [accordion] What are the fees for using OpenRouter?
 >
 > OpenRouter charges a {getTotalFeeString('stripe', null)} fee when you purchase credits. We pass through
 > the pricing of the underlying model providers without any markup, so you pay
@@ -63,7 +63,7 @@
 >
 > Crypto payments are charged a fee of {getTotalFeeString('coinbase', null)}.
 
-> **Is there a fee for using my own provider keys (BYOK)?**
+> [accordion] Is there a fee for using my own provider keys (BYOK)?
 >
 > Yes. BYOK has a plan-dependent free allowance measured by list-price
 > inference cost, not request count. Pay-as-you-go includes
@@ -80,19 +80,19 @@
 
 ## Models and providers
 
-> **What LLM models does OpenRouter support?**
+> [accordion] What LLM models does OpenRouter support?
 >
 > OpenRouter provides access to a wide variety of LLM models, including frontier models from major AI labs.
 > For a complete list of models you can visit the [models browser](https://openrouter.ai/models) or fetch the list through the [models api](https://openrouter.ai/api/v1/models).
 
-> **How frequently are new models added?**
+> [accordion] How frequently are new models added?
 >
 > We work on adding models as quickly as we can. We often have partnerships with
 > the labs releasing models and can release models as soon as they are
 > available. If there is a model missing that you'd like OpenRouter to support, feel free to message us on
 > [Discord](https://discord.gg/openrouter).
 
-> **What are model variants?**
+> [accordion] What are model variants?
 >
 > Variants are suffixes that can be added to the model slug to change its behavior. There are two kinds. See the [Model Variants overview](guides/routing/model-variants/overview.md) for the full reference and the rule for resolving a suffixed ID to its metadata.
 >
@@ -108,20 +108,20 @@
 > 3. `:exacto` - Providers will be sorted using quality-first signals tuned for tool-calling reliability. [Learn more](guides/routing/model-variants/exacto.md).
 > 4. `:online` (deprecated) - All requests will run a query to extract web results that are attached to the prompt. Use the [`openrouter:web_search` server tool](guides/features/server-tools/web-search.md) instead. [Learn more](guides/routing/model-variants/online.md).
 
-> **I am an inference provider, how can I get listed on OpenRouter?**
+> [accordion] I am an inference provider, how can I get listed on OpenRouter?
 >
 > You can read our requirements at the [Providers
 > page](guides/providers/integration.md). If you would like to contact us, the best
 > place to reach us is over email.
 
-> **What is the expected latency/response time for different models?**
+> [accordion] What is the expected latency/response time for different models?
 >
 > For each model on OpenRouter we show the latency (time to first token) and the token
 > throughput for all providers. You can use this to estimate how long requests
 > will take. If you would like to optimize for throughput you can use the
 > `:nitro` variant to route to the fastest provider.
 
-> **How does model fallback work if a provider is unavailable?**
+> [accordion] How does model fallback work if a provider is unavailable?
 >
 > If a provider returns an error OpenRouter will automatically fall back to the
 > next provider. This happens transparently to the user and allows production
@@ -130,7 +130,7 @@
 
 ## API technical specifications
 
-> **What authentication methods are supported?**
+> [accordion] What authentication methods are supported?
 >
 > OpenRouter uses three authentication methods:
 >
@@ -140,7 +140,7 @@
 >
 > [Learn more about API authentication](api_reference/authentication.md).
 
-> **How are rate limits calculated?**
+> [accordion] How are rate limits calculated?
 >
 > For free models, rate limits are determined by the credits that you have purchased.
 > If you have purchased at least 10 credits, your free model rate limit will be 1000 requests per day.
@@ -148,28 +148,29 @@
 >
 > You can learn more about how rate limits work for paid accounts in our [rate limits documentation](api_reference/limits.md).
 
-> **What API endpoints are available?**
+> [accordion] What API endpoints are available?
 >
-> OpenRouter implements the OpenAI API specification for /completions and
-> /chat/completions endpoints, allowing you to use any model with the same
+> OpenRouter implements the OpenAI API specification for the
+> [/responses](api_reference/responses/overview.md), /chat/completions, and
+> /completions endpoints, allowing you to use any model with the same
 > request/response format. Additional endpoints like /api/v1/models are also
 > available. See our [API documentation](api_reference/overview.md) for
 > detailed specifications.
 
-> **What are the supported formats?**
+> [accordion] What are the supported formats?
 >
 > The API supports text, images, and PDFs.
 > [Images](guides/overview/multimodal/image-understanding.md) can be passed as
 > URLs or base64 encoded images. [PDFs](guides/overview/multimodal/pdfs.md) can also be sent as URLs or base64 encoded data, and work with any model on OpenRouter.
 
-> **How does streaming work?**
+> [accordion] How does streaming work?
 >
 > Streaming uses server-sent events (SSE) for real-time token delivery. Set
 > `stream: true` in your request to enable streaming responses.
 >
 > [Learn more about streaming](api_reference/streaming.md).
 
-> **What SDK support is available?**
+> [accordion] What SDK support is available?
 >
 > OpenRouter is a drop-in replacement for OpenAI. Therefore, any SDKs that
 > support OpenAI by default also support OpenRouter. Check out our
@@ -181,7 +182,7 @@
 
 Please see our [Terms of Service](https://openrouter.ai/terms) and [Privacy Policy](https://openrouter.ai/privacy).
 
-> **What data is logged during API use?**
+> [accordion] What data is logged during API use?
 >
 > We log basic request metadata (timestamps, model used, token counts). Prompt
 > and completion are not logged by default. We do zero logging of your prompts/completions,
@@ -193,13 +194,13 @@ Please see our [Terms of Service](https://openrouter.ai/terms) and [Privacy Poli
 >
 > [Learn more about data collection](guides/privacy/data-collection.md).
 
-> **What data is logged during Chatroom use?**
+> [accordion] What data is logged during Chatroom use?
 >
 > The same data privacy applies to the chatroom as the API. All conversations
 > in the chatroom are stored locally on your device. Conversations will not sync across devices.
 > It is possible to export and import conversations using the settings menu in the chatroom.
 
-> **What third-party sharing occurs?**
+> [accordion] What third-party sharing occurs?
 >
 > OpenRouter is a proxy that sends your requests to the model provider for it to be completed.
 > We work with all providers to, when possible, ensure that prompts and completions are not logged or used for training.
@@ -211,7 +212,13 @@ Please see our [Terms of Service](https://openrouter.ai/terms) and [Privacy Poli
 >
 > [Learn more about provider logging policies](guides/privacy/provider-logging.md).
 
-> **Does OpenRouter support EU data residency?**
+> [accordion] What are ZDR, Safety Retention, and Retention and Training?
+>
+> They're the three data policy tiers OpenRouter uses for endpoints. ZDR means no routine storage of prompts or responses after processing, apart from a CSAM exception. Safety Retention means OpenRouter or a provider may retain prompts and responses from any request, only to prevent abuse; it's not used for training. Retention and Training means data may be stored and used for training under the provider's policy.
+>
+> When you enforce ZDR, you can choose **ZDR only** or **Allow Safety Retention** in your [privacy settings](https://openrouter.ai/settings/privacy) or guardrails. [Learn more](guides/features/zdr.md#data-policy-tiers).
+
+> [accordion] Does OpenRouter support EU data residency?
 >
 > Yes, for prompts and completions. Requests to `eu.openrouter.ai` are decrypted in the EU and routed only to shared provider endpoints in Europe (the EU/EEA, the UK, and Switzerland). BYOK requests go to your own deployment's region. Account and billing data may be stored or processed in the US. DPA Exhibit A covers API payloads when elected in writing.
 >
@@ -219,19 +226,19 @@ Please see our [Terms of Service](https://openrouter.ai/terms) and [Privacy Poli
 
 ## Credit and billing systems
 
-> **What purchase options exist?**
+> [accordion] What purchase options exist?
 >
 > OpenRouter uses a credit system where the base currency is US dollars. All
 > of the pricing on our site and API is denoted in dollars. Users can top up
 > their balance manually or set up auto top up so that the balance is
 > replenished when it gets below the set threshold.
 
-> **Do credits expire?**
+> [accordion] Do credits expire?
 >
 > Per our [terms](https://openrouter.ai/terms), we reserve the right to expire
 > unused credits after one year of purchase.
 
-> **My credits haven't showed up in my account**
+> [accordion] My credits haven't showed up in my account
 >
 > If you paid using Stripe, sometimes there is an issue with the Stripe
 > integration and credits can get delayed in showing up on your account. Please allow up to one hour.
@@ -245,11 +252,11 @@ Please see our [Terms of Service](https://openrouter.ai/terms) and [Privacy Poli
 > If you paid using crypto, please reach out to us via email at [support@openrouter.ai](mailto:support@openrouter.ai)
 > and we will look into it.
 
-> **What's the refund policy?**
+> [accordion] What's the refund policy?
 >
 > Refunds for unused Credits may be requested within twenty-four (24) hours from the time the transaction was processed. If no refund request is received within twenty-four (24) hours following the purchase, any unused Credits become non-refundable. To request a refund within the eligible period, you can use the refund button on the [Credits](https://openrouter.ai/settings/credits) page. The unused credit amount will be refunded to your payment method; the platform fees are non-refundable. Note that cryptocurrency payments are never refundable.
 
-> **How to monitor credit usage?**
+> [accordion] How to monitor credit usage?
 >
 > The [Activity](https://openrouter.ai/activity) page allows users to view
 > their historic usage and filter the usage by model, provider and api key.
@@ -257,7 +264,7 @@ Please see our [Terms of Service](https://openrouter.ai/terms) and [Privacy Poli
 > We also provide a [credits api](api/api-reference/credits/get-remaining-credits.md) that has
 > live information about the balance and remaining credits for the account.
 
-> **What free tier options exist?**
+> [accordion] What free tier options exist?
 >
 > All new users receive a small free allowance to test out OpenRouter.
 > There are many [free models](https://openrouter.ai/models?max_price=0) available
@@ -267,18 +274,18 @@ Please see our [Terms of Service](https://openrouter.ai/terms) and [Privacy Poli
 >
 > You can also use the [Free Models Router](cookbook/get-started/free-models-router-playground.md) (`openrouter/free`) to automatically select a free model for your requests.
 
-> **How do volume discounts work?**
+> [accordion] How do volume discounts work?
 >
 > OpenRouter does not currently offer volume discounts, but you can reach out to us
 > over email if you think you have an exceptional use case.
 
-> **What payment methods are accepted?**
+> [accordion] What payment methods are accepted?
 >
 > We accept all major credit cards, AliPay and cryptocurrency payments in
 > USDC. We are working on integrating PayPal soon, if there are any payment
 > methods that you would like us to support please reach out on [Discord](https://discord.gg/openrouter).
 
-> **How does OpenRouter make money?**
+> [accordion] How does OpenRouter make money?
 >
 > We charge a small [fee](faq.md#pricing-and-fees) when purchasing credits. We never mark-up the pricing
 > of the underlying providers, and you'll always pay the same as the provider's
@@ -286,27 +293,27 @@ Please see our [Terms of Service](https://openrouter.ai/terms) and [Privacy Poli
 
 ## Account management
 
-> **How can I delete my account?**
+> [accordion] How can I delete my account?
 >
 > Go to the [Settings](https://openrouter.ai/settings/preferences) page and click Manage Account.
 > In the modal that opens, select the Security tab. You'll find an option there to delete your account.
 >
 > Note that unused credits will be lost and cannot be reclaimed if you delete and later recreate your account.
 
-> **How does team access work?**
+> [accordion] How does team access work?
 >
 > Organization management information can be found in our [organization management documentation](cookbook/administration/organization-management.md).
 
-> **What analytics are available?**
+> [accordion] What analytics are available?
 >
 > Our [activity dashboard](https://openrouter.ai/activity) provides real-time
 > usage metrics. If you would like any specific reports or metrics please
 > contact us.
 
-> **How can I contact support?**
+> [accordion] How can I contact support?
 >
 > For account and billing questions, please contact us at [support@openrouter.ai](mailto:support@openrouter.ai).
 
-> **How can I file a bug report or change request for OpenRouter?**
+> [accordion] How can I file a bug report or change request for OpenRouter?
 >
 > You can file bug reports or change requests by posting in our [Discord](https://discord.gg/openrouter).

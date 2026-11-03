@@ -16,7 +16,7 @@ The Alignment plugin checks every assistant message of a request against rules y
 
 This page uses each of these terms in one sense: a message is an assistant message; a model call is one call to the model you request; the evaluator is the model that checks each message; a blocked message is a message that breaks a rule; a tool call is any call a message makes to a tool, whatever its item type.
 
-The evaluator reads the assistant message only. To act on the input before it reaches the model, use the [guardrails](../guardrails.md) of your workspace. The [Sensitive Info guardrail](../guardrails/sensitive-info.md) redacts or blocks personal data and [known secret formats](../guardrails/secret-formats.md), and [Prompt Injection Detection](../guardrails/prompt-injection.md) flags, redacts, or blocks injection patterns. To repair malformed JSON in a non-streaming message that a JSON `response_format` requested, without checking its content, add [Response Healing](response-healing.md) to the same `plugins` array. A guardrail applies to the members and API keys it is [assigned to](../guardrails.md#assigning-guardrails); the two plugins apply to the requests that carry them.
+The evaluator reads the assistant message only. To act on the input before it reaches the model, use the [guardrails](../guardrails.md) of your workspace. The [Sensitive Info guardrail](../guardrails/sensitive-info.md) redacts or blocks personal data and [known secret formats](../guardrails/secret-formats.md), and [Prompt Injection Detection](../guardrails/prompt-injection.md) flags, redacts, or blocks injection patterns. To repair malformed JSON in a non-streaming message that a JSON `text.format` requested, without checking its content, add [Response Healing](response-healing.md) to the same `plugins` array. A guardrail applies to the members and API keys it is [assigned to](../guardrails.md#assigning-guardrails); the two plugins apply to the requests that carry them.
 
 The examples call the [Responses API](../../../api_reference/responses/overview.md) (`/api/v1/responses`). [Compatibility with Chat Completions](#compatibility) lists the three differences for an application that calls `/api/v1/chat/completions`.
 
@@ -916,7 +916,7 @@ The size limits apply to each part of a message, and only when at least one rule
 | Refusal | 1,000 code units |
 | Audio transcripts | 1,000 code units for all transcripts |
 
-A message cut short at `max_tokens` is within the limits, and the evaluator checks it as it is.
+A message cut short at `max_output_tokens` is within the limits, and the evaluator checks it as it is.
 
 ## Rules
 

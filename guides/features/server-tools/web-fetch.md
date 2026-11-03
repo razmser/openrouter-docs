@@ -124,9 +124,9 @@ Use `max_content_tokens` to limit the amount of content returned:
 
 Content exceeding this limit is truncated. This is useful for controlling context window usage when fetching large pages.
 
-## Works with the Responses API
+## Example with Parameters
 
-The web fetch server tool also works with the Responses API:
+Pass `parameters` on the tool entry to configure it:
 
 ## Response Format
 

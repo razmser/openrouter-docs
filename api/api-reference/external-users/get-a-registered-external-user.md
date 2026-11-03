@@ -128,6 +128,8 @@ tags:
     name: Workspaces
   - description: Alpha feature endpoints for Decisions requests
     name: alpha.decisions
+  - description: Alpha feature endpoints for Extractions requests
+    name: alpha.extractions
 externalDocs:
   description: OpenRouter Documentation
   url: https://openrouter.ai/docs
@@ -162,7 +164,7 @@ paths:
             example: employee_123
             maxLength: 512
             minLength: 1
-            pattern: ^[^\u0000]+$
+            pattern: ^(?!\s)(?![\s\S]*\s$)[^\u0000]+$
             type: string
       responses:
         '200':
@@ -383,7 +385,7 @@ components:
           example: employee_123
           maxLength: 512
           minLength: 1
-          pattern: ^[^\u0000]+$
+          pattern: ^(?!\s)(?![\s\S]*\s$)[^\u0000]+$
           type: string
       required:
         - user

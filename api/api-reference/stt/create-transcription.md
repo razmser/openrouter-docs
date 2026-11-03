@@ -128,6 +128,8 @@ tags:
     name: Workspaces
   - description: Alpha feature endpoints for Decisions requests
     name: alpha.decisions
+  - description: Alpha feature endpoints for Extractions requests
+    name: alpha.extractions
 externalDocs:
   description: OpenRouter Documentation
   url: https://openrouter.ai/docs
@@ -185,7 +187,9 @@ paths:
                     accepted). Only supported by some providers; 400 when the
                     selected model cannot use keyterms.
                   items:
+                    maxLength: 100
                     type: string
+                  maxItems: 1000
                   type: array
                 language:
                   description: The language of the input audio (ISO-639-1).
@@ -228,9 +232,12 @@ paths:
                     supported by some providers; exactly one of file or
                     source_url is required.
                   format: uri
+                  maxLength: 8000
                   type: string
                 temperature:
                   description: The sampling temperature.
+                  maximum: 1
+                  minimum: 0
                   type: number
                 timestamp_granularities[]:
                   description: >-
@@ -906,9 +913,10 @@ components:
         downloads directly.
     ProviderOptions:
       description: >-
-        Provider-specific options keyed by provider slug. Only options for the
-        matched provider are forwarded; the rest are ignored. Unrecognized keys
-        are silently dropped.
+        Provider-specific options keyed by provider slug. The provider segment
+        is case-insensitive; an endpoint tag after `/` must match the endpoint
+        slug exactly. Only options for the matched provider are forwarded; the
+        rest are ignored. Unrecognized keys are silently dropped.
       example:
         openai:
           max_tokens: 1000
@@ -1121,6 +1129,9 @@ components:
           additionalProperties: {}
           type: object
         krea:
+          additionalProperties: {}
+          type: object
+        kt:
           additionalProperties: {}
           type: object
         lambda:

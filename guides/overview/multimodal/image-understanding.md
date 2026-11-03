@@ -6,7 +6,7 @@
 
 > How to send images to OpenRouter models
 
-Requests with images, to multimodel models, are available via the `/api/v1/chat/completions` API with a multi-part `messages` parameter. The `image_url` can either be a URL or a base64-encoded image. Note that multiple images can be sent in separate content array entries. The number of images you can send in a single request varies per provider and per model. Due to how the content is parsed, we recommend sending the text prompt first, then the images. If the images must come first, we recommend putting it in the system prompt.
+Requests with images, to multimodal models, are available via the [Responses API](../../../api_reference/responses/overview.md) (`/api/v1/responses`) with a multi-part message in the `input` parameter. Each image is an `input_image` content part whose `image_url` can either be a URL or a base64-encoded data URL. Note that multiple images can be sent in separate content array entries. The number of images you can send in a single request varies per provider and per model. Due to how the content is parsed, we recommend sending the text prompt first, then the images. If the images must come first, put them before the text within the same user message; system messages should contain text only.
 
 OpenRouter supports both **direct URLs** and **base64-encoded data** for images:
 

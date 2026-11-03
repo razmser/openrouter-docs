@@ -87,9 +87,9 @@ An image is an item of the `state` array with this shape, the same image part Ch
 ```
 
 * `url` must be a base64 data URL with the type `image/png`, `image/jpeg`, or `image/webp`. Jev accepts only `image/png` and `image/jpeg`. Remote `http(s)` URLs are not fetched.
-* `detail` (`auto`, `low`, or `high`) is accepted, but Clef, Clef Flash, Clef Omni, and Mercury Decide ignore it.
+* `detail` (`auto`, `low`, or `high`) is accepted, but Clef, Clef Flash, Clef Omni, Mercury Decide, and the Baseten decision models (Elephant 1, Mammoth 1, Joey 1) ignore it.
 * Put image parts directly in the top-level `state` array. Only Jev reads image parts in other places (see [Image positions on Jev](#image-positions-on-jev)); on every other Decisions model, an image part nested inside a `state` object or placed in a question's `instructions` or `criteria` fails with a `400` rather than being sent to the model as text.
-* Send at most 4 images per request to Clef, Clef Flash, and Clef Omni, at most 16 to Mercury Decide, and at most 128 to GPT-6 Luna Decisions.
+* Send at most 4 images per request to Clef, Clef Flash, and Clef Omni, at most 16 to Mercury Decide and the Baseten decision models, and at most 128 to GPT-6 Luna Decisions.
 * Text items in the array are plain strings, not `{ "type": "text" }` parts.
 * Jev 1.14 and [`~typesafe/jev-latest`](https://openrouter.ai/~typesafe/jev-latest) also answer [Box](jev.md#box-questions) questions about images.
 
@@ -184,4 +184,5 @@ TypeSafe marks image input as an early feature whose request format, answers, an
 ## Related
 
 * [Jev Documentation](jev.md) covers the Decisions primitives (Choice, Noul, Score) in depth.
-* [Decisions API reference](https://openrouter.ai/docs/api/api-reference/alphadecisions/submit-a-decisions-questions-and-answers-request.md) has the full request and response schema.
+* [Decisions API reference](../../api/api-reference/alphadecisions/submit-a-decisions-request.md) has the full request and response schema.
+* [Decisions Lab](https://openrouter.ai/labs/decisions) runs Decisions models head to head in the browser, such as the [platform race](https://openrouter.ai/labs/decisions/race), where each model steers its own dog up a shared tower. The race sends text options only, not images.

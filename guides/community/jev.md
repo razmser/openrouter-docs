@@ -12,23 +12,23 @@ Jev is a structured decision model from [TypeSafe](https://docs.typesafe.ai), an
 
 This is the index for every Jev resource on OpenRouter, and your entry point to the upstream TypeSafe documentation.
 
-> **[Jev Tutorial](jev-tutorial.md)**
+> [card] [Jev Tutorial](jev-tutorial.md)
 >
 > Step-by-step quickstart. Make your first Choice, Noul, and Score call with curl, TypeScript, or Python.
 
-> **[Jev model page](https://openrouter.ai/typesafe/jev-1.14)**
+> [card] [Jev model page](https://openrouter.ai/typesafe/jev-1.14)
 >
 > Current pricing, context length, provider, and data policy.
 
-> **[Decisions API reference](https://openrouter.ai/docs/api/api-reference/alphadecisions/submit-a-decisions-questions-and-answers-request.md)**
+> [card] [Decisions API reference](../../api/api-reference/alphadecisions/submit-a-decisions-request.md)
 >
 > Full request and response schema for `POST /api/alpha/decisions`.
 
-> **[Jev SDK for TypeScript and Python](typesafe-sdk.md)**
+> [card] [Jev SDK for TypeScript and Python](typesafe-sdk.md)
 >
 > Point the official TypeSafe SDK at OpenRouter with a one-line base URL change.
 
-> **[Jev Router](../routing/routers/jev-router.md)**
+> [card] [Jev Router](../routing/routers/jev-router.md)
 >
 > OpenRouter router that uses Jev to pick a model and reasoning effort for each request.
 
@@ -100,7 +100,7 @@ Jev is exposed via two OpenRouter API surfaces, the Decisions API and the System
 | Decisions API | `POST https://openrouter.ai/api/alpha/decisions` | You are calling Jev from any language with plain HTTP, or through the OpenRouter [TypeScript](../../client-sdks/typescript/sdks/decisions/README.md), [Python](../../client-sdks/python/sdks/decisions/README.md), or [Go](../../client-sdks/go/sdks/decisions/README.md) SDK |
 | System One API | `POST https://openrouter.ai/api/v1/systemone` | You already use the TypeSafe JavaScript or Python SDK and want to switch it to OpenRouter by changing the base URL |
 
-The [Jev SDK guide](typesafe-sdk.md) documents the System One path. The [Decisions API reference](https://openrouter.ai/docs/api/api-reference/alphadecisions/submit-a-decisions-questions-and-answers-request.md) covers the Decisions path.
+The [Jev SDK guide](typesafe-sdk.md) documents the System One path. The [Decisions API reference](../../api/api-reference/alphadecisions/submit-a-decisions-request.md) covers the Decisions path.
 
 ### Cookbooks
 
@@ -115,6 +115,8 @@ Step-by-step recipes with runnable code:
 ### Interactive demos
 
 [Jev Lab](https://openrouter.ai/labs/jev) runs Jev live in the browser across several patterns, including [ticket triage](https://openrouter.ai/labs/jev/triage), [agent oversight](https://openrouter.ai/labs/jev/overseer), and [structured extraction](https://openrouter.ai/labs/jev/extract). Each demo shows you the state, the questions, and the raw probabilities Jev returns.
+
+[Decisions Lab](https://openrouter.ai/labs/decisions) runs Jev head to head with other models. In the [platform race](https://openrouter.ai/labs/decisions/race), two models each pick the next hop for their dog on a shared tower, and a scoreboard compares how they did.
 
 ### TypeSafe documentation
 

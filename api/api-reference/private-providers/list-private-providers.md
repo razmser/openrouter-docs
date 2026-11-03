@@ -128,6 +128,8 @@ tags:
     name: Workspaces
   - description: Alpha feature endpoints for Decisions requests
     name: alpha.decisions
+  - description: Alpha feature endpoints for Extractions requests
+    name: alpha.extractions
 externalDocs:
   description: OpenRouter Documentation
   url: https://openrouter.ai/docs
@@ -192,10 +194,6 @@ components:
       example:
         base_url: https://inference.example.com/v1
         created_at: '2026-10-06T12:00:00.000Z'
-        data_policy:
-          prompt_retention_days: null
-          retains_prompts: false
-          training: false
         display_name: Acme
         name: Acme
         slug: acme
@@ -213,31 +211,6 @@ components:
             - 'null'
         created_at:
           type: string
-        data_policy:
-          description: Your declared data policy, or `null` when none was declared.
-          properties:
-            prompt_retention_days:
-              description: >-
-                Days prompts are retained. Must be `null` unless
-                `retains_prompts` is true.
-              maximum: 3650
-              minimum: 1
-              type:
-                - integer
-                - 'null'
-            retains_prompts:
-              description: Whether the provider retains prompts or completions.
-              type: boolean
-            training:
-              description: Whether the provider trains on prompts.
-              type: boolean
-          required:
-            - training
-            - retains_prompts
-            - prompt_retention_days
-          type:
-            - object
-            - 'null'
         display_name:
           description: Human-readable provider name shown in the UI.
           example: Acme
@@ -258,7 +231,6 @@ components:
         - slug
         - display_name
         - base_url
-        - data_policy
         - created_at
       type: object
     UnauthorizedResponse:

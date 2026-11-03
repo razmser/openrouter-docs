@@ -14,7 +14,7 @@ Use this guide when you want to turn a document, changelog, or article into a sh
 
 A four-sentence paragraph about tides, scripted by a chat model and voiced by two speakers in one request. 49 seconds, \$0.0074.
 
-> **Transcript**
+> [accordion] Transcript
 >
 > **Host:** Welcome back! Today we're talking tides. Most people know the Moon causes them, but why do we get two high tides a day instead of just one?
 >
@@ -71,7 +71,7 @@ through both bulges, which is why they see two high tides and two low tides
 roughly every 25 hours.`;
 
 const scriptResponse = await fetch(
-  "https://openrouter.ai/api/v1/chat/completions",
+  "https://openrouter.ai/api/v1/responses",
   {
     method: "POST",
     headers: {
@@ -80,19 +80,14 @@ const scriptResponse = await fetch(
     },
     body: JSON.stringify({
       model: "google/gemini-3.8-flash",
-      messages: [
-        {
-          role: "system",
-          content:
-            "Write a short podcast dialogue between a host and a guest about the text the user sends. " +
-            "Use 6 to 8 turns, alternate speakers, and keep each turn under 40 words. " +
-            "Give each turn a few words of delivery direction, such as 'curious' or 'laughing'.",
-        },
-        { role: "user", content: source },
-      ],
-      response_format: {
-        type: "json_schema",
-        json_schema: {
+      instructions:
+        "Write a short podcast dialogue between a host and a guest about the text the user sends. " +
+        "Use 6 to 8 turns, alternate speakers, and keep each turn under 40 words. " +
+        "Give each turn a few words of delivery direction, such as 'curious' or 'laughing'.",
+      input: source,
+      text: {
+        format: {
+          type: "json_schema",
           name: "podcast_script",
           strict: true,
           schema: {
@@ -126,8 +121,10 @@ if (!scriptResponse.ok) {
 }
 
 type Turn = { speaker: "host" | "guest"; text: string; direction: string };
-const completion = await scriptResponse.json();
-const { turns } = JSON.parse(completion.choices[0].message.content) as {
+const result = await scriptResponse.json();
+const message = [...result.output].reverse().find((item: { type: string }) => item.type === "message");
+const scriptText = message.content.find((part: { type: string }) => part.type === "output_text").text;
+const { turns } = JSON.parse(scriptText) as {
   turns: Turn[];
 };
 

@@ -128,6 +128,8 @@ tags:
     name: Workspaces
   - description: Alpha feature endpoints for Decisions requests
     name: alpha.decisions
+  - description: Alpha feature endpoints for Extractions requests
+    name: alpha.extractions
 externalDocs:
   description: OpenRouter Documentation
   url: https://openrouter.ai/docs
@@ -178,6 +180,7 @@ paths:
                           `clf_dimension_name`/`clf_dimension_value` columns
                           (one row per dimension/value pair).
                         example: department
+                        pattern: ^[a-zA-Z_][a-zA-Z0-9_]{0,63}$
                         type: string
                       maxItems: 2
                       type: array
@@ -207,41 +210,7 @@ paths:
                       type: string
                     filters:
                       items:
-                        properties:
-                          field:
-                            description: >-
-                              Classifier dimension name to filter on (snake_case
-                              identifier, e.g. "department", "work_type").
-                            example: department
-                            type: string
-                          operator:
-                            description: >-
-                              Filter operator. Only equality/set operators are
-                              supported (eq, neq, in, not_in) — ordered
-                              comparisons are not available because
-                              classification values are strings.
-                            example: eq
-                            type: string
-                          value:
-                            anyOf:
-                              - type: string
-                              - format: double
-                                type: number
-                              - items:
-                                  anyOf:
-                                    - type: string
-                                    - format: double
-                                      type: number
-                                type: array
-                            description: >-
-                              Filter value. Use a scalar (string or number) for
-                              eq/neq, or an array for in/not_in.
-                            example: Engineering
-                        required:
-                          - field
-                          - operator
-                          - value
-                        type: object
+                        $ref: '#/components/schemas/ClassifierFiltersFilter'
                       maxItems: 10
                       minItems: 1
                       type: array
@@ -260,56 +229,7 @@ paths:
                   type: array
                 filters:
                   items:
-                    properties:
-                      field:
-                        description: >-
-                          Dimension to filter on. Use the /meta endpoint for
-                          available dimensions.
-                        example: model
-                        type: string
-                      include_unset:
-                        description: >-
-                          Include rows where the dimension has no value. Applies
-                          only to the `in` and `not_in` operators and dimensions
-                          that have an unset bucket.
-                        type: boolean
-                      operator:
-                        description: Filter operator
-                        example: eq
-                        type: string
-                      value:
-                        anyOf:
-                          - type: string
-                          - format: double
-                            type: number
-                          - items:
-                              anyOf:
-                                - type: string
-                                - format: double
-                                  type: number
-                            type: array
-                        description: >-
-                          Filter value (scalar or array depending on operator).
-                          Several dimensions are enriched in responses (returned
-                          as human-readable labels), but filters must use the
-                          underlying ID: `api_key_id` — numeric ID (from
-                          generation metadata) or key hash (64-char hex from GET
-                          /api/v1/keys, resolved server-side); `user` — Clerk
-                          user ID (e.g. "user_abc123"), not the display name;
-                          `workspace` — workspace UUID, not the workspace name
-                          (filtering or grouping by the account default
-                          workspace also covers activity recorded before
-                          workspace resolution existed, which is attributed to
-                          that default workspace); `app` — numeric app ID, not
-                          the app title; `model` — permaslug (e.g.
-                          "openai/gpt-4o"), not the display name. Other
-                          dimensions (provider, origin, country, etc.) are not
-                          enriched and accept the value as returned.
-                    required:
-                      - field
-                      - operator
-                      - value
-                    type: object
+                    $ref: '#/components/schemas/Filter'
                   maxItems: 20
                   type: array
                 granularity:
@@ -494,6 +414,14 @@ paths:
           description: Internal Server Error - Unexpected server error
 components:
   schemas:
+    ClassifierFiltersFilter:
+      anyOf:
+        - $ref: '#/components/schemas/ClassifierScalarFilter'
+        - $ref: '#/components/schemas/ClassifierSetFilter'
+    Filter:
+      anyOf:
+        - $ref: '#/components/schemas/ScalarFilter'
+        - $ref: '#/components/schemas/SetFilter'
     BadRequestResponse:
       description: Bad Request - Invalid request parameters or malformed input
       example:
@@ -599,6 +527,129 @@ components:
       required:
         - error
       type: object
+    ClassifierScalarFilter:
+      properties:
+        field:
+          description: >-
+            Classifier dimension name to filter on (snake_case identifier, e.g.
+            "department", "work_type").
+          example: department
+          pattern: ^[a-zA-Z_][a-zA-Z0-9_]{0,63}$
+          type: string
+        operator:
+          $ref: '#/components/schemas/ClassifierScalarFilterOperator'
+        value:
+          anyOf:
+            - type: string
+            - format: double
+              type: number
+          description: Scalar (string or number) filter value.
+          example: Engineering
+      required:
+        - field
+        - operator
+        - value
+      type: object
+    ClassifierSetFilter:
+      properties:
+        field:
+          description: >-
+            Classifier dimension name to filter on (snake_case identifier, e.g.
+            "department", "work_type").
+          example: department
+          pattern: ^[a-zA-Z_][a-zA-Z0-9_]{0,63}$
+          type: string
+        operator:
+          $ref: '#/components/schemas/ClassifierSetFilterOperator'
+        value:
+          description: Array of scalar filter values.
+          example:
+            - Engineering
+            - Support
+          items:
+            anyOf:
+              - type: string
+              - format: double
+                type: number
+          type: array
+      required:
+        - field
+        - operator
+        - value
+      type: object
+    ScalarFilter:
+      properties:
+        field:
+          description: >-
+            Dimension to filter on. Use the /meta endpoint for available
+            dimensions.
+          example: model
+          type: string
+        operator:
+          $ref: '#/components/schemas/ScalarFilterOperator'
+        value:
+          anyOf:
+            - type: string
+            - format: double
+              type: number
+          description: >-
+            Several dimensions are enriched in responses (returned as
+            human-readable labels), but filters must use the underlying ID:
+            `api_key_id` — numeric ID (from generation metadata) or key hash
+            (64-char hex from GET /api/v1/keys, resolved server-side); `user` —
+            Clerk user ID (e.g. "user_abc123"), not the display name;
+            `workspace` — workspace UUID, not the workspace name (filtering or
+            grouping by the account default workspace also covers activity
+            recorded before workspace resolution existed, which is attributed to
+            that default workspace); `app` — numeric app ID, not the app title;
+            `model` — permaslug (e.g. "openai/gpt-4o"), not the display name.
+            Other dimensions (provider, origin, country, etc.) are not enriched
+            and accept the value as returned.
+      required:
+        - field
+        - operator
+        - value
+      type: object
+    SetFilter:
+      properties:
+        field:
+          description: >-
+            Dimension to filter on. Use the /meta endpoint for available
+            dimensions.
+          example: model
+          type: string
+        include_unset:
+          description: >-
+            Include rows where the dimension has no value. Applies only to
+            dimensions that have an unset bucket.
+          type: boolean
+        operator:
+          $ref: '#/components/schemas/SetFilterOperator'
+        value:
+          items:
+            anyOf:
+              - type: string
+              - format: double
+                type: number
+            description: >-
+              Several dimensions are enriched in responses (returned as
+              human-readable labels), but filters must use the underlying ID:
+              `api_key_id` — numeric ID (from generation metadata) or key hash
+              (64-char hex from GET /api/v1/keys, resolved server-side); `user`
+              — Clerk user ID (e.g. "user_abc123"), not the display name;
+              `workspace` — workspace UUID, not the workspace name (filtering or
+              grouping by the account default workspace also covers activity
+              recorded before workspace resolution existed, which is attributed
+              to that default workspace); `app` — numeric app ID, not the app
+              title; `model` — permaslug (e.g. "openai/gpt-4o"), not the display
+              name. Other dimensions (provider, origin, country, etc.) are not
+              enriched and accept the value as returned.
+          type: array
+      required:
+        - field
+        - operator
+        - value
+      type: object
     BadRequestResponseErrorData:
       description: Error data for BadRequestResponse
       example:
@@ -694,6 +745,40 @@ components:
         - code
         - message
       type: object
+    ClassifierScalarFilterOperator:
+      description: >-
+        Equality operator taking a scalar filter value. Ordered comparisons are
+        not available because classification values are strings.
+      enum:
+        - eq
+        - neq
+      example: eq
+      type: string
+    ClassifierSetFilterOperator:
+      description: Set-membership operator taking an array filter value.
+      enum:
+        - in
+        - not_in
+      example: in
+      type: string
+    ScalarFilterOperator:
+      description: Comparison operator taking a scalar filter value.
+      enum:
+        - eq
+        - neq
+        - gt
+        - gte
+        - lt
+        - lte
+      example: eq
+      type: string
+    SetFilterOperator:
+      description: Set-membership operator taking an array filter value.
+      enum:
+        - in
+        - not_in
+      example: in
+      type: string
   securitySchemes:
     apiKey:
       description: API key as bearer token in Authorization header

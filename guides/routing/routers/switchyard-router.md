@@ -89,14 +89,14 @@ Choose an algorithm per request with the `switchyard-router` plugin. Omit the pl
   "model": "nvidia/switchyard",
   "models": ["deepseek/deepseek-v3.2", "anthropic/claude-sonnet-4.5"],
   "plugins": [{ "id": "switchyard-router", "algorithm": "stage" }],
-  "messages": [{ "role": "user", "content": "..." }]
+  "input": "..."
 }
 ```
 
 | Algorithm | What it does | Calls the judge |
 | - | - | - |
 | `capability` | Asks the judge how demanding the task is and picks the efficient or capable tier. | Every human turn (see [Session pins](#session-pins)) |
-| `stage` (default) | Scores the tool results in `messages` (errors and repeated failures point to the capable tier, edits that landed point to the efficient tier) and picks a tier when the score is decisive. Asks the judge otherwise. | Sometimes |
+| `stage` (default) | Scores the tool results in `input` (errors and repeated failures point to the capable tier, edits that landed point to the efficient tier) and picks a tier when the score is decisive. Asks the judge otherwise. | Sometimes |
 | `auto` | `stage` without the judge. Turns the tool results do not decide take the efficient tier. | Never |
 | `composite` | Runs `stage` on human turns and remembers the tier for the conversation. On tool turns, the remembered tier is the default and the `stage` signals move individual turns off it. | Human turns when the tool history does not decide; tool turns with no remembered tier |
 | `random` | Picks one candidate at random on each human turn and keeps it for tool turns (see [Session pins](#session-pins)). Useful as an A/B baseline. | Never |
@@ -115,9 +115,7 @@ Use `capability` for independent requests, chat, and agents where each human tur
   "model": "nvidia/switchyard",
   "models": ["deepseek/deepseek-v3.2", "anthropic/claude-sonnet-4.5"],
   "plugins": [{ "id": "switchyard-router", "algorithm": "capability" }],
-  "messages": [
-    { "role": "user", "content": "Prove that there are infinitely many primes of the form 4k+3." }
-  ]
+  "input": "Prove that there are infinitely many primes of the form 4k+3."
 }
 ```
 
@@ -125,7 +123,7 @@ The judge rates this prompt as demanding, so OpenRouter serves `anthropic/claude
 
 ### `stage`
 
-Use `stage` for coding and tool-using agents that send the whole conversation back on every turn. The plugin scores the tool results in `messages`: errors, repeated failures without progress, and long exploration push toward the capable tier; edits and writes that landed push toward the efficient tier. When the score is decisive, no judge call is made. When it is not, the judge decides as in `capability`.
+Use `stage` for coding and tool-using agents that send the whole conversation back on every turn. The plugin scores the tool results in `input`: errors, repeated failures without progress, and long exploration push toward the capable tier; edits and writes that landed push toward the efficient tier. When the score is decisive, no judge call is made. When it is not, the judge decides as in `capability`.
 
 ```json theme={null}
 {
@@ -133,16 +131,10 @@ Use `stage` for coding and tool-using agents that send the whole conversation ba
   "models": ["deepseek/deepseek-v3.2", "anthropic/claude-sonnet-4.5"],
   "plugins": [{ "id": "switchyard-router", "algorithm": "stage" }],
   "session_id": "task-4821",
-  "messages": [
+  "input": [
     { "role": "user", "content": "Make the failing test in tests/parse.test.ts pass." },
-    {
-      "role": "assistant",
-      "content": null,
-      "tool_calls": [
-        { "id": "call_1", "type": "function", "function": { "name": "run_tests", "arguments": "{\"path\":\"tests/parse.test.ts\"}" } }
-      ]
-    },
-    { "role": "tool", "tool_call_id": "call_1", "content": "FAIL tests/parse.test.ts\n  AssertionError: expected undefined to equal 3\n    at tests/parse.test.ts:12:20\nTest Files  1 failed (1)" }
+    { "type": "function_call", "call_id": "call_1", "name": "run_tests", "arguments": "{\"path\":\"tests/parse.test.ts\"}" },
+    { "type": "function_call_output", "call_id": "call_1", "output": "FAIL tests/parse.test.ts\n  AssertionError: expected undefined to equal 3\n    at tests/parse.test.ts:12:20\nTest Files  1 failed (1)" }
   ]
 }
 ```
@@ -159,9 +151,7 @@ Use `auto` when you want `stage` routing without paying for judge calls. Turns t
   "models": ["deepseek/deepseek-v3.2", "anthropic/claude-sonnet-4.5"],
   "plugins": [{ "id": "switchyard-router", "algorithm": "auto" }],
   "session_id": "task-4821",
-  "messages": [
-    { "role": "user", "content": "Rename the helper `fmt` to `formatRow` across src/." }
-  ]
+  "input": "Rename the helper `fmt` to `formatRow` across src/."
 }
 ```
 
@@ -169,7 +159,7 @@ Use `auto` when you want `stage` routing without paying for judge calls. Turns t
 
 ### `composite`
 
-Use `composite` for long agent tasks where the tier chosen at the start of a task should hold through its tool turns unless the tool results say otherwise. A human turn runs `stage`: tool results already in `messages` can decide the tier on their own, and the judge is asked only when they do not. The plugin remembers the tier for the conversation. On tool-result turns with a remembered tier, that tier is the default and the `stage` signals move individual turns off it, with no judge call. A tool-result turn with no remembered tier runs judge-backed `stage` like a human turn.
+Use `composite` for long agent tasks where the tier chosen at the start of a task should hold through its tool turns unless the tool results say otherwise. A human turn runs `stage`: tool results already in `input` can decide the tier on their own, and the judge is asked only when they do not. The plugin remembers the tier for the conversation. On tool-result turns with a remembered tier, that tier is the default and the `stage` signals move individual turns off it, with no judge call. A tool-result turn with no remembered tier runs judge-backed `stage` like a human turn.
 
 ```json theme={null}
 {
@@ -177,16 +167,10 @@ Use `composite` for long agent tasks where the tier chosen at the start of a tas
   "models": ["deepseek/deepseek-v3.2", "anthropic/claude-sonnet-4.5"],
   "plugins": [{ "id": "switchyard-router", "algorithm": "composite" }],
   "session_id": "task-4821",
-  "messages": [
+  "input": [
     { "role": "user", "content": "Migrate the auth middleware from Express to Hono and keep every existing test green." },
-    {
-      "role": "assistant",
-      "content": null,
-      "tool_calls": [
-        { "id": "call_1", "type": "function", "function": { "name": "read_file", "arguments": "{\"path\":\"src/middleware/auth.ts\"}" } }
-      ]
-    },
-    { "role": "tool", "tool_call_id": "call_1", "content": "import express from 'express';\n..." }
+    { "type": "function_call", "call_id": "call_1", "name": "read_file", "arguments": "{\"path\":\"src/middleware/auth.ts\"}" },
+    { "type": "function_call_output", "call_id": "call_1", "output": "import express from 'express';\n..." }
   ]
 }
 ```
@@ -202,9 +186,7 @@ Use `random` as an A/B baseline: it picks one candidate at random on each human 
   "model": "nvidia/switchyard",
   "models": ["deepseek/deepseek-v3.2", "anthropic/claude-sonnet-4.5"],
   "plugins": [{ "id": "switchyard-router", "algorithm": "random" }],
-  "messages": [
-    { "role": "user", "content": "Summarize this paragraph in one sentence: ..." }
-  ]
+  "input": "Summarize this paragraph in one sentence: ..."
 }
 ```
 
@@ -219,9 +201,7 @@ Use `passthrough` to run the candidates through the same eligibility checks as t
   "model": "nvidia/switchyard",
   "models": ["anthropic/claude-sonnet-4.5", "deepseek/deepseek-v3.2"],
   "plugins": [{ "id": "switchyard-router", "algorithm": "passthrough" }],
-  "messages": [
-    { "role": "user", "content": "Summarize this paragraph in one sentence: ..." }
-  ]
+  "input": "Summarize this paragraph in one sentence: ..."
 }
 ```
 

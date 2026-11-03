@@ -30,6 +30,8 @@ Wherever possible, OpenRouter works with providers to ensure that prompts will n
 
 Providers also have their own data retention policies, often for compliance reasons. OpenRouter does not have routing rules that change based on data retention policies of providers, but the retention policies as reflected in each provider's terms are shown below. Any user of OpenRouter can ignore providers that don't meet their own data retention requirements.
 
+The table uses three data policy tiers. **Zero retention** (ZDR) means no routine storage after processing. **Safety Retention** means the provider may retain prompts and responses from any request, only to prevent abuse; it's not used for training. Other providers retain data for the period shown and may train on it if marked. See [Data policy tiers](../features/zdr.md#data-policy-tiers).
+
 The full terms of service for each provider are linked from the provider's page, and aggregated in the [documentation](../routing/provider-selection.md#terms-of-service).
 
 These policies cover model providers. Server tools and plugins that call third-party services, such as search engines and sandboxes, follow those services' policies. See [Privacy and regional availability](../features/server-tools.md#privacy-and-regional-availability).

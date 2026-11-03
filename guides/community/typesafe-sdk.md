@@ -10,7 +10,7 @@
 
 You can point an existing [TypeSafe](https://docs.typesafe.ai) client at OpenRouter by changing its base URL. Requests to System One models such as [Jev](https://openrouter.ai/typesafe/jev-1.13) are then billed to your OpenRouter account and routed through OpenRouter's System One API. The TypeSafe SDK is available for JavaScript and TypeScript (`@typesafe-ai/sdk`) and for Python (`typesafe_sdk`).
 
-If you would rather call Jev without the TypeSafe SDK, use the [Decisions API](https://openrouter.ai/docs/api/api-reference/alphadecisions/submit-a-decisions-questions-and-answers-request.md) directly or through the OpenRouter [TypeScript](../../client-sdks/typescript/sdks/decisions/README.md), [Python](../../client-sdks/python/sdks/decisions/README.md), or [Go](../../client-sdks/go/sdks/decisions/README.md) SDK. The [Jev tutorial](jev-tutorial.md) walks through that path from the first request to a threshold decision.
+If you would rather call Jev without the TypeSafe SDK, use the [Decisions API](../../api/api-reference/alphadecisions/submit-a-decisions-request.md) directly or through the OpenRouter [TypeScript](../../client-sdks/typescript/sdks/decisions/README.md), [Python](../../client-sdks/python/sdks/decisions/README.md), or [Go](../../client-sdks/go/sdks/decisions/README.md) SDK. The [Jev tutorial](jev-tutorial.md) walks through that path from the first request to a threshold decision.
 
 ### Base URL
 

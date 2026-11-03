@@ -24,17 +24,17 @@ Join the waitlist for Ori Intern and Ori Desktop at [openrouter.ai/ori](https://
 
 Install the CLI, then sign in with your OpenRouter account. For interactive use you don't need an API key.
 
-**macOS, Linux, WSL**
+> [tab] macOS, Linux, WSL
+>
+> ```sh theme={null}
+> curl -fsSL https://openrouter.ai/labs/ori/install.sh | bash
+> ```
 
-```sh theme={null}
-curl -fsSL https://openrouter.ai/labs/ori/install.sh | bash
-```
-
-**Windows PowerShell**
-
-```powershell theme={null}
-irm https://openrouter.ai/labs/ori/install.ps1 | iex
-```
+> [tab] Windows PowerShell
+>
+> ```powershell theme={null}
+> irm https://openrouter.ai/labs/ori/install.ps1 | iex
+> ```
 
 ```sh theme={null}
 ori login

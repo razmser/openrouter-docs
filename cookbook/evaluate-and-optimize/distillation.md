@@ -48,10 +48,10 @@ const openRouter = new OpenRouter({
   apiKey: '<OPENROUTER_API_KEY>',
 });
 
-const completion = await openRouter.chat.send({
-  chatRequest: {
+const response = await openRouter.responses.send({
+  responsesRequest: {
     model: 'meta-llama/llama-3.1-70b-instruct',
-    messages: [{ role: 'user', content: 'Explain quantum computing' }],
+    input: 'Explain quantum computing',
     provider: {
       enforceDistillableText: true,
     },
@@ -61,7 +61,7 @@ const completion = await openRouter.chat.send({
 ```
 
 ```typescript title="TypeScript (fetch)" lines theme={null}
-fetch('https://openrouter.ai/api/v1/chat/completions', {
+fetch('https://openrouter.ai/api/v1/responses', {
   method: 'POST',
   headers: {
     'Authorization': 'Bearer <OPENROUTER_API_KEY>',
@@ -71,7 +71,7 @@ fetch('https://openrouter.ai/api/v1/chat/completions', {
   },
   body: JSON.stringify({
     model: 'meta-llama/llama-3.1-70b-instruct',
-    messages: [{ role: 'user', content: 'Explain quantum computing' }],
+    input: 'Explain quantum computing',
     provider: {
       enforce_distillable_text: true,
     },
@@ -89,9 +89,9 @@ headers = {
   'Content-Type': 'application/json',
 }
 
-response = requests.post('https://openrouter.ai/api/v1/chat/completions', headers=headers, json={
+response = requests.post('https://openrouter.ai/api/v1/responses', headers=headers, json={
   'model': 'meta-llama/llama-3.1-70b-instruct',
-  'messages': [{ 'role': 'user', 'content': 'Explain quantum computing' }],
+  'input': 'Explain quantum computing',
   'provider': {
     'enforce_distillable_text': True,
   },
@@ -99,14 +99,14 @@ response = requests.post('https://openrouter.ai/api/v1/chat/completions', header
 ```
 
 ```bash title="cURL" lines theme={null}
-curl https://openrouter.ai/api/v1/chat/completions \
+curl https://openrouter.ai/api/v1/responses \
   -H "Authorization: Bearer <OPENROUTER_API_KEY>" \
   -H "HTTP-Referer: <YOUR_SITE_URL>" \
   -H "X-OpenRouter-Title: <YOUR_SITE_NAME>" \
   -H "Content-Type: application/json" \
   -d '{
     "model": "meta-llama/llama-3.1-70b-instruct",
-    "messages": [{"role": "user", "content": "Explain quantum computing"}],
+    "input": "Explain quantum computing",
     "provider": {
       "enforce_distillable_text": true
     }

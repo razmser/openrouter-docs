@@ -19,27 +19,23 @@ const openRouter = new OpenRouter({
   apiKey: '<OPENROUTER_API_KEY>',
 });
 
-const completion = await openRouter.chat.send({
-  chatRequest: {
+const response = await openRouter.responses.send({
+  responsesRequest: {
     models: ['~anthropic/claude-sonnet-latest', 'gryphe/mythomax-l2-13b'],
-    messages: [
-      {
-        role: 'user',
-        content: 'What is the meaning of life?',
-      },
-    ],
+    input: 'What is the meaning of life?',
   },
 });
 
-if (completion instanceof ReadableStream) {
+if (!('output' in response)) {
   throw new Error('Expected a non-streaming response');
 }
 
-console.log(completion.choices[0].message.content);
+const message = [...response.output].reverse().find((item) => item.type === 'message');
+console.log(message?.content.find((part) => part.type === 'output_text')?.text);
 ```
 
 ```typescript title="TypeScript (fetch)" lines theme={null}
-const response = await fetch('https://openrouter.ai/api/v1/chat/completions', {
+const response = await fetch('https://openrouter.ai/api/v1/responses', {
   method: 'POST',
   headers: {
     'Authorization': 'Bearer <OPENROUTER_API_KEY>',
@@ -47,17 +43,18 @@ const response = await fetch('https://openrouter.ai/api/v1/chat/completions', {
   },
   body: JSON.stringify({
     models: ['~anthropic/claude-sonnet-latest', 'gryphe/mythomax-l2-13b'],
-    messages: [
-      {
-        role: 'user',
-        content: 'What is the meaning of life?',
-      },
-    ],
+    input: 'What is the meaning of life?',
   }),
 });
 
-const data = await response.json();
-console.log(data.choices[0].message.content);
+type ResponseOutputItem = {
+  type: string;
+  content?: { type: string; text?: string }[];
+};
+
+const data: { output: ResponseOutputItem[] } = await response.json();
+const message = [...data.output].reverse().find((item) => item.type === 'message');
+console.log(message?.content?.find((part) => part.type === 'output_text')?.text);
 ```
 
 ```python title="Python" expandable lines theme={null}
@@ -65,24 +62,20 @@ import requests
 import json
 
 response = requests.post(
-  url="https://openrouter.ai/api/v1/chat/completions",
+  url="https://openrouter.ai/api/v1/responses",
   headers={
     "Authorization": "Bearer <OPENROUTER_API_KEY>",
     "Content-Type": "application/json",
   },
   data=json.dumps({
     "models": ["~anthropic/claude-sonnet-latest", "gryphe/mythomax-l2-13b"],
-    "messages": [
-      {
-        "role": "user",
-        "content": "What is the meaning of life?"
-      }
-    ]
+    "input": "What is the meaning of life?"
   })
 )
 
 data = response.json()
-print(data['choices'][0]['message']['content'])
+message = next(item for item in reversed(data['output']) if item['type'] == 'message')
+print(next(part['text'] for part in message['content'] if part['type'] == 'output_text'))
 ```
 
 ## Fallback behavior

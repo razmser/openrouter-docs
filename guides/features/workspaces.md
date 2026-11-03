@@ -101,30 +101,30 @@ Historical activity, logs, and billing records are kept. Your other workspaces a
 
 ## Frequently Asked Questions
 
-> **What can my workspace members see about a workspace?**
+> [accordion] What can my workspace members see about a workspace?
 >
 > Within a workspace, members can create and manage their own API keys, and view other members and their roles. Members can belong to multiple workspaces. All org members automatically have access to the Default workspace. In Activity and Logs, members see request metadata, such as model, cost, tokens, status, and creator, for every request in the workspaces they belong to, including other members' requests. Members can view prompt and response content only for requests attributed to them, which includes requests made with API keys they created. Only org admins can view other people's prompt and response content, see classification tags, and export activity.
 
-> **What can my organization admins see? What can they edit?**
+> [accordion] What can my organization admins see? What can they edit?
 >
 > Org admins have admin permissions across all workspaces: they can view and manage everything in every workspace, including API keys, guardrails, BYOK, routing, presets, plugins, observability, members, and settings. Organization admins and account owners can create or delete workspaces. Org admins and workspace admins can control members' access to their workspaces; assigning workspace roles additionally requires a Pro or Enterprise plan. At the account level, org admins manage billing and credits, organization membership and roles, management API keys, and account-level data policies and allowed providers/models.
 
-> **Can management keys be used across workspaces?**
+> [accordion] Can management keys be used across workspaces?
 >
-> Yes. Management keys operate at the account level and can be used to perform administrative actions across all workspaces via the [management API](../../api/api-reference/workspaces/list-workspaces.md).
+> Organization-scoped management keys operate at the account level and can be used to perform administrative actions across all workspaces via the [management API](../../api/api-reference/workspaces/list-workspaces.md). [Workspace-scoped](../overview/auth/management-api-keys.md) management keys only act inside their own workspace on `/api/v1/keys`.
 
-> **Can workspaces have different data policies?**
+> [accordion] Can workspaces have different data policies?
 >
 > Workspaces inherit account-level data policies and allowed providers/models. Within those constraints, each workspace can set more granular guardrails to further restrict API key and member activity. The account-level policy is the ceiling; individual workspaces can only be more restrictive.
 
-> **Can I delete the Default workspace?**
+> [accordion] Can I delete the Default workspace?
 >
 > Yes, but deleting it permanently disables the account's unscoped inference API keys and has other account-wide effects. See [Deleting the Default workspace](#deleting-the-default-workspace) before you delete it.
 
-> **What happens when I remove someone from a workspace?**
+> [accordion] What happens when I remove someone from a workspace?
 >
 > When a member is removed from a workspace, they lose access to it. Before removing them, you must first delete any API keys they created in that workspace. Their access to other workspaces is unaffected. Note: all org members retain access to the Default workspace as long as they remain in the org.
 
-> **Is my Chat/Fusion usage in a workspace?**
+> [accordion] Is my Chat/Fusion usage in a workspace?
 >
 > Yes. Chat and Fusion usage runs in your active workspace. It defaults to the Default workspace, and you can switch from the Chat or Fusion [sidebar workspace switcher](workspaces/switching.md).

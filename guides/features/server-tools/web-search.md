@@ -283,12 +283,12 @@ To hard-cap how many searches the model may perform in a single request, set `ma
 
 Once the limit is reached, subsequent search calls return a message telling the model the limit was hit instead of performing another search. With native provider search, the value is forwarded only to Anthropic (as its native `max_uses`); other native search providers have no equivalent parameter and ignore it.
 
-Each search also consumes one step of the request's overall server-tool budget, shared across all server tools. Set the top-level `max_tool_calls` request field (a sibling of `messages` and `tools`, not a tool parameter) to bound that budget:
+Each search also consumes one step of the request's overall server-tool budget, shared across all server tools. Set the top-level `max_tool_calls` request field (a sibling of `input` and `tools`, not a tool parameter) to bound that budget:
 
 ```json lines theme={null}
 {
   "model": "openai/gpt-5.2",
-  "messages": [...],
+  "input": "What were the major AI announcements this week?",
   "tools": [{ "type": "openrouter:web_search" }],
   "max_tool_calls": 5
 }
@@ -296,9 +296,9 @@ Each search also consumes one step of the request's overall server-tool budget, 
 
 When omitted, the budget defaults to **30** steps, which is also the maximum. For finer control (spend caps, custom stop conditions), use `stop_server_tools_when`, which overrides `max_tool_calls` entirely. See [Tool Call Limits](../server-tools.md#tool-call-limits) for how budgets work across all server tools.
 
-## Works with the Responses API
+## Example with Parameters
 
-The web search server tool also works with the Responses API:
+Pass `parameters` on the tool entry to configure the search:
 
 ## Workspace Settings
 
@@ -318,8 +318,10 @@ Web search usage is reported in the response `usage` object:
   "usage": {
     "input_tokens": 105,
     "output_tokens": 250,
-    "server_tool_use": {
-      "web_search_requests": 2
+    "server_tool_use_details": {
+      "web_search_requests": 2,
+      "tool_calls_requested": 2,
+      "tool_calls_executed": 2
     }
   }
 }
@@ -366,14 +368,14 @@ Use one surface per request. If a request still carries a `web` plugin (from `pl
 // Before (deprecated)
 {
   "model": "openai/gpt-5.2",
-  "messages": [...],
+  "input": [...],
   "plugins": [{ "id": "web", "max_results": 3 }]
 }
 
 // After
 {
   "model": "openai/gpt-5.2",
-  "messages": [...],
+  "input": [...],
   "tools": [
     { "type": "openrouter:web_search", "parameters": { "max_results": 3 } }
   ]
@@ -384,7 +386,7 @@ Use one surface per request. If a request still carries a `web` plugin (from `pl
 // Before (deprecated): engine and domain filtering
 {
   "model": "openai/gpt-5.2",
-  "messages": [...],
+  "input": [...],
   "plugins": [{
     "id": "web",
     "engine": "exa",
@@ -396,7 +398,7 @@ Use one surface per request. If a request still carries a `web` plugin (from `pl
 // After
 {
   "model": "openai/gpt-5.2",
-  "messages": [...],
+  "input": [...],
   "tools": [{
     "type": "openrouter:web_search",
     "parameters": {

@@ -16,67 +16,67 @@ It's a remote server hosted by OpenRouter (nothing is installed locally). You co
 
 ## Connect your agent
 
-**Claude Code**
-
-```bash lines theme={null}
-claude mcp add --transport http openrouter https://mcp.openrouter.ai/mcp
-claude mcp login openrouter
-```
-
-You can also authenticate from inside a session: run `/mcp`, select **openrouter**, and click **Authenticate**.
-
-**Codex CLI**
-
-```bash lines theme={null}
-codex mcp add openrouter --url https://mcp.openrouter.ai/mcp
-codex mcp login openrouter   # opens the browser OAuth flow
-```
-
-**OpenCode**
-
-Add this to `~/.config/opencode/opencode.json`. OpenCode runs the OAuth flow automatically on first use, with no separate login step:
-
-```json lines theme={null}
-{
-  "mcp": {
-    "openrouter": {
-      "type": "remote",
-      "url": "https://mcp.openrouter.ai/mcp",
-      "enabled": true
-    }
-  }
-}
-```
-
-**Cursor CLI**
-
-The Cursor CLI (`cursor-agent`) reads the same config as the IDE. Add this to `~/.cursor/mcp.json`, then verify with `cursor-agent mcp list`. Authenticate from the Cursor MCP settings, or it prompts on first tool use:
-
-```json lines theme={null}
-{
-  "mcpServers": {
-    "openrouter": { "url": "https://mcp.openrouter.ai/mcp" }
-  }
-}
-```
-
-**Claude Desktop / Web**
-
-OpenRouter isn't in Claude's connector directory, so add it as a custom connector:
-
-1. Go to **Settings > Connectors > Customize > Connectors**, click the **+**, then choose **Add custom connector**.
-
-   ![Claude's Connectors page with the + menu open and Add custom connector highlighted](https://mintcdn.com/openrouter-d02e98a0/vKv_Fe97IEm3a1mW/assets/guides/overview/claude-connectors-menu.png?fit=max\&auto=format\&n=vKv_Fe97IEm3a1mW\&q=85\&s=5a7126fa72b2793d5f82b3b4dbd11733)
-
-2. Enter the **Name** `OpenRouter MCP` and set the **Remote MCP server URL** to `https://mcp.openrouter.ai/mcp`. Leave the OAuth fields blank.
-
-3. Click **Add**, then open the connector and **Connect** to run the OAuth flow.
-
-   ![Claude's Add custom connector dialog with the Name set to OpenRouter MCP and the Remote MCP server URL set to https://mcp.openrouter.ai/mcp](https://mintcdn.com/openrouter-d02e98a0/vKv_Fe97IEm3a1mW/assets/guides/overview/claude-add-custom-connector.png?fit=max\&auto=format\&n=vKv_Fe97IEm3a1mW\&q=85\&s=a170c979682b65fe8a909e589d04177f)
-
-> [!NOTE]
+> [tab] Claude Code
 >
-> Some organizations don't allow adding custom connectors, so this option may not appear for everyone. If you don't see it, talk to your admin.
+> ```bash lines theme={null}
+> claude mcp add --transport http openrouter https://mcp.openrouter.ai/mcp
+> claude mcp login openrouter
+> ```
+>
+> You can also authenticate from inside a session: run `/mcp`, select **openrouter**, and click **Authenticate**.
+
+> [tab] Codex CLI
+>
+> ```bash lines theme={null}
+> codex mcp add openrouter --url https://mcp.openrouter.ai/mcp
+> codex mcp login openrouter   # opens the browser OAuth flow
+> ```
+
+> [tab] OpenCode
+>
+> Add this to `~/.config/opencode/opencode.json`. OpenCode runs the OAuth flow automatically on first use, with no separate login step:
+>
+> ```json lines theme={null}
+> {
+>   "mcp": {
+>     "openrouter": {
+>       "type": "remote",
+>       "url": "https://mcp.openrouter.ai/mcp",
+>       "enabled": true
+>     }
+>   }
+> }
+> ```
+
+> [tab] Cursor CLI
+>
+> The Cursor CLI (`cursor-agent`) reads the same config as the IDE. Add this to `~/.cursor/mcp.json`, then verify with `cursor-agent mcp list`. Authenticate from the Cursor MCP settings, or it prompts on first tool use:
+>
+> ```json lines theme={null}
+> {
+>   "mcpServers": {
+>     "openrouter": { "url": "https://mcp.openrouter.ai/mcp" }
+>   }
+> }
+> ```
+
+> [tab] Claude Desktop / Web
+>
+> OpenRouter isn't in Claude's connector directory, so add it as a custom connector:
+>
+> 1. Go to **Settings > Connectors > Customize > Connectors**, click the **+**, then choose **Add custom connector**.
+>
+>    ![Claude's Connectors page with the + menu open and Add custom connector highlighted](https://mintcdn.com/openrouter-d02e98a0/vKv_Fe97IEm3a1mW/assets/guides/overview/claude-connectors-menu.png?fit=max\&auto=format\&n=vKv_Fe97IEm3a1mW\&q=85\&s=5a7126fa72b2793d5f82b3b4dbd11733)
+>
+> 2. Enter the **Name** `OpenRouter MCP` and set the **Remote MCP server URL** to `https://mcp.openrouter.ai/mcp`. Leave the OAuth fields blank.
+>
+> 3. Click **Add**, then open the connector and **Connect** to run the OAuth flow.
+>
+>    ![Claude's Add custom connector dialog with the Name set to OpenRouter MCP and the Remote MCP server URL set to https://mcp.openrouter.ai/mcp](https://mintcdn.com/openrouter-d02e98a0/vKv_Fe97IEm3a1mW/assets/guides/overview/claude-add-custom-connector.png?fit=max\&auto=format\&n=vKv_Fe97IEm3a1mW\&q=85\&s=a170c979682b65fe8a909e589d04177f)
+>
+> > [!NOTE]
+> >
+> > Some organizations don't allow adding custom connectors, so this option may not appear for everyone. If you don't see it, talk to your admin.
 
 Not all clients pop up the auth automatically; some need a one-time login step after you add the server. When you trigger it, an OpenRouter consent page opens in your browser where you approve a **dedicated key just for this connection**, separate from your other keys. The key expires within 7 days and starts with a `$10` spend cap (editable on the approval screen). You can disconnect anytime. If your personal account or organization sets a maximum API key lifetime in [privacy settings](https://openrouter.ai/settings/privacy), the MCP key gets the shorter of that value and 7 days, so the same policy that caps your other keys can shorten this one.
 
