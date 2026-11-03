@@ -99,19 +99,19 @@ Deactivation is scoped to your organization: the member's personal OpenRouter ac
 
 ## Frequently Asked Questions
 
-> **Can I turn SSO off after enabling it?**
+> [accordion] Can I turn SSO off after enabling it?
 >
 > Enabling self-serve SSO management for your organization is one-way. Individual connections can be disabled from the Security tab, and you can contact [support@openrouter.ai](mailto:support@openrouter.ai) for help with your SSO configuration.
 
-> **Can I connect more than one domain?**
+> [accordion] Can I connect more than one domain?
 >
 > Yes. Domains and connections are managed in the Security tab of your organization settings; each verified domain gets its own connection entry in the SSO tab.
 
-> **Who can manage SSO?**
+> [accordion] Who can manage SSO?
 >
 > Only organization admins can enable SSO and access the Security tab. Regular members won't see the SSO management options.
 
-> **I don't see the SSO tab, why?**
+> [accordion] I don't see the SSO tab, why?
 >
 > The SSO tab is available to organization admins on Enterprise plans. If your organization's SSO was configured directly by OpenRouter, reach out to [support@openrouter.ai](mailto:support@openrouter.ai) for changes.
 

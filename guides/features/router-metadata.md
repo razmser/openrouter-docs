@@ -43,8 +43,10 @@ When opted in, successful responses include an `openrouter_metadata` object alon
 ```json expandable lines theme={null}
 {
   "id": "gen-...",
+  "object": "response",
   "model": "openai/gpt-4o-mini",
-  "choices": [...],
+  "status": "completed",
+  "output": [...],
   "usage": {...},
   "openrouter_metadata": {
     "requested": "openai/gpt-4o-mini",

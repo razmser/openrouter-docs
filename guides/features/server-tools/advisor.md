@@ -23,7 +23,7 @@ Each advisor also **remembers its own prior consultations across requests** when
 ## Quick start
 
 ```typescript title="TypeScript" expandable lines theme={null}
-const response = await fetch('https://openrouter.ai/api/v1/chat/completions', {
+const response = await fetch('https://openrouter.ai/api/v1/responses', {
   method: 'POST',
   headers: {
     Authorization: 'Bearer {{API_KEY_REF}}',
@@ -31,12 +31,7 @@ const response = await fetch('https://openrouter.ai/api/v1/chat/completions', {
   },
   body: JSON.stringify({
     model: '{{MODEL}}',
-    messages: [
-      {
-        role: 'user',
-        content: 'Build a concurrent worker pool in Go with graceful shutdown.',
-      },
-    ],
+    input: 'Build a concurrent worker pool in Go with graceful shutdown.',
     tools: [
       {
         type: 'openrouter:advisor',
@@ -47,26 +42,22 @@ const response = await fetch('https://openrouter.ai/api/v1/chat/completions', {
 });
 
 const data = await response.json();
-console.log(data.choices[0].message.content);
+const message = [...data.output].reverse().find((item: { type: string }) => item.type === 'message');
+console.log(message?.content.find((part: { type: string; text?: string }) => part.type === 'output_text')?.text);
 ```
 
 ```python title="Python" expandable lines theme={null}
 import requests
 
 response = requests.post(
-  "https://openrouter.ai/api/v1/chat/completions",
+  "https://openrouter.ai/api/v1/responses",
   headers={
     "Authorization": f"Bearer {{API_KEY_REF}}",
     "Content-Type": "application/json",
   },
   json={
     "model": "{{MODEL}}",
-    "messages": [
-      {
-        "role": "user",
-        "content": "Build a concurrent worker pool in Go with graceful shutdown.",
-      },
-    ],
+    "input": "Build a concurrent worker pool in Go with graceful shutdown.",
     "tools": [
       {
         "type": "openrouter:advisor",
@@ -75,7 +66,9 @@ response = requests.post(
     ],
   },
 )
-print(response.json()["choices"][0]["message"]["content"])
+data = response.json()
+message = next(item for item in reversed(data["output"]) if item["type"] == "message")
+print(next(part["text"] for part in message["content"] if part["type"] == "output_text"))
 ```
 
 ## Choosing the advisor model
@@ -178,8 +171,8 @@ Each advisor remembers its own prior `prompt → advice` exchanges **across API 
 
 This works on all three APIs; the only requirement is that you **replay the advisor exchanges you received**:
 
-* **Chat Completions**: include the assistant message's advisor `tool_calls` and the paired `role: "tool"` result messages from prior turns.
 * **Responses API**: include the `openrouter:advisor` output items from prior responses in `input`, unchanged.
+* **Chat Completions**: include the assistant message's advisor `tool_calls` and the paired `role: "tool"` result messages from prior turns.
 * **Anthropic Messages API**: include the assistant message's advisor `server_tool_use` and `advisor_tool_result` content blocks from prior turns.
 
 Memory is **per advisor**: in a multi-advisor setup, each advisor recalls only its own prior exchanges. A "reviewer" advisor never sees what the "architect" was told. There is no fixed limit on the number of replayed exchanges; if the history exceeds the advisor model's context window, it is compressed with the [middle-out transform](../message-transforms.md), which trims the middle of the conversation and keeps the oldest and newest exchanges.

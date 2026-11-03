@@ -128,6 +128,8 @@ tags:
     name: Workspaces
   - description: Alpha feature endpoints for Decisions requests
     name: alpha.decisions
+  - description: Alpha feature endpoints for Extractions requests
+    name: alpha.extractions
 externalDocs:
   description: OpenRouter Documentation
   url: https://openrouter.ai/docs
@@ -196,7 +198,13 @@ paths:
                       minLength: 32
                       type: string
                     user:
-                      description: Partner's end-user identifier for attribution.
+                      description: >-
+                        Partner's external user identifier for attribution: 1 to
+                        512 characters after surrounding whitespace is trimmed,
+                        well-formed Unicode, no NUL. For organization keys
+                        outside HIPAA workspaces, the value is registered as an
+                        external user if it does not exist yet, and the key is
+                        linked to it.
                       example: partner-user-123
                       maxLength: 512
                       minLength: 1
@@ -240,7 +248,9 @@ paths:
                 workspace_id:
                   description: >-
                     The workspace to create the API key in. Defaults to the
-                    default workspace if not provided.
+                    default workspace for an organization-scoped management key,
+                    or to the management key's own workspace for a
+                    workspace-scoped one, which cannot create keys elsewhere.
                   example: 0df9e665-d932-5740-b2c7-b52af166bc11
                   format: uuid
                   type: string

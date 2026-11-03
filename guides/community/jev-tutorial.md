@@ -10,7 +10,7 @@
 
 This tutorial takes you from zero to a first typed decision from Jev in three steps. Jev is available as `typesafe/jev-1.13` on OpenRouter, and all you need is an OpenRouter API key.
 
-If you want a few concepts before diving into code, start with the [Jev documentation hub](jev.md). If you already know Jev and want the full request schema, go to the [Decisions API reference](https://openrouter.ai/docs/api/api-reference/alphadecisions/submit-a-decisions-questions-and-answers-request.md).
+If you want a few concepts before diving into code, start with the [Jev documentation hub](jev.md). If you already know Jev and want the full request schema, go to the [Decisions API reference](../../api/api-reference/alphadecisions/submit-a-decisions-request.md).
 
 ### What Jev returns
 
@@ -181,7 +181,7 @@ print(response.json()["answers"])
 
 ### Step 3: Read the answers
 
-The response contains one typed answer per question, plus usage. This is an actual response to the request above, captured from the live API. Your probabilities will differ slightly from run to run, and the field shapes are documented in the [Decisions API reference](https://openrouter.ai/docs/api/api-reference/alphadecisions/submit-a-decisions-questions-and-answers-request.md):
+The response contains one typed answer per question, plus usage. This is an actual response to the request above, captured from the live API. Your probabilities will differ slightly from run to run, and the field shapes are documented in the [Decisions API reference](../../api/api-reference/alphadecisions/submit-a-decisions-request.md):
 
 ```json theme={null}
 {

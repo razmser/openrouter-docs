@@ -128,6 +128,8 @@ tags:
     name: Workspaces
   - description: Alpha feature endpoints for Decisions requests
     name: alpha.decisions
+  - description: Alpha feature endpoints for Extractions requests
+    name: alpha.extractions
 externalDocs:
   description: OpenRouter Documentation
   url: https://openrouter.ai/docs
@@ -176,15 +178,19 @@ paths:
               - integer
               - 'null'
         - description: >-
-            Filter API keys by workspace ID. By default, keys in the default
-            workspace are returned.
+            Filter API keys by workspace ID. By default an organization-scoped
+            management key gets the default workspace; a workspace-scoped
+            management key always gets its own workspace and cannot list
+            another.
           in: query
           name: workspace_id
           required: false
           schema:
             description: >-
-              Filter API keys by workspace ID. By default, keys in the default
-              workspace are returned.
+              Filter API keys by workspace ID. By default an organization-scoped
+              management key gets the default workspace; a workspace-scoped
+              management key always gets its own workspace and cannot list
+              another.
             example: 0df9e665-d932-5740-b2c7-b52af166bc11
             format: uuid
             type: string
@@ -467,6 +473,16 @@ paths:
               schema:
                 $ref: '#/components/schemas/UnauthorizedResponse'
           description: Unauthorized - Authentication required or invalid credentials
+        '403':
+          content:
+            application/json:
+              example:
+                error:
+                  code: 403
+                  message: Only management keys can perform this operation
+              schema:
+                $ref: '#/components/schemas/ForbiddenResponse'
+          description: Forbidden - Authentication successful but insufficient permissions
         '404':
           content:
             application/json:
@@ -529,6 +545,27 @@ components:
       properties:
         error:
           $ref: '#/components/schemas/UnauthorizedResponseErrorData'
+        openrouter_metadata:
+          additionalProperties: {}
+          type:
+            - object
+            - 'null'
+        user_id:
+          type:
+            - string
+            - 'null'
+      required:
+        - error
+      type: object
+    ForbiddenResponse:
+      description: Forbidden - Authentication successful but insufficient permissions
+      example:
+        error:
+          code: 403
+          message: Only management keys can perform this operation
+      properties:
+        error:
+          $ref: '#/components/schemas/ForbiddenResponseErrorData'
         openrouter_metadata:
           additionalProperties: {}
           type:
@@ -628,6 +665,25 @@ components:
       example:
         code: 401
         message: Missing Authentication header
+      properties:
+        code:
+          type: integer
+        message:
+          type: string
+        metadata:
+          additionalProperties: {}
+          type:
+            - object
+            - 'null'
+      required:
+        - code
+        - message
+      type: object
+    ForbiddenResponseErrorData:
+      description: Error data for ForbiddenResponse
+      example:
+        code: 403
+        message: Only management keys can perform this operation
       properties:
         code:
           type: integer

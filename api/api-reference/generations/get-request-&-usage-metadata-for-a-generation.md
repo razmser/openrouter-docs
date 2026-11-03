@@ -126,6 +126,8 @@ tags:
     name: Workspaces
   - description: Alpha feature endpoints for Decisions requests
     name: alpha.decisions
+  - description: Alpha feature endpoints for Extractions requests
+    name: alpha.extractions
 externalDocs:
   description: OpenRouter Documentation
   url: https://openrouter.ai/docs
@@ -364,6 +366,7 @@ components:
                 - embeddings
                 - rerank
                 - decisions
+                - extractions
                 - video
                 - tts
                 - stt
@@ -1023,6 +1026,7 @@ components:
             - Io Net
             - Inferact vLLM
             - Inflection
+            - KT
             - Liquid
             - Makora
             - Mara

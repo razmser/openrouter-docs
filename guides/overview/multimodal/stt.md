@@ -232,7 +232,7 @@ OpenRouter supports two ways to process audio:
 
 1. **Speech-to-Text** (this page): A dedicated `/api/v1/audio/transcriptions` endpoint optimized for transcription. Returns structured JSON with the transcribed text and usage data. Best for converting audio to text.
 
-2. **Audio input via Chat Completions** ([Audio docs](audio.md)): Send audio as part of a `/api/v1/chat/completions` request using the `input_audio` content type. The model processes the audio alongside text and responds conversationally. Best for audio analysis, question answering about audio content, or combining audio with other modalities.
+2. **Audio input via the Responses API** ([Audio docs](audio.md)): Send audio as part of a [`/api/v1/responses`](../../../api_reference/responses/overview.md) request using the `input_audio` content type. The model processes the audio alongside text and responds conversationally. Best for audio analysis, question answering about audio content, or combining audio with other modalities.
 
 ## Best Practices
 
@@ -260,4 +260,4 @@ OpenRouter supports two ways to process audio:
 **Authentication error?**
 
 * Ensure you're using a valid API key from [your OpenRouter dashboard](https://openrouter.ai/settings/keys)
-* The STT endpoint uses the same authentication as the Chat Completions API
+* The STT endpoint uses the same authentication as the [Responses API](../../../api_reference/responses/overview.md)

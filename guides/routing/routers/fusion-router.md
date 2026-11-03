@@ -36,18 +36,14 @@ flowchart LR
 ```json title="Model alias (tool auto-injected)" lines theme={null}
 {
   "model": "openrouter/fusion",
-  "messages": [
-    { "role": "user", "content": "What are the strongest arguments for and against carbon taxes?" }
-  ]
+  "input": "What are the strongest arguments for and against carbon taxes?"
 }
 ```
 
 ```json title="Server tool (explicit)" lines theme={null}
 {
   "model": "~anthropic/claude-opus-latest",
-  "messages": [
-    { "role": "user", "content": "What are the strongest arguments for and against carbon taxes?" }
-  ],
+  "input": "What are the strongest arguments for and against carbon taxes?",
   "tools": [
     { "type": "openrouter:fusion" }
   ]
@@ -65,7 +61,7 @@ In both cases, the model decides when to call `openrouter:fusion`. For prompts t
 ```json title="Fusion Flash" theme={null}
 {
   "model": "openrouter/fusion-flash",
-  "messages": [{ "role": "user", "content": "..." }]
+  "input": "..."
 }
 ```
 
@@ -73,7 +69,7 @@ In both cases, the model decides when to call `openrouter:fusion`. For prompts t
 {
   "model": "openrouter/fusion",
   "plugins": [{ "id": "fusion", "preset": "general-fast" }],
-  "messages": [{ "role": "user", "content": "..." }]
+  "input": "..."
 }
 ```
 
@@ -88,34 +84,31 @@ const openRouter = new OpenRouter({
   apiKey: '<OPENROUTER_API_KEY>',
 });
 
-const completion = await openRouter.chat.send({
-  chatRequest: {
+const response = await openRouter.responses.send({
+  responsesRequest: {
     model: 'openrouter/fusion',
-    messages: [
-      {
-        role: 'user',
-        content: 'Survey the strongest arguments for and against a carbon tax. Where do experts disagree?',
-      },
-    ],
+    input: 'Survey the strongest arguments for and against a carbon tax. Where do experts disagree?',
   },
 });
 
-if (completion instanceof ReadableStream) {
+if (!('output' in response)) {
   throw new Error('Expected a non-streaming response');
 }
+if (response.status !== 'completed') {
+  throw new Error(response.error?.message ?? `Response ended as ${response.status}`);
+}
 
-console.log(completion.choices[0].message.content);
+const message = [...response.output].reverse().find((item) => item.type === 'message');
+console.log(message?.content.find((part) => part.type === 'output_text')?.text);
 ```
 
 ```bash title="cURL" lines theme={null}
-curl https://openrouter.ai/api/v1/chat/completions \
+curl https://openrouter.ai/api/v1/responses \
   -H "Authorization: Bearer $OPENROUTER_API_KEY" \
   -H "Content-Type: application/json" \
   -d '{
     "model": "openrouter/fusion",
-    "messages": [
-      {"role": "user", "content": "Survey the strongest arguments for and against a carbon tax. Where do experts disagree?"}
-    ]
+    "input": "Survey the strongest arguments for and against a carbon tax. Where do experts disagree?"
   }'
 ```
 
@@ -128,8 +121,8 @@ Override the default panel and analyst for a Fusion run via the `plugins` array 
 Pass a `fusion` plugin entry alongside `model: "openrouter/fusion"`. This is the same pattern the [Pareto Router](pareto-router.md) uses for `min_coding_score`.
 
 ```typescript title="TypeScript SDK" lines theme={null}
-const completion = await openRouter.chat.send({
-  chatRequest: {
+const response = await openRouter.responses.send({
+  responsesRequest: {
     model: 'openrouter/fusion',
     plugins: [
       {
@@ -142,18 +135,13 @@ const completion = await openRouter.chat.send({
         model: '~openai/gpt-sol-latest',
       },
     ],
-    messages: [
-      {
-        role: 'user',
-        content: 'Compare ridge, lasso, and elastic-net regression. Where does each shine?',
-      },
-    ],
+    input: 'Compare ridge, lasso, and elastic-net regression. Where does each shine?',
   },
 });
 ```
 
 ```bash title="cURL" lines theme={null}
-curl https://openrouter.ai/api/v1/chat/completions \
+curl https://openrouter.ai/api/v1/responses \
   -H "Authorization: Bearer $OPENROUTER_API_KEY" \
   -H "Content-Type: application/json" \
   -d '{
@@ -165,9 +153,7 @@ curl https://openrouter.ai/api/v1/chat/completions \
         "model": "~openai/gpt-sol-latest"
       }
     ],
-    "messages": [
-      {"role": "user", "content": "Compare ridge, lasso, and elastic-net regression."}
-    ]
+    "input": "Compare ridge, lasso, and elastic-net regression."
   }'
 ```
 
@@ -176,15 +162,10 @@ curl https://openrouter.ai/api/v1/chat/completions \
 When you bring your own model and add `openrouter:fusion` as a server tool, configure it via the `tools` array instead:
 
 ```typescript title="TypeScript SDK" expandable lines theme={null}
-const completion = await openRouter.chat.send({
-  chatRequest: {
+const response = await openRouter.responses.send({
+  responsesRequest: {
     model: '~anthropic/claude-opus-latest',
-    messages: [
-      {
-        role: 'user',
-        content: 'Compare ridge, lasso, and elastic-net regression. Where does each shine?',
-      },
-    ],
+    input: 'Compare ridge, lasso, and elastic-net regression. Where does each shine?',
     tools: [
       {
         type: 'openrouter:fusion',
@@ -203,14 +184,12 @@ const completion = await openRouter.chat.send({
 ```
 
 ```bash title="cURL" lines theme={null}
-curl https://openrouter.ai/api/v1/chat/completions \
+curl https://openrouter.ai/api/v1/responses \
   -H "Authorization: Bearer $OPENROUTER_API_KEY" \
   -H "Content-Type: application/json" \
   -d '{
     "model": "~anthropic/claude-opus-latest",
-    "messages": [
-      {"role": "user", "content": "Compare ridge, lasso, and elastic-net regression."}
-    ],
+    "input": "Compare ridge, lasso, and elastic-net regression.",
     "tools": [
       {
         "type": "openrouter:fusion",
@@ -237,29 +216,22 @@ curl https://openrouter.ai/api/v1/chat/completions \
 By default, the model decides when to call `openrouter:fusion`. To guarantee it runs on every request, set `tool_choice: "required"`:
 
 ```typescript title="TypeScript SDK" lines theme={null}
-const completion = await openRouter.chat.send({
-  chatRequest: {
+const response = await openRouter.responses.send({
+  responsesRequest: {
     model: 'openrouter/fusion',
-    messages: [
-      {
-        role: 'user',
-        content: 'Compare ridge, lasso, and elastic-net regression.',
-      },
-    ],
+    input: 'Compare ridge, lasso, and elastic-net regression.',
     toolChoice: 'required',
   },
 });
 ```
 
 ```bash title="cURL" lines theme={null}
-curl https://openrouter.ai/api/v1/chat/completions \
+curl https://openrouter.ai/api/v1/responses \
   -H "Authorization: Bearer $OPENROUTER_API_KEY" \
   -H "Content-Type: application/json" \
   -d '{
     "model": "openrouter/fusion",
-    "messages": [
-      {"role": "user", "content": "Compare ridge, lasso, and elastic-net regression."}
-    ],
+    "input": "Compare ridge, lasso, and elastic-net regression.",
     "tool_choice": "required"
   }'
 ```
@@ -268,18 +240,29 @@ Because `openrouter/fusion` only injects one tool (`openrouter:fusion`), requiri
 
 ## Response
 
-The response `model` field reports the **concrete model** that handled the request, not the `openrouter/fusion` alias:
+The response `model` field reports the **concrete model** that handled the request, not the `openrouter/fusion` alias. When the model invokes Fusion, the `output` array carries the `openrouter:fusion` tool item ahead of the final `message`; a direct answer has only the message. Read the last message by type so intermediate commentary is not mistaken for the final answer:
 
 ```json lines theme={null}
 {
   "id": "gen-...",
+  "object": "response",
   "model": "anthropic/claude-opus-4.5",
-  "choices": [
+  "status": "completed",
+  "output": [
     {
-      "message": {
-        "role": "assistant",
-        "content": "..."
-      }
+      "type": "openrouter:fusion",
+      "id": "st_tmp_...",
+      "status": "completed"
+    },
+    {
+      "type": "message",
+      "role": "assistant",
+      "content": [
+        {
+          "type": "output_text",
+          "text": "..."
+        }
+      ]
     }
   ]
 }

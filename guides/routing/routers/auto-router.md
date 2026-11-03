@@ -14,10 +14,10 @@ Two slugs run this router:
 * **[Auto Beta](https://openrouter.ai/openrouter/auto-beta)** (`openrouter/auto-beta`) — the early-access track. New routing behaviors land here before they reach `openrouter/auto`. Everything on this page applies to it too, except that per-request settings must use the plugin id `auto-beta-router` instead of `auto-router`:
 
 ```typescript theme={null}
-const completion = await openRouter.chat.send({
-  chatRequest: {
+const response = await openRouter.responses.send({
+  responsesRequest: {
     model: 'openrouter/auto-beta',
-    messages: [{ role: 'user', content: 'Summarize this paragraph' }],
+    input: 'Summarize this paragraph',
     plugins: [{ id: 'auto-beta-router', costTier: 'medium' }],
   },
 });
@@ -53,29 +53,25 @@ const openRouter = new OpenRouter({
   apiKey: '<OPENROUTER_API_KEY>',
 });
 
-const completion = await openRouter.chat.send({
-  chatRequest: {
+const response = await openRouter.responses.send({
+  responsesRequest: {
     model: 'openrouter/auto',
-    messages: [
-      {
-        role: 'user',
-        content: 'Explain quantum entanglement in simple terms',
-      },
-    ],
+    input: 'Explain quantum entanglement in simple terms',
   },
 });
 
-if (completion instanceof ReadableStream) {
+if (!('output' in response)) {
   throw new Error('Expected a non-streaming response');
 }
 
-console.log(completion.choices[0].message.content);
+const message = [...response.output].reverse().find((item) => item.type === 'message');
+console.log(message?.content.find((part) => part.type === 'output_text')?.text);
 // Check which model was selected
-console.log('Model used:', completion.model);
+console.log('Model used:', response.model);
 ```
 
 ```typescript title="TypeScript (fetch)" expandable lines theme={null}
-const response = await fetch('https://openrouter.ai/api/v1/chat/completions', {
+const response = await fetch('https://openrouter.ai/api/v1/responses', {
   method: 'POST',
   headers: {
     'Authorization': 'Bearer <OPENROUTER_API_KEY>',
@@ -83,17 +79,13 @@ const response = await fetch('https://openrouter.ai/api/v1/chat/completions', {
   },
   body: JSON.stringify({
     model: 'openrouter/auto',
-    messages: [
-      {
-        role: 'user',
-        content: 'Explain quantum entanglement in simple terms',
-      },
-    ],
+    input: 'Explain quantum entanglement in simple terms',
   }),
 });
 
 const data = await response.json();
-console.log(data.choices[0].message.content);
+const message = [...data.output].reverse().find((item: { type: string }) => item.type === 'message');
+console.log(message?.content.find((part: { type: string; text?: string }) => part.type === 'output_text')?.text);
 // Check which model was selected
 console.log('Model used:', data.model);
 ```
@@ -103,24 +95,20 @@ import requests
 import json
 
 response = requests.post(
-  url="https://openrouter.ai/api/v1/chat/completions",
+  url="https://openrouter.ai/api/v1/responses",
   headers={
     "Authorization": "Bearer <OPENROUTER_API_KEY>",
     "Content-Type": "application/json",
   },
   data=json.dumps({
     "model": "openrouter/auto",
-    "messages": [
-      {
-        "role": "user",
-        "content": "Explain quantum entanglement in simple terms"
-      }
-    ]
+    "input": "Explain quantum entanglement in simple terms"
   })
 )
 
 data = response.json()
-print(data['choices'][0]['message']['content'])
+message = next(item for item in reversed(data['output']) if item['type'] == 'message')
+print(next(part['text'] for part in message['content'] if part['type'] == 'output_text'))
 # Check which model was selected
 print('Model used:', data['model'])
 ```
@@ -132,18 +120,24 @@ The response includes the `model` field showing which model was actually used:
 ```json lines theme={null}
 {
   "id": "gen-...",
+  "object": "response",
   "model": "anthropic/claude-sonnet-4.5",  // The model that was selected
-  "choices": [
+  "status": "completed",
+  "output": [
     {
-      "message": {
-        "role": "assistant",
-        "content": "..."
-      }
+      "type": "message",
+      "role": "assistant",
+      "content": [
+        {
+          "type": "output_text",
+          "text": "..."
+        }
+      ]
     }
   ],
   "usage": {
-    "prompt_tokens": 15,
-    "completion_tokens": 150,
+    "input_tokens": 15,
+    "output_tokens": 150,
     "total_tokens": 165
   }
 }
@@ -160,31 +154,41 @@ Sessions also keep requests on the same provider, which works the same way as it
 ### Example with `session_id`
 
 ```typescript title="TypeScript SDK" expandable lines theme={null}
-const completion = await openRouter.chat.send({
-  chatRequest: {
+const response = await openRouter.responses.send({
+  responsesRequest: {
     model: 'openrouter/auto',
     sessionId: 'my-conversation-123',
-    messages: [
-      {
-        role: 'user',
-        content: 'Explain quantum entanglement',
-      },
-    ],
+    input: 'Explain quantum entanglement',
   },
 });
 
-if (completion instanceof ReadableStream) {
+if (!('output' in response)) {
   throw new Error('Expected a non-streaming response');
 }
+if (response.status !== 'completed') {
+  throw new Error(response.error?.message ?? `Response ended as ${response.status}`);
+}
+const previousOutput = response.output.map((item) => {
+  if (item.type === 'reasoning') return item;
+  if (item.type !== 'message') throw new Error(`Unexpected output item: ${item.type}`);
+
+  const content = item.content.filter(
+    (part) => part.type === 'output_text' || part.type === 'refusal',
+  );
+  if (content.length !== item.content.length) {
+    throw new Error('Received an unsupported message content type');
+  }
+  return { ...item, content };
+});
 
 // Subsequent requests with this session reuse the cached provider and may reuse the model
-const followUp = await openRouter.chat.send({
-  chatRequest: {
+const followUp = await openRouter.responses.send({
+  responsesRequest: {
     model: 'openrouter/auto',
     sessionId: 'my-conversation-123',
-    messages: [
+    input: [
       { role: 'user', content: 'Explain quantum entanglement' },
-      { role: 'assistant', content: completion.choices[0].message.content ?? '' },
+      ...previousOutput,
       { role: 'user', content: 'Now explain it to a 5-year-old' },
     ],
   },
@@ -192,7 +196,7 @@ const followUp = await openRouter.chat.send({
 ```
 
 ```typescript title="TypeScript (fetch)" lines theme={null}
-const response = await fetch('https://openrouter.ai/api/v1/chat/completions', {
+const response = await fetch('https://openrouter.ai/api/v1/responses', {
   method: 'POST',
   headers: {
     Authorization: 'Bearer <OPENROUTER_API_KEY>',
@@ -201,19 +205,14 @@ const response = await fetch('https://openrouter.ai/api/v1/chat/completions', {
   body: JSON.stringify({
     model: 'openrouter/auto',
     session_id: 'my-conversation-123',
-    messages: [
-      {
-        role: 'user',
-        content: 'Explain quantum entanglement',
-      },
-    ],
+    input: 'Explain quantum entanglement',
   }),
 });
 ```
 
 ```python title="Python" lines theme={null}
 response = requests.post(
-  url="https://openrouter.ai/api/v1/chat/completions",
+  url="https://openrouter.ai/api/v1/responses",
   headers={
     "Authorization": "Bearer <OPENROUTER_API_KEY>",
     "Content-Type": "application/json",
@@ -221,12 +220,7 @@ response = requests.post(
   data=json.dumps({
     "model": "openrouter/auto",
     "session_id": "my-conversation-123",
-    "messages": [
-      {
-        "role": "user",
-        "content": "Explain quantum entanglement"
-      }
-    ]
+    "input": "Explain quantum entanglement"
   })
 )
 ```
@@ -240,15 +234,10 @@ You can restrict which models the Auto Router can select from using request sett
 Use wildcard patterns to filter models. For example, `anthropic/*` matches all Anthropic models:
 
 ```typescript title="TypeScript SDK" lines theme={null}
-const completion = await openRouter.chat.send({
-  chatRequest: {
+const response = await openRouter.responses.send({
+  responsesRequest: {
     model: 'openrouter/auto',
-    messages: [
-      {
-        role: 'user',
-        content: 'Explain quantum entanglement',
-      },
-    ],
+    input: 'Explain quantum entanglement',
     plugins: [
       {
         id: 'auto-router',
@@ -260,7 +249,7 @@ const completion = await openRouter.chat.send({
 ```
 
 ```typescript title="TypeScript (fetch)" expandable lines theme={null}
-const response = await fetch('https://openrouter.ai/api/v1/chat/completions', {
+const response = await fetch('https://openrouter.ai/api/v1/responses', {
   method: 'POST',
   headers: {
     Authorization: 'Bearer <OPENROUTER_API_KEY>',
@@ -268,12 +257,7 @@ const response = await fetch('https://openrouter.ai/api/v1/chat/completions', {
   },
   body: JSON.stringify({
     model: 'openrouter/auto',
-    messages: [
-      {
-        role: 'user',
-        content: 'Explain quantum entanglement',
-      },
-    ],
+    input: 'Explain quantum entanglement',
     plugins: [
       {
         id: 'auto-router',
@@ -286,19 +270,14 @@ const response = await fetch('https://openrouter.ai/api/v1/chat/completions', {
 
 ```python title="Python" expandable lines theme={null}
 response = requests.post(
-  url="https://openrouter.ai/api/v1/chat/completions",
+  url="https://openrouter.ai/api/v1/responses",
   headers={
     "Authorization": "Bearer <OPENROUTER_API_KEY>",
     "Content-Type": "application/json",
   },
   data=json.dumps({
     "model": "openrouter/auto",
-    "messages": [
-      {
-        "role": "user",
-        "content": "Explain quantum entanglement"
-      }
-    ],
+    "input": "Explain quantum entanglement",
     "plugins": [
       {
         "id": "auto-router",
@@ -350,15 +329,10 @@ A tier is a band, not a ceiling, so models cheaper than the band are excluded as
 ### Via API Request
 
 ```typescript title="TypeScript SDK" lines theme={null}
-const completion = await openRouter.chat.send({
-  chatRequest: {
+const response = await openRouter.responses.send({
+  responsesRequest: {
     model: 'openrouter/auto',
-    messages: [
-      {
-        role: 'user',
-        content: 'Summarize this paragraph',
-      },
-    ],
+    input: 'Summarize this paragraph',
     plugins: [
       {
         id: 'auto-router',
@@ -370,7 +344,7 @@ const completion = await openRouter.chat.send({
 ```
 
 ```typescript title="TypeScript (fetch)" expandable lines theme={null}
-const response = await fetch('https://openrouter.ai/api/v1/chat/completions', {
+const response = await fetch('https://openrouter.ai/api/v1/responses', {
   method: 'POST',
   headers: {
     Authorization: 'Bearer <OPENROUTER_API_KEY>',
@@ -378,12 +352,7 @@ const response = await fetch('https://openrouter.ai/api/v1/chat/completions', {
   },
   body: JSON.stringify({
     model: 'openrouter/auto',
-    messages: [
-      {
-        role: 'user',
-        content: 'Summarize this paragraph',
-      },
-    ],
+    input: 'Summarize this paragraph',
     plugins: [
       {
         id: 'auto-router',
@@ -396,19 +365,14 @@ const response = await fetch('https://openrouter.ai/api/v1/chat/completions', {
 
 ```python title="Python" expandable lines theme={null}
 response = requests.post(
-  url="https://openrouter.ai/api/v1/chat/completions",
+  url="https://openrouter.ai/api/v1/responses",
   headers={
     "Authorization": "Bearer <OPENROUTER_API_KEY>",
     "Content-Type": "application/json",
   },
   data=json.dumps({
     "model": "openrouter/auto",
-    "messages": [
-      {
-        "role": "user",
-        "content": "Summarize this paragraph"
-      }
-    ],
+    "input": "Summarize this paragraph",
     "plugins": [
       {
         "id": "auto-router",
@@ -444,7 +408,7 @@ To cap what a request may cost, [`provider.max_price`](../provider-selection.md#
 
 ## Limitations
 
-* The router requires `messages` format (not `prompt`)
+* The router requires conversational input: a string or message list in `input` on the [Responses API](../../../api_reference/responses/overview.md) (or `messages` on Chat Completions), not the legacy `prompt` field
 * Streaming is supported
 * All standard OpenRouter features (tool calling, etc.) work with the selected model
 

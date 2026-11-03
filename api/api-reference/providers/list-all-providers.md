@@ -126,6 +126,8 @@ tags:
     name: Workspaces
   - description: Alpha feature endpoints for Decisions requests
     name: alpha.decisions
+  - description: Alpha feature endpoints for Extractions requests
+    name: alpha.extractions
 externalDocs:
   description: OpenRouter Documentation
   url: https://openrouter.ai/docs

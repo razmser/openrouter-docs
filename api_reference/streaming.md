@@ -29,7 +29,7 @@ A spec-compliant parser such as [eventsource-parser](https://github.com/rexxars/
 ```typescript title="eventsource-parser" expandable lines theme={null}
 import { createParser } from 'eventsource-parser';
 
-const response = await fetch('https://openrouter.ai/api/v1/chat/completions', {
+const response = await fetch('https://openrouter.ai/api/v1/responses', {
   method: 'POST',
   headers: {
     Authorization: `Bearer ${process.env.OPENROUTER_API_KEY}`,
@@ -37,7 +37,7 @@ const response = await fetch('https://openrouter.ai/api/v1/chat/completions', {
   },
   body: JSON.stringify({
     model: 'openai/gpt-4o',
-    messages: [{ role: 'user', content: 'Hello' }],
+    input: 'Hello',
     stream: true,
   }),
 });
@@ -52,10 +52,9 @@ const parser = createParser({
   onEvent(event) {
     if (event.data === '[DONE]') return;
     try {
-      const chunk = JSON.parse(event.data);
-      const content = chunk.choices?.[0]?.delta?.content;
-      if (content) {
-        console.log(content);
+      const data = JSON.parse(event.data);
+      if (data.type === 'response.output_text.delta') {
+        console.log(data.delta);
       }
     } catch {
       // Ignore invalid JSON
@@ -72,7 +71,7 @@ while (true) {
 }
 ```
 
-A parser only handles the SSE framing. Errors that occur mid-generation still arrive as regular `data:` events with an `error` field. See [Handling Errors During Streaming](#handling-errors-during-streaming) below.
+A parser only handles the SSE framing. Errors that occur mid-generation still arrive as regular `data:` events (a `response.failed` or `error` event). See [Handling Errors During Streaming](#handling-errors-during-streaming) below.
 
 The generation ID is returned in the `X-Generation-Id` response header for all endpoints (chat completions, completions, responses, and messages), which can be useful for debugging and correlating requests.
 
@@ -100,7 +99,7 @@ This shape is specific to Chat Completions. Other endpoints follow their own spe
 
 Streaming requests can be cancelled by aborting the connection. For supported providers, this immediately stops model processing and billing.
 
-> **Provider Support**
+> [accordion] Provider Support
 >
 > **Supported**
 >
@@ -158,7 +157,28 @@ Common HTTP status codes include:
 
 #### Errors after the response is committed (mid-stream)
 
-Once the provider has returned response headers, the `200 OK` status is committed even if no token has been produced yet. Any error after that point arrives as an SSE event rather than as an HTTP status:
+Once the provider has returned response headers, the `200 OK` status is committed even if no token has been produced yet. Any error after that point arrives as an SSE event rather than as an HTTP status. The event shape depends on the API.
+
+##### Responses API
+
+The stream ends with a `response.failed` event. An abridged event looks like:
+
+```text lines theme={null}
+data: {"type":"response.failed","response":{"id":"gen-abc123", ... ,"status":"failed","output":[],"error":{"code":"server_error","message":"Provider disconnected unexpectedly"},"error_type":"provider_unavailable"},"sequence_number":12}
+```
+
+Key characteristics of mid-stream errors:
+
+* The error is in `response.error`, and `response.status` is `"failed"`
+* The canonical OpenRouter `error_type` is at the top level of `response` (see [Responses API error formats](errors-and-debugging.md#responses-api-apiv1responses))
+* The stream schema also defines a plain `error` event (`{"type":"error","code":"...","message":"..."}`). OpenRouter reports failures with `response.failed`, but handling both is safe
+* The HTTP status remains 200 OK since headers were already sent
+* The stream is terminated after this event
+* The error can be the first and only event in the stream, so treat a `200` carrying a `response.failed` event with no output as a failure, not a success
+
+##### Chat Completions
+
+The stream ends with a chunk that carries a top-level `error`:
 
 ```text lines theme={null}
 data: {"id":"cmpl-abc123","object":"chat.completion.chunk","created":1234567890,"model":"openai/gpt-4o","provider":"openai","error":{"code":"server_error","message":"Provider disconnected unexpectedly"},"choices":[{"index":0,"delta":{"content":""},"finish_reason":"error"}]}
@@ -172,6 +192,8 @@ Key characteristics of mid-stream errors:
 * The stream is terminated after this unified error event
 * The error can be the first and only event in the stream, so treat a `200` carrying an `error` chunk with no content as a failure, not a success
 
+See [Errors and debugging](errors-and-debugging.md#chat-completions-apiv1chatcompletions) for the full error formats of both APIs.
+
 #### Code examples
 
 Here's how to properly handle both types of errors in your streaming implementation:
@@ -180,5 +202,5 @@ Here's how to properly handle both types of errors in your streaming implementat
 
 Different API endpoints may handle streaming errors slightly differently:
 
-* **OpenAI Chat Completions API**: Returns `ErrorResponse` directly if no chunks were processed, or includes error information in the response if some chunks were processed
-* **OpenAI Responses API**: May transform certain error codes (like `context_length_exceeded`) into a successful response with `finish_reason: "length"` instead of treating them as errors
+* **Responses API**: Upstream token-limit errors (such as `max_tokens_exceeded`) end the stream with a `response.incomplete` event (`incomplete_details.reason: "max_output_tokens"`) rather than an error; other failures end with `response.failed`
+* **Chat Completions API**: Returns `ErrorResponse` directly if no chunks were processed, or includes error information in the response if some chunks were processed; the same token-limit errors become `finish_reason: "length"`

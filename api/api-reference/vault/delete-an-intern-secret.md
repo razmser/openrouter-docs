@@ -128,6 +128,8 @@ tags:
     name: Workspaces
   - description: Alpha feature endpoints for Decisions requests
     name: alpha.decisions
+  - description: Alpha feature endpoints for Extractions requests
+    name: alpha.extractions
 externalDocs:
   description: OpenRouter Documentation
   url: https://openrouter.ai/docs
@@ -163,19 +165,18 @@ paths:
             format: uuid
             type: string
         - description: >-
-            Secret name. Lowercase letters, digits and single underscores,
-            starting with a letter and not ending with an underscore, 1 to 255
-            characters.
+            Existing secret name. Accepts legacy names stored before the
+            255-character write bound; new writes still require the documented
+            name format.
           in: path
           name: name
           required: true
           schema:
             description: >-
-              Secret name. Lowercase letters, digits and single underscores,
-              starting with a letter and not ending with an underscore, 1 to 255
-              characters.
+              Existing secret name. Accepts legacy names stored before the
+              255-character write bound; new writes still require the documented
+              name format.
             example: github_token
-            maxLength: 255
             minLength: 1
             pattern: ^(?!.*__)[a-z]([a-z0-9_]*[a-z0-9])?$
             type: string

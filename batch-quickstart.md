@@ -31,20 +31,20 @@ A batch has one model, one endpoint, and a list of requests. Each request `body`
 
 ```json title="batch.json" lines theme={null}
 {
-  "endpoint": "/v1/chat/completions",
+  "endpoint": "/v1/responses",
   "model": "anthropic/claude-haiku-5.5",
   "callback_url": "https://example.com/webhooks/openrouter-batch",
   "requests": [
     {
       "custom_id": "review-1",
       "body": {
-        "messages": [{ "role": "user", "content": "Classify: The fit is perfect." }]
+        "input": "Classify: The fit is perfect."
       }
     },
     {
       "custom_id": "review-2",
       "body": {
-        "messages": [{ "role": "user", "content": "Classify: It arrived broken." }]
+        "input": "Classify: It arrived broken."
       }
     }
   ]
@@ -73,7 +73,7 @@ Batch accepts text, public image URLs, and some file URLs. It returns text and e
 | Alibaba (`/v1/chat/completions` only) | Yes | No |
 | Fireworks, Parasail, Morph | No | No |
 
-File parts use the endpoint's own type: `file` on `/v1/chat/completions`, `input_file` on `/v1/responses`, and `document` on `/v1/messages`.
+File parts use the endpoint's own type: `input_file` on `/v1/responses`, `file` on `/v1/chat/completions`, and `document` on `/v1/messages`. The entries below use the Responses shape so they drop into the batch above; on a `/v1/chat/completions` batch, send `messages` with `image_url` and `file` parts instead.
 
 On Google Vertex, image URLs must use HTTPS, end in `.png`, `.jpg`, `.jpeg`, `.webp`, `.heic`, or `.heif`, and not point at Google API, Googleusercontent, or Cloud Storage HTTPS hosts. A provider can also turn off image URLs for one model. File URLs work only on models that list file input.
 
@@ -81,12 +81,12 @@ On Google Vertex, image URLs must use HTTPS, end in `.png`, `.jpg`, `.jpeg`, `.w
 {
   "custom_id": "photo-1",
   "body": {
-    "messages": [
+    "input": [
       {
         "role": "user",
         "content": [
-          { "type": "text", "text": "Describe this product photo." },
-          { "type": "image_url", "image_url": { "url": "https://example.com/shoe.jpg" } }
+          { "type": "input_text", "text": "Describe this product photo." },
+          { "type": "input_image", "image_url": "https://example.com/shoe.jpg", "detail": "auto" }
         ]
       }
     ]
@@ -98,15 +98,12 @@ On Google Vertex, image URLs must use HTTPS, end in `.png`, `.jpg`, `.jpeg`, `.w
 {
   "custom_id": "contract-1",
   "body": {
-    "messages": [
+    "input": [
       {
         "role": "user",
         "content": [
-          { "type": "text", "text": "Summarize this contract." },
-          {
-            "type": "file",
-            "file": { "filename": "contract.pdf", "file_data": "https://example.com/contract.pdf" }
-          }
+          { "type": "input_text", "text": "Summarize this contract." },
+          { "type": "input_file", "filename": "contract.pdf", "file_url": "https://example.com/contract.pdf" }
         ]
       }
     ]
@@ -116,12 +113,13 @@ On Google Vertex, image URLs must use HTTPS, end in `.png`, `.jpg`, `.jpeg`, `.w
 
 | Not supported | What to do instead |
 | - | - |
-| Base64 or data-URI images | Host the image and send a public `https` URL. |
-| Inline file bytes and provider file IDs | Send a public file URL, or an inline base64 data URI (`data:<media type>;base64,...`) of a type the provider's batch API has been verified to read. For accounts with inline files enabled, either individually or through a rollout to all accounts: PDFs work on Anthropic, DeepInfra, Google AI Studio, Google Vertex, Mistral, and OpenAI (up to 20 MiB decoded per file and per request) and on xAI (up to 17 MiB decoded per file and per request), so two 12 MiB files in one request fail admission even though each fits on its own; plain text, CSV, Markdown, and HTML also work on Google AI Studio and on OpenAI models served on the Responses wire; JSON also works on OpenAI models served on the Responses wire. OpenAI models still served on Chat Completions (for example `gpt-audio`) take PDFs only. Images, audio, and video stay rejected as inline bytes. Each file must be what its media type says: a PDF starts with `%PDF-`, text types are valid UTF-8, and JSON parses. A type the chosen provider can't take fails the batch with the provider's name and its accepted types. Other accounts get `Inline base64 files are not enabled for this account in batch`. If the provider chosen at submit can't take inline files at all, the batch moves to another provider for the model that can (unless `provider.allow_fallbacks` is `false`); a type the chosen provider can't take is not re-routed. Inline bytes count toward the request size and are reserved against your balance as text at submit, so a large text file reserves more than its final token cost until the batch finalizes. |
+| Base64 or data-URI images | Host the image and send a public `https` URL. Inline base64 images (`image/png`, `image/jpeg`, `image/webp`, `image/gif` in `image_url.url` data URIs) are allowlist-only and also need a provider whose batch API has been verified to read them. Anthropic reads all four, up to 5 MiB decoded per image. OpenAI reads all four, animated GIF included, on both `/v1/chat/completions` and `/v1/responses`, up to 20 MiB decoded per image and per request (inline files and images in one request share that limit). DeepInfra is verified for `image/png` and `image/jpeg` (up to 20 MiB decoded per image and across all inline media in one request); it rejects `image/webp` and `image/gif` with its accepted types, and the MIME type must be lowercase with no parameters. Sail Research reads all four, static and animated GIF included, up to 20 MiB decoded per image and per request, and up to 20 images per request counting public URL and inline images together. Alibaba reads all four, up to 4 MiB decoded per image and per request, and refuses any request whose native line would exceed 6,291,456 bytes, because one oversized line fails the whole Alibaba batch. Mistral reads `image/png`, `image/jpeg`, and `image/webp`, up to 10 MiB decoded per image and 20 MiB of inline media per request; OpenRouter refuses inline `image/gif` for Mistral. xAI reads PNG, JPEG, and WebP but not GIF, up to 17 MiB decoded per image and per request (inline files and images in one request share that limit). Every other provider still rejects them with the provider's name and its accepted types. Pin the provider for the batch that contains these lines (for example `provider: { only: ["sail-research"] }` at the batch top level, next to `model`; see [Choose a provider](#choose-a-provider)): an unpinned batch can route to a provider that refuses inline images, and that refusal does not fall back to another provider. Accounts on the explicit allowlist bypass known-CSAM screening until it is wired into batch submit; accounts admitted only by a rollout to all accounts get `Inline base64 images need known-CSAM screening, which is not active for this batch; use a public http(s) image URL.` Other accounts get `Only public http(s) image URLs are supported in batch; base64/data-URI images are rejected`. Inline images must be content parts of a `user` message: inline images in `messages[].images`, on assistant or system turns, and in tool results aren't supported in batch. |
+| Inline file bytes and provider file IDs | Send a public file URL, or an inline base64 data URI (`data:<media type>;base64,...`) of a type the provider's batch API has been verified to read. For accounts with inline files enabled, either individually or through a rollout to all accounts: PDFs work on Anthropic, DeepInfra, Google AI Studio, Google Vertex, Mistral, and OpenAI (up to 20 MiB decoded per file and per request) and on xAI (up to 17 MiB decoded per file and per request), so two 12 MiB files in one request fail admission even though each fits on its own; plain text, CSV, Markdown, and HTML also work on Google AI Studio and on OpenAI models served on the Responses wire; JSON and Word (`.docx`) also work on OpenAI models served on the Responses wire. OpenAI models still served on Chat Completions (for example `gpt-audio`) take PDFs only. Audio and video stay rejected as inline bytes; inline images follow the image row above. Each file must be what its media type says: a PDF starts with `%PDF-`, text types are valid UTF-8, JSON parses, and a `.docx` is a Word (OOXML) package, not just any ZIP archive. A type the chosen provider can't take fails the batch with the provider's name and its accepted types. Other accounts get `Inline base64 files are not enabled for this account in batch`. If the provider chosen at submit can't take inline files at all, the batch moves to another provider for the model that can (unless `provider.allow_fallbacks` is `false`); a type the chosen provider can't take is not re-routed. Inline bytes count toward the request size and are reserved against your balance as text at submit, so a large text file reserves more than its final token cost until the batch finalizes. |
 | Audio input, and video other than YouTube | Use the sync API. A YouTube video on Google AI Studio holds the model's full input limit against your balance at submit, because its length is unknown. You are billed for the tokens the provider reports. |
 | Image or audio output (`modalities`, `audio`, `image_config`) | Use the sync API. |
 | OpenRouter web search (`:online`, the `web` plugin, `web_search_options`) | Use the provider's own search tool, for example OpenAI `web_search` on `/v1/responses` or Anthropic `web_search_20250305` on `/v1/messages`. Google Vertex rejects web search tools. |
 | `stream: true`, `speed`, `deferred_tools`, Anthropic beta features | Remove them, or use the sync API. |
+| `access_programs.cyber` other than `standard` (OpenAI Daybreak programs) | Supported only on BYOK OpenAI requests served on the Responses API, using your own OpenAI key enrolled in that program. Remove the field on every other batch; the line is rejected before anything reaches the provider. |
 | A request with no input, or a max output token cap below 1 | Fix the request. |
 | A web search tool with an `engine` other than `auto` or `native` | Remove `engine`, or set it to `native`. |
 
@@ -156,12 +154,12 @@ const response = await fetch('https://openrouter.ai/api/v1/batches', {
   method: 'POST',
   headers,
   body: JSON.stringify({
-    endpoint: '/v1/chat/completions',
+    endpoint: '/v1/responses',
     model: 'anthropic/claude-haiku-5.5',
     callback_url: 'https://example.com/webhooks/openrouter-batch',
     requests: reviews.map((review) => ({
       custom_id: review.id,
-      body: { messages: [{ role: 'user', content: `Classify: ${review.text}` }] },
+      body: { input: `Classify: ${review.text}` },
     })),
   }),
 });
@@ -180,13 +178,13 @@ response = requests.post(
     "https://openrouter.ai/api/v1/batches",
     headers={"Authorization": f"Bearer {os.environ['OPENROUTER_API_KEY']}"},
     json={
-        "endpoint": "/v1/chat/completions",
+        "endpoint": "/v1/responses",
         "model": "anthropic/claude-haiku-5.5",
         "callback_url": "https://example.com/webhooks/openrouter-batch",
         "requests": [
             {
                 "custom_id": review["id"],
-                "body": {"messages": [{"role": "user", "content": f"Classify: {review['text']}"}]},
+                "body": {"input": f"Classify: {review['text']}"},
             }
             for review in reviews
         ],
@@ -200,7 +198,7 @@ batch = response.json()
 {
   "id": "batch_123",
   "object": "batch",
-  "endpoint": "/v1/chat/completions",
+  "endpoint": "/v1/responses",
   "model": "anthropic/claude-haiku-5.5",
   "completion_window": "24h",
   "status": "validating",
@@ -233,7 +231,7 @@ Most batches finish in minutes, and nearly all finish within 24 hours. Use a web
 
 ### Option A: Wait with a webhook
 
-Set `callback_url` on the batch, or set **Default batch webhook URL** in your workspace settings. A `callback_url` on the batch overrides the workspace default. The URL must be public HTTPS. A private or internal address makes the submit fail with `400`.
+Set `callback_url` on the batch or **Default batch webhook URL** in your workspace settings. A batch-level URL overrides the workspace default and must use public HTTPS. A private or internal address makes the submit fail with `400`.
 
 OpenRouter sends one `POST` when the batch reaches a final status:
 
@@ -384,7 +382,7 @@ Batches are listed newest first. Every API key in a workspace sees the same batc
 
 > [!NOTE]
 >
-> Page with `after` only. There is no offset or `before` parameter. Do not page by timestamp: `created_at` is in whole seconds, but the `created_after` filter keeps subsecond precision. A batch created later in the same second can still match `created_after=<created_at>`.
+> Page with `after` only; offset and `before` are unsupported. Use the ID cursor rather than timestamps: `created_at` has whole-second precision, while `created_after` preserves subsecond precision. A batch created later in the same second can still match `created_after=<created_at>`.
 
 ***
 
@@ -404,7 +402,21 @@ for (const result of batch.results) {
     retry.push(result.custom_id);
     continue;
   }
-  save(result.custom_id, result.response.body.choices[0].message.content);
+  if (result.response.body.status !== 'completed') {
+    retry.push(result.custom_id);
+    continue;
+  }
+  const message = result.response.body.output.find(
+    (item: { type: string }) => item.type === 'message',
+  );
+  const text = message?.content.find(
+    (part: { type: string; text?: string }) => part.type === 'output_text',
+  )?.text;
+  if (text === undefined) {
+    retry.push(result.custom_id);
+    continue;
+  }
+  save(result.custom_id, text);
 }
 console.log(`Cost $${batch.usage.cost}. ${retry.length} requests to retry.`);
 ```
@@ -432,13 +444,16 @@ console.log(`Cost $${batch.usage.cost}. ${retry.length} requests to retry.`);
         "request_id": "request_1",
         "body": {
           "id": "gen-batch-1782097200-a1b2c3d4e5f6a7b8c9d0",
-          "object": "chat.completion",
+          "object": "response",
           "model": "anthropic/claude-haiku-5.5",
-          "choices": [
+          "status": "completed",
+          "output": [
             {
-              "index": 0,
-              "message": { "role": "assistant", "content": "positive" },
-              "finish_reason": "stop"
+              "type": "message",
+              "id": "msg_abc123",
+              "status": "completed",
+              "role": "assistant",
+              "content": [{ "type": "output_text", "text": "positive", "annotations": [] }]
             }
           ]
         }
@@ -582,15 +597,15 @@ Set `endpoint` to choose the request shape for every `body` in the batch. To mix
 }
 ```
 
-```json title="Responses" lines theme={null}
+```json title="Chat Completions" lines theme={null}
 {
-  "endpoint": "/v1/responses",
-  "model": "openai/gpt-4o",
+  "endpoint": "/v1/chat/completions",
+  "model": "anthropic/claude-haiku-5.5",
   "requests": [
     {
-      "custom_id": "resp-1",
+      "custom_id": "chat-1",
       "body": {
-        "input": [{ "role": "user", "content": [{ "type": "input_text", "text": "Say hello." }] }]
+        "messages": [{ "role": "user", "content": "Say hello." }]
       }
     }
   ]
@@ -652,21 +667,21 @@ When the BYOK-only switch is on for your account or workspace, batches run only 
 * If none of your keys covers the model, the submit fails with `404` instead of `202 Accepted`.
 * Keys for providers that can't run a batch on your own key (Fireworks, Mistral, Sail Research, and Claude Platform on AWS) don't count.
 
-> **Google Vertex**
+> [accordion] Google Vertex
 >
 > Vertex batches use a bucket in your GCP project for input and output. Leave out `bucket`, and OpenRouter creates a private bucket on the first batch in each region. You can also give an existing bucket. See [Google Vertex API keys](guides/overview/auth/byok.md#google-vertex-api-keys) for permissions.
 >
 > Vertex BYOK also accepts `gs://your-bucket/image.jpg` image URLs. Your project's Vertex AI service agent must be able to read the image until the batch finishes. Image names must end in `.png`, `.jpg`, `.jpeg`, `.webp`, `.heic`, or `.heif`.
 
-> **Anthropic**
+> [accordion] Anthropic
 >
 > An Anthropic key declared for the US [data region](guides/overview/auth/byok.md) sends `inference_geo: "us"` on Claude 4.6 and later models, the same as sync requests.
 
-> **Alibaba**
+> [accordion] Alibaba
 >
 > The key's `endpoint_url` must be a DashScope OpenAI-compatible base that ends in `/v1`, for example `https://dashscope.aliyuncs.com/compatible-mode/v1`. Other URLs return `400` at submit.
 
-> **Keys with invalid characters**
+> [accordion] Keys with invalid characters
 >
 > A key that contains characters that cannot go in an HTTP header, such as a Unicode dash or an invisible character from copy and paste, returns `400` at submit. Fix the key in your provider key settings and resubmit. Google Vertex service-account JSON keys are exempt.
 

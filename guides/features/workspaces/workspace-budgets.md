@@ -180,24 +180,24 @@ Organization administrators can also set budgets when creating a new workspace. 
 
 ## FAQ
 
-> **What happens to in-flight requests when a budget is exceeded?**
+> [accordion] What happens to in-flight requests when a budget is exceeded?
 >
 > Budget checks run before the request is routed to a provider. In-flight requests that were already dispatched will complete, so actual spend may slightly exceed the budget limit. The next request after the overage is detected will be blocked.
 
-> **Do BYOK (Bring Your Own Key) requests count against workspace budgets?**
+> [accordion] Do BYOK (Bring Your Own Key) requests count against workspace budgets?
 >
 > By default, no — workspace budgets apply to OpenRouter-billed spend, so [BYOK](../../overview/auth/byok.md) requests routed with your own provider key don't count.
 >
 > You can opt in per workspace by enabling **Include BYOK spend** in the dashboard, or by setting `include_byok_in_budgets` to `true` on the budget endpoint. When enabled, the amount OpenRouter would have charged had the request not used your own provider key counts toward every interval for that workspace.
 
-> **Can I set budgets on the Default workspace?**
+> [accordion] Can I set budgets on the Default workspace?
 >
 > Yes. Every workspace — including the Default workspace — can have budgets configured.
 
-> **Who gets notified when a budget is exceeded?**
+> [accordion] Who gets notified when a budget is exceeded?
 >
 > Users receive a `403 Forbidden` error on the blocked request with a message naming the exceeded budget. To hear about it before that happens, turn on the [workspace budget limit alert](../notifications.md) (Business and Enterprise plans), which fires at chosen percentages of the budget. Budget status is also visible in the workspace settings dashboard.
 
-> **Can workspace members override a budget?**
+> [accordion] Can workspace members override a budget?
 >
 > No. In the dashboard, only organization admins can modify budgets. Programmatic changes require an organization management API key. Members whose requests are blocked should contact their org admin to raise the limit.

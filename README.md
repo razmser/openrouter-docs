@@ -2,7 +2,7 @@
 
 Markdown mirror of [OpenRouter's documentation](https://openrouter.ai/docs/quickstart).
 
-Contains **518 pages**, discovered from the [page index](https://openrouter.ai/docs/llms.txt) and [supplementary index](https://openrouter.ai/docs/sitemap.xml).
+Contains **524 pages**, discovered from the [page index](https://openrouter.ai/docs/llms.txt) and [supplementary index](https://openrouter.ai/docs/sitemap.xml).
 
 Links to mirrored pages point to local files; external links and images remain online. Code examples and OpenAPI blocks are preserved.
 
@@ -32,6 +32,7 @@ Generated files are replaced by the next successful sync. Original content belon
 - [Agent SDK](agent-sdk/overview.md)
 - [Usage for Agents](agent-sdk/usage-for-agents.md)
 - [Submit a Decisions request](api/api-reference/alphadecisions/submit-a-decisions-request.md)
+- [Submit an Extractions request](api/api-reference/alphaextractions/submit-an-extractions-request.md)
 - [Get available analytics metrics and dimensions](api/api-reference/analytics/get-available-analytics-metrics-and-dimensions.md)
 - [Get user activity grouped by endpoint](api/api-reference/analytics/get-user-activity-grouped-by-endpoint.md)
 - [Query analytics data](api/api-reference/analytics/query-analytics-data.md)
@@ -211,6 +212,7 @@ Generated files are replaced by the next successful sync. Original content belon
 - [Embeddings](client-sdks/go/sdks/embeddings/README.md)
 - [Endpoints](client-sdks/go/sdks/endpoints/README.md)
 - [ExternalUsers](client-sdks/go/sdks/externalusers/README.md)
+- [Alpha.Extractions](client-sdks/go/sdks/extractions/README.md)
 - [Files](client-sdks/go/sdks/files/README.md)
 - [Generations](client-sdks/go/sdks/generations/README.md)
 - [Guardrails](client-sdks/go/sdks/guardrails/README.md)
@@ -250,6 +252,7 @@ Generated files are replaced by the next successful sync. Original content belon
 - [Embeddings](client-sdks/python/sdks/embeddings/README.md)
 - [Endpoints](client-sdks/python/sdks/endpoints/README.md)
 - [ExternalUsers](client-sdks/python/sdks/externalusers/README.md)
+- [Alpha.Extractions](client-sdks/python/sdks/extractions/README.md)
 - [Files](client-sdks/python/sdks/files/README.md)
 - [Generations](client-sdks/python/sdks/generations/README.md)
 - [Guardrails](client-sdks/python/sdks/guardrails/README.md)
@@ -289,6 +292,7 @@ Generated files are replaced by the next successful sync. Original content belon
 - [Endpoints](client-sdks/typescript/sdks/endpoints/README.md)
 - [End Users](client-sdks/typescript/sdks/endusers/README.md)
 - [External Users](client-sdks/typescript/sdks/externalusers/README.md)
+- [Alpha.Extractions](client-sdks/typescript/sdks/extractions/README.md)
 - [Files](client-sdks/typescript/sdks/files/README.md)
 - [Generations](client-sdks/typescript/sdks/generations/README.md)
 - [Guardrails](client-sdks/typescript/sdks/guardrails/README.md)
@@ -432,6 +436,8 @@ Generated files are replaced by the next successful sync. Original content belon
 - [Containers](guides/features/containers.md)
 - [Files API](guides/features/files-api.md)
 - [Guardrails](guides/features/guardrails.md)
+- [Migrating to Guardrail Policies](guides/features/guardrails/policies-migration.md)
+- [Guardrail Policies](guides/features/guardrails/policies.md)
 - [Prompt Injection Detection](guides/features/guardrails/prompt-injection.md)
 - [Allowlist](guides/features/guardrails/prompt-injection/allowlist.md)
 - [Detected Secret Formats](guides/features/guardrails/secret-formats.md)

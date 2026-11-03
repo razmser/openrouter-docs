@@ -119,27 +119,27 @@ Entries link to the affected member and workspace so you can trace exactly why s
 
 ## Frequently Asked Questions
 
-> **Why don't I see the SCIM Mappings tab?**
+> [accordion] Why don't I see the SCIM Mappings tab?
 >
 > The tab is available to organization admins on Enterprise plans. If you're on an Enterprise plan and still don't see it, contact [support@openrouter.ai](mailto:support@openrouter.ai).
 
-> **Why is my group list empty?**
+> [accordion] Why is my group list empty?
 >
 > Groups appear once your identity provider pushes them via SCIM provisioning. Check that provisioning is [set up](#set-up-provisioning) and that your IdP's provisioning configuration pushes groups, then click **Refresh from IdP**. You also need an active [SSO connection](sso.md).
 
-> **I lost the SCIM API key. Can I see it again?**
+> [accordion] I lost the SCIM API key. Can I see it again?
 >
 > No. The key is shown once, at activation or rotation. [Rotate the API key](#rotating-the-api-key) to get a new one and update it in your identity provider.
 
-> **Can I map one group to multiple workspaces?**
+> [accordion] Can I map one group to multiple workspaces?
 >
 > Yes. Add as many mappings as you need on a group's card. Each workspace can have its own role for that group.
 
-> **What happens if a group is deleted in my identity provider?**
+> [accordion] What happens if a group is deleted in my identity provider?
 >
 > Once the deletion syncs (automatically, or via **Refresh from IdP**), the group is deactivated on OpenRouter and stops granting access through its mappings. Members who aren't entitled through another mapped group lose the access it granted, and the removals are recorded in the audit log.
 
-> **Do mappings replace manual workspace membership?**
+> [accordion] Do mappings replace manual workspace membership?
 >
 > No. Mappings work alongside manually managed members. Manually added members are unaffected by mapping changes.
 

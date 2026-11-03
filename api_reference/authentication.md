@@ -37,19 +37,19 @@ const openRouter = new OpenRouter({
   appTitle: '<YOUR_SITE_NAME>', // Optional. Site title for rankings on openrouter.ai.
 });
 
-const completion = await openRouter.chat.send({
-  chatRequest: {
+const response = await openRouter.responses.send({
+  responsesRequest: {
     model: 'openai/gpt-5.2',
-    messages: [{ role: 'user', content: 'Say this is a test' }],
+    input: 'Say this is a test',
     stream: false,
   },
 });
 
-if (completion instanceof ReadableStream) {
+if (!('output' in response)) {
   throw new Error('Expected a non-streaming response');
 }
 
-console.log(completion.choices[0].message);
+console.log([...response.output].reverse().find((item) => item.type === 'message'));
 ```
 
 ```python title="Python (OpenAI SDK)" lines theme={null}
@@ -60,19 +60,17 @@ client = OpenAI(
   api_key="<OPENROUTER_API_KEY>",
 )
 
-response = client.chat.completions.create(
+response = client.responses.create(
   extra_headers={
     "HTTP-Referer": "<YOUR_SITE_URL>",  # Optional. Site URL for rankings on openrouter.ai.
     "X-OpenRouter-Title": "<YOUR_SITE_NAME>",     # Optional. Site title for rankings on openrouter.ai.
   },
   model="openai/gpt-5.2",
-  messages=[
-    {"role": "system", "content": "You are a helpful assistant."},
-    {"role": "user", "content": "Hello!"}
-  ],
+  instructions="You are a helpful assistant.",
+  input="Hello!",
 )
 
-reply = response.choices[0].message
+reply = response.output_text
 ```
 
 ```typescript title="TypeScript (OpenAI SDK)" expandable lines theme={null}
@@ -88,19 +86,19 @@ const openai = new OpenAI({
 });
 
 async function main() {
-  const completion = await openai.chat.completions.create({
+  const response = await openai.responses.create({
     model: 'openai/gpt-5.2',
-    messages: [{ role: 'user', content: 'Say this is a test' }],
+    input: 'Say this is a test',
   });
 
-  console.log(completion.choices[0].message);
+  console.log(response.output_text);
 }
 
 main();
 ```
 
 ```typescript title="TypeScript (Raw API)" lines theme={null}
-fetch('https://openrouter.ai/api/v1/chat/completions', {
+fetch('https://openrouter.ai/api/v1/responses', {
   method: 'POST',
   headers: {
     Authorization: 'Bearer <OPENROUTER_API_KEY>',
@@ -110,30 +108,23 @@ fetch('https://openrouter.ai/api/v1/chat/completions', {
   },
   body: JSON.stringify({
     model: 'openai/gpt-5.2',
-    messages: [
-      {
-        role: 'user',
-        content: 'What is the meaning of life?',
-      },
-    ],
+    input: 'What is the meaning of life?',
   }),
 });
 ```
 
 ```shell title="cURL" lines theme={null}
-curl https://openrouter.ai/api/v1/chat/completions \
+curl https://openrouter.ai/api/v1/responses \
   -H "Content-Type: application/json" \
   -H "Authorization: Bearer $OPENROUTER_API_KEY" \
   -d '{
   "model": "openai/gpt-5.2",
-  "messages": [
-    {"role": "system", "content": "You are a helpful assistant."},
-    {"role": "user", "content": "Hello!"}
-  ]
+  "instructions": "You are a helpful assistant.",
+  "input": "Hello!"
 }'
 ```
 
-To stream with Python, [see this example from OpenAI](https://github.com/openai/openai-cookbook/blob/main/examples/How_to_stream_completions.ipynb).
+To stream responses, see [Streaming](streaming.md).
 
 ## If your key has been exposed
 

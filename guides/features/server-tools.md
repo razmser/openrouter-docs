@@ -143,7 +143,7 @@ On regional endpoints, client-side Bash is rejected when the same request includ
 
 Every request that uses server tools runs an agent loop with a step budget. Each tool call the model makes (a web search, an image generation, etc.) consumes one step; when the budget is exhausted, the model is asked to produce its final answer with the context gathered so far.
 
-Two top-level request fields control the outer loop (both are siblings of `messages` and `tools`):
+Two top-level request fields control the outer loop (both are siblings of `input` and `tools`):
 
 | Field | Default | Max | Behavior |
 | - | - | - | - |
@@ -170,22 +170,20 @@ Server tools and user-defined tools can be used in the same request:
 ```json expandable lines theme={null}
 {
   "model": "openai/gpt-5.2",
-  "messages": [...],
+  "input": [...],
   "tools": [
     { "type": "openrouter:web_search", "parameters": { "max_results": 3 } },
     { "type": "openrouter:datetime" },
     {
       "type": "function",
-      "function": {
-        "name": "get_stock_price",
-        "description": "Get the current stock price for a ticker symbol",
-        "parameters": {
-          "type": "object",
-          "properties": {
-            "ticker": { "type": "string" }
-          },
-          "required": ["ticker"]
-        }
+      "name": "get_stock_price",
+      "description": "Get the current stock price for a ticker symbol",
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "ticker": { "type": "string" }
+        },
+        "required": ["ticker"]
       }
     }
   ]
@@ -203,7 +201,8 @@ Server tool usage is tracked in the response `usage` object:
   "usage": {
     "input_tokens": 105,
     "output_tokens": 250,
-    "server_tool_use": {
+    "total_tokens": 355,
+    "server_tool_use_details": {
       "web_search_requests": 2
     }
   }

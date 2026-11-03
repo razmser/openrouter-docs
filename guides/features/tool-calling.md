@@ -16,9 +16,101 @@ If you prefer to learn from a full end-to-end example, keep reading.
 
 ## Request Body Examples
 
-Tool calling with OpenRouter involves three key steps. Here are the essential request body formats for each step:
+Tool calling with OpenRouter involves three key steps. Here are the essential request body formats for each step, first for the [Responses API](../../api_reference/responses/overview.md) (`POST /api/v1/responses`) and then for Chat Completions (`POST /api/v1/chat/completions`).
 
-### Step 1: Inference Request with Tools
+### Responses API
+
+#### Step 1: Inference Request with Tools
+
+```json expandable lines theme={null}
+{
+  "model": "google/gemini-3-flash-preview",
+  "input": [
+    {
+      "role": "user",
+      "content": "What are the titles of some James Joyce books?"
+    }
+  ],
+  "tools": [
+    {
+      "type": "function",
+      "name": "search_gutenberg_books",
+      "description": "Search for books in the Project Gutenberg library",
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "search_terms": {
+            "type": "array",
+            "items": {"type": "string"},
+            "description": "List of search terms to find books"
+          }
+        },
+        "required": ["search_terms"],
+        "additionalProperties": false
+      }
+    }
+  ]
+}
+```
+
+#### Step 2: Tool Execution (Client-Side)
+
+After receiving a response whose `output` contains a `function_call` item, execute the requested tool locally and prepare the result:
+
+```javascript lines theme={null}
+// Model responds with a function_call output item, you execute the tool locally
+const toolResult = await searchGutenbergBooks(["James", "Joyce"]);
+```
+
+#### Step 3: Inference Request with Tool Results
+
+```json expandable lines theme={null}
+{
+  "model": "google/gemini-3-flash-preview",
+  "input": [
+    {
+      "role": "user",
+      "content": "What are the titles of some James Joyce books?"
+    },
+    {
+      "type": "function_call",
+      "call_id": "call_abc123",
+      "name": "search_gutenberg_books",
+      "arguments": "{\"search_terms\": [\"James\", \"Joyce\"]}"
+    },
+    {
+      "type": "function_call_output",
+      "call_id": "call_abc123",
+      "output": "[{\"id\": 4300, \"title\": \"Ulysses\", \"authors\": [{\"name\": \"Joyce, James\"}]}]"
+    }
+  ],
+  "tools": [
+    {
+      "type": "function",
+      "name": "search_gutenberg_books",
+      "description": "Search for books in the Project Gutenberg library",
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "search_terms": {
+            "type": "array",
+            "items": {"type": "string"},
+            "description": "List of search terms to find books"
+          }
+        },
+        "required": ["search_terms"],
+        "additionalProperties": false
+      }
+    }
+  ]
+}
+```
+
+### Chat Completions API
+
+On Chat Completions, function tools are nested under `function`, the model returns `tool_calls` on an assistant message, and tool results go back as `role: "tool"` messages.
+
+#### Step 1: Inference Request with Tools
 
 ```json expandable lines theme={null}
 {
@@ -52,7 +144,7 @@ Tool calling with OpenRouter involves three key steps. Here are the essential re
 }
 ```
 
-### Step 2: Tool Execution (Client-Side)
+#### Step 2: Tool Execution (Client-Side)
 
 After receiving the model's response with `tool_calls`, execute the requested tool locally and prepare the result:
 
@@ -61,7 +153,7 @@ After receiving the model's response with `tool_calls`, execute the requested to
 const toolResult = await searchGutenbergBooks(["James", "Joyce"]);
 ```
 
-### Step 3: Inference Request with Tool Results
+#### Step 3: Inference Request with Tool Results
 
 ```json expandable lines theme={null}
 {
@@ -114,7 +206,7 @@ const toolResult = await searchGutenbergBooks(["James", "Joyce"]);
 }
 ```
 
-**Note**: The `tools` parameter must be included in every request (Steps 1 and 3) so the router can validate the tool schema on each call.
+**Note**: On both APIs, the `tools` parameter must be included in every request (Steps 1 and 3) so the router can validate the tool schema on each call.
 
 ### Tool Calling Example
 
@@ -132,13 +224,13 @@ Note that the "tool" is just a normal function. We then write a JSON "spec" comp
 
 Let's make the first OpenRouter API call to the model:
 
-The LLM responds with a finish reason of `tool_calls`, and a `tool_calls` array. In a generic LLM response-handler, you would want to check the `finish_reason` before processing tool calls, but here we will assume it's the case. Let's keep going, by processing the tool call:
+`response.output` contains `function_call` items with a `call_id`, `name`, and JSON-encoded `arguments`. Production code should verify that at least one exists; this example assumes one does:
 
-The messages array now has:
+The input array now has:
 
 1. Our original request
-2. The LLM's response (containing a tool call request)
-3. The result of the tool call (a json object returned from the Project Gutenberg API)
+2. The LLM's reasoning items, when present, and `function_call` items
+3. A `function_call_output` item with the tool result
 
 Now, we can make a second OpenRouter API call, and hopefully get our result!
 
@@ -180,7 +272,7 @@ Here's an example showing how a model might use interleaved thinking to research
 ```json expandable lines theme={null}
 {
   "model": "anthropic/claude-sonnet-4.5",
-  "messages": [
+  "input": [
     {
       "role": "user",
       "content": "Research the environmental impact of electric vehicles and provide a comprehensive analysis."
@@ -189,32 +281,28 @@ Here's an example showing how a model might use interleaved thinking to research
   "tools": [
     {
       "type": "function",
-      "function": {
-        "name": "search_academic_papers",
-        "description": "Search for academic papers on a given topic",
-        "parameters": {
-          "type": "object",
-          "properties": {
-            "query": {"type": "string"},
-            "field": {"type": "string"}
-          },
-          "required": ["query"]
-        }
+      "name": "search_academic_papers",
+      "description": "Search for academic papers on a given topic",
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "query": {"type": "string"},
+          "field": {"type": "string"}
+        },
+        "required": ["query"]
       }
     },
     {
       "type": "function",
-      "function": {
-        "name": "get_latest_statistics",
-        "description": "Get latest statistics on a topic",
-        "parameters": {
-          "type": "object",
-          "properties": {
-            "topic": {"type": "string"},
-            "year": {"type": "integer"}
-          },
-          "required": ["topic"]
-        }
+      "name": "get_latest_statistics",
+      "description": "Get latest statistics on a topic",
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "topic": {"type": "string"},
+          "year": {"type": "integer"}
+        },
+        "required": ["topic"]
       }
     }
   ]
@@ -257,7 +345,7 @@ When implementing interleaved thinking:
 
 In the example above, the calls are made explicitly and sequentially. To handle a wide variety of user inputs and tool calls, you can use an agentic loop.
 
-Here's an example of a simple agentic loop (using the same `tools` and initial `messages` as above):
+Here's an example of a simple agentic loop (using the same `tools`, `instructions`, and initial `input` as above):
 
 ## Best Practices and Advanced Patterns
 
@@ -306,19 +394,29 @@ When defining tools for LLMs, follow these best practices:
 When using streaming responses with tool calls, handle the different content types appropriately:
 
 ```typescript expandable lines theme={null}
-const stream = await fetch('/api/chat/completions', {
+const stream = await fetch('https://openrouter.ai/api/v1/responses', {
   method: 'POST',
-  headers: { 'Content-Type': 'application/json' },
+  headers: {
+    Authorization: `Bearer ${OPENROUTER_API_KEY}`,
+    'Content-Type': 'application/json',
+  },
   body: JSON.stringify({
     model: 'anthropic/claude-sonnet-4.5',
-    messages: messages,
+    input: input,
     tools: tools,
     stream: true
   })
 });
 
+if (!stream.body) {
+  throw new Error('Expected a streaming response body');
+}
+
 const reader = stream.body.getReader();
-let toolCalls = [];
+const decoder = new TextDecoder();
+let buffer = '';
+const toolCalls = [];
+const outputItems = [];
 
 while (true) {
   const { done, value } = await reader.read();
@@ -326,23 +424,47 @@ while (true) {
     break;
   }
 
-  const chunk = new TextDecoder().decode(value);
-  const lines = chunk.split('\n').filter(line => line.trim());
+  buffer += decoder.decode(value, { stream: true });
+  const lines = buffer.split('\n');
+  buffer = lines.pop() ?? '';
 
   for (const line of lines) {
-    if (line.startsWith('data: ')) {
-      const data = JSON.parse(line.slice(6));
+    if (!line.startsWith('data: ')) continue;
+    const data = line.slice(6).trim();
+    if (data === '[DONE]') continue;
 
-      if (data.choices[0].delta.tool_calls) {
-        toolCalls.push(...data.choices[0].delta.tool_calls);
-      }
+    const event = JSON.parse(data);
 
-      if (data.choices[0].delta.finish_reason === 'tool_calls') {
-        await handleToolCalls(toolCalls);
-      } else if (data.choices[0].delta.finish_reason === 'stop') {
-        // Regular completion without tool calls
-        break;
+    if (event.type === 'response.failed') {
+      throw new Error(event.response.error?.message ?? 'Response failed');
+    }
+    if (event.type === 'response.incomplete') {
+      throw new Error(
+        `Response incomplete: ${event.response.incomplete_details?.reason ?? 'unknown reason'}`,
+      );
+    }
+    if (event.type === 'response.output_text.delta') {
+      console.log(event.delta);
+    }
+
+    if (event.type === 'response.output_item.done') {
+      // Preserve every completed item in order. Reasoning and assistant items are
+      // required context for some providers when sending tool results.
+      outputItems.push(event.item);
+      if (event.item.type === 'function_call') {
+        // A completed function_call item carries the full arguments string.
+        toolCalls.push(event.item);
       }
+    }
+
+    if (event.type === 'response.completed') {
+      if (toolCalls.length > 0) {
+        // Run each function_call locally, then send a follow-up request whose input
+        // includes the original input, every output item, and a function_call_output
+        // for each call (see the non-streaming loop above).
+        await handleToolCalls(toolCalls, outputItems);
+      }
+      // Otherwise the regular response was printed from its output_text deltas above
     }
   }
 }
@@ -363,11 +485,21 @@ Control tool usage with the `tool_choice` parameter:
 ```
 
 ```json lines theme={null}
-// Force specific tool
+// Force specific tool (Responses API)
 {
   "tool_choice": {
     "type": "function",
-    "function": {"name": "search_database"}
+    "name": "search_database"
+  }
+}
+```
+
+```json lines theme={null}
+// Force specific tool (Chat Completions: the name is nested under `function`)
+{
+  "tool_choice": {
+    "type": "function",
+    "function": { "name": "search_database" }
   }
 }
 ```
@@ -392,23 +524,41 @@ Design tools that work well together:
   "tools": [
     {
       "type": "function",
-      "function": {
-        "name": "search_products",
-        "description": "Search for products in the catalog"
+      "name": "search_products",
+      "description": "Search for products in the catalog",
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "query": { "type": "string", "description": "Product name or search terms" }
+        },
+        "required": ["query"],
+        "additionalProperties": false
       }
     },
     {
       "type": "function",
-      "function": {
-        "name": "get_product_details",
-        "description": "Get detailed information about a specific product"
+      "name": "get_product_details",
+      "description": "Get detailed information about a specific product",
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "product_id": { "type": "string", "description": "Catalog product identifier" }
+        },
+        "required": ["product_id"],
+        "additionalProperties": false
       }
     },
     {
       "type": "function",
-      "function": {
-        "name": "check_inventory",
-        "description": "Check current inventory levels for a product"
+      "name": "check_inventory",
+      "description": "Check current inventory levels for a product",
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "product_id": { "type": "string", "description": "Catalog product identifier" }
+        },
+        "required": ["product_id"],
+        "additionalProperties": false
       }
     }
   ]
@@ -421,4 +571,4 @@ This allows the model to naturally chain operations: search → get details → 
 
 OpenRouter tracks how reliably each provider completes tool calls and surfaces this as the **Tool Call Error Rate** on the Performance tab of every model page. The same signal drives [Auto Exacto](../routing/auto-exacto.md) provider ordering on tool-calling requests. For the exact validator, JSON Schema draft, regex semantics, and per-tool-call classification, see [How Tool-Calling Success Rate Is Measured](../routing/auto-exacto.md#how-tool-calling-success-rate-is-measured).
 
-For more details on OpenRouter's message format and tool parameters, see the [API Reference](../../api_reference/overview.md).
+For more details on the Responses API input format and tool parameters, see the [Responses API reference](../../api_reference/responses/overview.md).

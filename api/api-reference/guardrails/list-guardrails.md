@@ -128,6 +128,8 @@ tags:
     name: Workspaces
   - description: Alpha feature endpoints for Decisions requests
     name: alpha.decisions
+  - description: Alpha feature endpoints for Extractions requests
+    name: alpha.extractions
 externalDocs:
   description: OpenRouter Documentation
   url: https://openrouter.ai/docs
@@ -415,11 +417,12 @@ components:
       properties:
         allow_safety_retention_google:
           description: >-
-            Whether ZDR-only requests to google/* models may use endpoints that
-            may retain prompts for safety monitoring. false allows only
-            zero-retention endpoints. A guardrail can only be more restrictive
-            than the account setting. Inherits the account setting when not
-            provided.
+            Whether ZDR-only requests to google/* models may also use Safety
+            Retention endpoints, which may retain prompts and responses from any
+            request, only to prevent abuse, and do not use them for training.
+            false allows only ZDR endpoints. A guardrail can only be more
+            restrictive than the account setting. Inherits the account setting
+            when not provided.
           example: true
           type:
             - boolean
@@ -427,9 +430,10 @@ components:
         allow_safety_retention_other:
           description: >-
             Whether ZDR-only requests to models outside the named providers (for
-            example open-weight models on Vertex) may use endpoints that may
-            retain prompts for safety monitoring. false allows only
-            zero-retention endpoints. A guardrail can only be more restrictive
+            example open-weight models on Vertex) may also use Safety Retention
+            endpoints, which may retain prompts and responses from any request,
+            only to prevent abuse, and do not use them for training. false
+            allows only ZDR endpoints. A guardrail can only be more restrictive
             than the account setting. Inherits the account setting when not
             provided.
           example: true

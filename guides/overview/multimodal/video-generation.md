@@ -14,7 +14,7 @@ OpenRouter supports video generation from text prompts (and optional reference i
 
 Generated with minimax/hailuo-3 (2K, 5s, 16:9, with audio)
 
-> **Prompt and parameters**
+> [accordion] Prompt and parameters
 >
 > > a slow cinematic push-in on a glowing neon sign that reads "OpenRouter" in the window of a cozy coffee shop on a rainy night, rain streaking down the glass, reflections rippling on wet pavement
 >

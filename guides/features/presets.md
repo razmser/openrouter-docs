@@ -31,16 +31,11 @@ Each preset can manage:
 
    ![Creating a new preset](https://mintcdn.com/openrouter-d02e98a0/PSwwwiCqAD_BNeni/assets/preset-example.png?fit=max\&auto=format\&n=PSwwwiCqAD_BNeni\&q=85\&s=b87ed014781f965aa751327dc0dc4a65)
 
-2. Make an API request to the preset:
+2. Make a [Responses API](../../api_reference/responses/overview.md) request to the preset:
    ```json lines theme={null}
    {
      "model": "@preset/ravenel-bridge",
-     "messages": [
-       {
-         "role": "user",
-         "content": "What's your opinion of the Golden Gate Bridge? Isn't it beautiful?"
-       }
-     ]
+     "input": "What's your opinion of the Golden Gate Bridge? Isn't it beautiful?"
    }
    ```
 
@@ -70,12 +65,7 @@ You can reference the preset as if it was a model by sending requests to `@prese
 ```json lines theme={null}
 {
   "model": "@preset/email-copywriter",
-  "messages": [
-    {
-      "role": "user",
-      "content": "Write a marketing email about our new feature"
-    }
-  ]
+  "input": "Write a marketing email about our new feature"
 }
 ```
 
@@ -87,12 +77,7 @@ The `preset` field takes the same `@preset/{slug}` reference as the model field.
 {
   "model": "openai/gpt-4",
   "preset": "@preset/email-copywriter",
-  "messages": [
-    {
-      "role": "user",
-      "content": "Write a marketing email about our new feature"
-    }
-  ]
+  "input": "Write a marketing email about our new feature"
 }
 ```
 
@@ -101,12 +86,7 @@ The `preset` field takes the same `@preset/{slug}` reference as the model field.
 ```json lines theme={null}
 {
   "model": "openai/gpt-4@preset/email-copywriter",
-  "messages": [
-    {
-      "role": "user",
-      "content": "Write a marketing email about our new feature"
-    }
-  ]
+  "input": "Write a marketing email about our new feature"
 }
 ```
 

@@ -128,6 +128,8 @@ tags:
     name: Workspaces
   - description: Alpha feature endpoints for Decisions requests
     name: alpha.decisions
+  - description: Alpha feature endpoints for Extractions requests
+    name: alpha.extractions
 externalDocs:
   description: OpenRouter Documentation
   url: https://openrouter.ai/docs
@@ -357,8 +359,10 @@ components:
           type: integer
         output_compression:
           description: >-
-            Compression level (0-100) for webp/jpeg output. Ignored for png and
-            by providers without a compression knob.
+            Compression level (0-100) for jpeg/webp output. Ignored by providers
+            without a compression knob; providers that honor it may reject it
+            with other output formats (e.g. OpenAI requires output_format "jpeg"
+            or "webp").
           example: 100
           type: integer
         output_format:
@@ -425,11 +429,15 @@ components:
         size:
           description: >-
             Optional. A convenience shorthand for output dimensions — pass a
-            tier ("2K", "4K") or explicit pixels ("2048x2048") and we normalize
-            it to the right dimensions for the chosen provider. A tier size is
+            tier ("2K", "4K") or explicit pixels ("2048x2048"). A tier size is
             equivalent to setting `resolution` and combines with `aspect_ratio`.
-            An explicit pixel size is authoritative: a mismatched `resolution`
-            or `aspect_ratio` alongside it is rejected with a 400.
+            Explicit pixel sizes are provider-dependent: providers that accept
+            them treat the value as authoritative and reject a mismatched
+            `resolution` or `aspect_ratio` alongside it with a 400. xAI and
+            Sourceful V2/V2.5 reject explicit pixel sizes (use `resolution` and
+            `aspect_ratio` there); Sourceful V2.6 supports them within its
+            dimension limits and does not allow combining them with `resolution`
+            or `aspect_ratio`.
           example: 2K
           type: string
         stream:
@@ -1403,6 +1411,7 @@ components:
         - Io Net
         - Inferact vLLM
         - Inflection
+        - KT
         - Liquid
         - Makora
         - Mara
@@ -1470,9 +1479,10 @@ components:
       type: string
     ProviderOptions:
       description: >-
-        Provider-specific options keyed by provider slug. Only options for the
-        matched provider are forwarded; the rest are ignored. Unrecognized keys
-        are silently dropped.
+        Provider-specific options keyed by provider slug. The provider segment
+        is case-insensitive; an endpoint tag after `/` must match the endpoint
+        slug exactly. Only options for the matched provider are forwarded; the
+        rest are ignored. Unrecognized keys are silently dropped.
       example:
         openai:
           max_tokens: 1000
@@ -1685,6 +1695,9 @@ components:
           additionalProperties: {}
           type: object
         krea:
+          additionalProperties: {}
+          type: object
+        kt:
           additionalProperties: {}
           type: object
         lambda:

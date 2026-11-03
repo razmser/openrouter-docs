@@ -6,9 +6,9 @@
 
 For models that support it, the OpenRouter API can return **Reasoning Tokens**, also known as thinking tokens. OpenRouter normalizes the different ways of customizing the amount of reasoning tokens that the model will use, providing a unified interface across different providers.
 
-Reasoning tokens provide a transparent look into the reasoning steps taken by a model. Reasoning tokens are considered output tokens and charged accordingly. On most providers they also count against the request's `max_tokens`; see [Reasoning tokens and max\_tokens](#reasoning-tokens-and-max_tokens).
+Reasoning tokens provide a transparent look into the reasoning steps taken by a model. Reasoning tokens are considered output tokens and charged accordingly. On most providers they also count against the request's `max_output_tokens`; see [Reasoning tokens and max\_output\_tokens](#reasoning-tokens-and-max_tokens).
 
-Reasoning tokens are included in the response by default if the model decides to output them. Reasoning tokens will appear in the `reasoning` field of each message, unless you decide to exclude them.
+Reasoning tokens are included in the response by default if the model decides to output them. The examples on this page use the [Responses API](../../api_reference/responses/overview.md), where reasoning tokens appear as `reasoning` items in the response `output` array. On Chat Completions they appear in the `reasoning` field of each message, and `reasoning.exclude` can omit them.
 
 > [!NOTE]
 >
@@ -18,19 +18,16 @@ Reasoning tokens are included in the response by default if the model decides to
 
 ## Controlling Reasoning Tokens
 
-You can control reasoning tokens in your requests using the `reasoning` parameter:
+You can control reasoning tokens in your requests using the `reasoning` parameter. `effort`, `max_tokens`, and `enabled` work the same way on the Responses and Chat Completions APIs; `exclude` is a Chat Completions-only option (see [Excluding Reasoning Tokens](#excluding-reasoning-tokens-chat-completions-only)):
 
 ```json lines theme={null}
 {
   "model": "your-model",
-  "messages": [],
+  "input": "...",
   "reasoning": {
     // One of the following (not both):
     "effort": "high", // Can be "max", "xhigh", "high", "medium", "low", "minimal" or "none" (OpenAI-style)
     "max_tokens": 2000, // Specific token limit (Anthropic-style)
-
-    // Optional: Default is false. All models support this.
-    "exclude": false, // Set to true to exclude reasoning tokens from response
 
     // Or enable reasoning with the default parameters:
     "enabled": true // Default: inferred from `effort` or `max_tokens`
@@ -40,17 +37,19 @@ You can control reasoning tokens in your requests using the `reasoning` paramete
 
 The `reasoning` config object consolidates settings for controlling reasoning strength across different models. See the Note for each option below to see which models are supported and how other models will behave.
 
-### Reasoning tokens and max\_tokens
+### Reasoning tokens and max\_output\_tokens
 
 > [!WARNING]
 >
-> **Reasoning tokens count against `max_tokens`**
+> **Reasoning tokens count against `max_output_tokens`**
 >
-> On most providers, the request's `max_tokens` limit (or `max_completion_tokens`, which shares the same budget) applies to reasoning and visible output combined. If the limit is small enough that the model spends all of it reasoning, the response returns `finish_reason: "length"` with an empty `content`, and the reasoning tokens are still billed. With `reasoning.exclude: true` the `reasoning` field is omitted as well, so the response carries no text at all and the only signal left is `finish_reason` plus `usage`.
+> On most providers, the request's `max_output_tokens` limit applies to reasoning and visible output combined. If the limit is small enough that the model spends all of it reasoning, the response returns `status: "incomplete"` with `incomplete_details.reason: "max_output_tokens"` and no `message` item in `output`, and the reasoning tokens are still billed.
 
-To detect this case, subtract `usage.completion_tokens_details.reasoning_tokens` from `usage.completion_tokens`. The difference is the number of visible output tokens, and it is 0 or near 0 when reasoning consumed the budget. For example, a request with `max_tokens: 300` that returns `completion_tokens: 302` and `reasoning_tokens: 301` produced a single visible token.
+To detect this case, subtract `usage.output_tokens_details.reasoning_tokens` from `usage.output_tokens`. The difference is the number of visible output tokens, and it is 0 or near 0 when reasoning consumed the budget.
 
-To avoid it, set `max_tokens` well above the expected reasoning length, or cap reasoning with `reasoning.max_tokens` or a lower `reasoning.effort`. For Anthropic models, `max_tokens` must be strictly higher than the reasoning budget; see [Anthropic Models with Reasoning Tokens](#anthropic-models-with-reasoning-tokens).
+To avoid it, set `max_output_tokens` well above the expected reasoning length, or cap reasoning with `reasoning.max_tokens` or a lower `reasoning.effort`. For Anthropic models, `max_output_tokens` must be strictly higher than the reasoning budget; see [Anthropic Models with Reasoning Tokens](#anthropic-models-with-reasoning-tokens).
+
+On Chat Completions (`/api/v1/chat/completions`), the same budget is `max_tokens` (or `max_completion_tokens`, which shares the same budget). If the model spends all of it reasoning, the response returns `finish_reason: "length"` with an empty `content`, and the reasoning tokens are still billed. With `reasoning.exclude: true` the `reasoning` field is omitted as well, so the response carries no text at all and the only signal left is `finish_reason` plus `usage`. To detect this case, subtract `usage.completion_tokens_details.reasoning_tokens` from `usage.completion_tokens`. For example, a request with `max_tokens: 300` that returns `completion_tokens: 302` and `reasoning_tokens: 301` produced a single visible token.
 
 ### Discovering per-model reasoning options
 
@@ -102,7 +101,7 @@ For models that support reasoning token allocation, you can control it like this
 
 * `"max_tokens": 2000` - Directly specifies the maximum number of tokens to use for reasoning
 
-For models that only support `reasoning.effort` (see below), the `max_tokens` value will be used to determine the effort level.
+For models that only support `reasoning.effort` (see below), the `reasoning.max_tokens` value will be used to determine the effort level.
 
 ### Reasoning Effort Level
 
@@ -112,23 +111,25 @@ For models that only support `reasoning.effort` (see below), the `max_tokens` va
 >
 > Currently supported by OpenAI reasoning models (o1 series, o3 series, GPT-5 series) and Grok models
 
-* `"effort": "max"` - Allocates the largest portion of tokens for reasoning (approximately 95% of max\_tokens)
-* `"effort": "xhigh"` - Same allocation as max (approximately 95% of max\_tokens)
-* `"effort": "high"` - Allocates a large portion of tokens for reasoning (approximately 80% of max\_tokens)
-* `"effort": "medium"` - Allocates a moderate portion of tokens (approximately 50% of max\_tokens)
-* `"effort": "low"` - Allocates a smaller portion of tokens (approximately 20% of max\_tokens)
-* `"effort": "minimal"` - Allocates an even smaller portion of tokens (approximately 10% of max\_tokens)
+The percentages below are of the request's output token limit (`max_output_tokens`, or `max_tokens` on Chat Completions):
+
+* `"effort": "max"` - Allocates the largest portion of tokens for reasoning (approximately 95% of the limit)
+* `"effort": "xhigh"` - Same allocation as max (approximately 95% of the limit)
+* `"effort": "high"` - Allocates a large portion of tokens for reasoning (approximately 80% of the limit)
+* `"effort": "medium"` - Allocates a moderate portion of tokens (approximately 50% of the limit)
+* `"effort": "low"` - Allocates a smaller portion of tokens (approximately 20% of the limit)
+* `"effort": "minimal"` - Allocates an even smaller portion of tokens (approximately 10% of the limit)
 * `"effort": "none"` - Disables reasoning entirely
 
 For models that only support `reasoning.max_tokens`, the effort level will be set based on the percentages above.
 
-### Excluding Reasoning Tokens
+### Excluding Reasoning Tokens (Chat Completions only)
 
 If you want the model to use reasoning internally but not include it in the response:
 
 * `"exclude": true` - The model will still use reasoning, but it won't be returned in the response. The tokens are still billed and [count against `max_tokens`](#reasoning-tokens-and-max_tokens).
 
-Reasoning tokens will appear in the `reasoning` field of each message.
+`exclude` is only honored on Chat Completions (`/api/v1/chat/completions`). The Responses API ignores it and always returns `reasoning` items in `output`; filter them out client-side if you do not want them.
 
 ### Enable Reasoning with Default Config
 
@@ -144,15 +145,37 @@ To enable reasoning with the default parameters:
 
 For models that support direct token allocation (like Anthropic models), you can specify the exact number of tokens to use for reasoning:
 
-#### Excluding Reasoning Tokens from Response
+#### Excluding Reasoning Tokens from Response (Chat Completions)
 
-If you want the model to use reasoning internally but not include it in the response:
+If you want the model to use reasoning internally but not include it in the response, use Chat Completions (`/api/v1/chat/completions`). The Responses API ignores `reasoning.exclude` and always returns `reasoning` items in `output`.
 
 #### Advanced Usage: Reasoning Chain-of-Thought
 
 This example shows how to use reasoning tokens in a more complex workflow. It injects one model's reasoning into another model to improve its response quality:
 
 ## Preserving Reasoning
+
+### Responses API
+
+To preserve reasoning across turns, send the previous response's `output` items back in the next request's `input`, in the order they were returned, and append your `function_call_output` items after them. Keep each `reasoning` item's `content`, `summary`, `signature`, and `encrypted_content` unchanged:
+
+```json lines theme={null}
+{
+  "model": "anthropic/claude-sonnet-4.5",
+  "reasoning": { "max_tokens": 2000 },
+  "tools": [{ "type": "function", "name": "get_weather", "parameters": { "type": "object", "properties": { "city": { "type": "string" } }, "required": ["city"] } }],
+  "input": [
+    { "role": "user", "content": "What's the weather in Boston?" },
+    { "type": "reasoning", "id": "rs_abc123", "summary": [], "content": [{ "type": "reasoning_text", "text": "The user wants the current weather, so I should call get_weather." }], "signature": "..." },
+    { "type": "function_call", "id": "fc_abc123", "call_id": "call_abc123", "name": "get_weather", "arguments": "{\"city\":\"Boston\"}" },
+    { "type": "function_call_output", "call_id": "call_abc123", "output": "{\"temperature_f\":62,\"conditions\":\"cloudy\"}" }
+  ]
+}
+```
+
+With OpenAI GPT-5.6 and newer you can also control which turns' reasoning the model sees; see [Reasoning Context Mode](#reasoning-context-mode).
+
+### Chat Completions
 
 To preserve reasoning context across multiple turns, you can pass it back to the API in one of two ways:
 
@@ -195,7 +218,7 @@ When you echo reasoning items back in your conversation history, you can control
 >
 > `reasoning.context` is only supported by OpenAI GPT-5.6 and newer.
 
-When using the Responses API with manual state management (echoing output items back as input), set `reasoning.context` alongside `include`:
+When using the Responses API with manual state management (echoing output items back as input), set `reasoning.context`. OpenRouter automatically requests encrypted reasoning content from reasoning-capable providers, so replay the returned `encrypted_content` unchanged; no explicit `include` field is required:
 
 ```json theme={null}
 {
@@ -218,8 +241,7 @@ When using the Responses API with manual state management (echoing output items 
   "reasoning": {
     "effort": "high",
     "context": "all_turns"
-  },
-  "include": ["reasoning.encrypted_content"]
+  }
 }
 ```
 
@@ -288,20 +310,6 @@ Request-level effort applies to the whole conversation, so raising it for one ha
 All three OpenRouter APIs expose this, each in the shape native to that API. The Chat Completions form is an OpenRouter extension, since OpenAI's own Chat Completions API has no per-message equivalent.
 
 ```json lines theme={null}
-// Chat Completions
-{
-  "model": "anthropic/claude-fable-5.1",
-  "reasoning": { "effort": "high" },
-  "messages": [
-    { "role": "user", "content": "Plan the migration." },
-    { "role": "assistant", "content": "Here's the plan: ..." },
-    { "role": "system", "content": "", "configuration_update": { "reasoning": { "effort": "low" } } },
-    { "role": "user", "content": "Now rename the config file." }
-  ]
-}
-```
-
-```json lines theme={null}
 // Responses API
 {
   "model": "anthropic/claude-fable-5.1",
@@ -310,6 +318,20 @@ All three OpenRouter APIs expose this, each in the shape native to that API. The
     { "role": "user", "content": "Plan the migration." },
     { "type": "message", "role": "assistant", "content": [{ "type": "output_text", "text": "Here's the plan: ..." }] },
     { "type": "configuration_update", "reasoning": { "effort": "low" } },
+    { "role": "user", "content": "Now rename the config file." }
+  ]
+}
+```
+
+```json lines theme={null}
+// Chat Completions
+{
+  "model": "anthropic/claude-fable-5.1",
+  "reasoning": { "effort": "high" },
+  "messages": [
+    { "role": "user", "content": "Plan the migration." },
+    { "role": "assistant", "content": "Here's the plan: ..." },
+    { "role": "system", "content": "", "configuration_update": { "reasoning": { "effort": "low" } } },
     { "role": "user", "content": "Now rename the config file." }
   ]
 }
@@ -347,6 +369,8 @@ Effort values are translated to the target model's vocabulary the same way as re
 > Support is per model and OpenRouter enables it as providers roll it out; the first models to accept mid-conversation effort changes were Claude Fable 5.1 and OpenAI GPT-6 Astra, and Claude Opus 5 accepts them as well. Requests that use an update are routed only to endpoints that accept it, and a request for a model that does not support it is rejected with a 400 instead of being sent with the update silently dropped.
 
 ## Reasoning Details API Shape
+
+This section documents the Chat Completions (`/api/v1/chat/completions`) response shape. On the Responses API, reasoning arrives as `reasoning` items in `output` instead; see [Basic Usage with Reasoning Tokens](#basic-usage-with-reasoning-tokens).
 
 When reasoning models generate responses, the reasoning information is structured in a standardized format through the `reasoning_details` array. This section documents the API response structure for reasoning details in both streaming and non-streaming responses.
 
@@ -489,7 +513,7 @@ In streaming responses, `reasoning_details` appears in delta chunks as the reaso
 
 ## Legacy Parameters
 
-For backward compatibility, OpenRouter still supports the following legacy parameters:
+For backward compatibility, Chat Completions (`/api/v1/chat/completions`) still accepts the following legacy parameters. The Responses API does not accept them:
 
 * `include_reasoning: true` - Equivalent to `reasoning: {}`
 * `include_reasoning: false` - Equivalent to `reasoning: { exclude: true }`
@@ -509,13 +533,13 @@ You can enable reasoning on Anthropic models **only** using the unified `reasoni
 When using Anthropic models with reasoning:
 
 * When using the `reasoning.max_tokens` parameter, that value is used directly with a minimum of 1024 tokens.
-* When using the `reasoning.effort` parameter, the budget\_tokens are calculated based on the `max_tokens` value.
+* When using the `reasoning.effort` parameter, the budget\_tokens are calculated based on the request's `max_output_tokens` value (`max_tokens` on Chat Completions).
 
-The reasoning token allocation is capped at 128,000 tokens maximum and 1024 tokens minimum. The formula for calculating the budget\_tokens is: `budget_tokens = max(min(max_tokens * {effort_ratio}, 128000), 1024)`
+The reasoning token allocation is capped at 128,000 tokens maximum and 1024 tokens minimum. The formula for calculating the budget\_tokens is: `budget_tokens = max(min(max_output_tokens * {effort_ratio}, 128000), 1024)`
 
 effort\_ratio is 0.95 for max and xhigh effort, 0.8 for high effort, 0.5 for medium effort, 0.2 for low effort, and 0.1 for minimal effort.
 
-**Important**: `max_tokens` must be strictly higher than the reasoning budget to ensure there are tokens available for the final response after thinking.
+**Important**: `max_output_tokens` must be strictly higher than the reasoning budget to ensure there are tokens available for the final response after thinking.
 
 > [!NOTE]
 >

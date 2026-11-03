@@ -60,7 +60,7 @@ The secret is now available to your app as `process.env.OPENROUTER_API_KEY` (Nod
 
 ### Calling OpenRouter from your code
 
-Once the secret is configured, you can call OpenRouter using any OpenAI-compatible SDK by pointing it at `https://openrouter.ai/api/v1`.
+Once the secret is configured, you can call OpenRouter using any OpenAI-compatible SDK by pointing it at `https://openrouter.ai/api/v1`. The examples below use the [Responses API](../../api_reference/responses/overview.md).
 
 ```typescript title="TypeScript" lines theme={null}
 import OpenAI from "openai";
@@ -70,12 +70,12 @@ const client = new OpenAI({
   apiKey: process.env.OPENROUTER_API_KEY,
 });
 
-const completion = await client.chat.completions.create({
+const response = await client.responses.create({
   model: "anthropic/claude-sonnet-4.5",
-  messages: [{ role: "user", content: "Hello from Replit!" }],
+  input: "Hello from Replit!",
 });
 
-console.log(completion.choices[0].message);
+console.log(response.output_text);
 ```
 
 ```python title="Python" lines theme={null}
@@ -87,12 +87,12 @@ client = OpenAI(
     api_key=os.environ["OPENROUTER_API_KEY"],
 )
 
-completion = client.chat.completions.create(
+response = client.responses.create(
     model="anthropic/claude-sonnet-4.5",
-    messages=[{"role": "user", "content": "Hello from Replit!"}],
+    input="Hello from Replit!",
 )
 
-print(completion.choices[0].message)
+print(response.output_text)
 ```
 
 For framework-specific examples (Vercel AI SDK, LangChain, Anthropic SDK, and more), see the [Frameworks and Integrations](frameworks-and-integrations-overview.md) overview.

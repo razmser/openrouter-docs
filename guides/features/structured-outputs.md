@@ -19,7 +19,45 @@ Structured outputs allow you to:
 
 ## Using Structured Outputs
 
-To use structured outputs, include a `response_format` parameter in your request, with `type` set to `json_schema` and the `json_schema` object containing your schema:
+### Responses API
+
+On the [Responses API](../../api_reference/responses/overview.md), set `text.format` in your request, with `type` set to `json_schema` and your schema's `name`, `strict`, and `schema` fields alongside it:
+
+```json expandable lines theme={null}
+{
+  "input": "What's the weather like in London?",
+  "text": {
+    "format": {
+      "type": "json_schema",
+      "name": "weather",
+      "strict": true,
+      "schema": {
+        "type": "object",
+        "properties": {
+          "location": {
+            "type": "string",
+            "description": "City or location name"
+          },
+          "temperature": {
+            "type": "number",
+            "description": "Temperature in Celsius"
+          },
+          "conditions": {
+            "type": "string",
+            "description": "Weather conditions description"
+          }
+        },
+        "required": ["location", "temperature", "conditions"],
+        "additionalProperties": false
+      }
+    }
+  }
+}
+```
+
+### Chat Completions API
+
+On Chat Completions (`/api/v1/chat/completions`), include a `response_format` parameter in your request, with `type` set to `json_schema` and the `json_schema` object containing your schema:
 
 ```json expandable lines theme={null}
 {
@@ -55,7 +93,7 @@ To use structured outputs, include a `response_format` parameter in your request
 }
 ```
 
-The model will respond with a JSON object that strictly follows your schema:
+On both APIs, the model will respond with a JSON object that strictly follows your schema:
 
 ```json lines theme={null}
 {
@@ -84,7 +122,7 @@ To ensure your request is only routed to endpoints that support structured outpu
 
 1. Check the model's supported parameters on the [models page](https://openrouter.ai/models)
 2. Set `require_parameters: true` in your provider preferences (see [Provider Routing](../routing/provider-selection.md))
-3. Include `response_format` and set `type: json_schema` in the required parameters
+3. Include `text.format` (Responses API) or `response_format` (Chat Completions) with `type: json_schema` in your request
 
 ## Best Practices
 
@@ -102,12 +140,14 @@ Structured outputs are also supported with streaming responses. The model will s
 
 To enable streaming with structured outputs, simply add `stream: true` to your request:
 
-```typescript lines theme={null}
+```json lines theme={null}
 {
   "stream": true,
-  "response_format": {
-    "type": "json_schema",
-    // ... rest of your schema
+  "text": {
+    "format": {
+      "type": "json_schema",
+      // ... rest of your schema
+    }
   }
 }
 ```
@@ -121,4 +161,4 @@ When using structured outputs, you may encounter these scenarios:
 
 ## Response Healing
 
-For non-streaming requests using `response_format` with `type: "json_schema"`, you can enable the [Response Healing](plugins/response-healing.md) plugin to reduce the risk of invalid JSON when models return imperfect formatting. Learn more in the [Response Healing documentation](plugins/response-healing.md).
+For non-streaming requests using `text.format` with `type: "json_schema"`, you can enable the [Response Healing](plugins/response-healing.md) plugin to reduce the risk of invalid JSON when models return imperfect formatting. Learn more in the [Response Healing documentation](plugins/response-healing.md).

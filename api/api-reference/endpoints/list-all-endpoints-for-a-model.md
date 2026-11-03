@@ -126,6 +126,8 @@ tags:
     name: Workspaces
   - description: Alpha feature endpoints for Decisions requests
     name: alpha.decisions
+  - description: Alpha feature endpoints for Extractions requests
+    name: alpha.extractions
 externalDocs:
   description: OpenRouter Documentation
   url: https://openrouter.ai/docs
@@ -679,16 +681,7 @@ components:
           type: string
         native_tools:
           additionalProperties:
-            properties:
-              type:
-                description: >-
-                  The provider tool type the request is translated to when this
-                  tool runs natively, e.g. `web_search_20260209` on Anthropic or
-                  `google_search` on Gemini.
-                type: string
-            required:
-              - type
-            type: object
+            $ref: '#/components/schemas/NativeTools'
           description: >-
             The server tools this endpoint accepts as the provider's own
             built-in tool (`engine: "native"`) instead of an OpenRouter engine,
@@ -701,349 +694,9 @@ components:
               type: web_search_20260209
           type: object
         perf_last_30m_by_workload:
-          additionalProperties: false
-          description: >-
-            Endpoint performance over the last 30 minutes, keyed by the kind of
-            request served (e.g. `text_generation`, `image_generation`).
-            Additive to the legacy singular latency and throughput fields; image
-            and video generation report end-to-end latency. Only visible when
-            authenticated with an API key or cookie.
-          properties:
-            decisions:
-              properties:
-                latency:
-                  allOf:
-                    - $ref: '#/components/schemas/PercentileStats'
-                    - description: >-
-                        Latency percentiles in milliseconds for this workload.
-                        Image and video generation report full end-to-end
-                        generation time, because their raw latency only measures
-                        request acknowledgement; every other workload reports
-                        time to first token or result.
-                request_count:
-                  description: Total requests admitted for this workload in the window.
-                  type:
-                    - integer
-                    - 'null'
-                throughput:
-                  allOf:
-                    - $ref: '#/components/schemas/PercentileStats'
-                    - description: >-
-                        Throughput percentiles in tokens per second; pN is the
-                        speed that N% of requests reached or exceeded, so p90 is
-                        lower than p50. Only meaningful for text generation;
-                        null for workloads without token throughput.
-              required:
-                - latency
-                - throughput
-                - request_count
-              type: object
-            embeddings:
-              properties:
-                latency:
-                  allOf:
-                    - $ref: '#/components/schemas/PercentileStats'
-                    - description: >-
-                        Latency percentiles in milliseconds for this workload.
-                        Image and video generation report full end-to-end
-                        generation time, because their raw latency only measures
-                        request acknowledgement; every other workload reports
-                        time to first token or result.
-                request_count:
-                  description: Total requests admitted for this workload in the window.
-                  type:
-                    - integer
-                    - 'null'
-                throughput:
-                  allOf:
-                    - $ref: '#/components/schemas/PercentileStats'
-                    - description: >-
-                        Throughput percentiles in tokens per second; pN is the
-                        speed that N% of requests reached or exceeded, so p90 is
-                        lower than p50. Only meaningful for text generation;
-                        null for workloads without token throughput.
-              required:
-                - latency
-                - throughput
-                - request_count
-              type: object
-            image_generation:
-              properties:
-                latency:
-                  allOf:
-                    - $ref: '#/components/schemas/PercentileStats'
-                    - description: >-
-                        Latency percentiles in milliseconds for this workload.
-                        Image and video generation report full end-to-end
-                        generation time, because their raw latency only measures
-                        request acknowledgement; every other workload reports
-                        time to first token or result.
-                request_count:
-                  description: Total requests admitted for this workload in the window.
-                  type:
-                    - integer
-                    - 'null'
-                throughput:
-                  allOf:
-                    - $ref: '#/components/schemas/PercentileStats'
-                    - description: >-
-                        Throughput percentiles in tokens per second; pN is the
-                        speed that N% of requests reached or exceeded, so p90 is
-                        lower than p50. Only meaningful for text generation;
-                        null for workloads without token throughput.
-              required:
-                - latency
-                - throughput
-                - request_count
-              type: object
-            rerank:
-              properties:
-                latency:
-                  allOf:
-                    - $ref: '#/components/schemas/PercentileStats'
-                    - description: >-
-                        Latency percentiles in milliseconds for this workload.
-                        Image and video generation report full end-to-end
-                        generation time, because their raw latency only measures
-                        request acknowledgement; every other workload reports
-                        time to first token or result.
-                request_count:
-                  description: Total requests admitted for this workload in the window.
-                  type:
-                    - integer
-                    - 'null'
-                throughput:
-                  allOf:
-                    - $ref: '#/components/schemas/PercentileStats'
-                    - description: >-
-                        Throughput percentiles in tokens per second; pN is the
-                        speed that N% of requests reached or exceeded, so p90 is
-                        lower than p50. Only meaningful for text generation;
-                        null for workloads without token throughput.
-              required:
-                - latency
-                - throughput
-                - request_count
-              type: object
-            stt:
-              properties:
-                latency:
-                  allOf:
-                    - $ref: '#/components/schemas/PercentileStats'
-                    - description: >-
-                        Latency percentiles in milliseconds for this workload.
-                        Image and video generation report full end-to-end
-                        generation time, because their raw latency only measures
-                        request acknowledgement; every other workload reports
-                        time to first token or result.
-                request_count:
-                  description: Total requests admitted for this workload in the window.
-                  type:
-                    - integer
-                    - 'null'
-                throughput:
-                  allOf:
-                    - $ref: '#/components/schemas/PercentileStats'
-                    - description: >-
-                        Throughput percentiles in tokens per second; pN is the
-                        speed that N% of requests reached or exceeded, so p90 is
-                        lower than p50. Only meaningful for text generation;
-                        null for workloads without token throughput.
-              required:
-                - latency
-                - throughput
-                - request_count
-              type: object
-            text_generation:
-              properties:
-                latency:
-                  allOf:
-                    - $ref: '#/components/schemas/PercentileStats'
-                    - description: >-
-                        Latency percentiles in milliseconds for this workload.
-                        Image and video generation report full end-to-end
-                        generation time, because their raw latency only measures
-                        request acknowledgement; every other workload reports
-                        time to first token or result.
-                request_count:
-                  description: Total requests admitted for this workload in the window.
-                  type:
-                    - integer
-                    - 'null'
-                throughput:
-                  allOf:
-                    - $ref: '#/components/schemas/PercentileStats'
-                    - description: >-
-                        Throughput percentiles in tokens per second; pN is the
-                        speed that N% of requests reached or exceeded, so p90 is
-                        lower than p50. Only meaningful for text generation;
-                        null for workloads without token throughput.
-              required:
-                - latency
-                - throughput
-                - request_count
-              type: object
-            tts:
-              properties:
-                latency:
-                  allOf:
-                    - $ref: '#/components/schemas/PercentileStats'
-                    - description: >-
-                        Latency percentiles in milliseconds for this workload.
-                        Image and video generation report full end-to-end
-                        generation time, because their raw latency only measures
-                        request acknowledgement; every other workload reports
-                        time to first token or result.
-                request_count:
-                  description: Total requests admitted for this workload in the window.
-                  type:
-                    - integer
-                    - 'null'
-                throughput:
-                  allOf:
-                    - $ref: '#/components/schemas/PercentileStats'
-                    - description: >-
-                        Throughput percentiles in tokens per second; pN is the
-                        speed that N% of requests reached or exceeded, so p90 is
-                        lower than p50. Only meaningful for text generation;
-                        null for workloads without token throughput.
-              required:
-                - latency
-                - throughput
-                - request_count
-              type: object
-            unknown:
-              properties:
-                latency:
-                  allOf:
-                    - $ref: '#/components/schemas/PercentileStats'
-                    - description: >-
-                        Latency percentiles in milliseconds for this workload.
-                        Image and video generation report full end-to-end
-                        generation time, because their raw latency only measures
-                        request acknowledgement; every other workload reports
-                        time to first token or result.
-                request_count:
-                  description: Total requests admitted for this workload in the window.
-                  type:
-                    - integer
-                    - 'null'
-                throughput:
-                  allOf:
-                    - $ref: '#/components/schemas/PercentileStats'
-                    - description: >-
-                        Throughput percentiles in tokens per second; pN is the
-                        speed that N% of requests reached or exceeded, so p90 is
-                        lower than p50. Only meaningful for text generation;
-                        null for workloads without token throughput.
-              required:
-                - latency
-                - throughput
-                - request_count
-              type: object
-            video_generation:
-              properties:
-                latency:
-                  allOf:
-                    - $ref: '#/components/schemas/PercentileStats'
-                    - description: >-
-                        Latency percentiles in milliseconds for this workload.
-                        Image and video generation report full end-to-end
-                        generation time, because their raw latency only measures
-                        request acknowledgement; every other workload reports
-                        time to first token or result.
-                request_count:
-                  description: Total requests admitted for this workload in the window.
-                  type:
-                    - integer
-                    - 'null'
-                throughput:
-                  allOf:
-                    - $ref: '#/components/schemas/PercentileStats'
-                    - description: >-
-                        Throughput percentiles in tokens per second; pN is the
-                        speed that N% of requests reached or exceeded, so p90 is
-                        lower than p50. Only meaningful for text generation;
-                        null for workloads without token throughput.
-              required:
-                - latency
-                - throughput
-                - request_count
-              type: object
-          type: object
+          $ref: '#/components/schemas/PerfLast30mByWorkload'
         pricing:
-          properties:
-            audio:
-              description: Price in USD per audio input token
-              type: string
-            audio_output:
-              description: Price in USD per audio output token
-              type: string
-            completion:
-              description: Price in USD per token for completion (output) generation
-              type: string
-            discount:
-              description: >-
-                Fractional discount applied to this endpoint's pricing; the
-                price is multiplied by (1 - discount) (0 = no discount, 1 =
-                free)
-              format: double
-              type: number
-            image:
-              description: Price in USD per input image
-              type: string
-            image_output:
-              description: Price in USD per output image
-              type: string
-            image_token:
-              description: Price in USD per image token
-              type: string
-            input_audio_cache:
-              description: Price in USD per cached audio input token
-              type: string
-            input_cache_read:
-              description: Price in USD per cached input token (read)
-              type: string
-            input_cache_write:
-              description: >-
-                Price per cache-write token, in USD per token. For providers
-                with multiple cache TTLs (e.g. Anthropic), this is the default
-                (5-minute) cache-write rate.
-              type: string
-            input_cache_write_1h:
-              description: >-
-                Price per 1-hour cache-write token, in USD per token. Only
-                present for providers that price an extended (1-hour) cache TTL
-                separately, such as Anthropic.
-              type: string
-            internal_reasoning:
-              description: Price in USD per internal reasoning token
-              type: string
-            overrides:
-              description: >-
-                Conditional overrides of the base pricing (e.g. long-context or
-                time-based pricing). An entry applies when all of its condition
-                fields (e.g. min_prompt_tokens, or the utc_start/utc_end time
-                window) match the request; among applicable entries, later
-                entries win per key; price keys absent from an entry inherit the
-                base price. The top-level pricing keys always reflect the price
-                that applies under default conditions.
-              items:
-                $ref: '#/components/schemas/PricingOverride'
-              type: array
-            prompt:
-              description: Price in USD per token for prompt (input) processing
-              type: string
-            request:
-              description: Price in USD per request
-              type: string
-            web_search:
-              description: Price in USD per web search
-              type: string
-          required:
-            - prompt
-            - completion
-          type: object
+          $ref: '#/components/schemas/Pricing'
         provider_name:
           $ref: '#/components/schemas/ProviderName'
         quantization:
@@ -1263,78 +916,116 @@ components:
       type:
         - object
         - 'null'
-    PricingOverride:
+    NativeTools:
+      properties:
+        type:
+          description: >-
+            The provider tool type the request is translated to when this tool
+            runs natively, e.g. `web_search_20260209` on Anthropic or
+            `google_search` on Gemini.
+          type: string
+      required:
+        - type
+      type: object
+    PerfLast30mByWorkload:
+      additionalProperties: false
       description: >-
-        A conditional override of the base pricing. An entry applies only when
-        all of its condition fields (e.g. min_prompt_tokens, or the
-        utc_start/utc_end time window) match the request; among applicable
-        entries, later entries win per price key; price keys absent from an
-        entry inherit the base price.
-      example:
-        completion: '0.00002'
-        min_prompt_tokens: 200000
-        prompt: '0.000005'
+        Endpoint performance over the last 30 minutes, keyed by the kind of
+        request served (e.g. `text_generation`, `image_generation`). Additive to
+        the legacy singular latency and throughput fields; image and video
+        generation report end-to-end latency. Only visible when authenticated
+        with an API key or cookie.
+      properties:
+        decisions:
+          $ref: '#/components/schemas/Decisions'
+        embeddings:
+          $ref: '#/components/schemas/Embeddings'
+        image_generation:
+          $ref: '#/components/schemas/ImageGeneration'
+        rerank:
+          $ref: '#/components/schemas/Rerank'
+        stt:
+          $ref: '#/components/schemas/STT'
+        text_generation:
+          $ref: '#/components/schemas/TextGeneration'
+        tts:
+          $ref: '#/components/schemas/TTS'
+        unknown:
+          $ref: '#/components/schemas/Unknown'
+        video_generation:
+          $ref: '#/components/schemas/VideoGeneration'
+      type: object
+    Pricing:
       properties:
         audio:
-          description: Overridden price in USD per audio input token
+          description: Price in USD per audio input token
+          type: string
+        audio_output:
+          description: Price in USD per audio output token
           type: string
         completion:
-          description: Overridden price in USD per token for completion (output) generation
+          description: Price in USD per token for completion (output) generation
+          type: string
+        discount:
+          description: >-
+            Fractional discount applied to this endpoint's pricing; the price is
+            multiplied by (1 - discount) (0 = no discount, 1 = free)
+          format: double
+          type: number
+        image:
+          description: Price in USD per input image
+          type: string
+        image_output:
+          description: Price in USD per output image
+          type: string
+        image_token:
+          description: Price in USD per image token
           type: string
         input_audio_cache:
-          description: Overridden price in USD per cached audio input token
+          description: Price in USD per cached audio input token
           type: string
         input_cache_read:
-          description: Overridden price in USD per cached input token (read)
+          description: Price in USD per cached input token (read)
           type: string
         input_cache_write:
-          description: Overridden price in USD per cache-write token
+          description: >-
+            Price per cache-write token, in USD per token. For providers with
+            multiple cache TTLs (e.g. Anthropic), this is the default (5-minute)
+            cache-write rate.
           type: string
         input_cache_write_1h:
-          description: Overridden price in USD per 1-hour cache-write token
-          type: string
-        min_prompt_tokens:
           description: >-
-            Condition: the entry applies when the total prompt tokens of a
-            request are strictly greater than this threshold
-          format: double
-          type: number
-        prompt:
-          description: Overridden price in USD per token for prompt (input) processing
+            Price per 1-hour cache-write token, in USD per token. Only present
+            for providers that price an extended (1-hour) cache TTL separately,
+            such as Anthropic.
           type: string
-        utc_days:
+        internal_reasoning:
+          description: Price in USD per internal reasoning token
+          type: string
+        overrides:
           description: >-
-            Condition: UTC weekdays the entry applies on, evaluated at the
-            request instant. Scopes the utc_start/utc_end window (or, without a
-            window, the whole UTC day) to the listed days. Absent means every
-            day.
+            Conditional overrides of the base pricing (e.g. long-context or
+            time-based pricing). An entry applies when all of its condition
+            fields (e.g. min_prompt_tokens, or the utc_start/utc_end time
+            window) match the request; among applicable entries, later entries
+            win per key; price keys absent from an entry inherit the base price.
+            The top-level pricing keys always reflect the price that applies
+            under default conditions.
           items:
-            enum:
-              - monday
-              - tuesday
-              - wednesday
-              - thursday
-              - friday
-              - saturday
-              - sunday
-            type: string
-          minItems: 1
+            $ref: '#/components/schemas/PricingOverride'
           type: array
-        utc_end:
-          description: >-
-            Condition: exclusive end of a daily UTC time window as an HHMM clock
-            number (e.g. 400 = 04:00)
-          format: double
-          type: number
-        utc_start:
-          description: >-
-            Condition: inclusive start of a daily UTC time window as an HHMM
-            clock number (e.g. 100 = 01:00, 1030 = 10:30). The entry applies
-            while the current UTC time is inside the half-open window
-            [utc_start, utc_end), which may wrap past midnight (utc_start >
-            utc_end).
-          format: double
-          type: number
+        prompt:
+          description: Price in USD per token for prompt (input) processing
+          type: string
+        request:
+          description: Price in USD per request
+          type: string
+        web_search:
+          description: Price in USD per web search
+          type: string
+      required:
+        - prompt
+        - completion
       type: object
     ProviderName:
       enum:
@@ -1393,6 +1084,7 @@ components:
         - Io Net
         - Inferact vLLM
         - Inflection
+        - KT
         - Liquid
         - Makora
         - Mara
@@ -1560,6 +1252,331 @@ components:
         - auto
         - required
         - function
+      type: object
+    Decisions:
+      properties:
+        latency:
+          allOf:
+            - $ref: '#/components/schemas/PercentileStats'
+            - description: >-
+                Latency percentiles in milliseconds for this workload. Image and
+                video generation report full end-to-end generation time, because
+                their raw latency only measures request acknowledgement; every
+                other workload reports time to first token or result.
+        request_count:
+          description: Total requests admitted for this workload in the window.
+          type:
+            - integer
+            - 'null'
+        throughput:
+          allOf:
+            - $ref: '#/components/schemas/PercentileStats'
+            - description: >-
+                Throughput percentiles in tokens per second; pN is the speed
+                that N% of requests reached or exceeded, so p90 is lower than
+                p50. Only meaningful for text generation; null for workloads
+                without token throughput.
+      required:
+        - latency
+        - throughput
+        - request_count
+      type: object
+    Embeddings:
+      properties:
+        latency:
+          allOf:
+            - $ref: '#/components/schemas/PercentileStats'
+            - description: >-
+                Latency percentiles in milliseconds for this workload. Image and
+                video generation report full end-to-end generation time, because
+                their raw latency only measures request acknowledgement; every
+                other workload reports time to first token or result.
+        request_count:
+          description: Total requests admitted for this workload in the window.
+          type:
+            - integer
+            - 'null'
+        throughput:
+          allOf:
+            - $ref: '#/components/schemas/PercentileStats'
+            - description: >-
+                Throughput percentiles in tokens per second; pN is the speed
+                that N% of requests reached or exceeded, so p90 is lower than
+                p50. Only meaningful for text generation; null for workloads
+                without token throughput.
+      required:
+        - latency
+        - throughput
+        - request_count
+      type: object
+    ImageGeneration:
+      properties:
+        latency:
+          allOf:
+            - $ref: '#/components/schemas/PercentileStats'
+            - description: >-
+                Latency percentiles in milliseconds for this workload. Image and
+                video generation report full end-to-end generation time, because
+                their raw latency only measures request acknowledgement; every
+                other workload reports time to first token or result.
+        request_count:
+          description: Total requests admitted for this workload in the window.
+          type:
+            - integer
+            - 'null'
+        throughput:
+          allOf:
+            - $ref: '#/components/schemas/PercentileStats'
+            - description: >-
+                Throughput percentiles in tokens per second; pN is the speed
+                that N% of requests reached or exceeded, so p90 is lower than
+                p50. Only meaningful for text generation; null for workloads
+                without token throughput.
+      required:
+        - latency
+        - throughput
+        - request_count
+      type: object
+    Rerank:
+      properties:
+        latency:
+          allOf:
+            - $ref: '#/components/schemas/PercentileStats'
+            - description: >-
+                Latency percentiles in milliseconds for this workload. Image and
+                video generation report full end-to-end generation time, because
+                their raw latency only measures request acknowledgement; every
+                other workload reports time to first token or result.
+        request_count:
+          description: Total requests admitted for this workload in the window.
+          type:
+            - integer
+            - 'null'
+        throughput:
+          allOf:
+            - $ref: '#/components/schemas/PercentileStats'
+            - description: >-
+                Throughput percentiles in tokens per second; pN is the speed
+                that N% of requests reached or exceeded, so p90 is lower than
+                p50. Only meaningful for text generation; null for workloads
+                without token throughput.
+      required:
+        - latency
+        - throughput
+        - request_count
+      type: object
+    STT:
+      properties:
+        latency:
+          allOf:
+            - $ref: '#/components/schemas/PercentileStats'
+            - description: >-
+                Latency percentiles in milliseconds for this workload. Image and
+                video generation report full end-to-end generation time, because
+                their raw latency only measures request acknowledgement; every
+                other workload reports time to first token or result.
+        request_count:
+          description: Total requests admitted for this workload in the window.
+          type:
+            - integer
+            - 'null'
+        throughput:
+          allOf:
+            - $ref: '#/components/schemas/PercentileStats'
+            - description: >-
+                Throughput percentiles in tokens per second; pN is the speed
+                that N% of requests reached or exceeded, so p90 is lower than
+                p50. Only meaningful for text generation; null for workloads
+                without token throughput.
+      required:
+        - latency
+        - throughput
+        - request_count
+      type: object
+    TextGeneration:
+      properties:
+        latency:
+          allOf:
+            - $ref: '#/components/schemas/PercentileStats'
+            - description: >-
+                Latency percentiles in milliseconds for this workload. Image and
+                video generation report full end-to-end generation time, because
+                their raw latency only measures request acknowledgement; every
+                other workload reports time to first token or result.
+        request_count:
+          description: Total requests admitted for this workload in the window.
+          type:
+            - integer
+            - 'null'
+        throughput:
+          allOf:
+            - $ref: '#/components/schemas/PercentileStats'
+            - description: >-
+                Throughput percentiles in tokens per second; pN is the speed
+                that N% of requests reached or exceeded, so p90 is lower than
+                p50. Only meaningful for text generation; null for workloads
+                without token throughput.
+      required:
+        - latency
+        - throughput
+        - request_count
+      type: object
+    TTS:
+      properties:
+        latency:
+          allOf:
+            - $ref: '#/components/schemas/PercentileStats'
+            - description: >-
+                Latency percentiles in milliseconds for this workload. Image and
+                video generation report full end-to-end generation time, because
+                their raw latency only measures request acknowledgement; every
+                other workload reports time to first token or result.
+        request_count:
+          description: Total requests admitted for this workload in the window.
+          type:
+            - integer
+            - 'null'
+        throughput:
+          allOf:
+            - $ref: '#/components/schemas/PercentileStats'
+            - description: >-
+                Throughput percentiles in tokens per second; pN is the speed
+                that N% of requests reached or exceeded, so p90 is lower than
+                p50. Only meaningful for text generation; null for workloads
+                without token throughput.
+      required:
+        - latency
+        - throughput
+        - request_count
+      type: object
+    Unknown:
+      properties:
+        latency:
+          allOf:
+            - $ref: '#/components/schemas/PercentileStats'
+            - description: >-
+                Latency percentiles in milliseconds for this workload. Image and
+                video generation report full end-to-end generation time, because
+                their raw latency only measures request acknowledgement; every
+                other workload reports time to first token or result.
+        request_count:
+          description: Total requests admitted for this workload in the window.
+          type:
+            - integer
+            - 'null'
+        throughput:
+          allOf:
+            - $ref: '#/components/schemas/PercentileStats'
+            - description: >-
+                Throughput percentiles in tokens per second; pN is the speed
+                that N% of requests reached or exceeded, so p90 is lower than
+                p50. Only meaningful for text generation; null for workloads
+                without token throughput.
+      required:
+        - latency
+        - throughput
+        - request_count
+      type: object
+    VideoGeneration:
+      properties:
+        latency:
+          allOf:
+            - $ref: '#/components/schemas/PercentileStats'
+            - description: >-
+                Latency percentiles in milliseconds for this workload. Image and
+                video generation report full end-to-end generation time, because
+                their raw latency only measures request acknowledgement; every
+                other workload reports time to first token or result.
+        request_count:
+          description: Total requests admitted for this workload in the window.
+          type:
+            - integer
+            - 'null'
+        throughput:
+          allOf:
+            - $ref: '#/components/schemas/PercentileStats'
+            - description: >-
+                Throughput percentiles in tokens per second; pN is the speed
+                that N% of requests reached or exceeded, so p90 is lower than
+                p50. Only meaningful for text generation; null for workloads
+                without token throughput.
+      required:
+        - latency
+        - throughput
+        - request_count
+      type: object
+    PricingOverride:
+      description: >-
+        A conditional override of the base pricing. An entry applies only when
+        all of its condition fields (e.g. min_prompt_tokens, or the
+        utc_start/utc_end time window) match the request; among applicable
+        entries, later entries win per price key; price keys absent from an
+        entry inherit the base price.
+      example:
+        completion: '0.00002'
+        min_prompt_tokens: 200000
+        prompt: '0.000005'
+      properties:
+        audio:
+          description: Overridden price in USD per audio input token
+          type: string
+        completion:
+          description: Overridden price in USD per token for completion (output) generation
+          type: string
+        input_audio_cache:
+          description: Overridden price in USD per cached audio input token
+          type: string
+        input_cache_read:
+          description: Overridden price in USD per cached input token (read)
+          type: string
+        input_cache_write:
+          description: Overridden price in USD per cache-write token
+          type: string
+        input_cache_write_1h:
+          description: Overridden price in USD per 1-hour cache-write token
+          type: string
+        min_prompt_tokens:
+          description: >-
+            Condition: the entry applies when the total prompt tokens of a
+            request are strictly greater than this threshold
+          format: double
+          type: number
+        prompt:
+          description: Overridden price in USD per token for prompt (input) processing
+          type: string
+        utc_days:
+          description: >-
+            Condition: UTC weekdays the entry applies on, evaluated at the
+            request instant. Scopes the utc_start/utc_end window (or, without a
+            window, the whole UTC day) to the listed days. Absent means every
+            day.
+          items:
+            enum:
+              - monday
+              - tuesday
+              - wednesday
+              - thursday
+              - friday
+              - saturday
+              - sunday
+            type: string
+          minItems: 1
+          type: array
+        utc_end:
+          description: >-
+            Condition: exclusive end of a daily UTC time window as an HHMM clock
+            number (e.g. 400 = 04:00)
+          format: double
+          type: number
+        utc_start:
+          description: >-
+            Condition: inclusive start of a daily UTC time window as an HHMM
+            clock number (e.g. 100 = 01:00, 1030 = 10:30). The entry applies
+            while the current UTC time is inside the half-open window
+            [utc_start, utc_end), which may wrap past midnight (utc_start >
+            utc_end).
+          format: double
+          type: number
       type: object
   securitySchemes:
     apiKey:

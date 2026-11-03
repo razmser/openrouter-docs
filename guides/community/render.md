@@ -102,7 +102,6 @@ The inner task makes one OpenRouter request and retries failures. The outer task
 
 ```typescript title="TypeScript" lines theme={null}
 import { OpenRouter } from '@openrouter/sdk';
-import type { ChatResult } from '@openrouter/sdk/models';
 import { task } from '@renderinc/sdk/workflows';
 
 const apiKey = process.env.OPENROUTER_API_KEY;
@@ -128,13 +127,14 @@ function contentToText(content: unknown): string {
 
   return content
     .flatMap((item) => {
-      if (
-        typeof item === 'object' &&
-        item !== null &&
-        'text' in item &&
-        typeof item.text === 'string'
-      ) {
+      if (typeof item !== 'object' || item === null) {
+        return [];
+      }
+      if ('text' in item && typeof item.text === 'string') {
         return [item.text];
+      }
+      if ('refusal' in item && typeof item.refusal === 'string') {
+        return [item.refusal];
       }
 
       return [];
@@ -152,18 +152,32 @@ const callOpenRouter = task(
     },
   },
   async function callOpenRouter(prompt: string) {
-    const completion = (await openRouter.chat.send({
-      chatRequest: {
+    const response = await openRouter.responses.send({
+      responsesRequest: {
         model: process.env.OPENROUTER_MODEL ?? 'openrouter/auto',
-        messages: [{ role: 'user', content: prompt }],
+        input: prompt,
         stream: false,
       },
-    })) as ChatResult;
+    });
+
+    if (!('output' in response)) {
+      throw new Error('Expected a non-streaming response');
+    }
+
+    // Do not return failed or truncated output as a successful workflow result.
+    if (response.status !== 'completed') {
+      throw new Error(
+        response.error?.message ??
+          `OpenRouter response ended as ${response.status}`,
+      );
+    }
+
+    const message = [...response.output].reverse().find((item) => item.type === 'message');
 
     return {
       prompt,
-      model: completion.model,
-      answer: contentToText(completion.choices[0]?.message.content),
+      model: response.model,
+      answer: message?.type === 'message' ? contentToText(message.content) : '',
     };
   },
 );
@@ -198,6 +212,11 @@ def content_to_text(content: object) -> str:
         text = getattr(item, "text", None)
         if isinstance(text, str):
             parts.append(text)
+            continue
+
+        refusal = getattr(item, "refusal", None)
+        if isinstance(refusal, str):
+            parts.append(refusal)
 
     return "\n".join(parts)
 
@@ -219,16 +238,26 @@ def call_openrouter(prompt: str):
             "Render Workflows Example",
         ),
     ) as open_router:
-        completion = open_router.chat.send(
+        response = open_router.responses.send(
             model=os.getenv("OPENROUTER_MODEL", "openrouter/auto"),
-            messages=[{"role": "user", "content": prompt}],
+            input=prompt,
         )
 
-    content = completion.choices[0].message.content if completion.choices else None
+    # Do not return failed or truncated output as a successful workflow result.
+    if response.status != "completed":
+        error = response.error.message if response.error else None
+        reason = response.incomplete_details.reason if response.incomplete_details else None
+        raise RuntimeError(error or reason or f"OpenRouter response ended as {response.status}")
+
+    message = next(
+        (item for item in reversed(response.output) if item.type == "message"),
+        None,
+    )
+    content = message.content if message else None
 
     return {
         "prompt": prompt,
-        "model": completion.model,
+        "model": response.model,
         "answer": content_to_text(content),
     }
 
@@ -242,7 +271,7 @@ if __name__ == "__main__":
     app.start()
 ```
 
-Auto Router can choose a different model for each independent prompt. Keeping `completion.model` in every result makes that routing decision visible.
+Auto Router can choose a different model for each independent prompt. Keeping `response.model` in every result makes that routing decision visible.
 
 > [!WARNING]
 >

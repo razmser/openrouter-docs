@@ -17,7 +17,7 @@ Response Healing provides:
 
 ## How It Works
 
-The plugin activates for non-streaming requests when you use `response_format` with either `type: "json_schema"` or `type: "json_object"`, and include the response-healing plugin in your `plugins` array. See the [Complete Example](#complete-example) below for a full implementation.
+The plugin activates for non-streaming requests when you set `text.format` in a [Responses API](../../../api_reference/responses/overview.md) request (or `response_format` on Chat Completions) to either `type: "json_schema"` or `type: "json_object"`, and include the response-healing plugin in your `plugins` array. See the [Complete Example](#complete-example) below for a full implementation.
 
 ## What Gets Fixed
 
@@ -110,4 +110,4 @@ Here's the data you requested:
 >
 > **Will not repair all JSON**
 >
-> Some malformed JSON responses may still be unrepairable. In particular, if the response is truncated by `max_tokens`, the plugin will not be able to repair it.
+> Some malformed JSON responses may still be unrepairable. In particular, if the response is truncated by `max_output_tokens`, the plugin will not be able to repair it.

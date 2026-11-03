@@ -6,7 +6,7 @@
 
 > How to send PDFs to OpenRouter models
 
-OpenRouter supports PDF processing through the `/api/v1/chat/completions` API. PDFs can be sent as **direct URLs** or **base64-encoded data URLs** in the messages array, via the file content type. This feature works on **any** model on OpenRouter.
+OpenRouter supports PDF processing through the [Responses API](../../../api_reference/responses/overview.md) (`/api/v1/responses`) and Chat Completions (`/api/v1/chat/completions`). On the Responses API, PDFs can be sent as **direct URLs** (`file_url`) or **base64-encoded data URLs** (`file_data`) in the `input` array, via the `input_file` content type; on Chat Completions they go in a `file` content part. This feature works on **any** model on OpenRouter. The examples on this page use the Responses API except where noted.
 
 **URL support**: Send publicly accessible PDFs directly without downloading or encoding **Base64 support**: Required for local files or private documents that aren't publicly accessible
 
@@ -22,18 +22,18 @@ PDFs also work in the chat room for interactive testing.
 
 ## Plugin Configuration
 
-To configure PDF processing, use the `plugins` parameter in your request. OpenRouter provides several PDF processing engines with different capabilities and pricing:
+To configure PDF processing, use the `plugins` parameter in your request. OpenRouter provides several PDF processing engines with different capabilities and pricing; `engine` is one of `cloudflare-ai`, `mistral-ocr`, or `native`:
 
-```typescript lines theme={null}
+```json lines theme={null}
 {
-  plugins: [
+  "plugins": [
     {
-      id: 'file-parser',
-      pdf: {
-        engine: 'cloudflare-ai', // or 'mistral-ocr' or 'native'
-      },
-    },
-  ],
+      "id": "file-parser",
+      "pdf": {
+        "engine": "cloudflare-ai"
+      }
+    }
+  ]
 }
 ```
 
@@ -77,7 +77,7 @@ For local PDF files or when you need to send PDF content directly, you can base6
 
 ## Skip Parsing Costs
 
-When you send a PDF to the API, the response may include file annotations in the assistant's message. These annotations contain structured information about the PDF document that was parsed. By sending these annotations back in subsequent requests, you can avoid re-parsing the same PDF document multiple times, which saves both processing time and costs.
+When you send a PDF to the Chat Completions API (`/api/v1/chat/completions`), the response may include file annotations in the assistant's message. These annotations contain structured information about the PDF document that was parsed. By sending these annotations back in subsequent requests, you can avoid re-parsing the same PDF document multiple times, which saves both processing time and costs. The Responses API returns `file_citation` annotations instead, which can't be sent back to skip parsing, so the examples in this section and the annotation schema below use Chat Completions.
 
 Here's how to reuse file annotations:
 
@@ -85,9 +85,9 @@ Here's how to reuse file annotations:
 >
 > When you include the file annotations from a previous response in your subsequent requests, OpenRouter will use this pre-parsed information instead of re-parsing the PDF, which saves processing time and costs. This is especially beneficial for large documents or when using the `mistral-ocr` engine which incurs additional costs.
 
-## File Annotations Schema
+## File Annotations Schema (Chat Completions)
 
-When OpenRouter parses a PDF, the response includes file annotations in the assistant message. Here is the TypeScript type for the annotation schema:
+When OpenRouter parses a PDF sent to Chat Completions, the response includes file annotations in the assistant message. Here is the TypeScript type for the annotation schema:
 
 ```typescript lines theme={null}
 type FileAnnotation = {
@@ -108,7 +108,52 @@ The `content` array contains the parsed content from the PDF, which may include 
 
 ## Response Format
 
-The API will return a response in the following format:
+### Responses API
+
+The Responses API may include a `file_citation` annotation when the provider cites a parsed file in its output. Parsing a file alone does not guarantee a citation:
+
+```json expandable lines theme={null}
+{
+  "id": "gen-1234567890",
+  "object": "response",
+  "created_at": 1234567890,
+  "model": "google/gemma-3-27b-it",
+  "status": "completed",
+  "output": [
+    {
+      "id": "msg_abc123",
+      "type": "message",
+      "role": "assistant",
+      "status": "completed",
+      "content": [
+        {
+          "type": "output_text",
+          "text": "The document discusses...",
+          "annotations": [
+            {
+              "type": "file_citation",
+              "file_id": "abc123...",
+              "filename": "document.pdf",
+              "index": 0
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "usage": {
+    "input_tokens": 1000,
+    "input_tokens_details": { "cached_tokens": 0 },
+    "output_tokens": 100,
+    "output_tokens_details": { "reasoning_tokens": 0 },
+    "total_tokens": 1100
+  }
+}
+```
+
+### Chat Completions
+
+Chat Completions returns the parsed file as a reusable `file` annotation on the assistant message (see [Skip Parsing Costs](#skip-parsing-costs)):
 
 ```json expandable lines theme={null}
 {
@@ -146,7 +191,7 @@ The API will return a response in the following format:
 }
 ```
 
-## Error Responses with Parsed Annotations
+## Error Responses with Parsed Annotations (Chat Completions)
 
 If OpenRouter successfully parses your PDF but every inference provider then fails to generate a completion, the error response still includes the parsed annotations under `error.metadata.file_annotations`. The shape matches the success-path `FileAnnotation` documented above, so you can hand the same array straight back to OpenRouter on a retry to skip re-parsing.
 
@@ -178,6 +223,7 @@ This applies to the `"mistral-ocr"` and `"cloudflare-ai"` engines, which parse t
 When you read annotations from both the success and error paths, dedupe by `file.hash`. The hash is stable across both shapes for the same parsed file:
 
 ```typescript expandable lines theme={null}
+// FileAnnotation is the type defined under "File Annotations Schema" above.
 function isFileAnnotation(value: unknown): value is FileAnnotation {
   if (typeof value !== 'object' || value === null) return false;
   const candidate = value as { type?: unknown; file?: { hash?: unknown } };

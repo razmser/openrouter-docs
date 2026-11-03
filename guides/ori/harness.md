@@ -12,19 +12,19 @@ Every `ori` command launches your agent with OpenRouter credentials and organiza
 
 ## Install Ori
 
-**macOS, Linux, WSL**
+> [tab] macOS, Linux, WSL
+>
+> ```sh theme={null}
+> curl -fsSL https://openrouter.ai/labs/ori/install.sh | bash
+> ```
 
-```sh theme={null}
-curl -fsSL https://openrouter.ai/labs/ori/install.sh | bash
-```
-
-**Windows PowerShell**
-
-```powershell theme={null}
-irm https://openrouter.ai/labs/ori/install.ps1 | iex
-```
-
-In Git Bash, MSYS, or Cygwin, use the `curl ... | bash` command from the macOS, Linux, WSL tab instead.
+> [tab] Windows PowerShell
+>
+> ```powershell theme={null}
+> irm https://openrouter.ai/labs/ori/install.ps1 | iex
+> ```
+>
+> In Git Bash, MSYS, or Cygwin, use the `curl ... | bash` command from the macOS, Linux, WSL tab instead.
 
 That's the only install command you need. If you run an agent that isn't on your machine, Ori asks to install it, then starts it. Every `ori` command on this page works the same on all three platforms.
 

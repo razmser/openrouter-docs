@@ -60,12 +60,12 @@ Transcribe audio into text using a dedicated endpoint. OpenRouter supports multi
 
 ## Getting Started
 
-Most multimodal inputs use the same `/api/v1/chat/completions` endpoint with the `messages` parameter. Different content types are specified in the message content array:
+Most multimodal inputs use the same [Responses API](../../../api_reference/responses/overview.md) endpoint, `/api/v1/responses`, with the `input` parameter. Different content types are specified in the message content array:
 
-* **Images**: Use `image_url` content type
-* **PDFs**: Use `file` content type with PDF data
+* **Images**: Use `input_image` content type
+* **PDFs**: Use `input_file` content type with PDF data
 * **Audio**: Use `input_audio` content type
-* **Video**: Use `video_url` content type
+* **Video**: Use `input_video` content type
 
 You can combine multiple modalities in a single request, and the number of files you can send varies by provider and model.
 
@@ -110,30 +110,30 @@ OpenRouter supports both **direct URLs** and **base64-encoded data** for multimo
 
 ## Frequently Asked Questions
 
-> **Can I mix different modalities in one request?**
+> [accordion] Can I mix different modalities in one request?
 >
 > Yes! You can send text, images, PDFs, audio, and video in the same request. The model will process all inputs together.
 
-> **How is multimodal content priced?**
+> [accordion] How is multimodal content priced?
 >
 > * **Images**: Typically priced per image or as input tokens
 > * **PDFs**: Free text extraction, paid OCR processing, or native model pricing
 > * **Audio input**: Priced as input tokens based on duration
-> * **Audio output**: Priced as completion tokens
+> * **Audio output**: Priced as output tokens
 > * **Video**: Priced as input tokens based on duration and resolution
 
-> **Which models support video input?**
+> [accordion] Which models support video input?
 >
 > Video support varies by model. Use the [Models page](../models.md) to filter for video-capable models. Check each model's documentation for specific video format and duration limits.
 
-> **How does video generation work?**
+> [accordion] How does video generation work?
 >
 > Video generation uses an asynchronous API at `/api/v1/videos`. You submit a prompt, receive a job ID, then poll until the video is ready to download. See the [video generation documentation](video-generation.md) for details.
 
-> **How does text-to-speech work?**
+> [accordion] How does text-to-speech work?
 >
 > Text-to-speech uses a dedicated endpoint at `/api/v1/audio/speech`. Send text and receive a raw audio byte stream. The endpoint is compatible with the OpenAI Audio Speech API, so you can use OpenAI client libraries. See the [TTS documentation](tts.md) for details.
 
-> **How does speech-to-text work?**
+> [accordion] How does speech-to-text work?
 >
 > Speech-to-text uses a dedicated endpoint at `/api/v1/audio/transcriptions`. Send base64-encoded audio and receive a JSON response with the transcribed text and usage statistics. See the [STT documentation](stt.md) for details.

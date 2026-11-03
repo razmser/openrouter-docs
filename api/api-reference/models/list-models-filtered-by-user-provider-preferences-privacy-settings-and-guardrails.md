@@ -128,6 +128,8 @@ tags:
     name: Workspaces
   - description: Alpha feature endpoints for Decisions requests
     name: alpha.decisions
+  - description: Alpha feature endpoints for Extractions requests
+    name: alpha.extractions
 externalDocs:
   description: OpenRouter Documentation
   url: https://openrouter.ai/docs
@@ -241,6 +243,40 @@ paths:
               - design-arena-elo-high-to-low
             example: newest
             type: string
+        - description: >-
+            Filter models and presets by the named harness's eligibility policy:
+            tool calling is required, and when one of your guardrails sets
+            `enforce_first_party_harness_models`, only the harness vendor's own
+            models remain (OpenAI for codex, Anthropic for claude_code and
+            claude_desktop). When your workspace's Managed Machines policy sets
+            a model list for that harness, only the listed models remain, and a
+            preset remains only while every model it routes to is listed. This
+            filter doesn't apply the harness's ranking, caps or Claude Desktop
+            model ID aliases, so returned IDs stay routable. One of:
+            claude_code, claude_desktop, codex. Omit it to get every model you
+            can use.
+          in: query
+          name: client
+          required: false
+          schema:
+            description: >-
+              Filter models and presets by the named harness's eligibility
+              policy: tool calling is required, and when one of your guardrails
+              sets `enforce_first_party_harness_models`, only the harness
+              vendor's own models remain (OpenAI for codex, Anthropic for
+              claude_code and claude_desktop). When your workspace's Managed
+              Machines policy sets a model list for that harness, only the
+              listed models remain, and a preset remains only while every model
+              it routes to is listed. This filter doesn't apply the harness's
+              ranking, caps or Claude Desktop model ID aliases, so returned IDs
+              stay routable. One of: claude_code, claude_desktop, codex. Omit it
+              to get every model you can use.
+            enum:
+              - claude_code
+              - claude_desktop
+              - codex
+            example: codex
+            type: string
       responses:
         '200':
           content:
@@ -262,6 +298,11 @@ paths:
                     description: >-
                       GPT-4 is a large multimodal model that can solve difficult
                       problems with greater accuracy.
+                    endpoints:
+                      - /api/v1/chat/completions
+                      - /api/v1/completions
+                      - /api/v1/messages
+                      - /api/v1/responses
                     expiration_date: null
                     id: openai/gpt-4
                     knowledge_cutoff: null
@@ -880,6 +921,19 @@ components:
             GPT-4 is a large multimodal model that can solve difficult problems
             with greater accuracy.
           type: string
+        endpoints:
+          description: >-
+            Request API paths that serve this model, derived from the same
+            modality and adapter rules the routers use. A model served only
+            through an alpha surface lists only that path.
+          example:
+            - /api/v1/chat/completions
+            - /api/v1/completions
+            - /api/v1/messages
+            - /api/v1/responses
+          items:
+            type: string
+          type: array
         expiration_date:
           description: >-
             The date after which the model may be removed. ISO 8601 date string
@@ -949,6 +1003,7 @@ components:
         - default_parameters
         - supported_voices
         - links
+        - endpoints
       type: object
     ModelAliasTarget:
       description: Concrete model targeted by this tilde-latest alias, when applicable

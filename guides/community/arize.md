@@ -25,7 +25,7 @@ pip install openinference-instrumentation-openai openai arize-otel
 
 Arize's OpenInference auto-instrumentation works with OpenRouter because:
 
-1. **OpenRouter provides a fully OpenAI-API-compatible endpoint** - The `/v1` endpoint mirrors OpenAI's schema
+1. **OpenRouter provides a fully OpenAI-API-compatible endpoint** - The `/v1` endpoint mirrors OpenAI's schema, including the [Responses API](../../api_reference/responses/overview.md)
 2. **Reuse official OpenAI SDKs** - Point the OpenAI client's `base_url` to OpenRouter
 3. **Automatic instrumentation** - OpenInference hooks into OpenAI SDK calls seamlessly
 
@@ -69,16 +69,14 @@ client = openai.OpenAI(
     }
 )
 
-# Make a traced chat completion request
-response = client.chat.completions.create(
+# Make a traced Responses API request
+response = client.responses.create(
     model="meta-llama/llama-3.1-8b-instruct:free",
-    messages=[
-        {"role": "user", "content": "Write a haiku about observability."}
-    ],
+    input="Write a haiku about observability.",
 )
 
 # Print the assistant's reply
-print(response.choices[0].message.content)
+print(response.output_text)
 ```
 
 ### What Gets Traced

@@ -128,6 +128,8 @@ tags:
     name: Workspaces
   - description: Alpha feature endpoints for Decisions requests
     name: alpha.decisions
+  - description: Alpha feature endpoints for Extractions requests
+    name: alpha.extractions
 externalDocs:
   description: OpenRouter Documentation
   url: https://openrouter.ai/docs
@@ -265,6 +267,15 @@ paths:
 components:
   schemas:
     CreatePrivateProviderRequest:
+      description: >-
+        A private provider serves only your organization, so its endpoints are
+        recorded as retaining no prompts, training on none and publishing none,
+        and pass every data-policy filter your account or guardrails apply.
+      example:
+        base_url: https://inference.example.com/v1
+        display_name: Acme
+        name: Acme
+        slug: acme
       properties:
         base_url:
           description: >-
@@ -275,8 +286,6 @@ components:
           example: https://inference.example.com/v1
           minLength: 1
           type: string
-        data_policy:
-          $ref: '#/components/schemas/PrivateProviderDataPolicy'
         display_name:
           description: Defaults to `name`.
           example: Acme
@@ -313,10 +322,6 @@ components:
       example:
         base_url: https://inference.example.com/v1
         created_at: '2026-10-06T12:00:00.000Z'
-        data_policy:
-          prompt_retention_days: null
-          retains_prompts: false
-          training: false
         display_name: Acme
         name: Acme
         slug: acme
@@ -334,31 +339,6 @@ components:
             - 'null'
         created_at:
           type: string
-        data_policy:
-          description: Your declared data policy, or `null` when none was declared.
-          properties:
-            prompt_retention_days:
-              description: >-
-                Days prompts are retained. Must be `null` unless
-                `retains_prompts` is true.
-              maximum: 3650
-              minimum: 1
-              type:
-                - integer
-                - 'null'
-            retains_prompts:
-              description: Whether the provider retains prompts or completions.
-              type: boolean
-            training:
-              description: Whether the provider trains on prompts.
-              type: boolean
-          required:
-            - training
-            - retains_prompts
-            - prompt_retention_days
-          type:
-            - object
-            - 'null'
         display_name:
           description: Human-readable provider name shown in the UI.
           example: Acme
@@ -379,7 +359,6 @@ components:
         - slug
         - display_name
         - base_url
-        - data_policy
         - created_at
       type: object
     BadRequestResponse:
@@ -591,36 +570,6 @@ components:
             - 'null'
       required:
         - error
-      type: object
-    PrivateProviderDataPolicy:
-      description: >-
-        Defaults to training on and retaining prompts, the most conservative
-        declaration. Your own declaration; it applies to your own traffic and
-        OpenRouter does not verify it.
-      example:
-        prompt_retention_days: null
-        retains_prompts: false
-        training: false
-      properties:
-        prompt_retention_days:
-          description: >-
-            Days prompts are retained. Must be `null` unless `retains_prompts`
-            is true.
-          maximum: 3650
-          minimum: 1
-          type:
-            - integer
-            - 'null'
-        retains_prompts:
-          description: Whether the provider retains prompts or completions.
-          type: boolean
-        training:
-          description: Whether the provider trains on prompts.
-          type: boolean
-      required:
-        - training
-        - retains_prompts
-        - prompt_retention_days
       type: object
     BadRequestResponseErrorData:
       description: Error data for BadRequestResponse

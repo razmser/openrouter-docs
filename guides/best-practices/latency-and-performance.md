@@ -42,10 +42,13 @@ When using [model routing](../routing/routers/auto-router.md) or [provider routi
 When building interactive developer tools, coding agents, or low-latency conversational apps, total perceived latency is governed by two separate phases:
 
 * **Time to First Token (TTFT):** Network transit + provider queue wait time + prompt prefill.
-* **Token Throughput (TPS):** Decode and generation streaming speed.
+* **Streaming time:** The time from the first token to the last, set by the provider's decode speed.
 
-```
-Total Latency = TTFT (Network + Queue + Prefill) + (Output Tokens / Generation TPS)
+OpenRouter's **throughput (TPS)** metric includes time to first token. For an individual request, it is output tokens divided by the time from sending the request to the provider until the response ends. Holding decode speed and other conditions constant, a slow first token lowers TPS, and shorter outputs have lower per-request TPS. Model pages, `sort: "throughput"`, and `preferred_min_throughput` use aggregated throughput statistics from eligible completions; very short completions are excluded from those aggregates. The formula below describes an individual request, not a latency prediction obtained by dividing your output length by a displayed provider percentile.
+
+```text theme={null}
+TPS ≈ Output Tokens / (TTFT + Streaming Time)
+Total Latency ≈ TTFT + Streaming Time ≈ Output Tokens / TPS
 ```
 
 Below are drop-in request configurations for common developer experience (DX) optimization scenarios. See the [provider routing guide](../routing/provider-selection.md) for the full API reference on `sort`, `partition`, `preferred_max_latency`, and `preferred_min_throughput`.
@@ -120,7 +123,7 @@ Below are drop-in request configurations for common developer experience (DX) op
 1. **Pass a Consistent `session_id`:** OpenRouter stores a 10-minute best-effort pin directing follow-up turns back to the exact provider endpoint holding the warm KV cache.
 2. **Keep the Prefix Static:** Ensure system prompts, repository maps, and tool definitions appear at the beginning of the prompt and remain byte-identical across turns. Dynamic timestamps or session metadata should be placed at the end.
 3. **Keep the Model Slug Identical:** Changing from `~anthropic/claude-sonnet-latest` to `~anthropic/claude-sonnet-latest:nitro` mid-conversation invalidates the sticky key.
-4. **Avoid Hardcoded `provider.order`:** Setting explicit `provider.order` disables sticky-session reordering and load balancing. Note that [**Auto Exacto**](../routing/auto-exacto.md#interaction-with-prompt-caching) can also change providers mid-session on tool-calling requests, overriding sticky routing when it deprioritizes the pinned provider.
+4. **Avoid Hardcoded `provider.order`:** Setting explicit `provider.order` disables sticky-session reordering and default routing. Note that [**Auto Exacto**](../routing/auto-exacto.md#interaction-with-prompt-caching) can also change providers mid-session on tool-calling requests, overriding sticky routing when it deprioritizes the pinned provider.
 5. **Shrink the Cached Prefix with Tool Search:** If your agent carries 80+ tool definitions, use the [`openrouter:tool_search`](../features/server-tools/tool-search.md) server tool with `defer_loading: true` on all but your most frequently used tools. Only the loaded tools enter the prompt prefix, keeping the cacheable region small and reducing the cost of cold starts when routing changes providers.
 
 ***

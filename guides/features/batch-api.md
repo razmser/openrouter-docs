@@ -8,11 +8,11 @@
 
 The Batch API takes thousands of requests in one call, runs them in the background, and returns every result in one response. Use it for work where nobody waits for the answer, such as evals, classification, data labeling, summarizing a backlog, or embedding a corpus.
 
-> **Use batch when**
+> [card] Use batch when
 >
 > Nobody is waiting for the response, and cost matters more than speed.
 
-> **Use the sync API when**
+> [card] Use the sync API when
 >
 > A user waits for the answer, or you need image or audio output, OpenRouter web search, or Zero Data Retention.
 
@@ -41,13 +41,13 @@ curl https://openrouter.ai/api/v1/batches \
   -H "Authorization: Bearer $OPENROUTER_API_KEY" \
   -H "Content-Type: application/json" \
   -d '{
-    "endpoint": "/v1/chat/completions",
+    "endpoint": "/v1/responses",
     "model": "anthropic/claude-haiku-5.5",
     "requests": [
       {
         "custom_id": "review-1",
         "body": {
-          "messages": [{ "role": "user", "content": "Classify: The fit is perfect." }]
+          "input": "Classify: The fit is perfect."
         }
       }
     ]
@@ -107,22 +107,22 @@ Batch limits generally follow the batch limits of the upstream providers. OpenRo
 | Requests in progress per account | `429` |
 | Requests submitted per minute per account | `429` |
 
-For a `413`, split the batch. For a `429` from an in-progress limit, wait for running batches to finish, then retry. For a `429` from the per-minute limit, wait a minute, then retry.
+For a `413`, split the batch. For a `429`, wait for running batches to finish if you hit an in-progress limit, or one minute if you hit the per-minute limit.
 
 ## Frequently asked questions
 
-> **Which provider runs my batch?**
+> [accordion] Which provider runs my batch?
 >
 > OpenRouter picks the cheapest provider that serves the model in batch mode. If that provider has no capacity, OpenRouter moves the batch to the next one at a similar price. The `provider` field on the batch shows which provider ran it. See [Choose a provider](../../batch-quickstart.md#choose-a-provider).
 
-> **Are results in the same order as my requests?**
+> [accordion] Are results in the same order as my requests?
 >
 > No. Match each result to its request with `custom_id`.
 
-> **How long are results kept?**
+> [accordion] How long are results kept?
 >
 > 30 days after you submit. After that, `GET` returns `410 Gone`. Save the results you need, or delete the batch sooner.
 
-> **Where can I see my batches?**
+> [accordion] Where can I see my batches?
 >
 > In the **Batches** tab of your [logs](https://openrouter.ai/logs), or with `GET /api/v1/batches`.

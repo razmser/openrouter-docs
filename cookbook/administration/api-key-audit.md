@@ -10,7 +10,7 @@ The [Security settings page](../../guides/overview/auth/security-settings.md) sh
 
 ## Prerequisites
 
-* A [Management API key](../../guides/overview/auth/management-api-keys.md). For organizations, only organization admins can create one.
+* An organization-scoped [Management API key](../../guides/overview/auth/management-api-keys.md). For organizations, only organization admins can create one; the script audits every workspace, so a [workspace-scoped](../../guides/overview/auth/management-api-keys.md) key cannot run it.
 * Python 3 with the `requests` package, or any HTTP client.
 
 ## Fields to check

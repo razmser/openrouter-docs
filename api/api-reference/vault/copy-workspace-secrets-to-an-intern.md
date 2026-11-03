@@ -128,6 +128,8 @@ tags:
     name: Workspaces
   - description: Alpha feature endpoints for Decisions requests
     name: alpha.decisions
+  - description: Alpha feature endpoints for Extractions requests
+    name: alpha.extractions
 externalDocs:
   description: OpenRouter Documentation
   url: https://openrouter.ai/docs
@@ -311,7 +313,7 @@ paths:
                       message: Request body too large
               schema:
                 $ref: '#/components/schemas/PayloadTooLargeResponse'
-          description: Payload Too Large - The JSON body exceeds 425000 bytes.
+          description: Payload Too Large - The JSON body exceeds 1309643 bytes.
         '429':
           content:
             application/json:

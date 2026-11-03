@@ -365,7 +365,7 @@ print(result)
 
 ## Web Search in Conversation
 
-Include web search in multi-turn conversations:
+Include web search in multi-turn conversations. Replayed assistant content uses `output_text`, while user content uses `input_text`:
 
 ```typescript title="TypeScript" expandable lines theme={null}
 const response = await fetch('https://openrouter.ai/api/v1/responses', {

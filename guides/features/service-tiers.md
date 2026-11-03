@@ -53,7 +53,7 @@ These values work the same for every provider that sells more than one tier; the
 
 The example below requests the `flex` tier from OpenAI's `gpt-5`; the flex endpoint's pricing is listed on the [model page](https://openrouter.ai/openai/gpt-5).
 
-The `service_tier` parameter is also accepted on the [Responses API](../../api_reference/responses/overview.md) and the [Anthropic Messages API](../../api/api-reference/anthropic-messages/create-a-message.md). See [API Response Differences](#api-response-differences) below for where the response field is returned in each.
+The `service_tier` parameter is also accepted on the [Chat Completions API](../../api/api-reference/chat/create-a-chat-completion.md) and the [Anthropic Messages API](../../api/api-reference/anthropic-messages/create-a-message.md). See [API Response Differences](#api-response-differences) below for where the response field is returned in each.
 
 ```bash title="Anthropic Messages API" lines theme={null}
 curl https://openrouter.ai/api/v1/messages \
@@ -126,7 +126,7 @@ An `ultrafast` request tries ultrafast endpoints first, then priority endpoints,
 
 > [!TIP]
 >
-> Before trying each endpoint, OpenRouter checks that your balance covers the request's maximum output at that endpoint's price. At ultrafast rates, the default output limit can fail that check, so the request falls back to priority. Set `max_tokens` (`max_output_tokens` in the Responses API) to what you actually need so the ultrafast endpoint stays eligible.
+> Before trying each endpoint, OpenRouter checks that your balance covers the request's maximum output at that endpoint's price. At ultrafast rates, the default output limit can fail that check, so the request falls back to priority. Set `max_output_tokens` (`max_tokens` in the Chat Completions API) to what you actually need so the ultrafast endpoint stays eligible.
 
 ### How Routing Works
 
@@ -165,7 +165,7 @@ Requests that don't use any of these never reach a flex, ultrafast, or closed-we
 | `service_tier: "priority"` (or `"fast"`) | Default + priority endpoints | Priority endpoints first, each group sorted by throughput unless `provider.order` or `provider.sort` is set | Falls back to default endpoints |
 | `service_tier: "ultrafast"` | Default + priority + ultrafast endpoints | Ultrafast first, then priority, then default, each group sorted by throughput unless `provider.order` or `provider.sort` is set | Falls back to priority, then default endpoints |
 | `service_tier: "flex"` | Flex endpoints, plus endpoints priced at or below them on both input and output | Flex endpoints first, sorted by price | Only to endpoints priced at or below a flex endpoint on both input and output; otherwise capacity errors surface |
-| `provider.only` with a tier slug | Only the endpoints the slugs name (tier slugs opt in that tier) | Default load-balanced ordering unless a sort is set | Within the named endpoints only |
+| `provider.only` with a tier slug | Only the endpoints the slugs name (tier slugs opt in that tier) | [Default routing](../routing/provider-selection.md#default-routing) unless a sort is set | Within the named endpoints only |
 | `provider.order` with a tier slug | Unchanged (tier slugs opt in the named tier endpoints) | Listed endpoints first, in your order | Falls back to unlisted endpoints unless disabled |
 | `provider.sort` (`"throughput"` / `"price"`) | Unchanged (does not opt into any tier) | Entire pool sorted by the chosen metric | Next endpoint in sorted order |
 
@@ -198,8 +198,8 @@ OpenRouter normalizes provider-equivalent base tier labels, such as Google's `st
 
 The API response includes a `service_tier` field that indicates which capacity tier was actually used to serve your request. The placement of this field varies by API format:
 
-* **Chat Completions API** (`/api/v1/chat/completions`): `service_tier` is returned at the **top level** of the response object, matching OpenAI's native format.
 * **Responses API** (`/api/v1/responses`): `service_tier` is returned at the **top level** of the response object, matching OpenAI's native format.
+* **Chat Completions API** (`/api/v1/chat/completions`): `service_tier` is returned at the **top level** of the response object, matching OpenAI's native format.
 * **Messages API** (`/api/v1/messages`): `service_tier` is returned inside the **`usage` object**, matching Anthropic's native format.
 
 #### `service_tier` value in the Messages API
