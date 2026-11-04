@@ -948,6 +948,9 @@ components:
         ambient:
           additionalProperties: {}
           type: object
+        antdigital:
+          additionalProperties: {}
+          type: object
         anthropic:
           additionalProperties: {}
           type: object
@@ -1221,6 +1224,9 @@ components:
         openai:
           additionalProperties: {}
           type: object
+        parallel:
+          additionalProperties: {}
+          type: object
         parasail:
           additionalProperties: {}
           type: object
@@ -1228,6 +1234,9 @@ components:
           additionalProperties: {}
           type: object
         particle-ai:
+          additionalProperties: {}
+          type: object
+        pearl-research:
           additionalProperties: {}
           type: object
         perceptron:

@@ -171,6 +171,37 @@ TypeSafe marks image input as an early feature whose request format, answers, an
 * Audio costs about 780 input tokens per minute; audio, video, and image tokens all count toward the 65,536-token context window.
 * Only Clef Omni reads audio and video. Clef and Clef Flash reject requests that contain them; other Decisions models see these parts as plain JSON text.
 
+## What each endpoint accepts
+
+Every Decisions endpoint is served by one adapter, chosen by the endpoint's provider. The adapter decides, before anything is sent upstream, which question types it accepts, how an `assets` reference is read, which media parts it lifts out of the top-level `state` array, and whether it reads image parts anywhere else. A request the adapter cannot serve fails with a `400` from OpenRouter, and routing tries another endpoint of the same model when one can serve it. The response `provider` field names the provider that answered.
+
+The table is generated from the adapter registry, so it is the current contract:
+
+| Adapter | Providers served by default | Question types | `assets` references | Media parts read from top-level `state` | Image parts elsewhere in the request | Image limits |
+| - | - | - | - | - | - | - |
+| `AzureDecisionsAdapter` | Azure | `noul`, `choice`, `score` | Resolved to `image_url` parts (next column); whole-string references only | None; rejected with `400` | Rejected with `400`; top-level `state` items only | n/a |
+| `BasetenDecisionsAdapter` | BaseTen | `noul`, `choice`, `score` | Resolved to `image_url` parts (next column); whole-string references only | `image_url` | Rejected with `400`; top-level `state` items only | No shared limit; the request builder and the provider apply their own |
+| `CloudflareDecisionsAdapter` | Cloudflare | `noul`, `choice`, `score` | Resolved to `image_url` parts (next column); whole-string references only | `image_url`, `input_audio`, `video_url` | Rejected with `400`; top-level `state` items only | No shared limit; the request builder and the provider apply their own |
+| `DeepInfraSystemOneDecisionsAdapter` | Set per endpoint by OpenRouter | `noul`, `choice`, `score` | Resolved to `image_url` parts (next column); whole-string references only | `image_url` | Rejected with `400`; top-level `state` items only | No shared limit; the request builder and the provider apply their own |
+| `InceptionDecisionsAdapter` | Inception | `noul`, `choice`, `score` | Resolved to `image_url` parts (next column); whole-string references only | `image_url` | Rejected with `400`; top-level `state` items only | At most 16 images, inline `data:` URLs only; otherwise rejected with `400` |
+| `LiquidDecisionsAdapter` | Liquid | `noul`, `choice`, `score` | Resolved to `image_url` parts (next column); whole-string references only | `image_url` | Rejected with `400`; top-level `state` items only | At most 8 images, inline `data:` URLs only; otherwise rejected with `400` |
+| `MorphDecisionsAdapter` | Morph | `noul`, `choice`, `score` | Resolved to `image_url` parts (next column); whole-string references only | `image_url` | Rejected with `400`; top-level `state` items only | At most 16 images, inline `data:` URLs only; otherwise rejected with `400` |
+| `OpenAIDecisionsAdapter` | OpenAI | `noul`, `choice`, `score` | Resolved to `image_url` parts (next column); whole-string references only | `image_url` | Rejected with `400`; top-level `state` items only | No shared limit; the request builder and the provider apply their own |
+| `PerplexityDecisionsAdapter` | Perplexity | `noul`, `choice`, `score` | Resolved to `image_url` parts (next column); whole-string references only | `image_url` | Rejected with `400`; top-level `state` items only | No shared limit; the request builder and the provider apply their own |
+| `RespanDecisionsAdapter` | Respan | `noul`, `choice`, `score` | Resolved to `image_url` parts (next column); whole-string references only | None; rejected with `400` | Rejected with `400`; top-level `state` items only | n/a |
+| `RespanSystemOneDecisionsAdapter` | Set per endpoint by OpenRouter | `noul`, `choice`, `score` | Resolved to `image_url` parts (next column); whole-string references only | `image_url` | Rejected with `400`; top-level `state` items only | No shared limit; the request builder and the provider apply their own |
+| `ScaleDownDecisionsAdapter` | ScaleDown | `noul`, `choice`, `score` | Resolved to `image_url` parts (next column); whole-string references only | None; rejected with `400` | Rejected with `400`; top-level `state` items only | n/a |
+| `TogetherTevDecisionsAdapter` | Set per endpoint by OpenRouter | `noul`, `choice`, `score` | Resolved to `image_url` parts (next column); whole-string references only | None; rejected with `400` | Rejected with `400`; top-level `state` items only | n/a |
+| `TypeSafeDecisionsAdapter` | Every provider not named in another row | `noul`, `choice`, `score` | Resolved to `image_url` parts (next column); whole-string references only | None; rejected with `400` | Rejected with `400`; top-level `state` items only | n/a |
+| `TypeSafeFirstPartyDecisionsAdapter` | TypeSafe | `noul`, `choice`, `score`, `box` | Sent as written; a reference may sit inside longer text | `image_url` | Read anywhere in `state`, `instructions` and `criteria` | No shared limit; the request builder and the provider apply their own |
+
+* Question types: `noul`, `choice`, and `score` work everywhere. [Box](jev.md#box-questions) questions need a TypeSafe endpoint; Jev 1.13 also rejects them upstream with a `400`.
+* `assets` references: on TypeSafe the map is forwarded as written, so a reference matches anywhere in your text. Everywhere else, each whole-string reference becomes an `image_url` part before the request is sent, and it then has to be accepted where that adapter reads `image_url` parts.
+* Media parts: an `image_url`, `input_audio`, or `video_url` item in the top-level `state` array is lifted into the provider's image, audio, or video input when its type is listed, and rejected otherwise. A malformed part (a typo in `type`, a missing payload) is a `400` on every adapter rather than being sent to the model as text.
+* Image parts elsewhere: only TypeSafe reads image parts nested inside `state` objects or placed in `instructions` or `criteria`; see [Image positions on Jev](#image-positions-on-jev).
+
+By default the adapter an endpoint uses follows from its provider (a Decisions adapter name stored on the provider wins over the default), so an `openai/gpt-6-luna-decisions` request served by OpenAI uses the OpenAI row, and a `typesafe/jev-1.14` request served by TypeSafe uses the TypeSafe row. Models whose endpoints are served by a provider not named in the table (Nace.AI, Upstage, Microsoft, and others) use the `TypeSafeDecisionsAdapter` row.
+
 ## Limits
 
 * **Image size on Clef and Clef Flash.** Workers AI estimates a request's tokens from the base64 length before it processes the image, at about 4 base64 characters per token, and rejects the request with a `413` once that estimate passes its 65,536-token window. Keep each image under about 300 KB before encoding, and resize or recompress larger images. Billing uses the tokens the model actually processes.
@@ -185,4 +216,5 @@ TypeSafe marks image input as an early feature whose request format, answers, an
 
 * [Jev Documentation](jev.md) covers the Decisions primitives (Choice, Noul, Score) in depth.
 * [Decisions API reference](../../api/api-reference/alphadecisions/submit-a-decisions-request.md) has the full request and response schema.
+* [Extractions API](extractions.md) takes the same envelope with a `fields` map in place of `questions` and returns typed fields (text, numbers, dates, lists, estimates, forecasts). Its `state` is text only; images and PDFs go in `assets`, so a multimodal Decisions request is not migrated by renaming `questions` alone.
 * [Decisions Lab](https://openrouter.ai/labs/decisions) runs Decisions models head to head in the browser, such as the [platform race](https://openrouter.ai/labs/decisions/race), where each model steers its own dog up a shared tower. The race sends text options only, not images.

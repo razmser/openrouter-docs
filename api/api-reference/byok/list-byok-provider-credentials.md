@@ -204,6 +204,7 @@ paths:
               - amazon-bedrock/claude-on-aws
               - amazon-nova
               - ambient
+              - antdigital
               - anthropic
               - anthropic/2
               - arcee-ai
@@ -274,9 +275,11 @@ paths:
               - ollama
               - open-inference
               - openai
+              - parallel
               - parasail
               - pareto-alpha
               - particle-ai
+              - pearl-research
               - perceptron
               - perplexity
               - phala
@@ -767,6 +770,7 @@ components:
         - amazon-bedrock/claude-on-aws
         - amazon-nova
         - ambient
+        - antdigital
         - anthropic
         - anthropic/2
         - arcee-ai
@@ -837,9 +841,11 @@ components:
         - ollama
         - open-inference
         - openai
+        - parallel
         - parasail
         - pareto-alpha
         - particle-ai
+        - pearl-research
         - perceptron
         - perplexity
         - phala

@@ -352,10 +352,15 @@ components:
           description: >-
             Images keyed by reference string, as in TypeSafe's API. Write a
             reference wherever the image belongs in `state`, `instructions`, or
-            `criteria`; every asset must be referenced at least once. Jev reads
-            a reference as a whole string value or inside longer text. Other
-            Decisions models read a whole-string reference wherever they read an
-            `image_url` part and reject a reference inside longer text.
+            `criteria`; every asset must be referenced at least once, or the
+            request fails with `400` naming the unused key. TypeSafe Jev
+            endpoints receive `assets` as written and read a reference as a
+            whole string value or inside longer text. Every other provider has
+            each whole-string reference resolved to an `image_url` part before
+            the request is sent, so it is accepted only where that provider
+            reads `image_url` parts (top-level `state` items), and a reference
+            inside longer text fails with `400`. `image_url` parts and `assets`
+            can be mixed in one request.
           type: object
         model:
           type: string
@@ -444,6 +449,8 @@ components:
               type: number
             input_tokens:
               type: integer
+            input_tokens_details:
+              $ref: '#/components/schemas/DecisionsUsageInputTokensDetails'
             output_tokens:
               type: integer
           required:
@@ -889,6 +896,11 @@ components:
         - object
         - 'null'
     DecisionsBoxQuestion:
+      description: >-
+        Finds one target in an image in `state` and answers with one bounding
+        box (`top`, `bottom`, `left`, `right` as fractions of the image). Served
+        by TypeSafe Jev endpoints only; every other provider rejects a box
+        question with `400` before anything is sent upstream.
       properties:
         instructions:
           anyOf:
@@ -897,7 +909,9 @@ components:
               type: object
             - items: {}
               type: array
-          description: A plain string, or a JSON object or array of structured guidance.
+          description: >-
+            A description of the target to find, naming the image in `state` it
+            is in; not a command, and no `criteria`.
         type:
           enum:
             - box
@@ -1128,6 +1142,14 @@ components:
       required:
         - type
         - score
+      type: object
+    DecisionsUsageInputTokensDetails:
+      description: Of `input_tokens`, those the provider served from its prompt cache.
+      properties:
+        cached_tokens:
+          type: integer
+      required:
+        - cached_tokens
       type: object
     BadRequestResponseErrorData:
       description: Error data for BadRequestResponse
@@ -1365,6 +1387,7 @@ components:
         - AionLabs
         - Alibaba
         - Ambient
+        - Ant Digital
         - Baidu
         - Amazon Bedrock
         - Amazon Nova
@@ -1437,9 +1460,11 @@ components:
         - Ollama
         - OpenAI
         - OpenInference
+        - Parallel
         - Parasail
         - ParetoAlpha
         - Particle AI
+        - Pearl Research
         - Poolside
         - PrimaLabs
         - PrimeIntellect
@@ -1515,6 +1540,9 @@ components:
           additionalProperties: {}
           type: object
         ambient:
+          additionalProperties: {}
+          type: object
+        antdigital:
           additionalProperties: {}
           type: object
         anthropic:
@@ -1790,6 +1818,9 @@ components:
         openai:
           additionalProperties: {}
           type: object
+        parallel:
+          additionalProperties: {}
+          type: object
         parasail:
           additionalProperties: {}
           type: object
@@ -1797,6 +1828,9 @@ components:
           additionalProperties: {}
           type: object
         particle-ai:
+          additionalProperties: {}
+          type: object
+        pearl-research:
           additionalProperties: {}
           type: object
         perceptron:

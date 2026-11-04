@@ -162,9 +162,11 @@ paths:
             upstream model ID, declared ZDR or region, pricing, or declared
             parameters) is rejected with 422 `idempotency_key_reused`. Declared
             parameters are compared as a set, so a retry that reorders or
-            repeats a name replays the endpoint. `activate` and
-            `max_completion_tokens` are not compared, and later edits to the
-            endpoint do not affect the comparison.
+            repeats a name replays the endpoint. `activate` and `settings` are
+            not compared, and later edits to the endpoint do not affect the
+            comparison. `settings` is still validated before the replay, so a
+            retry with invalid settings returns 400 `settings_invalid` instead
+            of the endpoint.
           in: header
           name: idempotency-key
           required: false
@@ -178,8 +180,10 @@ paths:
               declared parameters) is rejected with 422
               `idempotency_key_reused`. Declared parameters are compared as a
               set, so a retry that reorders or repeats a name replays the
-              endpoint. `activate` and `max_completion_tokens` are not compared,
-              and later edits to the endpoint do not affect the comparison.
+              endpoint. `activate` and `settings` are not compared, and later
+              edits to the endpoint do not affect the comparison. `settings` is
+              still validated before the replay, so a retry with invalid
+              settings returns 400 `settings_invalid` instead of the endpoint.
             example: wayfair-gpt-4o-eastus-2026-09
             maxLength: 255
             minLength: 1
@@ -339,16 +343,6 @@ components:
           type:
             - boolean
             - 'null'
-        max_completion_tokens:
-          description: >-
-            Cap on completion tokens per request. Requests asking for more skip
-            this endpoint, and the default output length stays within it. When
-            omitted, the cap is copied from the public endpoint for the same
-            model and provider, if there is one.
-          example: 131072
-          maximum: 2147483647
-          minimum: 1
-          type: integer
         model_permaslug:
           description: Permanent slug of the model this endpoint serves.
           example: openai/gpt-4o-2024-08-06

@@ -4,7 +4,7 @@
 
 # Create a private provider
 
-> Create a private, bring-your-own-key provider visible only to your organization. Use its slug as `provider_slug` when creating private endpoints. Requires both the private endpoints and the private providers entitlements. [Management key](../../../guides/overview/auth/management-api-keys.md) required.
+> Create a private, bring-your-own-key provider visible only to your organization. Use its slug as `provider_slug` when creating private endpoints. Requires the private endpoints entitlement. [Management key](../../../guides/overview/auth/management-api-keys.md) required.
 
 
 
@@ -142,8 +142,7 @@ paths:
       description: >-
         Create a private, bring-your-own-key provider visible only to your
         organization. Use its slug as `provider_slug` when creating private
-        endpoints. Requires both the private endpoints and the private providers
-        entitlements. [Management
+        endpoints. Requires the private endpoints entitlement. [Management
         key](/docs/guides/overview/auth/management-api-keys) required.
       operationId: createPrivateProvider
       requestBody:
