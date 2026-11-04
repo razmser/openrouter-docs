@@ -253,7 +253,9 @@ Single-value limits (`max_context_length`, `max_prompt_length`, output `max_leng
 
 #### Output modalities
 
-Valid output modality types are: `text`, `image`, `video`, `speech`, `transcription`, `embeddings`, `rerank`, `audio`.
+Valid output modality types are: `text`, `image`, `video`, `speech`, `transcription`, `embeddings`, `rerank`, `decisions`, `audio`.
+
+The [Extractions API](../community/extractions.md) (`POST /api/alpha/extractions`) is not an output modality and has no feed field. OpenRouter assigns it per endpoint, as a companion to the endpoint's existing `text` or `decisions` entry, when the upstream route answers field-extraction requests. Keep the feed entry for the route the model already serves and ask your OpenRouter contact to enable the Extractions route for it.
 
 ```json title="text" lines theme={null}
 {
@@ -359,6 +361,16 @@ Valid output modality types are: `text`, `image`, `video`, `speech`, `transcript
 }
 ```
 
+```json title="decisions" lines theme={null}
+{
+  "type": "decisions",
+  "max_choice_options": 255,
+  "max_score_levels": 10,
+  "supported_parameters": {},
+  "pricing": [{ "type": "completion", "unit": "token", "cost_usd": "0.0000004" }]
+}
+```
+
 ```json title="audio" lines theme={null}
 {
   "type": "audio",
@@ -376,9 +388,10 @@ Each output modality entry carries:
 | Field | Required | Description |
 | - | - | - |
 | `type` | Yes | The modality discriminator |
-| `supported_parameters` | Yes | Descriptor map of the generation parameters this modality accepts. Applied for `text` outputs. Accepted on every other output modality, but OpenRouter does not ingest them there yet |
+| `supported_parameters` | Yes | Descriptor map of the generation parameters this modality accepts. Applied for `text`, `image`, `video`, `speech` and `transcription`; accepted but not ingested on `embeddings`, `rerank`, `decisions` and `audio` |
 | `streaming` | No | Whether this output supports native SSE streaming (not applicable to `embeddings` / `rerank`) |
 | `max_length` | No | Maximum output length (`text` only) |
+| `max_choice_options`, `max_score_levels` | No | Option and level ceilings per Choice and Score question; positive integers (`decisions` only) |
 | `pricing` | No | Prices billed against this output (see [Pricing](#3-pricing)) |
 | `capacity` | No | Declared throughput limits for this output (see [Capacity](#4-capacity)) |
 | `passthrough_parameters` | No | Provider-specific parameters scoped to this output |
@@ -967,7 +980,8 @@ OpenRouter polls your feed on every monitor run, but it does not act on every fi
 | `input_modalities[].supported_parameters` | Ignored | Only `output_modalities[].supported_parameters` on the text output is read. |
 | `input_modalities[].streaming` | Ignored | |
 | `output_modalities[].max_length` | Applied | Text output only. Becomes the endpoint's maximum completion length. Held if set manually. Non-token units are ignored with validator warning `unsupported_limit_unit`. |
-| `output_modalities[].supported_parameters` | Applied | Text output only. Plain sampling parameters are applied; parameters OpenRouter verifies by test (`tools`, `tool_choice`, `response_format`, `structured_outputs`, `logprobs`, and the rest of the capability suite) are never enabled from the feed, only by the capability tests passing. Held if set manually. On non-text outputs the list is not ingested yet. |
+| `output_modalities[].max_choice_options`, `output_modalities[].max_score_levels` | Reviewed | Decisions output only. Become the endpoint features of the same name (ceiling baseline probes). Applied when a new endpoint is staged, held for review afterwards. |
+| `output_modalities[].supported_parameters` | Applied | Text output: Plain sampling parameters are applied; parameters OpenRouter verifies by test (`tools`, `tool_choice`, `response_format`, `structured_outputs`, `logprobs`, and the rest of the capability suite) are never enabled from the feed, only by the capability tests passing. Held if set manually. Image, video, speech, and transcription outputs: known keys are read into the media capability columns (applied on staging, reviewed afterwards). Other outputs: not ingested, warning `unsupported_modality_parameters`. |
 | `pricing`, `input_modalities[].pricing`, `output_modalities[].pricing` | Applied, reviewed | Token and request priced entries, cache entries, and the documented `overrides` are read. A price change to an entry OpenRouter already prices and a first-time price for an unpriced endpoint apply automatically, and cache-discount entries are added or removed automatically when they look like a discount; any other new or removed entry waits for review, pricing changes on `:free` variants always wait for review, and a batch endpoint's prices apply automatically only from your batch document or `pricing.batch` object. Entries OpenRouter cannot represent yet (for example search pricing, TTL cache tiers, or non-token units) are ignored with validator warnings `unsupported_pricing_entry`, `unsupported_cache_qualifier`, or `unsupported_override`. |
 | `input_modalities[].capacity` | Applied | Text input only, and only `type: prompt`, `unit: token`, `per: minute`, which becomes the endpoint's tokens-per-minute capacity. Held if set manually. Every other entry is ignored with validator warning `unsupported_capacity_entry`. |
 | `capacity`, `output_modalities[].capacity` | Ignored | Validator warning `unsupported_capacity_entry`. |

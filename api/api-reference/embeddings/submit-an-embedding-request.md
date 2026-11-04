@@ -1155,6 +1155,7 @@ components:
         - AionLabs
         - Alibaba
         - Ambient
+        - Ant Digital
         - Baidu
         - Amazon Bedrock
         - Amazon Nova
@@ -1227,9 +1228,11 @@ components:
         - Ollama
         - OpenAI
         - OpenInference
+        - Parallel
         - Parasail
         - ParetoAlpha
         - Particle AI
+        - Pearl Research
         - Poolside
         - PrimaLabs
         - PrimeIntellect
@@ -1305,6 +1308,9 @@ components:
           additionalProperties: {}
           type: object
         ambient:
+          additionalProperties: {}
+          type: object
+        antdigital:
           additionalProperties: {}
           type: object
         anthropic:
@@ -1580,6 +1586,9 @@ components:
         openai:
           additionalProperties: {}
           type: object
+        parallel:
+          additionalProperties: {}
+          type: object
         parasail:
           additionalProperties: {}
           type: object
@@ -1587,6 +1596,9 @@ components:
           additionalProperties: {}
           type: object
         particle-ai:
+          additionalProperties: {}
+          type: object
+        pearl-research:
           additionalProperties: {}
           type: object
         perceptron:

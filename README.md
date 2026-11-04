@@ -2,7 +2,7 @@
 
 Markdown mirror of [OpenRouter's documentation](https://openrouter.ai/docs/quickstart).
 
-Contains **524 pages**, discovered from the [page index](https://openrouter.ai/docs/llms.txt) and [supplementary index](https://openrouter.ai/docs/sitemap.xml).
+Contains **523 pages**, discovered from the [page index](https://openrouter.ai/docs/llms.txt) and [supplementary index](https://openrouter.ai/docs/sitemap.xml).
 
 Links to mirrored pages point to local files; external links and images remain online. Code examples and OpenAPI blocks are preserved.
 
@@ -127,8 +127,6 @@ Generated files are replaced by the next successful sync. Original content belon
 - [Enable a private endpoint](api/api-reference/private-endpoints/enable-a-private-endpoint.md)
 - [Get a private endpoint](api/api-reference/private-endpoints/get-a-private-endpoint.md)
 - [List private endpoints](api/api-reference/private-endpoints/list-private-endpoints.md)
-- [Set private endpoint pricing (deprecated)](api/api-reference/private-endpoints/set-private-endpoint-pricing-deprecated.md)
-- [Set private endpoint supported parameters (deprecated)](api/api-reference/private-endpoints/set-private-endpoint-supported-parameters-deprecated.md)
 - [Update a private endpoint](api/api-reference/private-endpoints/update-a-private-endpoint.md)
 - [Validate a draft private endpoint](api/api-reference/private-endpoints/validate-a-draft-private-endpoint.md)
 - [Create a private provider](api/api-reference/private-providers/create-a-private-provider.md)
@@ -390,6 +388,7 @@ Generated files are replaced by the next successful sync. Original content belon
 - [Arize AX](guides/community/arize.md)
 - [Awesome OpenRouter](guides/community/awesome-openrouter.md)
 - [Effect AI SDK](guides/community/effect-ai-sdk.md)
+- [Extractions API: Typed Fields from Text, Images, and PDFs](guides/community/extractions.md)
 - [Frameworks and Integrations Overview](guides/community/frameworks-and-integrations-overview.md)
 - [Infisical](guides/community/infisical.md)
 - [Jev Tutorial: Make Your First Decision Call on OpenRouter](guides/community/jev-tutorial.md)

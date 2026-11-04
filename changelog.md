@@ -14,7 +14,7 @@ Entries on this page are generated automatically from [OpenAPI specification](ap
 
 * `UpdatePrivateEndpointRequest`: required `upstream_model_id` property removedNo action needed
   * Used by [`PATCH /private-endpoints/{id}`](api/api-reference/private-endpoints/update-a-private-endpoint.md)
-  * **Migration: no action.** `PATCH /private-endpoints/{id}` is now a merge patch over every field an owner controls (`pricing`, `declared_parameters`, `settings`, and the draft-only upstream fields), so no single field is required and only the keys you send change. A request that still sends `upstream_model_id` is accepted on a draft endpoint; on an active endpoint it returns 409 `already_active`, as before. `PUT /private-endpoints/{id}/pricing` and `PUT /private-endpoints/{id}/parameters` keep working as deprecated aliases of this route.
+  * **Migration: no action.** `PATCH /private-endpoints/{id}` is now a merge patch over every field an owner controls (`pricing`, `declared_parameters`, `settings`, and the draft-only upstream fields), so no single field is required and only the keys you send change. A request that still sends `upstream_model_id` is accepted on a draft endpoint; on an active endpoint it returns 409 `already_active`, as before. `PUT /private-endpoints/{id}/pricing` and `PUT /private-endpoints/{id}/parameters` were deprecated aliases of this route and have since been removed; send `pricing` or `declared_parameters` to `PATCH /private-endpoints/{id}` instead.
 
 ## New endpoints
 
@@ -27,8 +27,8 @@ Entries on this page are generated automatically from [OpenAPI specification](ap
 ## Modified endpoints
 
 * [`PATCH /private-endpoints/{id}`](api/api-reference/private-endpoints/update-a-private-endpoint.md): description updated
-* [`PUT /private-endpoints/{id}/parameters`](api/api-reference/private-endpoints/set-private-endpoint-supported-parameters-deprecated.md): deprecated property\_added; description updated
-* [`PUT /private-endpoints/{id}/pricing`](api/api-reference/private-endpoints/set-private-endpoint-pricing-deprecated.md): deprecated property\_added; description updated
+* [`PUT /private-endpoints/{id}/parameters`](https://openrouter.ai/docs/api/api-reference/private-endpoints/set-private-endpoint-supported-parameters-deprecated): deprecated property\_added; description updated
+* [`PUT /private-endpoints/{id}/pricing`](https://openrouter.ai/docs/api/api-reference/private-endpoints/set-private-endpoint-pricing-deprecated): deprecated property\_added; description updated
 * [`GET /byok`](api/api-reference/byok/list-byok-provider-credentials.md): parameter `provider` updated
 * [`POST /keys`](api/api-reference/api-keys/create-a-new-api-key.md): description updated
 
@@ -43,8 +43,8 @@ Entries on this page are generated automatically from [OpenAPI specification](ap
   * [`GET /private-endpoints/{id}`](api/api-reference/private-endpoints/get-a-private-endpoint.md)
   * [`PATCH /private-endpoints/{id}`](api/api-reference/private-endpoints/update-a-private-endpoint.md)
   * [`POST /private-endpoints`](api/api-reference/private-endpoints/create-a-private-endpoint.md)
-  * [`PUT /private-endpoints/{id}/parameters`](api/api-reference/private-endpoints/set-private-endpoint-supported-parameters-deprecated.md)
-  * [`PUT /private-endpoints/{id}/pricing`](api/api-reference/private-endpoints/set-private-endpoint-pricing-deprecated.md)
+  * [`PUT /private-endpoints/{id}/parameters`](https://openrouter.ai/docs/api/api-reference/private-endpoints/set-private-endpoint-supported-parameters-deprecated)
+  * [`PUT /private-endpoints/{id}/pricing`](https://openrouter.ai/docs/api/api-reference/private-endpoints/set-private-endpoint-pricing-deprecated)
 * `PrivateEndpointReasoningReturnMechanism`
 
   **5 endpoints using this schema**
@@ -52,16 +52,16 @@ Entries on this page are generated automatically from [OpenAPI specification](ap
   * [`GET /private-endpoints/{id}`](api/api-reference/private-endpoints/get-a-private-endpoint.md)
   * [`PATCH /private-endpoints/{id}`](api/api-reference/private-endpoints/update-a-private-endpoint.md)
   * [`POST /private-endpoints`](api/api-reference/private-endpoints/create-a-private-endpoint.md)
-  * [`PUT /private-endpoints/{id}/parameters`](api/api-reference/private-endpoints/set-private-endpoint-supported-parameters-deprecated.md)
-  * [`PUT /private-endpoints/{id}/pricing`](api/api-reference/private-endpoints/set-private-endpoint-pricing-deprecated.md)
+  * [`PUT /private-endpoints/{id}/parameters`](https://openrouter.ai/docs/api/api-reference/private-endpoints/set-private-endpoint-supported-parameters-deprecated)
+  * [`PUT /private-endpoints/{id}/pricing`](https://openrouter.ai/docs/api/api-reference/private-endpoints/set-private-endpoint-pricing-deprecated)
 * `PrivateEndpointSettings`
 
   **4 endpoints using this schema**
 
   * [`GET /private-endpoints/{id}`](api/api-reference/private-endpoints/get-a-private-endpoint.md)
   * [`PATCH /private-endpoints/{id}`](api/api-reference/private-endpoints/update-a-private-endpoint.md)
-  * [`PUT /private-endpoints/{id}/parameters`](api/api-reference/private-endpoints/set-private-endpoint-supported-parameters-deprecated.md)
-  * [`PUT /private-endpoints/{id}/pricing`](api/api-reference/private-endpoints/set-private-endpoint-pricing-deprecated.md)
+  * [`PUT /private-endpoints/{id}/parameters`](https://openrouter.ai/docs/api/api-reference/private-endpoints/set-private-endpoint-supported-parameters-deprecated)
+  * [`PUT /private-endpoints/{id}/pricing`](https://openrouter.ai/docs/api/api-reference/private-endpoints/set-private-endpoint-pricing-deprecated)
 * `PrivateProvider`
 
   **4 endpoints using this schema**
@@ -87,8 +87,8 @@ Entries on this page are generated automatically from [OpenAPI specification](ap
 
   * [`GET /private-endpoints/{id}`](api/api-reference/private-endpoints/get-a-private-endpoint.md)
   * [`PATCH /private-endpoints/{id}`](api/api-reference/private-endpoints/update-a-private-endpoint.md)
-  * [`PUT /private-endpoints/{id}/parameters`](api/api-reference/private-endpoints/set-private-endpoint-supported-parameters-deprecated.md)
-  * [`PUT /private-endpoints/{id}/pricing`](api/api-reference/private-endpoints/set-private-endpoint-pricing-deprecated.md)
+  * [`PUT /private-endpoints/{id}/parameters`](https://openrouter.ai/docs/api/api-reference/private-endpoints/set-private-endpoint-supported-parameters-deprecated)
+  * [`PUT /private-endpoints/{id}/pricing`](https://openrouter.ai/docs/api/api-reference/private-endpoints/set-private-endpoint-pricing-deprecated)
 * `UpdatePrivateEndpointRequest`:
   * description updated
   * example property\_added

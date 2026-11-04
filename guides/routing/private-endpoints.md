@@ -8,7 +8,7 @@
 
 > [!NOTE]
 >
-> Private Endpoints are an add-on to the Enterprise Plan. To enable them for your organization, talk to your OpenRouter account representative or visit [openrouter.ai/enterprise/form](https://openrouter.ai/enterprise/form). Once enabled, organization admins add and manage endpoints from [Settings > Private Endpoints](https://openrouter.ai/settings/private-endpoints). Private providers are a separate add-on enabled the same way; without it, endpoints can only run under providers in the OpenRouter catalog.
+> Private Endpoints are an add-on to the Enterprise Plan. To enable them for your organization, talk to your OpenRouter account representative or visit [openrouter.ai/enterprise/form](https://openrouter.ai/enterprise/form). Once enabled, organization admins add and manage endpoints from [Settings > Private Endpoints](https://openrouter.ai/settings/private-endpoints). Private providers are included with Private Endpoints, so endpoints can run under your own private providers as well as providers in the OpenRouter catalog.
 
 A private endpoint routes a catalog model to your own dedicated or fine-tuned deployment of it, alongside the public providers you already use. OpenRouter adds your deployment to that model's provider list rather than creating a new model, so your team keeps calling the same slug through the same API.
 
@@ -73,7 +73,7 @@ If validation fails, the draft is kept and returned with the failed checks. Fix 
 
 Send an `Idempotency-Key` header to make create retry-safe. Repeating a request with the same key returns the endpoint the first request created; reusing the key with a different body returns `422 idempotency_key_reused`.
 
-After activation, `PUT /api/v1/private-endpoints/{id}/pricing` updates the reported rates, and `/disable` and `/enable` stop or resume routing. `DELETE /api/v1/private-endpoints/{id}` removes an endpoint and stops routing to it. Pass `draft_only=true` to refuse the delete (409) if the endpoint has ever been activated.
+After activation, `PATCH /api/v1/private-endpoints/{id}` with `pricing` updates the reported rates, and `/disable` and `/enable` stop or resume routing. `DELETE /api/v1/private-endpoints/{id}` removes an endpoint and stops routing to it. Pass `draft_only=true` to refuse the delete (409) if the endpoint has ever been activated.
 
 ### Terraform
 

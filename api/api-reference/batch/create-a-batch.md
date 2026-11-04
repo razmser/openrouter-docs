@@ -2104,6 +2104,7 @@ components:
         - AionLabs
         - Alibaba
         - Ambient
+        - Ant Digital
         - Baidu
         - Amazon Bedrock
         - Amazon Nova
@@ -2176,9 +2177,11 @@ components:
         - Ollama
         - OpenAI
         - OpenInference
+        - Parallel
         - Parasail
         - ParetoAlpha
         - Particle AI
+        - Pearl Research
         - Poolside
         - PrimaLabs
         - PrimeIntellect
@@ -2239,6 +2242,7 @@ components:
         - bedrock-xai-responses-v1
         - xai-responses-v1
         - meta-responses-v1
+        - openrouter-stealth-v1
         - anthropic-claude-v1
         - google-gemini-v1
         - null
