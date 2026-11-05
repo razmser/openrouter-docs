@@ -338,9 +338,24 @@ components:
           type: string
         provider:
           description: >-
-            Provider configuration: data policy routing preferences (`zdr`,
-            `data_collection`) and provider-specific passthrough options
+            Provider configuration: provider routing preferences (`order`,
+            `only`, `ignore`, `allow_fallbacks`), data policy routing
+            preferences (`zdr`, `data_collection`) and provider-specific
+            passthrough options
           properties:
+            allow_fallbacks:
+              description: >
+                Whether to allow backup providers to serve requests
+
+                - true: (default) when the primary provider (or your custom
+                providers in "order") is unavailable, use the next best
+                provider.
+
+                - false: use only the primary/custom provider, and return the
+                upstream error if it's unavailable.
+              type:
+                - boolean
+                - 'null'
             data_collection:
               description: >-
                 Data collection setting. If no available model provider meets
@@ -360,8 +375,55 @@ components:
               type:
                 - string
                 - 'null'
+            ignore:
+              description: >-
+                List of provider slugs to ignore. If provided, this list is
+                merged with your account-wide ignored provider settings for this
+                request.
+              example:
+                - openai
+                - anthropic
+              items:
+                anyOf:
+                  - $ref: '#/components/schemas/ProviderName'
+                  - type: string
+              type:
+                - array
+                - 'null'
+            only:
+              description: >-
+                List of provider slugs to allow. If provided, this list is
+                merged with your account-wide allowed provider settings for this
+                request.
+              example:
+                - openai
+                - anthropic
+              items:
+                anyOf:
+                  - $ref: '#/components/schemas/ProviderName'
+                  - type: string
+              type:
+                - array
+                - 'null'
             options:
               $ref: '#/components/schemas/ProviderOptions'
+            order:
+              description: >-
+                An ordered list of provider slugs. The router will attempt to
+                use the first provider in the subset of this list that supports
+                your requested model, and fall back to the next if it is
+                unavailable. If no providers are available, the request will
+                fail with an error message.
+              example:
+                - openai
+                - anthropic
+              items:
+                anyOf:
+                  - $ref: '#/components/schemas/ProviderName'
+                  - type: string
+              type:
+                - array
+                - 'null'
             zdr:
               description: >-
                 Whether to restrict routing to only ZDR (Zero Data Retention)
@@ -689,10 +751,140 @@ components:
           input_audio: '#/components/schemas/SpeechInputReferenceAudio'
           text: '#/components/schemas/SpeechInputReferenceText'
         propertyName: type
+      example:
+        input_audio:
+          data: data:audio/wav;base64,UklGRuQXDABXQVZF...
+        type: input_audio
       oneOf:
         - $ref: '#/components/schemas/SpeechInputReferenceAudio'
         - $ref: '#/components/schemas/SpeechInputReferenceText'
         - $ref: '#/components/schemas/SpeechInputReferenceImage'
+    ProviderName:
+      enum:
+        - Modal
+        - AkashML
+        - AI21
+        - AionLabs
+        - Alibaba
+        - Ambient
+        - Ant Digital
+        - Baidu
+        - Amazon Bedrock
+        - Amazon Nova
+        - Anthropic
+        - Arcee AI
+        - AssemblyAI
+        - AtlasCloud
+        - Avian
+        - Azure
+        - BaseTen
+        - BytePlus
+        - Black Forest Labs
+        - Cerebras
+        - Chutes
+        - Cirrascale
+        - Claude Platform on AWS
+        - Clarifai
+        - Cloudflare
+        - Cohere
+        - CoreWeave
+        - Cosine
+        - Crucible
+        - Crusoe
+        - Darkbloom
+        - Databricks
+        - Decart
+        - Deepgram
+        - DeepInfra
+        - DeepSeek
+        - DekaLLM
+        - DigitalOcean
+        - ElevenLabs
+        - Featherless
+        - Fireworks
+        - Fish Audio
+        - Friendli
+        - GMICloud
+        - Google
+        - Google AI Studio
+        - Groq
+        - HeyGen
+        - Inception
+        - Inceptron
+        - InferenceNet
+        - Ionstream
+        - Infermatic
+        - Io Net
+        - Inferact vLLM
+        - Inflection
+        - KT
+        - Liquid
+        - Makora
+        - Mara
+        - Mancer 2
+        - Meta
+        - Minimax
+        - ModelRun
+        - Mistral
+        - Modular
+        - Moonshot AI
+        - Morph
+        - VoyageAI by MongoDB
+        - TypeSafe
+        - Near AI
+        - Nebius
+        - Nex AGI
+        - NextBit
+        - Novita
+        - Nvidia
+        - Ollama
+        - OpenAI
+        - OpenInference
+        - Parallel
+        - Parasail
+        - ParetoAlpha
+        - Particle AI
+        - Pearl Research
+        - Poolside
+        - PrimaLabs
+        - PrimeIntellect
+        - Perceptron
+        - Perplexity
+        - Phala
+        - Recraft
+        - Recursive
+        - Reka
+        - Relace
+        - Respan
+        - Sail Research
+        - Sakana AI
+        - SambaNova
+        - ScaleDown
+        - Seed
+        - SiliconFlow
+        - Sourceful
+        - StepFun
+        - Stealth
+        - StreamLake
+        - Switchpoint
+        - Tencent
+        - Tenstorrent
+        - Thinking Machines
+        - Together
+        - Unbiased
+        - Upstage
+        - Venice
+        - Wafer
+        - WandB
+        - Quiver
+        - Krea
+        - Runway
+        - Xiaomi
+        - xAI
+        - Z.AI
+        - FakeProvider
+      example: OpenAI
+      type: string
     ProviderOptions:
       description: >-
         Provider-specific options keyed by provider slug. The provider segment
@@ -1501,6 +1693,8 @@ components:
       type: object
     SpeechInputReferenceImageInput:
       description: Reference image input object
+      example:
+        url: data:image/png;base64,iVBORw0KGgo...
       properties:
         url:
           description: >-
@@ -1516,6 +1710,8 @@ components:
       type: object
     SpeechInputReferenceAudioInput:
       description: Reference audio input object
+      example:
+        data: data:audio/wav;base64,UklGRuQXDABXQVZF...
       properties:
         data:
           description: >-

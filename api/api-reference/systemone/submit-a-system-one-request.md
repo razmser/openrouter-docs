@@ -418,16 +418,24 @@ components:
       type: object
     DecisionsResponse:
       properties:
+        annotations:
+          description: >-
+            Sources for the request as a whole, when the provider returns them.
+            Not attributed to individual answers.
+          items:
+            $ref: '#/components/schemas/DecisionsUrlCitationAnnotation'
+          type: array
         answers:
           additionalProperties:
             description: >-
               A Decisions answer using a boolean, choice, score, or image
-              bounding-box evaluation.
+              bounding-box evaluation, or a refusal of that question.
             discriminator:
               mapping:
                 box: '#/components/schemas/DecisionsBoxAnswer'
                 choice: '#/components/schemas/DecisionsChoiceAnswer'
                 noul: '#/components/schemas/DecisionsNoulAnswer'
+                refusal: '#/components/schemas/DecisionsRefusalAnswer'
                 score: '#/components/schemas/DecisionsScoreAnswer'
               propertyName: type
             oneOf:
@@ -435,6 +443,7 @@ components:
               - $ref: '#/components/schemas/DecisionsChoiceAnswer'
               - $ref: '#/components/schemas/DecisionsScoreAnswer'
               - $ref: '#/components/schemas/DecisionsBoxAnswer'
+              - $ref: '#/components/schemas/DecisionsRefusalAnswer'
           type: object
         id:
           type: string
@@ -1046,6 +1055,30 @@ components:
         trace_name:
           type: string
       type: object
+    DecisionsUrlCitationAnnotation:
+      description: >-
+        A web source the provider used for this request. Applies to the whole
+        request, not to a specific answer.
+      properties:
+        type:
+          enum:
+            - url_citation
+          type: string
+        url_citation:
+          properties:
+            content:
+              type: string
+            title:
+              type: string
+            url:
+              type: string
+          required:
+            - url
+          type: object
+      required:
+        - type
+        - url_citation
+      type: object
     DecisionsBoxAnswer:
       properties:
         box:
@@ -1111,6 +1144,19 @@ components:
       required:
         - type
         - noul
+      type: object
+    DecisionsRefusalAnswer:
+      description: >-
+        The provider declined to answer this question; no value or probabilities
+        are returned. Other questions in the same request can still have
+        answers.
+      properties:
+        type:
+          enum:
+            - refusal
+          type: string
+      required:
+        - type
       type: object
     DecisionsScoreAnswer:
       properties:

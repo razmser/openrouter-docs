@@ -509,8 +509,10 @@ components:
         type: range
       properties:
         max:
+          format: double
           type: number
         min:
+          format: double
           type: number
         type:
           enum:

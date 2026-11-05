@@ -354,8 +354,40 @@ components:
           example: A serene mountain landscape at sunset
           type: string
         provider:
-          description: Provider-specific passthrough configuration
+          description: >-
+            Provider routing preferences (order, only, ignore) and
+            provider-specific passthrough configuration
           properties:
+            ignore:
+              description: >-
+                List of provider slugs to ignore. If provided, this list is
+                merged with your account-wide ignored provider settings for this
+                request.
+              example:
+                - openai
+                - anthropic
+              items:
+                anyOf:
+                  - $ref: '#/components/schemas/ProviderName'
+                  - type: string
+              type:
+                - array
+                - 'null'
+            only:
+              description: >-
+                List of provider slugs to allow. If provided, this list is
+                merged with your account-wide allowed provider settings for this
+                request.
+              example:
+                - openai
+                - anthropic
+              items:
+                anyOf:
+                  - $ref: '#/components/schemas/ProviderName'
+                  - type: string
+              type:
+                - array
+                - 'null'
             options:
               allOf:
                 - $ref: '#/components/schemas/ProviderOptions'
@@ -363,6 +395,23 @@ components:
                     google-vertex:
                       output_config:
                         effort: low
+            order:
+              description: >-
+                An ordered list of provider slugs. The router will attempt to
+                use the first provider in the subset of this list that supports
+                your requested model, and fall back to the next if it is
+                unavailable. If no providers are available, the request will
+                fail with an error message.
+              example:
+                - openai
+                - anthropic
+              items:
+                anyOf:
+                  - $ref: '#/components/schemas/ProviderName'
+                  - type: string
+              type:
+                - array
+                - 'null'
           type: object
         resolution:
           description: Resolution of the generated video
@@ -409,6 +458,7 @@ components:
             not supported by video generation models.
           example: 2
           exclusiveMinimum: true
+          format: double
           minimum: 0
           type: number
         user:
@@ -733,6 +783,132 @@ components:
         - $ref: '#/components/schemas/ContentPartImage'
         - $ref: '#/components/schemas/ContentPartAudio'
         - $ref: '#/components/schemas/ContentPartVideo'
+    ProviderName:
+      enum:
+        - Modal
+        - AkashML
+        - AI21
+        - AionLabs
+        - Alibaba
+        - Ambient
+        - Ant Digital
+        - Baidu
+        - Amazon Bedrock
+        - Amazon Nova
+        - Anthropic
+        - Arcee AI
+        - AssemblyAI
+        - AtlasCloud
+        - Avian
+        - Azure
+        - BaseTen
+        - BytePlus
+        - Black Forest Labs
+        - Cerebras
+        - Chutes
+        - Cirrascale
+        - Claude Platform on AWS
+        - Clarifai
+        - Cloudflare
+        - Cohere
+        - CoreWeave
+        - Cosine
+        - Crucible
+        - Crusoe
+        - Darkbloom
+        - Databricks
+        - Decart
+        - Deepgram
+        - DeepInfra
+        - DeepSeek
+        - DekaLLM
+        - DigitalOcean
+        - ElevenLabs
+        - Featherless
+        - Fireworks
+        - Fish Audio
+        - Friendli
+        - GMICloud
+        - Google
+        - Google AI Studio
+        - Groq
+        - HeyGen
+        - Inception
+        - Inceptron
+        - InferenceNet
+        - Ionstream
+        - Infermatic
+        - Io Net
+        - Inferact vLLM
+        - Inflection
+        - KT
+        - Liquid
+        - Makora
+        - Mara
+        - Mancer 2
+        - Meta
+        - Minimax
+        - ModelRun
+        - Mistral
+        - Modular
+        - Moonshot AI
+        - Morph
+        - VoyageAI by MongoDB
+        - TypeSafe
+        - Near AI
+        - Nebius
+        - Nex AGI
+        - NextBit
+        - Novita
+        - Nvidia
+        - Ollama
+        - OpenAI
+        - OpenInference
+        - Parallel
+        - Parasail
+        - ParetoAlpha
+        - Particle AI
+        - Pearl Research
+        - Poolside
+        - PrimaLabs
+        - PrimeIntellect
+        - Perceptron
+        - Perplexity
+        - Phala
+        - Recraft
+        - Recursive
+        - Reka
+        - Relace
+        - Respan
+        - Sail Research
+        - Sakana AI
+        - SambaNova
+        - ScaleDown
+        - Seed
+        - SiliconFlow
+        - Sourceful
+        - StepFun
+        - Stealth
+        - StreamLake
+        - Switchpoint
+        - Tencent
+        - Tenstorrent
+        - Thinking Machines
+        - Together
+        - Unbiased
+        - Upstage
+        - Venice
+        - Wafer
+        - WandB
+        - Quiver
+        - Krea
+        - Runway
+        - Xiaomi
+        - xAI
+        - Z.AI
+        - FakeProvider
+      example: OpenAI
+      type: string
     ProviderOptions:
       description: >-
         Provider-specific options keyed by provider slug. The provider segment

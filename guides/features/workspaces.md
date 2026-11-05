@@ -111,7 +111,7 @@ Historical activity, logs, and billing records are kept. Your other workspaces a
 
 > [accordion] Can management keys be used across workspaces?
 >
-> Organization-scoped management keys operate at the account level and can be used to perform administrative actions across all workspaces via the [management API](../../api/api-reference/workspaces/list-workspaces.md). [Workspace-scoped](../overview/auth/management-api-keys.md) management keys only act inside their own workspace on `/api/v1/keys`.
+> Yes. Management keys operate at the account level and can be used to perform administrative actions across all workspaces via the [management API](../../api/api-reference/workspaces/list-workspaces.md).
 
 > [accordion] Can workspaces have different data policies?
 >

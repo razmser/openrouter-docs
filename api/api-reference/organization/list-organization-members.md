@@ -207,10 +207,17 @@ paths:
                             - string
                             - 'null'
                         role:
-                          description: Role of the member in the organization
+                          description: >-
+                            Role of the member in the organization. `org:viewer`
+                            is coming soon and not yet available. Once launched,
+                            it has read-only organization access: it can view
+                            organization settings, billing and workspaces but
+                            not change them. Workspace roles can still grant
+                            write access in specific workspaces.
                           enum:
                             - org:admin
                             - org:member
+                            - org:viewer
                           example: org:member
                           type: string
                       required:

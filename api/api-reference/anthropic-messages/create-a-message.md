@@ -893,6 +893,28 @@ components:
                         - 'null'
                     cost_details:
                       $ref: '#/components/schemas/CostDetails'
+                    deferred_tools_details:
+                      properties:
+                        completion_tokens:
+                          description: Completion tokens summed over every upstream call
+                          type: integer
+                        prompt_tokens:
+                          description: Prompt tokens summed over every upstream call
+                          type: integer
+                        total_tokens:
+                          description: Sum of the above two fields
+                          type: integer
+                        turns:
+                          description: Upstream model calls the run made
+                          exclusiveMinimum: true
+                          minimum: 0
+                          type: integer
+                      required:
+                        - turns
+                        - prompt_tokens
+                        - completion_tokens
+                        - total_tokens
+                      type: object
                     is_byok:
                       type: boolean
                     iterations:
@@ -1127,11 +1149,15 @@ components:
       properties:
         profile:
           description: >-
-            Loading profile. Only `portable` is available in this release:
-            OpenRouter serves deferral with router-built search and call
-            wrappers on any model.
+            Loading profile. `portable` serves the `defer_loading` tools with
+            router-built search and call wrappers on any model and keeps the
+            catalog fixed. `universal` defers every wrappable tool behind the
+            same wrappers so the provider-facing tool list never changes, and
+            rebuilds the catalog from each request so tools can be added or
+            removed mid-conversation.
           enum:
             - portable
+            - universal
           type: string
         protocol:
           enum:

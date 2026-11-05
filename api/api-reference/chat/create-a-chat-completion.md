@@ -1203,11 +1203,15 @@ components:
       properties:
         profile:
           description: >-
-            Loading profile. Only `portable` is available in this release:
-            OpenRouter serves deferral with router-built search and call
-            wrappers on any model.
+            Loading profile. `portable` serves the `defer_loading` tools with
+            router-built search and call wrappers on any model and keeps the
+            catalog fixed. `universal` defers every wrappable tool behind the
+            same wrappers so the provider-facing tool list never changes, and
+            rebuilds the catalog from each request so tools can be added or
+            removed mid-conversation.
           enum:
             - portable
+            - universal
           type: string
         protocol:
           enum:
@@ -2806,6 +2810,8 @@ components:
             - 'null'
         cost_details:
           $ref: '#/components/schemas/CostDetails'
+        deferred_tools_details:
+          $ref: '#/components/schemas/DeferredToolsDetails'
         is_byok:
           description: Whether a request was made using a Bring Your Own Key configuration
           type: boolean
@@ -4901,6 +4907,36 @@ components:
       type:
         - object
         - 'null'
+    DeferredToolsDetails:
+      description: >-
+        Totals across every upstream model call of a deferred-tools run. The
+        native usage fields report only the final call; cost covers every call.
+      example:
+        completion_tokens: 180
+        prompt_tokens: 2400
+        total_tokens: 2580
+        turns: 2
+      properties:
+        completion_tokens:
+          description: Completion tokens summed over every upstream call
+          type: integer
+        prompt_tokens:
+          description: Prompt tokens summed over every upstream call
+          type: integer
+        total_tokens:
+          description: Sum of the above two fields
+          type: integer
+        turns:
+          description: Upstream model calls the run made
+          exclusiveMinimum: true
+          minimum: 0
+          type: integer
+      required:
+        - turns
+        - prompt_tokens
+        - completion_tokens
+        - total_tokens
+      type: object
     ServerToolUseDetails:
       description: Usage for server-side tool execution (e.g., web search)
       example:

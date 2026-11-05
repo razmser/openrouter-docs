@@ -571,6 +571,7 @@ components:
         - perplexity
         - phala
         - poolside
+        - primalabs
         - primeintellect
         - quiver
         - recraft

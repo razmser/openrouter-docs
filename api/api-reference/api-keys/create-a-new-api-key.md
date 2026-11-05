@@ -168,7 +168,8 @@ paths:
                   description: >-
                     Optional user ID of the key creator. Only meaningful for
                     organization-owned keys where a specific member is creating
-                    the key.
+                    the key. A workspace-scoped management key may only name a
+                    member of its own workspace.
                   example: user_2dHFtVWx2n56w6HkM0000000000
                   minLength: 1
                   type:

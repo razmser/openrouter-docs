@@ -284,6 +284,7 @@ paths:
               - perplexity
               - phala
               - poolside
+              - primalabs
               - primeintellect
               - quiver
               - recraft
@@ -850,6 +851,7 @@ components:
         - perplexity
         - phala
         - poolside
+        - primalabs
         - primeintellect
         - quiver
         - recraft

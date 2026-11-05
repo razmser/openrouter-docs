@@ -832,11 +832,15 @@ components:
       properties:
         profile:
           description: >-
-            Loading profile. Only `portable` is available in this release:
-            OpenRouter serves deferral with router-built search and call
-            wrappers on any model.
+            Loading profile. `portable` serves the `defer_loading` tools with
+            router-built search and call wrappers on any model and keeps the
+            catalog fixed. `universal` defers every wrappable tool behind the
+            same wrappers so the provider-facing tool list never changes, and
+            rebuilds the catalog from each request so tools can be added or
+            removed mid-conversation.
           enum:
             - portable
+            - universal
           type: string
         protocol:
           enum:
