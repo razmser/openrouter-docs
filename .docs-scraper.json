@@ -332,6 +332,7 @@
     "cookbook/coding-agents/codex-cli.md": "https://openrouter.ai/docs/cookbook/coding-agents/codex-cli.md",
     "cookbook/coding-agents/codex-desktop.md": "https://openrouter.ai/docs/cookbook/coding-agents/codex-desktop.md",
     "cookbook/coding-agents/cursor-integration.md": "https://openrouter.ai/docs/cookbook/coding-agents/cursor-integration.md",
+    "cookbook/coding-agents/deploy-coding-agents.md": "https://openrouter.ai/docs/cookbook/coding-agents/deploy-coding-agents.md",
     "cookbook/coding-agents/hermes-integration.md": "https://openrouter.ai/docs/cookbook/coding-agents/hermes-integration.md",
     "cookbook/coding-agents/junie.md": "https://openrouter.ai/docs/cookbook/coding-agents/junie.md",
     "cookbook/coding-agents/mcp-servers.md": "https://openrouter.ai/docs/cookbook/coding-agents/mcp-servers.md",

@@ -130,10 +130,6 @@ The `id` field should be the exact model identifier that OpenRouter will use whe
 
 All `cost_usd` fields are in string format to avoid floating point precision issues, and must be in USD.
 
-> [!NOTE]
->
-> The [previous flat model document format](https://openrouter.ai/docs/guides/providers/integration-legacy) (a flat `pricing` object with `pricing.overrides`, `supported_sampling_parameters`, `supported_features`, and `capacity_tpm`) remains supported for existing integrations, but use the format above for all new integrations.
-
 Valid quantization values are: `int4`, `int8`, `fp4`, `mxfp4`, `nvfp4`, `fp6`, `fp8`, `mxfp8`, `fp16`, `bf16`, `fp32`. Use `null` (or omit the field) when the precision is undeclared.
 
 The optional `tokenizer` field names the tokenizer family the model uses (for example `GPT`, `Claude`, `Llama3`, `Gemini`). Like `quantization`, it describes the model as a whole, so it lives at the root rather than under any modality. Omit it when unknown.
@@ -244,6 +240,18 @@ Common constraint fields:
 * `references` (image, file), an integer descriptor for how many reference items a request may include, e.g. `{ "type": "integer", "min": 0, "max": 10 }`
 * `max_context_length` (text), the total context window: input and output tokens combined
 * `max_prompt_length` (text), the maximum input length alone; declare it only when it differs from the context window
+
+#### Endpoints that do not accept media input
+
+Your endpoint does not have to accept every input modality the OpenRouter model accepts. To list a text-only endpoint for a model that also takes images, keep the `image` entry in `input_modalities` and declare an empty `sources` list:
+
+```json lines theme={null}
+{ "type": "image", "supported_inputs": { "sources": { "type": "enum", "values": [] } } }
+```
+
+A declared `sources` list is exhaustive: each source it names is turned on for your endpoint and every other source is turned off, so an empty list turns off both URL and inline (base64) input. Requests that carry images are then routed to other providers, and the baseline tests skip the image input checks for your endpoint, so image support is not a launch requirement. List only `base64` or only `url` to accept one source. Video and file input work the same way.
+
+Removing the `image` entry instead does not turn image input off: modality types are detection-only, and an endpoint with no `sources` declaration keeps accepting both sources. A `sources` change is applied when a new endpoint is staged and is held for review on an endpoint OpenRouter already serves (see [Field reference and compatibility](#field-reference-and-compatibility)).
 
 Single-value limits (`max_context_length`, `max_prompt_length`, output `max_length`, `max_duration_seconds`, `max_content_size_bytes`) are objects with a `value` and an optional `unit` (`second`, `pixel`, `byte`, `token`, `character`):
 
@@ -496,10 +504,6 @@ The `when` predicate is either a parameter-to-condition map or a composition usi
 
 Override entries are evaluated in order. Among matching predicates, the later entry wins. This makes a resolution-by-steps price matrix expressible without OR nesting. Predicates may reference parameters declared by the owning modality or request-derived quantities such as prompt token count.
 
-> [!NOTE]
->
-> Override predicates are parameter-based. Time-dependent pricing is not an override, because time is not a request parameter. See [Time-of-Day Pricing](#time-of-day-pricing).
-
 #### Cache pricing
 
 Cache prices are first-class SKUs in a modality's `pricing` array. Multiple entries may have the same `type` when their qualifier fields differ. The effective identity of an entry is its `type` together with its qualifiers, so two `cache_write` entries with different TTLs are separate SKUs. Two entries with the same effective identity are invalid.
@@ -508,7 +512,7 @@ Cache prices are first-class SKUs in a modality's `pricing` array. Multiple entr
 
 Cache pricing is input-side. Prompt caching stores and re-reads input tokens, so cache entries belong on input modality entries and never on outputs. The word `write` describes writing to the prompt cache, not generated output.
 
-Cache prices are base entries, not overrides. Overrides remain reserved for request-conditional pricing on generation parameters. Cache SKUs are enumerable so billing and product surfaces can display them directly. A provider may take TTL as a request parameter and the price is still modeled as a cache SKU rather than an override. A cache entry may itself carry overrides for genuinely request-conditional pricing, such as a long-context tier raising the cache write rate, but never for TTL differences.
+Cache prices are base entries, not overrides. Overrides remain reserved for request-conditional pricing on generation parameters. A provider may take TTL as a request parameter and the price is still modeled as a cache SKU rather than an override. A cache entry may itself carry overrides for genuinely request-conditional pricing, such as a long-context tier raising the cache write rate, but never for TTL differences.
 
 Cache pricing is per modality, so an image input modality can carry its own cache entries at its own rates. A text input modality offering two explicit write lifetimes alongside provider-initiated caching looks like this:
 
@@ -527,8 +531,6 @@ Cache pricing is per modality, so an image input modality can carry its own cach
   ]
 }
 ```
-
-The zero cost on the implicit entry is intentional. It represents a genuinely free SKU that the provider exposes as a distinct line. Omit a SKU when the provider does not bill it.
 
 #### Time-of-day pricing
 
@@ -606,7 +608,7 @@ A capacity entry's identity is its `type`, `unit`, and `per` window together, an
 
 Limits declared in different scopes are independent buckets that all apply simultaneously: a per-modality token limit and a root request limit each constrain traffic on their own dimension, and a request is admitted only when every declared limit it consumes against has headroom. Declaring a limit in one scope does not relax or replace a limit in another.
 
-This reuse distinguishes prompt, cached prompt, and output capacity without adding separate fields for each dimension. Capacity and pricing remain separate sibling arrays because a modality may declare limits without prices, or prices without declared limits. Units are constrained per scope, exactly as pricing units are: an entry accepts any unit its scope (input, output, or root) can bill in, so image capacity is expressed as images per minute (or megapixels per minute for resolution-scaled throughput), video capacity as output seconds per minute, and a mismatched pairing (such as a `prompt` capacity per `search`) is rejected at validation time. Validation is not narrowed to the owning modality's own billing unit, which is why an image output modality may carry a `concurrency` entry in `request` units.
+Units are constrained per scope, exactly as pricing units are: an entry accepts any unit its scope (input, output, or root) can bill in, so image capacity is expressed as images per minute (or megapixels per minute for resolution-scaled throughput), video capacity as output seconds per minute, and a mismatched pairing (such as a `prompt` capacity per `search`) is rejected at validation time. Validation is not narrowed to the owning modality's own billing unit, which is why an image output modality may carry a `concurrency` entry in `request` units.
 
 Here is a capacity declaration covering text input, text output, image output, and request scope:
 
@@ -694,7 +696,7 @@ Declare where each endpoint physically serves from:
 * `datacenters[].country_code`: ISO 3166-1 alpha-2 country code.
 * `datacenters[].region`: provider-scoped region identifier (e.g. `us-east-1`).
 * For providers OpenRouter routes to a dedicated in-region host, these fields set the region of a **new** endpoint: an entry whose declarations resolve to one data region (`deployment_region` `US`, or `datacenters` all in the US, and both agreeing when both are present) is staged pinned to that region, and an entry that later declares a different region OpenRouter also has a host for retires the existing endpoint and stages a new one under the new region. An endpoint already pinned to a region is never re-pinned in place, and a declaration that does not resolve (`global`, mixed regions, or the two fields disagreeing) changes nothing. For every other provider both fields are **detection-only**: OpenRouter compares them against the region configured for the endpoint and flags a mismatch, or an endpoint with no configured region, for review, without changing routing or the region OpenRouter displays.
-* `deployment_region`: optional provider-scoped label for the model deployment's region or scope (e.g. `US`, `global`). Use it when the same underlying model is deployed to more than one region under distinct model `id`s, so each document declares which regional deployment it describes. It complements `datacenters`, which lists the physical serving locations. OpenRouter does not bill on it, so use consistent values across your documents and coordinate the vocabulary with us before publishing.
+* `deployment_region`: optional provider-scoped label for the deployment's region or scope (e.g. `US`, `global`). A model deployed to more than one region gets one document per region under the same `id`, each with its own `deployment_region`. Where OpenRouter routes to a dedicated in-region host, each document updates the endpoint pinned to its region and the `global` (or region-less) document updates the unpinned one; a region OpenRouter has no host for reads as global, so two such documents are duplicates and neither is published. It complements `datacenters`, the physical serving locations. OpenRouter does not bill on it; coordinate the vocabulary with us before publishing.
 
 ### 7. Operational fields
 
@@ -954,7 +956,7 @@ The schema only gains optional fields. Existing fields are never removed, rename
 
 #### Field reference and compatibility
 
-OpenRouter polls your feed on every monitor run, but it does not act on every field the schema accepts. This section lists what each field does once a document validates, which aliases win in the legacy format, which fields are read only once, which retired fields are still tolerated, how modalities interact with auto-staging, and where the legacy format stands. Each field has one of five statuses:
+OpenRouter polls your feed on every monitor run, but it does not act on every field the schema accepts. Each field has one of five statuses:
 
 * **Applied**: written to your endpoint automatically on every poll. Rows marked *held if set manually* are the exception: when OpenRouter staff set that field by hand, a feed change to it waits in the monitor inbox for review instead of being applied.
 * **Reviewed**: the change is placed in the monitor inbox and takes effect only when OpenRouter staff apply it.
@@ -1076,8 +1078,6 @@ Uptime and routing's reliability signal count the same setup and server errors. 
 * **Degraded status**: 80-94% uptime → receives lower priority
 * **Down status**: \<80% uptime → only used as fallback
 
-This system ensures traffic automatically flows to the most reliable providers while giving temporary issues time to resolve.
-
 ### 11. Performance metrics
 
 OpenRouter publicly tracks TTFT (time to first token) and throughput (tokens/second) for all providers on each model page.
@@ -1086,7 +1086,7 @@ Throughput is calculated as: **output tokens ÷ generation time**, where generat
 
 To keep your metrics competitive:
 
-* Return early 429s if under load, rather than queueing requests
+* Return early 429s if under load, rather than queueing requests. If the load comes from one account that is abusing your endpoint, [report it](#abuse-reports) so OpenRouter can act on the account instead of your endpoint rate limiting everyone
 * Stream tokens as soon as they're available
 * If processing takes time (e.g. reasoning models), send SSE comments as keep-alives so we know you're still working on the request. Otherwise we may cancel with a fetch timeout and fallback to another provider
 
@@ -1136,9 +1136,7 @@ To maximize the tool-calling traffic routed to your endpoints:
 
 * **Maintain high tool-call reliability** -- ensure your endpoint returns well-formed tool call responses consistently.
 * **Optimize throughput** -- minimize queueing and stream tokens as soon as they are available (see [Performance Metrics](#11-performance-metrics) above).
-* **Return early 429s under load** -- rather than queueing and degrading throughput, return rate limit errors so we can retry with another provider and your metrics stay healthy.
-
-For the full user-facing documentation on Auto Exacto, see [Auto Exacto](../routing/auto-exacto.md).
+* **Return early 429s under load** -- rather than queueing and degrading throughput, return rate limit errors so we can retry with another provider and your metrics stay healthy. If the load is one abusive account, [report it](#abuse-reports) rather than only rate limiting it.
 
 ### 13. Provider API
 
@@ -1197,6 +1195,41 @@ curl -X PATCH https://openrouter.ai/api/v1/providers/my-provider \
   -H "Authorization: Bearer $OPENROUTER_API_KEY" \
   -H "Content-Type: application/json" \
   -d '{ "status_page_url": "https://status.my-provider.com" }'
+```
+
+#### Abuse reports
+
+`POST /api/v1/providers/{provider_slug}/abuse-reports` reports accounts whose traffic to your endpoints breaks OpenRouter's acceptable use policy, including abusive traffic patterns such as automated probing or flooding (`abuse_type: "misuse_of_access/abusive_traffic"`). One report describes one account, and each report must identify the OpenRouter account in one of two ways:
+
+* `requests`: the `x-request-id` (or `request-id`) values your endpoint returned to OpenRouter for the abusive calls. Include each request's `timestamp` if you have it; it narrows the lookup. This works for every provider.
+* `user_id`: the hashed user id OpenRouter sent on the request. Only providers whose data policy requires user ids receive this, so most providers should use `requests`.
+
+OpenRouter resolves the request ids to the account on its side; you don't need to know who the user is. Add any context in `notes`. Reports are reviewed by OpenRouter's trust & safety team and flag the resolved account for review; they do not trigger automatic enforcement, and they do not change how OpenRouter routes traffic to you. The flag counts one per provider per UTC day, so repeated reports about the same account on the same day are linked to it but do not raise it further. `report_ref` is optional (e.g. your internal case id). If you send a report with the same `report_ref` again, OpenRouter returns the original receipt instead of filing a duplicate. The response contains one receipt `id` per report, in submission order.
+
+```bash theme={null}
+curl -X POST https://openrouter.ai/api/v1/providers/my-provider/abuse-reports \
+  -H "Authorization: Bearer $OPENROUTER_API_KEY" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "reports": [{
+      "abuse_type": "misuse_of_access/abusive_traffic",
+      "requests": [
+        { "request_id": "req_8f3a1c", "timestamp": "2026-10-22T14:05:11Z" },
+        { "request_id": "req_8f3a1d", "timestamp": "2026-10-22T14:05:12Z" }
+      ],
+      "model": "my-model-70b",
+      "notes": "~50 rps of single-token prompts from one caller",
+      "report_ref": "case-1042"
+    }]
+  }'
+```
+
+The response returns one receipt per report, in submission order. Resending a report with the same `report_ref` returns the same `id`:
+
+```json theme={null}
+{
+  "results": [{ "id": "0198c3f1-7b9a-7c31-a2d4-5e6f7a8b9c0d", "status": "received" }]
+}
 ```
 
 #### Team members

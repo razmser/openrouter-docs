@@ -815,11 +815,15 @@ components:
       properties:
         profile:
           description: >-
-            Loading profile. Only `portable` is available in this release:
-            OpenRouter serves deferral with router-built search and call
-            wrappers on any model.
+            Loading profile. `portable` serves the `defer_loading` tools with
+            router-built search and call wrappers on any model and keeps the
+            catalog fixed. `universal` defers every wrappable tool behind the
+            same wrappers so the provider-facing tool list never changes, and
+            rebuilds the catalog from each request so tools can be added or
+            removed mid-conversation.
           enum:
             - portable
+            - universal
           type: string
         protocol:
           enum:
@@ -949,7 +953,6 @@ components:
               - $ref: '#/components/schemas/OutputToolSearchServerToolItem'
               - $ref: '#/components/schemas/OutputMemoryServerToolItem'
               - $ref: '#/components/schemas/OutputArmorBlockedItem'
-              - $ref: '#/components/schemas/OutputMcpServerToolItem'
               - $ref: '#/components/schemas/OutputSearchModelsServerToolItem'
               - $ref: '#/components/schemas/OutputFusionServerToolItem'
               - $ref: '#/components/schemas/OutputAdvisorServerToolItem'
@@ -966,6 +969,7 @@ components:
               - $ref: '#/components/schemas/McpCallItem'
               - $ref: '#/components/schemas/CustomToolCallItem'
               - $ref: '#/components/schemas/CustomToolCallOutputItem'
+              - $ref: '#/components/schemas/CompactionTriggerItem'
               - $ref: '#/components/schemas/CompactionItem'
               - $ref: '#/components/schemas/ContextCompactionItem'
               - $ref: '#/components/schemas/ItemReferenceItem'
@@ -4184,12 +4188,48 @@ components:
         status: completed
         type: openrouter:tool_search
       properties:
+        arguments:
+          description: >-
+            The JSON arguments of the model call, verbatim. Replaying the item
+            reuses them.
+          example: '{"query":"weather tools"}'
+          type: string
+        call_id:
+          description: >-
+            The ID of the model call that ran the search. Replaying the item
+            reuses it.
+          example: call_search_1
+          type: string
+        catalog_index:
+          description: >-
+            The deferred-tool index the router showed the model with a
+            pre-search, listing tool sources and names. Replaying the item shows
+            the same index.
+          example: |-
+            Deferred tools, found with tool_search and called with tool_exec:
+            Sources: mcp__sentry (12).
+          type: string
         error:
           description: >-
             The error message when the tool call failed before producing a
             result. Set together with `status: 'failed'`; absent on a successful
             call.
           example: Tool execution failed
+          type: string
+        format:
+          description: >-
+            How the model saw the matches. `compact` means each tool by name,
+            description, and input shape, plus a call example. Replaying the
+            item renders the same result.
+          enum:
+            - compact
+          example: compact
+          type: string
+        hint:
+          description: The guidance the model got when the search matched no tools.
+          example: >-
+            No tools matched. Search again with other keywords, or load tools by
+            exact name with "select:Name1,Name2".
           type: string
         id:
           type: string
@@ -4213,6 +4253,16 @@ components:
           type: string
         status:
           $ref: '#/components/schemas/FailableToolCallStatus'
+        turn_call_ids:
+          description: >-
+            The IDs of every tool call in the model response that ran the
+            search, in order. Replaying the item keeps those calls in one turn.
+          example:
+            - call_search_1
+            - call_exec_1
+          items:
+            type: string
+          type: array
         type:
           enum:
             - openrouter:tool_search
@@ -4310,31 +4360,6 @@ components:
         - arguments
         - reason
         - explanation
-      type: object
-    OutputMcpServerToolItem:
-      description: An openrouter:mcp server tool output item
-      example:
-        id: mcp_tmp_abc123
-        serverLabel: my-server
-        status: completed
-        toolName: get_data
-        type: openrouter:mcp
-      properties:
-        id:
-          type: string
-        serverLabel:
-          type: string
-        status:
-          $ref: '#/components/schemas/ToolCallStatus'
-        toolName:
-          type: string
-        type:
-          enum:
-            - openrouter:mcp
-          type: string
-      required:
-        - status
-        - type
       type: object
     OutputSearchModelsServerToolItem:
       description: An openrouter:experimental__search_models server tool output item
@@ -5192,6 +5217,18 @@ components:
         id: ctco-abc123
         output: patch applied successfully
         type: custom_tool_call_output
+    CompactionTriggerItem:
+      description: Asks the model to compact the preceding input into a compaction item
+      example:
+        type: compaction_trigger
+      properties:
+        type:
+          enum:
+            - compaction_trigger
+          type: string
+      required:
+        - type
+      type: object
     CompactionItem:
       additionalProperties: {}
       description: A context compaction marker with encrypted summary

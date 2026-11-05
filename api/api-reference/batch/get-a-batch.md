@@ -2339,6 +2339,7 @@ components:
               mapping:
                 apply_patch_call: '#/components/schemas/OutputItemApplyPatchCall'
                 code_interpreter_call: '#/components/schemas/OutputItemCodeInterpreterCall'
+                compaction: '#/components/schemas/OutputItemCompaction'
                 custom_tool_call: '#/components/schemas/OutputItemCustomToolCall'
                 file_search_call: '#/components/schemas/OutputItemFileSearchCall'
                 function_call: '#/components/schemas/OutputItemFunctionCall'
@@ -2357,6 +2358,7 @@ components:
               - $ref: '#/components/schemas/OutputItemImageGenerationCall'
               - $ref: '#/components/schemas/OutputItemApplyPatchCall'
               - $ref: '#/components/schemas/OutputItemCodeInterpreterCall'
+              - $ref: '#/components/schemas/OutputItemCompaction'
           type: array
         output_text:
           type: string
@@ -2567,11 +2569,14 @@ components:
         mapping:
           apply_patch_call: '#/components/schemas/OutputApplyPatchCallItem'
           code_interpreter_call: '#/components/schemas/OutputCodeInterpreterCallItem'
+          compaction: '#/components/schemas/OutputCompactionItem'
           computer_call: '#/components/schemas/OutputComputerCallItem'
           custom_tool_call: '#/components/schemas/OutputCustomToolCallItem'
           file_search_call: '#/components/schemas/OutputFileSearchCallItem'
           function_call: '#/components/schemas/OutputFunctionCallItem'
           image_generation_call: '#/components/schemas/OutputImageGenerationCallItem'
+          mcp_call: '#/components/schemas/McpCallItem'
+          mcp_list_tools: '#/components/schemas/McpListToolsItem'
           message: '#/components/schemas/OutputMessageItem'
           openrouter:advisor: '#/components/schemas/OutputAdvisorServerToolItem'
           openrouter:apply_patch: '#/components/schemas/OutputApplyPatchServerToolItem'
@@ -2585,7 +2590,6 @@ components:
           openrouter:files: '#/components/schemas/OutputFilesServerToolItem'
           openrouter:fusion: '#/components/schemas/OutputFusionServerToolItem'
           openrouter:image_generation: '#/components/schemas/OutputImageGenerationServerToolItem'
-          openrouter:mcp: '#/components/schemas/OutputMcpServerToolItem'
           openrouter:memory: '#/components/schemas/OutputMemoryServerToolItem'
           openrouter:shell: '#/components/schemas/OutputShellServerToolItem'
           openrouter:subagent: '#/components/schemas/OutputSubagentServerToolItem'
@@ -2626,13 +2630,15 @@ components:
         - $ref: '#/components/schemas/OutputTextEditorServerToolItem'
         - $ref: '#/components/schemas/OutputApplyPatchServerToolItem'
         - $ref: '#/components/schemas/OutputApplyPatchCallItem'
+        - $ref: '#/components/schemas/OutputCompactionItem'
         - $ref: '#/components/schemas/OutputShellCallItem'
         - $ref: '#/components/schemas/OutputShellCallOutputItem'
         - $ref: '#/components/schemas/OutputShellServerToolItem'
         - $ref: '#/components/schemas/OutputWebFetchServerToolItem'
         - $ref: '#/components/schemas/OutputToolSearchServerToolItem'
         - $ref: '#/components/schemas/OutputMemoryServerToolItem'
-        - $ref: '#/components/schemas/OutputMcpServerToolItem'
+        - $ref: '#/components/schemas/McpListToolsItem'
+        - $ref: '#/components/schemas/McpCallItem'
         - $ref: '#/components/schemas/OutputSearchModelsServerToolItem'
         - $ref: '#/components/schemas/OutputFusionServerToolItem'
         - $ref: '#/components/schemas/OutputAdvisorServerToolItem'
@@ -2700,6 +2706,8 @@ components:
                     - upstream_inference_input_cost
                     - upstream_inference_output_cost
                   type: object
+                deferred_tools_details:
+                  $ref: '#/components/schemas/DeferredToolsDetails'
                 is_byok:
                   description: >-
                     Whether a request was made using a Bring Your Own Key
@@ -3676,6 +3684,27 @@ components:
         - type
         - id
         - status
+      type: object
+    OutputItemCompaction:
+      example:
+        encrypted_content: enc_abc123...
+        id: cmp_abc123
+        type: compaction
+      properties:
+        created_by:
+          type: string
+        encrypted_content:
+          type: string
+        id:
+          type: string
+        type:
+          enum:
+            - compaction
+          type: string
+      required:
+        - type
+        - id
+        - encrypted_content
       type: object
     OutputItemCustomToolCall:
       example:
@@ -4906,6 +4935,30 @@ components:
             type: logs
         status: completed
         type: code_interpreter_call
+    OutputCompactionItem:
+      description: >-
+        A compaction output item carrying the encrypted summary of the compacted
+        conversation. Emitted in reply to a `compaction_trigger` input item.
+      example:
+        encrypted_content: enc_abc123...
+        id: cmp_abc123
+        type: compaction
+      properties:
+        created_by:
+          type: string
+        encrypted_content:
+          type: string
+        id:
+          type: string
+        type:
+          enum:
+            - compaction
+          type: string
+      required:
+        - type
+        - id
+        - encrypted_content
+      type: object
     OutputComputerCallItem:
       example:
         action:
@@ -5070,6 +5123,92 @@ components:
         result: null
         status: completed
         type: image_generation_call
+    McpCallItem:
+      description: An MCP tool call with its output or error
+      example:
+        arguments: '{"query":"SELECT * FROM users"}'
+        id: mcp-call-abc123
+        name: query_database
+        output: '[{"id":1,"name":"Alice"}]'
+        server_label: database-server
+        type: mcp_call
+      properties:
+        arguments:
+          type: string
+        error:
+          $ref: '#/components/schemas/McpToolCallError'
+        id:
+          type: string
+        name:
+          type: string
+        output:
+          type:
+            - string
+            - 'null'
+        server_label:
+          type: string
+        type:
+          enum:
+            - mcp_call
+          type: string
+      required:
+        - type
+        - id
+        - name
+        - arguments
+        - server_label
+      type: object
+    McpListToolsItem:
+      description: List of available MCP tools from a server
+      example:
+        id: mcp-list-abc123
+        server_label: database-server
+        tools:
+          - description: Execute a database query
+            input_schema:
+              properties:
+                query:
+                  type: string
+              type: object
+            name: query_database
+        type: mcp_list_tools
+      properties:
+        error:
+          type:
+            - string
+            - 'null'
+        id:
+          type: string
+        server_label:
+          type: string
+        tools:
+          items:
+            properties:
+              annotations: {}
+              description:
+                type:
+                  - string
+                  - 'null'
+              input_schema:
+                additionalProperties: {}
+                type: object
+              name:
+                type: string
+            required:
+              - name
+              - input_schema
+            type: object
+          type: array
+        type:
+          enum:
+            - mcp_list_tools
+          type: string
+      required:
+        - type
+        - id
+        - server_label
+        - tools
+      type: object
     OutputMessageItem:
       allOf:
         - $ref: '#/components/schemas/OutputMessage'
@@ -5649,31 +5788,6 @@ components:
         - status
         - type
       type: object
-    OutputMcpServerToolItem:
-      description: An openrouter:mcp server tool output item
-      example:
-        id: mcp_tmp_abc123
-        serverLabel: my-server
-        status: completed
-        toolName: get_data
-        type: openrouter:mcp
-      properties:
-        id:
-          type: string
-        serverLabel:
-          type: string
-        status:
-          $ref: '#/components/schemas/ToolCallStatus'
-        toolName:
-          type: string
-        type:
-          enum:
-            - openrouter:mcp
-          type: string
-      required:
-        - status
-        - type
-      type: object
     OutputMemoryServerToolItem:
       description: An openrouter:memory server tool output item
       example:
@@ -5919,12 +6033,48 @@ components:
         status: completed
         type: openrouter:tool_search
       properties:
+        arguments:
+          description: >-
+            The JSON arguments of the model call, verbatim. Replaying the item
+            reuses them.
+          example: '{"query":"weather tools"}'
+          type: string
+        call_id:
+          description: >-
+            The ID of the model call that ran the search. Replaying the item
+            reuses it.
+          example: call_search_1
+          type: string
+        catalog_index:
+          description: >-
+            The deferred-tool index the router showed the model with a
+            pre-search, listing tool sources and names. Replaying the item shows
+            the same index.
+          example: |-
+            Deferred tools, found with tool_search and called with tool_exec:
+            Sources: mcp__sentry (12).
+          type: string
         error:
           description: >-
             The error message when the tool call failed before producing a
             result. Set together with `status: 'failed'`; absent on a successful
             call.
           example: Tool execution failed
+          type: string
+        format:
+          description: >-
+            How the model saw the matches. `compact` means each tool by name,
+            description, and input shape, plus a call example. Replaying the
+            item renders the same result.
+          enum:
+            - compact
+          example: compact
+          type: string
+        hint:
+          description: The guidance the model got when the search matched no tools.
+          example: >-
+            No tools matched. Search again with other keywords, or load tools by
+            exact name with "select:Name1,Name2".
           type: string
         id:
           type: string
@@ -5948,6 +6098,16 @@ components:
           type: string
         status:
           $ref: '#/components/schemas/FailableToolCallStatus'
+        turn_call_ids:
+          description: >-
+            The IDs of every tool call in the model response that ran the
+            search, in order. Replaying the item keeps those calls in one turn.
+          example:
+            - call_search_1
+            - call_exec_1
+          items:
+            type: string
+          type: array
         type:
           enum:
             - openrouter:tool_search
@@ -6271,6 +6431,36 @@ components:
         id: ws-abc123
         status: completed
         type: web_search_call
+    DeferredToolsDetails:
+      description: >-
+        Totals across every upstream model call of a deferred-tools run. The
+        native usage fields report only the final call; cost covers every call.
+      example:
+        completion_tokens: 180
+        prompt_tokens: 2400
+        total_tokens: 2580
+        turns: 2
+      properties:
+        completion_tokens:
+          description: Completion tokens summed over every upstream call
+          type: integer
+        prompt_tokens:
+          description: Prompt tokens summed over every upstream call
+          type: integer
+        total_tokens:
+          description: Sum of the above two fields
+          type: integer
+        turns:
+          description: Upstream model calls the run made
+          exclusiveMinimum: true
+          minimum: 0
+          type: integer
+      required:
+        - turns
+        - prompt_tokens
+        - completion_tokens
+        - total_tokens
+      type: object
     ServerToolUseDetails:
       description: Usage for server-side tool execution (e.g., web search)
       example:
@@ -7659,6 +7849,20 @@ components:
             type: logs
         status: completed
         type: code_interpreter_call
+    McpToolCallError:
+      anyOf:
+        - type: string
+        - $ref: '#/components/schemas/McpProtocolError'
+        - $ref: '#/components/schemas/McpToolExecutionError'
+        - $ref: '#/components/schemas/McpHttpError'
+        - type: 'null'
+      description: >-
+        Error from an MCP tool call, either a plain message or a structured
+        error
+      example:
+        code: 503
+        message: Service Unavailable
+        type: http_error
     FailableToolCallStatus:
       enum:
         - in_progress
@@ -8591,6 +8795,7 @@ components:
           mapping:
             apply_patch_call: '#/components/schemas/OutputItemApplyPatchCall'
             code_interpreter_call: '#/components/schemas/OutputItemCodeInterpreterCall'
+            compaction: '#/components/schemas/OutputItemCompaction'
             custom_tool_call: '#/components/schemas/OutputItemCustomToolCall'
             file_search_call: '#/components/schemas/OutputItemFileSearchCall'
             function_call: '#/components/schemas/OutputItemFunctionCall'
@@ -8609,7 +8814,62 @@ components:
           - $ref: '#/components/schemas/OutputItemImageGenerationCall'
           - $ref: '#/components/schemas/OutputItemApplyPatchCall'
           - $ref: '#/components/schemas/OutputItemCodeInterpreterCall'
+          - $ref: '#/components/schemas/OutputItemCompaction'
       type: array
+    McpProtocolError:
+      description: The MCP server returned a protocol-level error
+      example:
+        code: -32601
+        message: Method not found
+        type: mcp_protocol_error
+      properties:
+        code:
+          type: integer
+        message:
+          type: string
+        type:
+          enum:
+            - mcp_protocol_error
+          type: string
+      required:
+        - type
+        - code
+        - message
+      type: object
+    McpToolExecutionError:
+      description: The MCP tool ran but reported a failure
+      example:
+        content: Connection refused
+        type: mcp_tool_execution_error
+      properties:
+        content: {}
+        type:
+          enum:
+            - mcp_tool_execution_error
+          type: string
+      required:
+        - type
+      type: object
+    McpHttpError:
+      description: The MCP server request failed at the HTTP layer
+      example:
+        code: 503
+        message: Service Unavailable
+        type: http_error
+      properties:
+        code:
+          type: integer
+        message:
+          type: string
+        type:
+          enum:
+            - http_error
+          type: string
+      required:
+        - type
+        - code
+        - message
+      type: object
     AnthropicBashCodeExecutionOutput:
       example:
         file_id: file_01abc

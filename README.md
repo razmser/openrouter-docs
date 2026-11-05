@@ -2,7 +2,7 @@
 
 Markdown mirror of [OpenRouter's documentation](https://openrouter.ai/docs/quickstart).
 
-Contains **523 pages**, discovered from the [page index](https://openrouter.ai/docs/llms.txt) and [supplementary index](https://openrouter.ai/docs/sitemap.xml).
+Contains **524 pages**, discovered from the [page index](https://openrouter.ai/docs/llms.txt) and [supplementary index](https://openrouter.ai/docs/sitemap.xml).
 
 Links to mirrored pages point to local files; external links and images remain online. Code examples and OpenAPI blocks are preserved.
 
@@ -342,6 +342,7 @@ Generated files are replaced by the next successful sync. Original content belon
 - [Codex CLI](cookbook/coding-agents/codex-cli.md)
 - [Codex Desktop App](cookbook/coding-agents/codex-desktop.md)
 - [Cursor](cookbook/coding-agents/cursor-integration.md)
+- [Deploy Coding Agents Across Your Company without handing out API keys](cookbook/coding-agents/deploy-coding-agents.md)
 - [Hermes Agent](cookbook/coding-agents/hermes-integration.md)
 - [Junie CLI](cookbook/coding-agents/junie.md)
 - [Using MCP Servers with OpenRouter](cookbook/coding-agents/mcp-servers.md)

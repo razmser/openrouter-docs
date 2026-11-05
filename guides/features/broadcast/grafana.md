@@ -220,4 +220,4 @@ If you don't see any traces, make sure you've selected the correct Tempo data so
 
 ## Privacy Mode
 
-When [Privacy Mode](../broadcast.md#privacy-mode) is enabled for this destination, prompt and completion content is excluded from traces. All other trace data — token usage, costs, timing, model information, and custom metadata — is still sent normally. See [Privacy Mode](../broadcast.md#privacy-mode) for details.
+When [Privacy Mode](../broadcast.md#privacy-mode) is enabled for this destination, prompt and completion content and provider error text are excluded from traces. All other trace data — token usage, costs, timing, model information, and custom metadata — is still sent normally. See [Privacy Mode](../broadcast.md#privacy-mode) for details.

@@ -112,7 +112,9 @@
 >
 > You can read our requirements at the [Providers
 > page](guides/providers/integration.md). If you would like to contact us, the best
-> place to reach us is over email.
+> place to reach us is over email. Listed providers can report accounts that abuse
+> their endpoints through the [abuse reports
+> API](guides/providers/integration.md#abuse-reports).
 
 > [accordion] What is the expected latency/response time for different models?
 >

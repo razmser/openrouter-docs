@@ -1217,11 +1217,15 @@ components:
       properties:
         profile:
           description: >-
-            Loading profile. Only `portable` is available in this release:
-            OpenRouter serves deferral with router-built search and call
-            wrappers on any model.
+            Loading profile. `portable` serves the `defer_loading` tools with
+            router-built search and call wrappers on any model and keeps the
+            catalog fixed. `universal` defers every wrappable tool behind the
+            same wrappers so the provider-facing tool list never changes, and
+            rebuilds the catalog from each request so tools can be added or
+            removed mid-conversation.
           enum:
             - portable
+            - universal
           type: string
         protocol:
           enum:
@@ -1351,7 +1355,6 @@ components:
               - $ref: '#/components/schemas/OutputToolSearchServerToolItem'
               - $ref: '#/components/schemas/OutputMemoryServerToolItem'
               - $ref: '#/components/schemas/OutputArmorBlockedItem'
-              - $ref: '#/components/schemas/OutputMcpServerToolItem'
               - $ref: '#/components/schemas/OutputSearchModelsServerToolItem'
               - $ref: '#/components/schemas/OutputFusionServerToolItem'
               - $ref: '#/components/schemas/OutputAdvisorServerToolItem'
@@ -1368,6 +1371,7 @@ components:
               - $ref: '#/components/schemas/McpCallItem'
               - $ref: '#/components/schemas/CustomToolCallItem'
               - $ref: '#/components/schemas/CustomToolCallOutputItem'
+              - $ref: '#/components/schemas/CompactionTriggerItem'
               - $ref: '#/components/schemas/CompactionItem'
               - $ref: '#/components/schemas/ContextCompactionItem'
               - $ref: '#/components/schemas/ItemReferenceItem'
@@ -3501,6 +3505,7 @@ components:
               mapping:
                 apply_patch_call: '#/components/schemas/OutputItemApplyPatchCall'
                 code_interpreter_call: '#/components/schemas/OutputItemCodeInterpreterCall'
+                compaction: '#/components/schemas/OutputItemCompaction'
                 custom_tool_call: '#/components/schemas/OutputItemCustomToolCall'
                 file_search_call: '#/components/schemas/OutputItemFileSearchCall'
                 function_call: '#/components/schemas/OutputItemFunctionCall'
@@ -3519,6 +3524,7 @@ components:
               - $ref: '#/components/schemas/OutputItemImageGenerationCall'
               - $ref: '#/components/schemas/OutputItemApplyPatchCall'
               - $ref: '#/components/schemas/OutputItemCodeInterpreterCall'
+              - $ref: '#/components/schemas/OutputItemCompaction'
           type: array
         output_text:
           type: string
@@ -3845,11 +3851,14 @@ components:
         mapping:
           apply_patch_call: '#/components/schemas/OutputApplyPatchCallItem'
           code_interpreter_call: '#/components/schemas/OutputCodeInterpreterCallItem'
+          compaction: '#/components/schemas/OutputCompactionItem'
           computer_call: '#/components/schemas/OutputComputerCallItem'
           custom_tool_call: '#/components/schemas/OutputCustomToolCallItem'
           file_search_call: '#/components/schemas/OutputFileSearchCallItem'
           function_call: '#/components/schemas/OutputFunctionCallItem'
           image_generation_call: '#/components/schemas/OutputImageGenerationCallItem'
+          mcp_call: '#/components/schemas/McpCallItem'
+          mcp_list_tools: '#/components/schemas/McpListToolsItem'
           message: '#/components/schemas/OutputMessageItem'
           openrouter:advisor: '#/components/schemas/OutputAdvisorServerToolItem'
           openrouter:apply_patch: '#/components/schemas/OutputApplyPatchServerToolItem'
@@ -3863,7 +3872,6 @@ components:
           openrouter:files: '#/components/schemas/OutputFilesServerToolItem'
           openrouter:fusion: '#/components/schemas/OutputFusionServerToolItem'
           openrouter:image_generation: '#/components/schemas/OutputImageGenerationServerToolItem'
-          openrouter:mcp: '#/components/schemas/OutputMcpServerToolItem'
           openrouter:memory: '#/components/schemas/OutputMemoryServerToolItem'
           openrouter:shell: '#/components/schemas/OutputShellServerToolItem'
           openrouter:subagent: '#/components/schemas/OutputSubagentServerToolItem'
@@ -3904,13 +3912,15 @@ components:
         - $ref: '#/components/schemas/OutputTextEditorServerToolItem'
         - $ref: '#/components/schemas/OutputApplyPatchServerToolItem'
         - $ref: '#/components/schemas/OutputApplyPatchCallItem'
+        - $ref: '#/components/schemas/OutputCompactionItem'
         - $ref: '#/components/schemas/OutputShellCallItem'
         - $ref: '#/components/schemas/OutputShellCallOutputItem'
         - $ref: '#/components/schemas/OutputShellServerToolItem'
         - $ref: '#/components/schemas/OutputWebFetchServerToolItem'
         - $ref: '#/components/schemas/OutputToolSearchServerToolItem'
         - $ref: '#/components/schemas/OutputMemoryServerToolItem'
-        - $ref: '#/components/schemas/OutputMcpServerToolItem'
+        - $ref: '#/components/schemas/McpListToolsItem'
+        - $ref: '#/components/schemas/McpCallItem'
         - $ref: '#/components/schemas/OutputSearchModelsServerToolItem'
         - $ref: '#/components/schemas/OutputFusionServerToolItem'
         - $ref: '#/components/schemas/OutputAdvisorServerToolItem'
@@ -4033,6 +4043,8 @@ components:
                     - upstream_inference_input_cost
                     - upstream_inference_output_cost
                   type: object
+                deferred_tools_details:
+                  $ref: '#/components/schemas/DeferredToolsDetails'
                 is_byok:
                   description: >-
                     Whether a request was made using a Bring Your Own Key
@@ -4093,6 +4105,14 @@ components:
           response.image_generation_call.partial_image: '#/components/schemas/ImageGenCallPartialImageEvent'
           response.in_progress: '#/components/schemas/OpenResponsesInProgressEvent'
           response.incomplete: '#/components/schemas/StreamEventsResponseIncomplete'
+          response.mcp_call_arguments.delta: '#/components/schemas/McpCallArgumentsDeltaEvent'
+          response.mcp_call_arguments.done: '#/components/schemas/McpCallArgumentsDoneEvent'
+          response.mcp_call.completed: '#/components/schemas/McpCallCompletedEvent'
+          response.mcp_call.failed: '#/components/schemas/McpCallFailedEvent'
+          response.mcp_call.in_progress: '#/components/schemas/McpCallInProgressEvent'
+          response.mcp_list_tools.completed: '#/components/schemas/McpListToolsCompletedEvent'
+          response.mcp_list_tools.failed: '#/components/schemas/McpListToolsFailedEvent'
+          response.mcp_list_tools.in_progress: '#/components/schemas/McpListToolsInProgressEvent'
           response.output_item.added: '#/components/schemas/StreamEventsResponseOutputItemAdded'
           response.output_item.done: '#/components/schemas/StreamEventsResponseOutputItemDone'
           response.output_text.annotation.added: '#/components/schemas/AnnotationAddedEvent'
@@ -4182,6 +4202,14 @@ components:
         - $ref: '#/components/schemas/FusionCallAnalysisInProgressEvent'
         - $ref: '#/components/schemas/FusionCallAnalysisCompletedEvent'
         - $ref: '#/components/schemas/FusionCallCompletedEvent'
+        - $ref: '#/components/schemas/McpListToolsInProgressEvent'
+        - $ref: '#/components/schemas/McpListToolsCompletedEvent'
+        - $ref: '#/components/schemas/McpListToolsFailedEvent'
+        - $ref: '#/components/schemas/McpCallInProgressEvent'
+        - $ref: '#/components/schemas/McpCallArgumentsDeltaEvent'
+        - $ref: '#/components/schemas/McpCallArgumentsDoneEvent'
+        - $ref: '#/components/schemas/McpCallCompletedEvent'
+        - $ref: '#/components/schemas/McpCallFailedEvent'
         - $ref: '#/components/schemas/DebugEvent'
     BadRequestResponseErrorData:
       description: Error data for BadRequestResponse
@@ -5454,12 +5482,48 @@ components:
         status: completed
         type: openrouter:tool_search
       properties:
+        arguments:
+          description: >-
+            The JSON arguments of the model call, verbatim. Replaying the item
+            reuses them.
+          example: '{"query":"weather tools"}'
+          type: string
+        call_id:
+          description: >-
+            The ID of the model call that ran the search. Replaying the item
+            reuses it.
+          example: call_search_1
+          type: string
+        catalog_index:
+          description: >-
+            The deferred-tool index the router showed the model with a
+            pre-search, listing tool sources and names. Replaying the item shows
+            the same index.
+          example: |-
+            Deferred tools, found with tool_search and called with tool_exec:
+            Sources: mcp__sentry (12).
+          type: string
         error:
           description: >-
             The error message when the tool call failed before producing a
             result. Set together with `status: 'failed'`; absent on a successful
             call.
           example: Tool execution failed
+          type: string
+        format:
+          description: >-
+            How the model saw the matches. `compact` means each tool by name,
+            description, and input shape, plus a call example. Replaying the
+            item renders the same result.
+          enum:
+            - compact
+          example: compact
+          type: string
+        hint:
+          description: The guidance the model got when the search matched no tools.
+          example: >-
+            No tools matched. Search again with other keywords, or load tools by
+            exact name with "select:Name1,Name2".
           type: string
         id:
           type: string
@@ -5483,6 +5547,16 @@ components:
           type: string
         status:
           $ref: '#/components/schemas/FailableToolCallStatus'
+        turn_call_ids:
+          description: >-
+            The IDs of every tool call in the model response that ran the
+            search, in order. Replaying the item keeps those calls in one turn.
+          example:
+            - call_search_1
+            - call_exec_1
+          items:
+            type: string
+          type: array
         type:
           enum:
             - openrouter:tool_search
@@ -5580,31 +5654,6 @@ components:
         - arguments
         - reason
         - explanation
-      type: object
-    OutputMcpServerToolItem:
-      description: An openrouter:mcp server tool output item
-      example:
-        id: mcp_tmp_abc123
-        serverLabel: my-server
-        status: completed
-        toolName: get_data
-        type: openrouter:mcp
-      properties:
-        id:
-          type: string
-        serverLabel:
-          type: string
-        status:
-          $ref: '#/components/schemas/ToolCallStatus'
-        toolName:
-          type: string
-        type:
-          enum:
-            - openrouter:mcp
-          type: string
-      required:
-        - status
-        - type
       type: object
     OutputSearchModelsServerToolItem:
       description: An openrouter:experimental__search_models server tool output item
@@ -6462,6 +6511,18 @@ components:
         id: ctco-abc123
         output: patch applied successfully
         type: custom_tool_call_output
+    CompactionTriggerItem:
+      description: Asks the model to compact the preceding input into a compaction item
+      example:
+        type: compaction_trigger
+      properties:
+        type:
+          enum:
+            - compaction_trigger
+          type: string
+      required:
+        - type
+      type: object
     CompactionItem:
       additionalProperties: {}
       description: A context compaction marker with encrypted summary
@@ -8815,6 +8876,27 @@ components:
         - id
         - status
       type: object
+    OutputItemCompaction:
+      example:
+        encrypted_content: enc_abc123...
+        id: cmp_abc123
+        type: compaction
+      properties:
+        created_by:
+          type: string
+        encrypted_content:
+          type: string
+        id:
+          type: string
+        type:
+          enum:
+            - compaction
+          type: string
+      required:
+        - type
+        - id
+        - encrypted_content
+      type: object
     OutputItemCustomToolCall:
       example:
         call_id: call-abc123
@@ -9386,6 +9468,30 @@ components:
         - status
         - operation
       type: object
+    OutputCompactionItem:
+      description: >-
+        A compaction output item carrying the encrypted summary of the compacted
+        conversation. Emitted in reply to a `compaction_trigger` input item.
+      example:
+        encrypted_content: enc_abc123...
+        id: cmp_abc123
+        type: compaction
+      properties:
+        created_by:
+          type: string
+        encrypted_content:
+          type: string
+        id:
+          type: string
+        type:
+          enum:
+            - compaction
+          type: string
+      required:
+        - type
+        - id
+        - encrypted_content
+      type: object
     OutputCustomToolCallItem:
       description: >-
         A call to a custom (freeform-grammar) tool created by the model —
@@ -9656,6 +9762,36 @@ components:
         - execution
         - call_id
         - status
+      type: object
+    DeferredToolsDetails:
+      description: >-
+        Totals across every upstream model call of a deferred-tools run. The
+        native usage fields report only the final call; cost covers every call.
+      example:
+        completion_tokens: 180
+        prompt_tokens: 2400
+        total_tokens: 2580
+        turns: 2
+      properties:
+        completion_tokens:
+          description: Completion tokens summed over every upstream call
+          type: integer
+        prompt_tokens:
+          description: Prompt tokens summed over every upstream call
+          type: integer
+        total_tokens:
+          description: Sum of the above two fields
+          type: integer
+        turns:
+          description: Upstream model calls the run made
+          exclusiveMinimum: true
+          minimum: 0
+          type: integer
+      required:
+        - turns
+        - prompt_tokens
+        - completion_tokens
+        - total_tokens
       type: object
     ServerToolUseDetails:
       description: Usage for server-side tool execution (e.g., web search)
@@ -10449,6 +10585,208 @@ components:
           top_p: null
         sequence_number: 5
         type: response.incomplete
+    McpCallArgumentsDeltaEvent:
+      description: A partial update to the JSON-encoded arguments of an MCP tool call.
+      example:
+        delta: '{"query":"text-to-image"}'
+        item_id: mcp_abc123
+        output_index: 1
+        sequence_number: 6
+        type: response.mcp_call_arguments.delta
+      properties:
+        delta:
+          type: string
+        item_id:
+          type: string
+        output_index:
+          type: integer
+        sequence_number:
+          type: integer
+        type:
+          enum:
+            - response.mcp_call_arguments.delta
+          type: string
+      required:
+        - type
+        - delta
+        - item_id
+        - output_index
+        - sequence_number
+      type: object
+    McpCallArgumentsDoneEvent:
+      description: >-
+        Emitted when the JSON-encoded arguments of an MCP tool call are
+        finalized.
+      example:
+        arguments: '{"query":"text-to-image"}'
+        item_id: mcp_abc123
+        output_index: 1
+        sequence_number: 7
+        type: response.mcp_call_arguments.done
+      properties:
+        arguments:
+          type: string
+        item_id:
+          type: string
+        output_index:
+          type: integer
+        sequence_number:
+          type: integer
+        type:
+          enum:
+            - response.mcp_call_arguments.done
+          type: string
+      required:
+        - type
+        - arguments
+        - item_id
+        - output_index
+        - sequence_number
+      type: object
+    McpCallCompletedEvent:
+      description: Emitted when an MCP tool call completes successfully.
+      example:
+        item_id: mcp_abc123
+        output_index: 1
+        sequence_number: 8
+        type: response.mcp_call.completed
+      properties:
+        item_id:
+          type: string
+        output_index:
+          type: integer
+        sequence_number:
+          type: integer
+        type:
+          enum:
+            - response.mcp_call.completed
+          type: string
+      required:
+        - type
+        - item_id
+        - output_index
+        - sequence_number
+      type: object
+    McpCallFailedEvent:
+      description: Emitted when an MCP tool call fails.
+      example:
+        item_id: mcp_abc123
+        output_index: 1
+        sequence_number: 8
+        type: response.mcp_call.failed
+      properties:
+        item_id:
+          type: string
+        output_index:
+          type: integer
+        sequence_number:
+          type: integer
+        type:
+          enum:
+            - response.mcp_call.failed
+          type: string
+      required:
+        - type
+        - item_id
+        - output_index
+        - sequence_number
+      type: object
+    McpCallInProgressEvent:
+      description: Emitted when an MCP tool call begins executing.
+      example:
+        item_id: mcp_abc123
+        output_index: 1
+        sequence_number: 5
+        type: response.mcp_call.in_progress
+      properties:
+        item_id:
+          type: string
+        output_index:
+          type: integer
+        sequence_number:
+          type: integer
+        type:
+          enum:
+            - response.mcp_call.in_progress
+          type: string
+      required:
+        - type
+        - item_id
+        - output_index
+        - sequence_number
+      type: object
+    McpListToolsCompletedEvent:
+      description: Emitted when tool discovery against an MCP server succeeds.
+      example:
+        item_id: mcpl_abc123
+        output_index: 0
+        sequence_number: 2
+        type: response.mcp_list_tools.completed
+      properties:
+        item_id:
+          type: string
+        output_index:
+          type: integer
+        sequence_number:
+          type: integer
+        type:
+          enum:
+            - response.mcp_list_tools.completed
+          type: string
+      required:
+        - type
+        - item_id
+        - output_index
+        - sequence_number
+      type: object
+    McpListToolsFailedEvent:
+      description: Emitted when tool discovery against an MCP server fails.
+      example:
+        item_id: mcpl_abc123
+        output_index: 0
+        sequence_number: 2
+        type: response.mcp_list_tools.failed
+      properties:
+        item_id:
+          type: string
+        output_index:
+          type: integer
+        sequence_number:
+          type: integer
+        type:
+          enum:
+            - response.mcp_list_tools.failed
+          type: string
+      required:
+        - type
+        - item_id
+        - output_index
+        - sequence_number
+      type: object
+    McpListToolsInProgressEvent:
+      description: Emitted when tool discovery against an MCP server begins.
+      example:
+        item_id: mcpl_abc123
+        output_index: 0
+        sequence_number: 1
+        type: response.mcp_list_tools.in_progress
+      properties:
+        item_id:
+          type: string
+        output_index:
+          type: integer
+        sequence_number:
+          type: integer
+        type:
+          enum:
+            - response.mcp_list_tools.in_progress
+          type: string
+      required:
+        - type
+        - item_id
+        - output_index
+        - sequence_number
+      type: object
     StreamEventsResponseOutputItemAdded:
       allOf:
         - $ref: '#/components/schemas/OutputItemAddedEvent'
@@ -12763,6 +13101,7 @@ components:
             mapping:
               apply_patch_call: '#/components/schemas/OutputItemApplyPatchCall'
               code_interpreter_call: '#/components/schemas/OutputItemCodeInterpreterCall'
+              compaction: '#/components/schemas/OutputItemCompaction'
               custom_tool_call: '#/components/schemas/OutputItemCustomToolCall'
               file_search_call: '#/components/schemas/OutputItemFileSearchCall'
               function_call: '#/components/schemas/OutputItemFunctionCall'
@@ -12781,6 +13120,7 @@ components:
             - $ref: '#/components/schemas/OutputItemImageGenerationCall'
             - $ref: '#/components/schemas/OutputItemApplyPatchCall'
             - $ref: '#/components/schemas/OutputItemCodeInterpreterCall'
+            - $ref: '#/components/schemas/OutputItemCompaction'
         output_index:
           type: integer
         sequence_number:
@@ -12816,6 +13156,7 @@ components:
             mapping:
               apply_patch_call: '#/components/schemas/OutputItemApplyPatchCall'
               code_interpreter_call: '#/components/schemas/OutputItemCodeInterpreterCall'
+              compaction: '#/components/schemas/OutputItemCompaction'
               custom_tool_call: '#/components/schemas/OutputItemCustomToolCall'
               file_search_call: '#/components/schemas/OutputItemFileSearchCall'
               function_call: '#/components/schemas/OutputItemFunctionCall'
@@ -12834,6 +13175,7 @@ components:
             - $ref: '#/components/schemas/OutputItemImageGenerationCall'
             - $ref: '#/components/schemas/OutputItemApplyPatchCall'
             - $ref: '#/components/schemas/OutputItemCodeInterpreterCall'
+            - $ref: '#/components/schemas/OutputItemCompaction'
         output_index:
           type: integer
         sequence_number:
@@ -13687,6 +14029,7 @@ components:
           mapping:
             apply_patch_call: '#/components/schemas/OutputItemApplyPatchCall'
             code_interpreter_call: '#/components/schemas/OutputItemCodeInterpreterCall'
+            compaction: '#/components/schemas/OutputItemCompaction'
             custom_tool_call: '#/components/schemas/OutputItemCustomToolCall'
             file_search_call: '#/components/schemas/OutputItemFileSearchCall'
             function_call: '#/components/schemas/OutputItemFunctionCall'
@@ -13705,6 +14048,7 @@ components:
           - $ref: '#/components/schemas/OutputItemImageGenerationCall'
           - $ref: '#/components/schemas/OutputItemApplyPatchCall'
           - $ref: '#/components/schemas/OutputItemCodeInterpreterCall'
+          - $ref: '#/components/schemas/OutputItemCompaction'
       type: array
     OpenResponsesLogProbs:
       description: Log probability information for a token

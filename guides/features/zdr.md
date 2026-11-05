@@ -116,6 +116,8 @@ If you don't choose, enterprise accounts default to **ZDR only** and all other a
 
 On a model page, the provider details for an endpoint that uses Safety Retention show **ZDR compatible: Only with Safety Retention allowed**.
 
+If your own Google Cloud agreement includes zero data retention, you can use Vertex through your own key with **ZDR only**. Declare ZDR on your [BYOK](../overview/auth/byok.md) key. Requests through that key are treated as ZDR. See [Declaring ZDR on a Key](../overview/auth/byok.md#declaring-zdr-on-a-key).
+
 ## Per-Request ZDR Enforcement
 
 In addition to account-level and guardrail-level settings, you can enforce Zero Data Retention on a per-request basis using the `zdr` parameter in your API calls.
