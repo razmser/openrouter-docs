@@ -68,6 +68,8 @@ tags:
     name: Files
   - description: Generation history endpoints
     name: Generations
+  - description: Guardrail Policies endpoints
+    name: Guardrail Policies
   - description: Guardrails endpoints
     name: Guardrails
   - description: Images endpoints
@@ -2344,6 +2346,9 @@ components:
                 file_search_call: '#/components/schemas/OutputItemFileSearchCall'
                 function_call: '#/components/schemas/OutputItemFunctionCall'
                 image_generation_call: '#/components/schemas/OutputItemImageGenerationCall'
+                mcp_approval_request: '#/components/schemas/OutputItemMcpApprovalRequest'
+                mcp_call: '#/components/schemas/OutputItemMcpCall'
+                mcp_list_tools: '#/components/schemas/OutputItemMcpListTools'
                 message: '#/components/schemas/OutputMessage'
                 reasoning: '#/components/schemas/OutputItemReasoning'
                 web_search_call: '#/components/schemas/OutputItemWebSearchCall'
@@ -2359,6 +2364,9 @@ components:
               - $ref: '#/components/schemas/OutputItemApplyPatchCall'
               - $ref: '#/components/schemas/OutputItemCodeInterpreterCall'
               - $ref: '#/components/schemas/OutputItemCompaction'
+              - $ref: '#/components/schemas/OutputItemMcpListTools'
+              - $ref: '#/components/schemas/OutputItemMcpCall'
+              - $ref: '#/components/schemas/OutputItemMcpApprovalRequest'
           type: array
         output_text:
           type: string
@@ -2575,6 +2583,7 @@ components:
           file_search_call: '#/components/schemas/OutputFileSearchCallItem'
           function_call: '#/components/schemas/OutputFunctionCallItem'
           image_generation_call: '#/components/schemas/OutputImageGenerationCallItem'
+          mcp_approval_request: '#/components/schemas/McpApprovalRequestItem'
           mcp_call: '#/components/schemas/McpCallItem'
           mcp_list_tools: '#/components/schemas/McpListToolsItem'
           message: '#/components/schemas/OutputMessageItem'
@@ -2639,6 +2648,7 @@ components:
         - $ref: '#/components/schemas/OutputMemoryServerToolItem'
         - $ref: '#/components/schemas/McpListToolsItem'
         - $ref: '#/components/schemas/McpCallItem'
+        - $ref: '#/components/schemas/McpApprovalRequestItem'
         - $ref: '#/components/schemas/OutputSearchModelsServerToolItem'
         - $ref: '#/components/schemas/OutputFusionServerToolItem'
         - $ref: '#/components/schemas/OutputAdvisorServerToolItem'
@@ -3857,6 +3867,143 @@ components:
         - id
         - status
       type: object
+    OutputItemMcpApprovalRequest:
+      properties:
+        arguments:
+          type: string
+        id:
+          type: string
+        name:
+          type: string
+        server_label:
+          type: string
+        type:
+          enum:
+            - mcp_approval_request
+          type: string
+      required:
+        - type
+        - id
+        - server_label
+        - name
+        - arguments
+      type: object
+    OutputItemMcpCall:
+      properties:
+        approval_request_id:
+          type:
+            - string
+            - 'null'
+        arguments:
+          type: string
+        error:
+          anyOf:
+            - type: string
+            - properties:
+                code:
+                  type: integer
+                message:
+                  type: string
+                type:
+                  enum:
+                    - mcp_protocol_error
+                  type: string
+              required:
+                - type
+                - code
+                - message
+              type: object
+            - properties:
+                content: {}
+                type:
+                  enum:
+                    - mcp_tool_execution_error
+                  type: string
+              required:
+                - type
+              type: object
+            - properties:
+                code:
+                  type: integer
+                message:
+                  type: string
+                type:
+                  enum:
+                    - http_error
+                  type: string
+              required:
+                - type
+                - code
+                - message
+              type: object
+            - type: 'null'
+        id:
+          type: string
+        name:
+          type: string
+        output:
+          type:
+            - string
+            - 'null'
+        server_label:
+          type: string
+        status:
+          enum:
+            - in_progress
+            - completed
+            - incomplete
+            - calling
+            - failed
+          type: string
+        type:
+          enum:
+            - mcp_call
+          type: string
+      required:
+        - type
+        - id
+        - server_label
+        - name
+        - arguments
+      type: object
+    OutputItemMcpListTools:
+      properties:
+        error:
+          type:
+            - string
+            - 'null'
+        id:
+          type: string
+        server_label:
+          type: string
+        tools:
+          items:
+            properties:
+              annotations: {}
+              description:
+                type:
+                  - string
+                  - 'null'
+              input_schema:
+                additionalProperties: {}
+                type: object
+              name:
+                type: string
+            required:
+              - name
+              - input_schema
+            type: object
+          type: array
+        type:
+          enum:
+            - mcp_list_tools
+          type: string
+      required:
+        - type
+        - id
+        - server_label
+        - tools
+      type: object
     OutputMessage:
       example:
         content:
@@ -4185,6 +4332,7 @@ components:
           required:
             - type
           type: object
+        - $ref: '#/components/schemas/ToolChoiceMcp'
       example: auto
     FunctionTool:
       description: Function tool definition
@@ -4541,6 +4689,7 @@ components:
         - container
       type: object
     McpServerTool:
+      additionalProperties: {}
       description: MCP (Model Context Protocol) tool configuration
       example:
         server_label: my-server
@@ -4552,7 +4701,8 @@ components:
             - items:
                 type: string
               type: array
-            - properties:
+            - additionalProperties: {}
+              properties:
                 read_only:
                   type: boolean
                 tool_names:
@@ -4564,15 +4714,6 @@ components:
         authorization:
           type: string
         connector_id:
-          enum:
-            - connector_dropbox
-            - connector_gmail
-            - connector_googlecalendar
-            - connector_googledrive
-            - connector_microsoftteams
-            - connector_outlookcalendar
-            - connector_outlookemail
-            - connector_sharepoint
           type: string
         headers:
           additionalProperties:
@@ -4582,16 +4723,23 @@ components:
             - 'null'
         require_approval:
           anyOf:
-            - properties:
+            - additionalProperties: {}
+              properties:
                 always:
+                  additionalProperties: {}
                   properties:
+                    read_only:
+                      type: boolean
                     tool_names:
                       items:
                         type: string
                       type: array
                   type: object
                 never:
+                  additionalProperties: {}
                   properties:
+                    read_only:
+                      type: boolean
                     tool_names:
                       items:
                         type: string
@@ -5123,6 +5271,34 @@ components:
         result: null
         status: completed
         type: image_generation_call
+    McpApprovalRequestItem:
+      description: Request for approval to execute an MCP tool
+      example:
+        arguments: '{"id":"123"}'
+        id: approval-abc123
+        name: delete_record
+        server_label: database-server
+        type: mcp_approval_request
+      properties:
+        arguments:
+          type: string
+        id:
+          type: string
+        name:
+          type: string
+        server_label:
+          type: string
+        type:
+          enum:
+            - mcp_approval_request
+          type: string
+      required:
+        - type
+        - id
+        - name
+        - arguments
+        - server_label
+      type: object
     McpCallItem:
       description: An MCP tool call with its output or error
       example:
@@ -5133,6 +5309,10 @@ components:
         server_label: database-server
         type: mcp_call
       properties:
+        approval_request_id:
+          type:
+            - string
+            - 'null'
         arguments:
           type: string
         error:
@@ -5146,6 +5326,14 @@ components:
             - string
             - 'null'
         server_label:
+          type: string
+        status:
+          enum:
+            - in_progress
+            - completed
+            - incomplete
+            - calling
+            - failed
           type: string
         type:
           enum:
@@ -7538,6 +7726,28 @@ components:
         - mode
         - tools
       type: object
+    ToolChoiceMcp:
+      description: >-
+        Forces a call to the named MCP server; `name` narrows it to one of its
+        tools
+      example:
+        server_label: huggingface
+        type: mcp
+      properties:
+        name:
+          type:
+            - string
+            - 'null'
+        server_label:
+          type: string
+        type:
+          enum:
+            - mcp
+          type: string
+      required:
+        - type
+        - server_label
+      type: object
     WebSearchEngineEnum:
       description: >-
         Which search engine to use. "auto" (default) uses native if the provider
@@ -8800,6 +9010,9 @@ components:
             file_search_call: '#/components/schemas/OutputItemFileSearchCall'
             function_call: '#/components/schemas/OutputItemFunctionCall'
             image_generation_call: '#/components/schemas/OutputItemImageGenerationCall'
+            mcp_approval_request: '#/components/schemas/OutputItemMcpApprovalRequest'
+            mcp_call: '#/components/schemas/OutputItemMcpCall'
+            mcp_list_tools: '#/components/schemas/OutputItemMcpListTools'
             message: '#/components/schemas/OutputMessage'
             reasoning: '#/components/schemas/OutputItemReasoning'
             web_search_call: '#/components/schemas/OutputItemWebSearchCall'
@@ -8815,6 +9028,9 @@ components:
           - $ref: '#/components/schemas/OutputItemApplyPatchCall'
           - $ref: '#/components/schemas/OutputItemCodeInterpreterCall'
           - $ref: '#/components/schemas/OutputItemCompaction'
+          - $ref: '#/components/schemas/OutputItemMcpListTools'
+          - $ref: '#/components/schemas/OutputItemMcpCall'
+          - $ref: '#/components/schemas/OutputItemMcpApprovalRequest'
       type: array
     McpProtocolError:
       description: The MCP server returned a protocol-level error

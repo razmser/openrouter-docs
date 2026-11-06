@@ -68,6 +68,8 @@ tags:
     name: Files
   - description: Generation history endpoints
     name: Generations
+  - description: Guardrail Policies endpoints
+    name: Guardrail Policies
   - description: Guardrails endpoints
     name: Guardrails
   - description: Images endpoints
@@ -467,12 +469,22 @@ components:
         usage:
           properties:
             cost:
+              description: >-
+                What OpenRouter charges for the request, in credits. On a BYOK
+                request this is the OpenRouter fee only.
               format: double
               type: number
+            cost_details:
+              $ref: '#/components/schemas/CostDetails'
             input_tokens:
               type: integer
             input_tokens_details:
               $ref: '#/components/schemas/DecisionsUsageInputTokensDetails'
+            is_byok:
+              description: >-
+                Whether a request was made using a Bring Your Own Key
+                configuration
+              type: boolean
             output_tokens:
               type: integer
           required:
@@ -962,6 +974,7 @@ components:
               type: object
             - items: {}
               type: array
+            - type: 'null'
           description: A plain string, or a JSON object or array of structured guidance.
         type:
           enum:
@@ -969,7 +982,6 @@ components:
           type: string
       required:
         - type
-        - instructions
         - criteria
       type: object
     DecisionsNoulQuestion:
@@ -983,6 +995,7 @@ components:
                   type: object
                 - items: {}
                   type: array
+                - type: 'null'
               description: >-
                 A plain string, or a JSON object or array of structured
                 guidance.
@@ -993,12 +1006,10 @@ components:
                   type: object
                 - items: {}
                   type: array
+                - type: 'null'
               description: >-
                 A plain string, or a JSON object or array of structured
                 guidance.
-          required:
-            - 'true'
-            - 'false'
           type: object
         instructions:
           anyOf:
@@ -1007,6 +1018,7 @@ components:
               type: object
             - items: {}
               type: array
+            - type: 'null'
           description: A plain string, or a JSON object or array of structured guidance.
         type:
           enum:
@@ -1014,7 +1026,6 @@ components:
           type: string
       required:
         - type
-        - instructions
       type: object
     DecisionsScoreQuestion:
       properties:
@@ -1036,6 +1047,7 @@ components:
               type: object
             - items: {}
               type: array
+            - type: 'null'
           description: A plain string, or a JSON object or array of structured guidance.
         type:
           enum:
@@ -1043,7 +1055,6 @@ components:
           type: string
       required:
         - type
-        - instructions
         - criteria
       type: object
     TraceConfig:
@@ -1202,6 +1213,40 @@ components:
         - type
         - score
       type: object
+    CostDetails:
+      description: Breakdown of upstream inference costs
+      example:
+        upstream_inference_completions_cost: 0.0004
+        upstream_inference_cost: null
+        upstream_inference_prompt_cost: 0.0008
+      properties:
+        server_tool_cost:
+          description: >-
+            Metered server-tool execution cost (for example, shell sandbox time)
+            billed for this request, in USD. Matches the billed checkpoint and
+            settlement amounts exactly. 0 when a metered server tool ran but
+            settled at zero dollars; absent when no metered server tool ran.
+          format: double
+          type:
+            - number
+            - 'null'
+        upstream_inference_completions_cost:
+          format: double
+          type: number
+        upstream_inference_cost:
+          format: double
+          type:
+            - number
+            - 'null'
+        upstream_inference_prompt_cost:
+          format: double
+          type: number
+      required:
+        - upstream_inference_prompt_cost
+        - upstream_inference_completions_cost
+      type:
+        - object
+        - 'null'
     DecisionsUsageInputTokensDetails:
       description: Of `input_tokens`, those the provider served from its prompt cache.
       properties:
@@ -1535,6 +1580,7 @@ components:
         - Reka
         - Relace
         - Respan
+        - River
         - Sail Research
         - Sakana AI
         - SambaNova
@@ -1935,6 +1981,9 @@ components:
           additionalProperties: {}
           type: object
         respan:
+          additionalProperties: {}
+          type: object
+        river:
           additionalProperties: {}
           type: object
         runway:

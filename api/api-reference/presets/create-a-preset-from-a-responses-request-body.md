@@ -68,6 +68,8 @@ tags:
     name: Files
   - description: Generation history endpoints
     name: Generations
+  - description: Guardrail Policies endpoints
+    name: Guardrail Policies
   - description: Guardrails endpoints
     name: Guardrails
   - description: Images endpoints
@@ -585,6 +587,7 @@ components:
               - $ref: '#/components/schemas/BashServerTool'
               - $ref: '#/components/schemas/ShellServerTool_OpenRouter'
               - $ref: '#/components/schemas/ToolSearchServerTool'
+              - $ref: '#/components/schemas/McpServerTool_OpenRouter'
           type: array
         top_k:
           type: integer
@@ -2143,6 +2146,7 @@ components:
           required:
             - type
           type: object
+        - $ref: '#/components/schemas/ToolChoiceMcp'
       example: auto
     FunctionTool:
       description: Function tool definition
@@ -2499,6 +2503,7 @@ components:
         - container
       type: object
     McpServerTool:
+      additionalProperties: {}
       description: MCP (Model Context Protocol) tool configuration
       example:
         server_label: my-server
@@ -2510,7 +2515,8 @@ components:
             - items:
                 type: string
               type: array
-            - properties:
+            - additionalProperties: {}
+              properties:
                 read_only:
                   type: boolean
                 tool_names:
@@ -2522,15 +2528,6 @@ components:
         authorization:
           type: string
         connector_id:
-          enum:
-            - connector_dropbox
-            - connector_gmail
-            - connector_googlecalendar
-            - connector_googledrive
-            - connector_microsoftteams
-            - connector_outlookcalendar
-            - connector_outlookemail
-            - connector_sharepoint
           type: string
         headers:
           additionalProperties:
@@ -2540,16 +2537,23 @@ components:
             - 'null'
         require_approval:
           anyOf:
-            - properties:
+            - additionalProperties: {}
+              properties:
                 always:
+                  additionalProperties: {}
                   properties:
+                    read_only:
+                      type: boolean
                     tool_names:
                       items:
                         type: string
                       type: array
                   type: object
                 never:
+                  additionalProperties: {}
                   properties:
+                    read_only:
+                      type: boolean
                     tool_names:
                       items:
                         type: string
@@ -3004,6 +3008,26 @@ components:
           type: string
       required:
         - type
+      type: object
+    McpServerTool_OpenRouter:
+      description: >-
+        OpenRouter built-in server tool: connects the model to a remote MCP
+        server and runs its tools during the response
+      example:
+        parameters:
+          server_label: huggingface
+          server_url: https://huggingface.co/mcp
+        type: openrouter:mcp
+      properties:
+        parameters:
+          $ref: '#/components/schemas/McpServerToolParameters'
+        type:
+          enum:
+            - openrouter:mcp
+          type: string
+      required:
+        - type
+        - parameters
       type: object
     TraceConfig:
       additionalProperties: {}
@@ -5103,6 +5127,10 @@ components:
         server_label: database-server
         type: mcp_call
       properties:
+        approval_request_id:
+          type:
+            - string
+            - 'null'
         arguments:
           type: string
         error:
@@ -5116,6 +5144,14 @@ components:
             - string
             - 'null'
         server_label:
+          type: string
+        status:
+          enum:
+            - in_progress
+            - completed
+            - incomplete
+            - calling
+            - failed
           type: string
         type:
           enum:
@@ -5411,6 +5447,7 @@ components:
                 required:
                   - type
                 type: object
+              - $ref: '#/components/schemas/McpServerTool_OpenRouter'
           type: array
         type:
           enum:
@@ -5685,6 +5722,7 @@ components:
                 required:
                   - type
                 type: object
+              - $ref: '#/components/schemas/McpServerTool_OpenRouter'
           type: array
         type:
           enum:
@@ -6056,6 +6094,7 @@ components:
         - Reka
         - Relace
         - Respan
+        - River
         - Sail Research
         - Sakana AI
         - SambaNova
@@ -6458,6 +6497,9 @@ components:
         respan:
           additionalProperties: {}
           type: object
+        river:
+          additionalProperties: {}
+          type: object
         runway:
           additionalProperties: {}
           type: object
@@ -6726,6 +6768,28 @@ components:
         - type
         - mode
         - tools
+      type: object
+    ToolChoiceMcp:
+      description: >-
+        Forces a call to the named MCP server; `name` narrows it to one of its
+        tools
+      example:
+        server_label: huggingface
+        type: mcp
+      properties:
+        name:
+          type:
+            - string
+            - 'null'
+        server_label:
+          type: string
+        type:
+          enum:
+            - mcp
+          type: string
+      required:
+        - type
+        - server_label
       type: object
     WebSearchEngineEnum:
       description: >-
@@ -7361,6 +7425,95 @@ components:
           description: Maximum tools returned by one search. Defaults to 5.
           example: 5
           type: integer
+      type: object
+    McpServerToolParameters:
+      description: Configuration for a remote MCP server tool.
+      example:
+        server_label: huggingface
+        server_url: https://huggingface.co/mcp
+      properties:
+        allowed_tools:
+          anyOf:
+            - items:
+                type: string
+              type: array
+            - additionalProperties: {}
+              properties:
+                read_only:
+                  type: boolean
+                tool_names:
+                  items:
+                    type: string
+                  type: array
+              type: object
+            - type: 'null'
+          description: Restrict the tools exposed to the model to this list or filter.
+        authorization:
+          description: OAuth access token sent as the Authorization bearer to the server.
+          type: string
+        connector_id:
+          description: >-
+            Provider-defined connector identifier, forwarded as written to
+            providers that run MCP themselves.
+          type: string
+        headers:
+          additionalProperties:
+            type: string
+          description: Extra headers sent on every request to the server.
+          type:
+            - object
+            - 'null'
+        require_approval:
+          anyOf:
+            - additionalProperties: {}
+              properties:
+                always:
+                  additionalProperties: {}
+                  properties:
+                    read_only:
+                      type: boolean
+                    tool_names:
+                      items:
+                        type: string
+                      type: array
+                  type: object
+                never:
+                  additionalProperties: {}
+                  properties:
+                    read_only:
+                      type: boolean
+                    tool_names:
+                      items:
+                        type: string
+                      type: array
+                  type: object
+              type: object
+            - enum:
+                - always
+              type: string
+            - enum:
+                - never
+              type: string
+            - type: 'null'
+          description: >-
+            Approval policy for tool calls. Defaults to always: a call that
+            needs approval ends the response with an mcp_approval_request item,
+            answered with an mcp_approval_response on the next request.
+        server_description:
+          description: Extra context about the server, shown to the model.
+          type: string
+        server_label:
+          description: >-
+            Label for this MCP server, used in mcp_list_tools and mcp_call
+            items.
+          example: huggingface
+          type: string
+        server_url:
+          description: URL of the remote MCP server (streamable HTTP).
+          example: https://huggingface.co/mcp
+          type: string
+      required:
+        - server_label
       type: object
     Preset:
       description: A preset without version details.

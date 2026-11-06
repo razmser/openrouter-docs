@@ -68,6 +68,8 @@ tags:
     name: Files
   - description: Generation history endpoints
     name: Generations
+  - description: Guardrail Policies endpoints
+    name: Guardrail Policies
   - description: Guardrails endpoints
     name: Guardrails
   - description: Images endpoints
@@ -338,6 +340,20 @@ components:
             - opaque
           example: auto
           type: string
+        frame_count:
+          description: >-
+            Number of animation frames (2-64) when `output_format` is `gif`.
+            Only honored by models that produce animations; each accepts its own
+            range and rejects values outside it. Ignored otherwise.
+          example: 8
+          type: integer
+        frame_duration_ms:
+          description: >-
+            Display time of each animation frame in milliseconds (20-2000) when
+            `output_format` is `gif`. Ignored by models that do not produce
+            animations.
+          example: 100
+          type: integer
         input_references:
           description: >-
             Reference images to guide image-to-image generation, as base64 data
@@ -346,6 +362,21 @@ components:
             $ref: '#/components/schemas/ContentPartImage'
           maxItems: 16
           type: array
+        markup:
+          allOf:
+            - $ref: '#/components/schemas/ContentPartImage'
+            - properties: {}
+              type: object
+          description: >-
+            A transparent PNG overlay (arrows, circles, annotations) with the
+            same dimensions as the first reference image, as a base64 data URL
+            or HTTP(S) URL, guiding where an edit applies. Image-to-image
+            requests only; honored by models with markup-guided editing (OpenAI
+            gpt-image-2.6) and ignored otherwise.
+          example:
+            image_url:
+              url: https://example.com/image.png
+            type: image_url
         model:
           description: The image generation model to use
           example: bytedance-seed/seedream-4.5
@@ -370,12 +401,14 @@ components:
             Encoding of the returned image bytes. Most models produce raster
             formats (png, jpeg, webp). SVG is supported by vectorization models
             (e.g. Quiver) — the SVG markup is UTF-8 base64-encoded in
-            `b64_json`.
+            `b64_json`. GIF produces an animation on models that support it
+            (OpenAI gpt-image-2.6; see `frame_count`).
           enum:
             - png
             - jpeg
             - webp
             - svg
+            - gif
           example: png
           type: string
         prompt:
@@ -1451,6 +1484,7 @@ components:
         - Reka
         - Relace
         - Respan
+        - River
         - Sail Research
         - Sakana AI
         - SambaNova
@@ -1851,6 +1885,9 @@ components:
           additionalProperties: {}
           type: object
         respan:
+          additionalProperties: {}
+          type: object
+        river:
           additionalProperties: {}
           type: object
         runway:
