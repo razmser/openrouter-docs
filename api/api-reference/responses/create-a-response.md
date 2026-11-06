@@ -68,6 +68,8 @@ tags:
     name: Files
   - description: Generation history endpoints
     name: Generations
+  - description: Guardrail Policies endpoints
+    name: Guardrail Policies
   - description: Guardrails endpoints
     name: Guardrails
   - description: Images endpoints
@@ -744,6 +746,7 @@ components:
               - $ref: '#/components/schemas/BashServerTool'
               - $ref: '#/components/schemas/ShellServerTool_OpenRouter'
               - $ref: '#/components/schemas/ToolSearchServerTool'
+              - $ref: '#/components/schemas/McpServerTool_OpenRouter'
           type: array
         top_k:
           type: integer
@@ -2545,6 +2548,7 @@ components:
           required:
             - type
           type: object
+        - $ref: '#/components/schemas/ToolChoiceMcp'
       example: auto
     FunctionTool:
       description: Function tool definition
@@ -2901,6 +2905,7 @@ components:
         - container
       type: object
     McpServerTool:
+      additionalProperties: {}
       description: MCP (Model Context Protocol) tool configuration
       example:
         server_label: my-server
@@ -2912,7 +2917,8 @@ components:
             - items:
                 type: string
               type: array
-            - properties:
+            - additionalProperties: {}
+              properties:
                 read_only:
                   type: boolean
                 tool_names:
@@ -2924,15 +2930,6 @@ components:
         authorization:
           type: string
         connector_id:
-          enum:
-            - connector_dropbox
-            - connector_gmail
-            - connector_googlecalendar
-            - connector_googledrive
-            - connector_microsoftteams
-            - connector_outlookcalendar
-            - connector_outlookemail
-            - connector_sharepoint
           type: string
         headers:
           additionalProperties:
@@ -2942,16 +2939,23 @@ components:
             - 'null'
         require_approval:
           anyOf:
-            - properties:
+            - additionalProperties: {}
+              properties:
                 always:
+                  additionalProperties: {}
                   properties:
+                    read_only:
+                      type: boolean
                     tool_names:
                       items:
                         type: string
                       type: array
                   type: object
                 never:
+                  additionalProperties: {}
                   properties:
+                    read_only:
+                      type: boolean
                     tool_names:
                       items:
                         type: string
@@ -3407,6 +3411,26 @@ components:
       required:
         - type
       type: object
+    McpServerTool_OpenRouter:
+      description: >-
+        OpenRouter built-in server tool: connects the model to a remote MCP
+        server and runs its tools during the response
+      example:
+        parameters:
+          server_label: huggingface
+          server_url: https://huggingface.co/mcp
+        type: openrouter:mcp
+      properties:
+        parameters:
+          $ref: '#/components/schemas/McpServerToolParameters'
+        type:
+          enum:
+            - openrouter:mcp
+          type: string
+      required:
+        - type
+        - parameters
+      type: object
     TraceConfig:
       additionalProperties: {}
       description: >-
@@ -3510,6 +3534,9 @@ components:
                 file_search_call: '#/components/schemas/OutputItemFileSearchCall'
                 function_call: '#/components/schemas/OutputItemFunctionCall'
                 image_generation_call: '#/components/schemas/OutputItemImageGenerationCall'
+                mcp_approval_request: '#/components/schemas/OutputItemMcpApprovalRequest'
+                mcp_call: '#/components/schemas/OutputItemMcpCall'
+                mcp_list_tools: '#/components/schemas/OutputItemMcpListTools'
                 message: '#/components/schemas/OutputMessage'
                 reasoning: '#/components/schemas/OutputItemReasoning'
                 web_search_call: '#/components/schemas/OutputItemWebSearchCall'
@@ -3525,6 +3552,9 @@ components:
               - $ref: '#/components/schemas/OutputItemApplyPatchCall'
               - $ref: '#/components/schemas/OutputItemCodeInterpreterCall'
               - $ref: '#/components/schemas/OutputItemCompaction'
+              - $ref: '#/components/schemas/OutputItemMcpListTools'
+              - $ref: '#/components/schemas/OutputItemMcpCall'
+              - $ref: '#/components/schemas/OutputItemMcpApprovalRequest'
           type: array
         output_text:
           type: string
@@ -3857,6 +3887,7 @@ components:
           file_search_call: '#/components/schemas/OutputFileSearchCallItem'
           function_call: '#/components/schemas/OutputFunctionCallItem'
           image_generation_call: '#/components/schemas/OutputImageGenerationCallItem'
+          mcp_approval_request: '#/components/schemas/McpApprovalRequestItem'
           mcp_call: '#/components/schemas/McpCallItem'
           mcp_list_tools: '#/components/schemas/McpListToolsItem'
           message: '#/components/schemas/OutputMessageItem'
@@ -3921,6 +3952,7 @@ components:
         - $ref: '#/components/schemas/OutputMemoryServerToolItem'
         - $ref: '#/components/schemas/McpListToolsItem'
         - $ref: '#/components/schemas/McpCallItem'
+        - $ref: '#/components/schemas/McpApprovalRequestItem'
         - $ref: '#/components/schemas/OutputSearchModelsServerToolItem'
         - $ref: '#/components/schemas/OutputFusionServerToolItem'
         - $ref: '#/components/schemas/OutputAdvisorServerToolItem'
@@ -6397,6 +6429,10 @@ components:
         server_label: database-server
         type: mcp_call
       properties:
+        approval_request_id:
+          type:
+            - string
+            - 'null'
         arguments:
           type: string
         error:
@@ -6410,6 +6446,14 @@ components:
             - string
             - 'null'
         server_label:
+          type: string
+        status:
+          enum:
+            - in_progress
+            - completed
+            - incomplete
+            - calling
+            - failed
           type: string
         type:
           enum:
@@ -6705,6 +6749,7 @@ components:
                 required:
                   - type
                 type: object
+              - $ref: '#/components/schemas/McpServerTool_OpenRouter'
           type: array
         type:
           enum:
@@ -6979,6 +7024,7 @@ components:
                 required:
                   - type
                 type: object
+              - $ref: '#/components/schemas/McpServerTool_OpenRouter'
           type: array
         type:
           enum:
@@ -7350,6 +7396,7 @@ components:
         - Reka
         - Relace
         - Respan
+        - River
         - Sail Research
         - Sakana AI
         - SambaNova
@@ -7752,6 +7799,9 @@ components:
         respan:
           additionalProperties: {}
           type: object
+        river:
+          additionalProperties: {}
+          type: object
         runway:
           additionalProperties: {}
           type: object
@@ -8020,6 +8070,28 @@ components:
         - type
         - mode
         - tools
+      type: object
+    ToolChoiceMcp:
+      description: >-
+        Forces a call to the named MCP server; `name` narrows it to one of its
+        tools
+      example:
+        server_label: huggingface
+        type: mcp
+      properties:
+        name:
+          type:
+            - string
+            - 'null'
+        server_label:
+          type: string
+        type:
+          enum:
+            - mcp
+          type: string
+      required:
+        - type
+        - server_label
       type: object
     WebSearchEngineEnum:
       description: >-
@@ -8656,6 +8728,95 @@ components:
           example: 5
           type: integer
       type: object
+    McpServerToolParameters:
+      description: Configuration for a remote MCP server tool.
+      example:
+        server_label: huggingface
+        server_url: https://huggingface.co/mcp
+      properties:
+        allowed_tools:
+          anyOf:
+            - items:
+                type: string
+              type: array
+            - additionalProperties: {}
+              properties:
+                read_only:
+                  type: boolean
+                tool_names:
+                  items:
+                    type: string
+                  type: array
+              type: object
+            - type: 'null'
+          description: Restrict the tools exposed to the model to this list or filter.
+        authorization:
+          description: OAuth access token sent as the Authorization bearer to the server.
+          type: string
+        connector_id:
+          description: >-
+            Provider-defined connector identifier, forwarded as written to
+            providers that run MCP themselves.
+          type: string
+        headers:
+          additionalProperties:
+            type: string
+          description: Extra headers sent on every request to the server.
+          type:
+            - object
+            - 'null'
+        require_approval:
+          anyOf:
+            - additionalProperties: {}
+              properties:
+                always:
+                  additionalProperties: {}
+                  properties:
+                    read_only:
+                      type: boolean
+                    tool_names:
+                      items:
+                        type: string
+                      type: array
+                  type: object
+                never:
+                  additionalProperties: {}
+                  properties:
+                    read_only:
+                      type: boolean
+                    tool_names:
+                      items:
+                        type: string
+                      type: array
+                  type: object
+              type: object
+            - enum:
+                - always
+              type: string
+            - enum:
+                - never
+              type: string
+            - type: 'null'
+          description: >-
+            Approval policy for tool calls. Defaults to always: a call that
+            needs approval ends the response with an mcp_approval_request item,
+            answered with an mcp_approval_response on the next request.
+        server_description:
+          description: Extra context about the server, shown to the model.
+          type: string
+        server_label:
+          description: >-
+            Label for this MCP server, used in mcp_list_tools and mcp_call
+            items.
+          example: huggingface
+          type: string
+        server_url:
+          description: URL of the remote MCP server (streamable HTTP).
+          example: https://huggingface.co/mcp
+          type: string
+      required:
+        - server_label
+      type: object
     ResponsesErrorField:
       description: Error information returned from the API
       example:
@@ -9047,6 +9208,143 @@ components:
         - type
         - id
         - status
+      type: object
+    OutputItemMcpApprovalRequest:
+      properties:
+        arguments:
+          type: string
+        id:
+          type: string
+        name:
+          type: string
+        server_label:
+          type: string
+        type:
+          enum:
+            - mcp_approval_request
+          type: string
+      required:
+        - type
+        - id
+        - server_label
+        - name
+        - arguments
+      type: object
+    OutputItemMcpCall:
+      properties:
+        approval_request_id:
+          type:
+            - string
+            - 'null'
+        arguments:
+          type: string
+        error:
+          anyOf:
+            - type: string
+            - properties:
+                code:
+                  type: integer
+                message:
+                  type: string
+                type:
+                  enum:
+                    - mcp_protocol_error
+                  type: string
+              required:
+                - type
+                - code
+                - message
+              type: object
+            - properties:
+                content: {}
+                type:
+                  enum:
+                    - mcp_tool_execution_error
+                  type: string
+              required:
+                - type
+              type: object
+            - properties:
+                code:
+                  type: integer
+                message:
+                  type: string
+                type:
+                  enum:
+                    - http_error
+                  type: string
+              required:
+                - type
+                - code
+                - message
+              type: object
+            - type: 'null'
+        id:
+          type: string
+        name:
+          type: string
+        output:
+          type:
+            - string
+            - 'null'
+        server_label:
+          type: string
+        status:
+          enum:
+            - in_progress
+            - completed
+            - incomplete
+            - calling
+            - failed
+          type: string
+        type:
+          enum:
+            - mcp_call
+          type: string
+      required:
+        - type
+        - id
+        - server_label
+        - name
+        - arguments
+      type: object
+    OutputItemMcpListTools:
+      properties:
+        error:
+          type:
+            - string
+            - 'null'
+        id:
+          type: string
+        server_label:
+          type: string
+        tools:
+          items:
+            properties:
+              annotations: {}
+              description:
+                type:
+                  - string
+                  - 'null'
+              input_schema:
+                additionalProperties: {}
+                type: object
+              name:
+                type: string
+            required:
+              - name
+              - input_schema
+            type: object
+          type: array
+        type:
+          enum:
+            - mcp_list_tools
+          type: string
+      required:
+        - type
+        - id
+        - server_label
+        - tools
       type: object
     OutputMessage:
       example:
@@ -13106,6 +13404,9 @@ components:
               file_search_call: '#/components/schemas/OutputItemFileSearchCall'
               function_call: '#/components/schemas/OutputItemFunctionCall'
               image_generation_call: '#/components/schemas/OutputItemImageGenerationCall'
+              mcp_approval_request: '#/components/schemas/OutputItemMcpApprovalRequest'
+              mcp_call: '#/components/schemas/OutputItemMcpCall'
+              mcp_list_tools: '#/components/schemas/OutputItemMcpListTools'
               message: '#/components/schemas/OutputMessage'
               reasoning: '#/components/schemas/OutputItemReasoning'
               web_search_call: '#/components/schemas/OutputItemWebSearchCall'
@@ -13121,6 +13422,9 @@ components:
             - $ref: '#/components/schemas/OutputItemApplyPatchCall'
             - $ref: '#/components/schemas/OutputItemCodeInterpreterCall'
             - $ref: '#/components/schemas/OutputItemCompaction'
+            - $ref: '#/components/schemas/OutputItemMcpListTools'
+            - $ref: '#/components/schemas/OutputItemMcpCall'
+            - $ref: '#/components/schemas/OutputItemMcpApprovalRequest'
         output_index:
           type: integer
         sequence_number:
@@ -13161,6 +13465,9 @@ components:
               file_search_call: '#/components/schemas/OutputItemFileSearchCall'
               function_call: '#/components/schemas/OutputItemFunctionCall'
               image_generation_call: '#/components/schemas/OutputItemImageGenerationCall'
+              mcp_approval_request: '#/components/schemas/OutputItemMcpApprovalRequest'
+              mcp_call: '#/components/schemas/OutputItemMcpCall'
+              mcp_list_tools: '#/components/schemas/OutputItemMcpListTools'
               message: '#/components/schemas/OutputMessage'
               reasoning: '#/components/schemas/OutputItemReasoning'
               web_search_call: '#/components/schemas/OutputItemWebSearchCall'
@@ -13176,6 +13483,9 @@ components:
             - $ref: '#/components/schemas/OutputItemApplyPatchCall'
             - $ref: '#/components/schemas/OutputItemCodeInterpreterCall'
             - $ref: '#/components/schemas/OutputItemCompaction'
+            - $ref: '#/components/schemas/OutputItemMcpListTools'
+            - $ref: '#/components/schemas/OutputItemMcpCall'
+            - $ref: '#/components/schemas/OutputItemMcpApprovalRequest'
         output_index:
           type: integer
         sequence_number:
@@ -14034,6 +14344,9 @@ components:
             file_search_call: '#/components/schemas/OutputItemFileSearchCall'
             function_call: '#/components/schemas/OutputItemFunctionCall'
             image_generation_call: '#/components/schemas/OutputItemImageGenerationCall'
+            mcp_approval_request: '#/components/schemas/OutputItemMcpApprovalRequest'
+            mcp_call: '#/components/schemas/OutputItemMcpCall'
+            mcp_list_tools: '#/components/schemas/OutputItemMcpListTools'
             message: '#/components/schemas/OutputMessage'
             reasoning: '#/components/schemas/OutputItemReasoning'
             web_search_call: '#/components/schemas/OutputItemWebSearchCall'
@@ -14049,6 +14362,9 @@ components:
           - $ref: '#/components/schemas/OutputItemApplyPatchCall'
           - $ref: '#/components/schemas/OutputItemCodeInterpreterCall'
           - $ref: '#/components/schemas/OutputItemCompaction'
+          - $ref: '#/components/schemas/OutputItemMcpListTools'
+          - $ref: '#/components/schemas/OutputItemMcpCall'
+          - $ref: '#/components/schemas/OutputItemMcpApprovalRequest'
       type: array
     OpenResponsesLogProbs:
       description: Log probability information for a token

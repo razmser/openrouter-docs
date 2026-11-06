@@ -68,6 +68,8 @@ tags:
     name: Files
   - description: Generation history endpoints
     name: Generations
+  - description: Guardrail Policies endpoints
+    name: Guardrail Policies
   - description: Guardrails endpoints
     name: Guardrails
   - description: Images endpoints
@@ -454,6 +456,18 @@ components:
               example: medium
               type:
                 - string
+                - 'null'
+            max_tokens:
+              description: >-
+                Maximum number of tokens the model may spend on reasoning, for
+                models that take a reasoning token budget instead of an effort
+                level. Cannot be combined with `reasoning.effort` or the
+                top-level `reasoning_effort`: a request that sets both is
+                rejected with "Only one of "reasoning.effort" and
+                "reasoning.max_tokens" can be specified".
+              example: 2000
+              type:
+                - integer
                 - 'null'
             summary:
               $ref: '#/components/schemas/ChatReasoningSummaryVerbosityEnum'
@@ -2854,6 +2868,7 @@ components:
         - Reka
         - Relace
         - Respan
+        - River
         - Sail Research
         - Sakana AI
         - SambaNova
@@ -3254,6 +3269,9 @@ components:
           additionalProperties: {}
           type: object
         respan:
+          additionalProperties: {}
+          type: object
+        river:
           additionalProperties: {}
           type: object
         runway:

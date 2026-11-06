@@ -68,6 +68,8 @@ tags:
     name: Files
   - description: Generation history endpoints
     name: Generations
+  - description: Guardrail Policies endpoints
+    name: Guardrail Policies
   - description: Guardrails endpoints
     name: Guardrails
   - description: Images endpoints
@@ -199,18 +201,6 @@ paths:
                   example: 100
                   format: double
                   type: number
-                spawn_agent:
-                  description: Agent identifier for spawn telemetry
-                  example: my-agent
-                  type: string
-                  x-fern-ignore: true
-                  x-speakeasy-ignore: true
-                spawn_cloud:
-                  description: Cloud identifier for spawn telemetry
-                  example: aws-us-east-1
-                  type: string
-                  x-fern-ignore: true
-                  x-speakeasy-ignore: true
                 usage_limit_type:
                   description: >-
                     Optional credit limit reset interval. When set, the credit

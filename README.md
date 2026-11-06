@@ -2,7 +2,7 @@
 
 Markdown mirror of [OpenRouter's documentation](https://openrouter.ai/docs/quickstart).
 
-Contains **524 pages**, discovered from the [page index](https://openrouter.ai/docs/llms.txt) and [supplementary index](https://openrouter.ai/docs/sitemap.xml).
+Contains **549 pages**, discovered from the [page index](https://openrouter.ai/docs/llms.txt) and [supplementary index](https://openrouter.ai/docs/sitemap.xml).
 
 Links to mirrored pages point to local files; external links and images remain online. Code examples and OpenAPI blocks are preserved.
 
@@ -81,6 +81,29 @@ Generated files are replaced by the next successful sync. Original content belon
 - [Get request & usage metadata for a generation](api/api-reference/generations/get-request-&-usage-metadata-for-a-generation.md)
 - [Get stored prompt, completion, and error content for a generation](api/api-reference/generations/get-stored-prompt-completion-and-error-content-for-a-generation.md)
 - [Submit feedback for a generation](api/api-reference/generations/submit-feedback-for-a-generation.md)
+- [Change a member policy assignment](api/api-reference/guardrail-policies/change-a-member-policy-assignment.md)
+- [Change an API key policy assignment](api/api-reference/guardrail-policies/change-an-api-key-policy-assignment.md)
+- [Create a budget policy](api/api-reference/guardrail-policies/create-a-budget-policy.md)
+- [Create a model availability policy](api/api-reference/guardrail-policies/create-a-model-availability-policy.md)
+- [Create a moderation policy](api/api-reference/guardrail-policies/create-a-moderation-policy.md)
+- [Create a workspace-wide policy](api/api-reference/guardrail-policies/create-a-workspace-wide-policy.md)
+- [Delete a budget policy](api/api-reference/guardrail-policies/delete-a-budget-policy.md)
+- [Delete a model availability policy](api/api-reference/guardrail-policies/delete-a-model-availability-policy.md)
+- [Delete a moderation policy](api/api-reference/guardrail-policies/delete-a-moderation-policy.md)
+- [Delete a workspace-wide policy](api/api-reference/guardrail-policies/delete-a-workspace-wide-policy.md)
+- [Get a budget policy](api/api-reference/guardrail-policies/get-a-budget-policy.md)
+- [Get a member policy assignment](api/api-reference/guardrail-policies/get-a-member-policy-assignment.md)
+- [Get a model availability policy](api/api-reference/guardrail-policies/get-a-model-availability-policy.md)
+- [Get a moderation policy](api/api-reference/guardrail-policies/get-a-moderation-policy.md)
+- [Get an API key policy assignment](api/api-reference/guardrail-policies/get-an-api-key-policy-assignment.md)
+- [List budget policies](api/api-reference/guardrail-policies/list-budget-policies.md)
+- [List model availability policies](api/api-reference/guardrail-policies/list-model-availability-policies.md)
+- [List moderation policies](api/api-reference/guardrail-policies/list-moderation-policies.md)
+- [List workspace-wide policies](api/api-reference/guardrail-policies/list-workspace-wide-policies.md)
+- [Update a budget policy](api/api-reference/guardrail-policies/update-a-budget-policy.md)
+- [Update a model availability policy](api/api-reference/guardrail-policies/update-a-model-availability-policy.md)
+- [Update a moderation policy](api/api-reference/guardrail-policies/update-a-moderation-policy.md)
+- [Update a workspace-wide policy](api/api-reference/guardrail-policies/update-a-workspace-wide-policy.md)
 - [Bulk assign keys to a guardrail](api/api-reference/guardrails/bulk-assign-keys-to-a-guardrail.md)
 - [Bulk assign members to a guardrail](api/api-reference/guardrails/bulk-assign-members-to-a-guardrail.md)
 - [Bulk unassign keys from a guardrail](api/api-reference/guardrails/bulk-unassign-keys-from-a-guardrail.md)
@@ -253,6 +276,7 @@ Generated files are replaced by the next successful sync. Original content belon
 - [Alpha.Extractions](client-sdks/python/sdks/extractions/README.md)
 - [Files](client-sdks/python/sdks/files/README.md)
 - [Generations](client-sdks/python/sdks/generations/README.md)
+- [Guardrail Policies](client-sdks/python/sdks/guardrailpolicies/README.md)
 - [Guardrails](client-sdks/python/sdks/guardrails/README.md)
 - [Images](client-sdks/python/sdks/images/README.md)
 - [Models](client-sdks/python/sdks/models/README.md)
@@ -293,6 +317,7 @@ Generated files are replaced by the next successful sync. Original content belon
 - [Alpha.Extractions](client-sdks/typescript/sdks/extractions/README.md)
 - [Files](client-sdks/typescript/sdks/files/README.md)
 - [Generations](client-sdks/typescript/sdks/generations/README.md)
+- [Guardrail Policies](client-sdks/typescript/sdks/guardrailpolicies/README.md)
 - [Guardrails](client-sdks/typescript/sdks/guardrails/README.md)
 - [Images](client-sdks/typescript/sdks/images/README.md)
 - [Models](client-sdks/typescript/sdks/models/README.md)

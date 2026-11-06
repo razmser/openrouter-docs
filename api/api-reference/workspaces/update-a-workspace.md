@@ -68,6 +68,8 @@ tags:
     name: Files
   - description: Generation history endpoints
     name: Generations
+  - description: Guardrail Policies endpoints
+    name: Guardrail Policies
   - description: Guardrails endpoints
     name: Guardrails
   - description: Images endpoints
@@ -289,6 +291,7 @@ components:
               - openrouter:datetime
               - openrouter:fusion
               - openrouter:image_generation
+              - openrouter:mcp
               - openrouter:experimental__search_models
               - openrouter:shell
               - openrouter:subagent

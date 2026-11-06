@@ -68,6 +68,8 @@ tags:
     name: Files
   - description: Generation history endpoints
     name: Generations
+  - description: Guardrail Policies endpoints
+    name: Guardrail Policies
   - description: Guardrails endpoints
     name: Guardrails
   - description: Images endpoints
@@ -992,6 +994,7 @@ components:
         - Reka
         - Relace
         - Respan
+        - River
         - Sail Research
         - Sakana AI
         - SambaNova
@@ -1392,6 +1395,9 @@ components:
           additionalProperties: {}
           type: object
         respan:
+          additionalProperties: {}
+          type: object
+        river:
           additionalProperties: {}
           type: object
         runway:
