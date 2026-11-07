@@ -4,7 +4,7 @@
 
 # Update a private endpoint
 
-> Change any of the endpoint fields you own in one call; only the fields present change, and the response is the whole endpoint. `pricing` and `declared_parameters` replace their stored value, `settings` changes only the fields it names (`null` clears a limit or restores the provider default); routing picks these up for subsequent requests on drafts and active endpoints alike. `upstream_model_id`, `base_url`, `declared_zdr` and `declared_region` re-point a draft: an omitted `upstream_model_id` or `base_url` keeps the stored one, omitted data-policy declarations are kept while the upstream is unchanged and cleared when it changes, and any upstream change clears earlier validation. Naming an upstream field on an active endpoint returns 409 `already_active` and writes nothing; delete and re-create instead. Every group is checked before anything is written: 400 `parameters_invalid` when `tool_choice` is declared without `tools` tested or declared, 400 `settings_invalid` when `max_prompt_tokens` exceeds the context length, both completion APIs are off, or `excluded_parameters` names a tested parameter, 422 `pricing_invalid` for rates the provider strategy cannot represent. [Management key](../../../guides/overview/auth/management-api-keys.md) required.
+> Change any of the endpoint fields you own in one call; only the fields present change, and the response is the whole endpoint. `pricing` and `declared_parameters` replace their stored value, `settings` changes only the fields it names (`null` clears a limit or restores the provider default); routing picks these up for subsequent requests on drafts and active endpoints alike. `declared_zdr` and `declared_region` change on drafts and active endpoints alike; on an active endpoint the change keeps its validation and tested parameters, and routing applies it to subsequent requests. `upstream_model_id` and `base_url` re-point a draft: an omitted `upstream_model_id` or `base_url` keeps the stored one, omitted data-policy declarations are kept while the upstream is unchanged and cleared when it changes, and any change to the upstream or declarations of a draft clears earlier validation. Naming `upstream_model_id` or `base_url` on an active endpoint returns 409 `already_active` and writes nothing, even alongside other fields; delete and re-create instead. Every group is checked before anything is written: 400 `parameters_invalid` when `tool_choice` is declared without `tools` tested or declared, 400 `settings_invalid` when `max_prompt_tokens` exceeds the context length, both completion APIs are off, or `excluded_parameters` names a tested parameter, 422 `pricing_invalid` for rates the provider strategy cannot represent. [Management key](../../../guides/overview/auth/management-api-keys.md) required.
 
 
 
@@ -147,13 +147,17 @@ paths:
         `declared_parameters` replace their stored value, `settings` changes
         only the fields it names (`null` clears a limit or restores the provider
         default); routing picks these up for subsequent requests on drafts and
-        active endpoints alike. `upstream_model_id`, `base_url`, `declared_zdr`
-        and `declared_region` re-point a draft: an omitted `upstream_model_id`
-        or `base_url` keeps the stored one, omitted data-policy declarations are
-        kept while the upstream is unchanged and cleared when it changes, and
-        any upstream change clears earlier validation. Naming an upstream field
-        on an active endpoint returns 409 `already_active` and writes nothing;
-        delete and re-create instead. Every group is checked before anything is
+        active endpoints alike. `declared_zdr` and `declared_region` change on
+        drafts and active endpoints alike; on an active endpoint the change
+        keeps its validation and tested parameters, and routing applies it to
+        subsequent requests. `upstream_model_id` and `base_url` re-point a
+        draft: an omitted `upstream_model_id` or `base_url` keeps the stored
+        one, omitted data-policy declarations are kept while the upstream is
+        unchanged and cleared when it changes, and any change to the upstream or
+        declarations of a draft clears earlier validation. Naming
+        `upstream_model_id` or `base_url` on an active endpoint returns 409
+        `already_active` and writes nothing, even alongside other fields; delete
+        and re-create instead. Every group is checked before anything is
         written: 400 `parameters_invalid` when `tool_choice` is declared without
         `tools` tested or declared, 400 `settings_invalid` when
         `max_prompt_tokens` exceeds the context length, both completion APIs are
@@ -279,11 +283,11 @@ components:
   schemas:
     UpdatePrivateEndpointRequest:
       description: >-
-        Only the fields present change. `base_url`, `upstream_model_id`,
-        `declared_zdr` and `declared_region` are accepted on a draft only;
-        `pricing` and `declared_parameters` replace their value; `settings` is
-        itself a partial update where `null` clears a limit or restores the
-        provider default.
+        Only the fields present change. `base_url` and `upstream_model_id` are
+        accepted on a draft only; `declared_zdr` and `declared_region` on drafts
+        and active endpoints; `pricing` and `declared_parameters` replace their
+        value; `settings` is itself a partial update where `null` clears a limit
+        or restores the provider default.
       example:
         declared_parameters:
           - seed

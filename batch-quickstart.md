@@ -59,7 +59,7 @@ A batch has one model, one endpoint, and a list of requests. Each request `body`
 
 ## Add images and files
 
-Batch accepts text, public image URLs, and some file URLs. It returns text and embeddings only. What works depends on the provider that runs the batch, so pin a provider with [`provider.only`](#choose-a-provider) when you send images or files.
+Batch accepts text, public image URLs, and some file URLs. It returns text and embeddings only. What works depends on the provider that runs the batch, so pin a provider with [`provider.only`](#choose-a-provider) when you send images. A batch with file URLs or inline files that lands on a provider that can't take them moves to another provider for the model that can. This happens only for batches billed through OpenRouter, not ones sent with your own provider key, when `provider.allow_fallbacks` is not `false` and, if you set `provider.only`, the new provider is in that list.
 
 | Provider | Image URL | File URL |
 | - | - | - |
@@ -71,11 +71,11 @@ Batch accepts text, public image URLs, and some file URLs. It returns text and e
 | Google AI Studio | Yes | No. Public YouTube URLs work as `video_url` parts. |
 | xAI, Together, Sail Research | Yes | No |
 | Alibaba (`/v1/chat/completions` only) | Yes | No |
-| Fireworks, Parasail, Morph | No | No |
+| Fireworks, Morph | No | No |
 
 File parts use the endpoint's own type: `input_file` on `/v1/responses`, `file` on `/v1/chat/completions`, and `document` on `/v1/messages`. The entries below use the Responses shape so they drop into the batch above; on a `/v1/chat/completions` batch, send `messages` with `image_url` and `file` parts instead.
 
-On Google Vertex, image URLs must use HTTPS, end in `.png`, `.jpg`, `.jpeg`, `.webp`, `.heic`, or `.heif`, and not point at Google API, Googleusercontent, or Cloud Storage HTTPS hosts. A provider can also turn off image URLs for one model. File URLs work only on models that list file input.
+On Google Vertex, image URLs must use HTTPS, end in `.png`, `.jpg`, `.jpeg`, `.webp`, `.heic`, or `.heif`, and not point at Google API, Googleusercontent, or Cloud Storage HTTPS hosts. A provider can also turn off image URLs for one model. File URLs work only on models that list file input. If the provider chosen at submit can't take file URLs, the batch moves to the cheapest other provider for the model that can, under the same conditions, as long as it costs at most twice the original provider's price. It fails with `No batch provider for model '<model>' that this batch can route to accepts file URLs; use the sync API.` when no provider qualifies.
 
 ```json title="Image URL" lines theme={null}
 {
@@ -319,6 +319,8 @@ app.post(
 
 Call `GET /api/v1/batches/{id}` until the status is final: `completed`, `failed`, `expired`, or `cancelled`. Once a minute is enough. Back off if you get `429`.
 
+If a batch the provider ran ends `failed`, `expired`, or `cancelled` and the provider reports fewer requests than OpenRouter accepted, `request_counts.total` is the accepted number and the requests the provider did not report count as `failed`. Older batches that have no stored accepted count keep the provider's counts.
+
 ```typescript title="Poll until final" lines theme={null}
 const FINAL = new Set(['completed', 'failed', 'expired', 'cancelled']);
 
@@ -528,7 +530,7 @@ OpenRouter also deletes provider-side files, whatever `upstream.status` says:
 
 | Provider | Files deleted |
 | - | - |
-| OpenAI, Mistral, DeepInfra, Morph, Alibaba, Parasail, xAI | Uploaded input, output, and error files |
+| OpenAI, Mistral, DeepInfra, Morph, Alibaba, xAI | Uploaded input, output, and error files |
 | Fireworks | Input and output datasets |
 | Google AI Studio | Uploaded input and output files |
 | Together | Uploaded input. Together does not allow deleting generated output. |

@@ -20,7 +20,7 @@ This is ideal for:
 
 ## Usage
 
-Send a [Responses API](../../../api_reference/responses/overview.md) request with a `~author/family-latest` slug as the model:
+Send a [Responses API](../../api_reference/responses/overview.md) request with a `~author/family-latest` slug as the model:
 
 ```typescript title="TypeScript SDK" lines theme={null}
 import { OpenRouter } from '@openrouter/sdk';
@@ -184,7 +184,7 @@ You can see the exact slug your last request resolved to in the response's `mode
 
 ## Related
 
-* [Auto Router](auto-router.md) - Cross-model intelligent selection (paid models)
-* [Free Models Router](free-router.md) - Route to available free models
-* [Model Variants](../model-variants/free.md) - `:free`, `:nitro`, and other suffixes
-* [API Reference: Responses](../../../api_reference/responses/overview.md)
+* [Auto Router](../routing/routers/auto-router.md) - Cross-model intelligent selection (paid models)
+* [Free Models Router](../routing/routers/free-router.md) - Route to available free models
+* [Model Variants](../routing/model-variants/free.md) - `:free`, `:nitro`, and other suffixes
+* [API Reference: Responses](../../api_reference/responses/overview.md)

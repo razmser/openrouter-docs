@@ -1145,6 +1145,9 @@ components:
       type: object
     DecisionsNoulAnswer:
       properties:
+        confidence:
+          format: double
+          type: number
         noul:
           format: double
           type: number

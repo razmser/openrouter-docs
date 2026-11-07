@@ -407,6 +407,14 @@ The following documented routes reject regular API keys and must be called with 
 | `GET` | `/api/v1/organization/settings` | [Get organization settings](../../../api/api-reference/organization/get-organization-settings.md) |
 | `PATCH` | `/api/v1/organization/settings` | [Update organization settings](../../../api/api-reference/organization/update-organization-settings.md) |
 
+### Presets
+
+| Method | Route | Reference |
+| - | - | - |
+| `POST` | `/api/v1/presets/{slug}/chat/completions` | [Create a preset from a chat-completions request body](../../../api/api-reference/presets/create-a-preset-from-a-chat-completions-request-body.md) |
+| `POST` | `/api/v1/presets/{slug}/messages` | [Create a preset from a messages request body](../../../api/api-reference/presets/create-a-preset-from-a-messages-request-body.md) |
+| `POST` | `/api/v1/presets/{slug}/responses` | [Create a preset from a responses request body](../../../api/api-reference/presets/create-a-preset-from-a-responses-request-body.md) |
+
 ### Private Endpoints
 
 | Method | Route | Reference |

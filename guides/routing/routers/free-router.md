@@ -185,7 +185,7 @@ If you prefer to use a specific free model rather than random selection, you can
 * [Free Models Router in Chat Playground](../../../cookbook/get-started/free-models-router-playground.md) - Try the router without writing code
 * [Free Variant](../model-variants/free.md) - Use the `:free` suffix for specific models
 * [Auto Router](auto-router.md) - Intelligent model selection (paid models)
-* [Latest Model Resolution](latest-resolution.md) - Always target the newest version of a model family
-* [Body Builder](body-builder.md) - Generate multiple parallel API requests
+* [Latest Model Resolution](../../features/latest-resolution.md) - Always target the newest version of a model family
+* [Body Builder](../../features/body-builder.md) - Generate multiple parallel API requests
 * [Model Fallbacks](../model-fallbacks.md) - Configure fallback models
 * [EU in-region routing on Business](https://openrouter.ai/business/eu) - Router models are excluded from regional model lists, so pick an EU-eligible model

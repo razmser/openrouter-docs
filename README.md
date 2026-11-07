@@ -2,7 +2,7 @@
 
 Markdown mirror of [OpenRouter's documentation](https://openrouter.ai/docs/quickstart).
 
-Contains **549 pages**, discovered from the [page index](https://openrouter.ai/docs/llms.txt) and [supplementary index](https://openrouter.ai/docs/sitemap.xml).
+Contains **551 pages**, discovered from the [page index](https://openrouter.ai/docs/llms.txt) and [supplementary index](https://openrouter.ai/docs/sitemap.xml).
 
 Links to mirrored pages point to local files; external links and images remain online. Code examples and OpenAPI blocks are preserved.
 
@@ -435,6 +435,7 @@ Generated files are replaced by the next successful sync. Original content belon
 - [Zapier](guides/community/zapier.md)
 - [Activity](guides/features/activity.md)
 - [Batch API](guides/features/batch-api.md)
+- [Body Builder](guides/features/body-builder.md)
 - [Broadcast](guides/features/broadcast.md)
 - [Arize AX](guides/features/broadcast/arize.md)
 - [Google BigQuery](guides/features/broadcast/bigquery.md)
@@ -469,6 +470,7 @@ Generated files are replaced by the next successful sync. Original content belon
 - [Sensitive Info Guardrail](guides/features/guardrails/sensitive-info.md)
 - [In-Region Routing](guides/features/in-region-routing.md)
 - [Input & Output Logging](guides/features/input-output-logging.md)
+- [Latest Model Resolution](guides/features/latest-resolution.md)
 - [Logs](guides/features/logs.md)
 - [Message Transforms](guides/features/message-transforms.md)
 - [Notifications](guides/features/notifications.md)
@@ -479,7 +481,6 @@ Generated files are replaced by the next successful sync. Original content belon
 - [Web Search](guides/features/plugins/web-search.md)
 - [Presets](guides/features/presets.md)
 - [Response Caching](guides/features/response-caching.md)
-- [Router Metadata](guides/features/router-metadata.md)
 - [SCIM Group Mappings](guides/features/scim-mappings.md)
 - [Server Tools](guides/features/server-tools.md)
 - [Advisor](guides/features/server-tools/advisor.md)
@@ -549,13 +550,14 @@ Generated files are replaced by the next successful sync. Original content belon
 - [Thinking Variant](guides/routing/model-variants/thinking.md)
 - [Private Endpoints](guides/routing/private-endpoints.md)
 - [Provider Routing](guides/routing/provider-selection.md)
+- [Auto Code](guides/routing/routers/auto-code.md)
 - [Auto Router](guides/routing/routers/auto-router.md)
-- [Body Builder](guides/routing/routers/body-builder.md)
 - [Free Models Router](guides/routing/routers/free-router.md)
 - [Fusion Router](guides/routing/routers/fusion-router.md)
 - [Jev Router](guides/routing/routers/jev-router.md)
-- [Latest Model Resolution](guides/routing/routers/latest-resolution.md)
+- [Model Routing](guides/routing/routers/overview.md)
 - [Pareto Router](guides/routing/routers/pareto-router.md)
+- [Router Metadata](guides/routing/routers/router-metadata.md)
 - [Switchyard](guides/routing/routers/switchyard-router.md)
 - [Install OpenRouter](install.md)
 - [Quickstart](quickstart.md)
