@@ -288,7 +288,7 @@ Send the `X-OpenRouter-Metadata: enabled` header to see what the plugin did. The
 * `judge_failure` names the reason when the judge could not be used (for example `timeout`), and is absent otherwise.
 * `degraded_reason` names the reason for `caller_order` (`single_candidate`, `equal_pricing`, or an infrastructure reason such as `service_binding_missing`), and is present only when `strategy` is `caller_order`.
 
-For the full response shape, see [Router Metadata](../../features/router-metadata.md).
+For the full response shape, see [Router Metadata](router-metadata.md).
 
 ## Pricing
 
@@ -307,6 +307,6 @@ Requests to `nvidia/switchyard` are billed at the rate of the model that answere
 
 * [Model Fallbacks](../model-fallbacks.md): the `models` array and fallback behavior
 * [Provider Routing](../provider-selection.md): constraints applied to every candidate
-* [Router Metadata](../../features/router-metadata.md): inspect the pipeline on any response
+* [Router Metadata](router-metadata.md): inspect the pipeline on any response
 * [Auto Router](auto-router.md): select a model without supplying a shortlist
 * [Fusion Router](fusion-router.md): multi-model deliberation in one call

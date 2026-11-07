@@ -1149,6 +1149,18 @@ components:
           type: bm25
         validation: runtime
       properties:
+        interface:
+          description: >-
+            How the universal profile exposes the hidden catalog to the
+            provider. Absent or `wrappers`: the `tool_search` and `tool_exec`
+            tools. `code_mode`: one `tool_code` tool that runs a short
+            JavaScript program in which `search()` and `call()` reach the
+            catalog, so several searches and calls complete in one tool result.
+            Experimental.
+          enum:
+            - wrappers
+            - code_mode
+          type: string
         profile:
           description: >-
             Loading profile. `portable` serves the `defer_loading` tools with
@@ -1164,6 +1176,17 @@ components:
         protocol:
           enum:
             - v1
+          type: string
+        scope:
+          description: >-
+            Which tools the universal profile defers. Absent or `all`: every
+            wrappable tool outside the coding-harness core set. `mcp`: only MCP
+            server tools (`mcp__*` names and Responses namespaces outside
+            `functions`); the harness keeps its own built-in tools direct.
+            Experimental.
+          enum:
+            - all
+            - mcp
           type: string
         search:
           $ref: '#/components/schemas/DeferredToolsSearchStrategy'
@@ -2646,7 +2669,7 @@ components:
         using an image generation model
       example:
         parameters:
-          model: openai/gpt-5-image
+          model: openai/gpt-image-2.6-flare
           quality: high
           size: 1024x1024
         type: openrouter:image_generation
@@ -4773,14 +4796,15 @@ components:
         output_format, output_compression, moderation, etc.) plus a model field.
       example:
         aspect_ratio: '16:9'
-        model: openai/gpt-5-image
+        model: openai/gpt-image-2.6-flare
         quality: high
       properties:
         model:
           description: >-
-            Which image generation model to use (e.g. "openai/gpt-5-image").
-            Defaults to "openai/gpt-5-image".
-          example: openai/gpt-5-image
+            Which image generation model to use (e.g.
+            "openai/gpt-image-2.6-flare"). Defaults to
+            "openai/gpt-image-2.6-flare".
+          example: openai/gpt-image-2.6-flare
           type: string
       type: object
     SearchModelsServerToolConfig:

@@ -157,7 +157,7 @@ If no eligible model remains in the pool, the request fails with `404`. The erro
 
 ## Seeing what the router did
 
-The response's `model` field identifies the model that served the request. Send `X-OpenRouter-Metadata: enabled` for more detail in [router metadata](../../features/router-metadata.md). The `jev-router` entry in `openrouter_metadata.pipeline` includes:
+The response's `model` field identifies the model that served the request. Send `X-OpenRouter-Metadata: enabled` for more detail in [router metadata](router-metadata.md). The `jev-router` entry in `openrouter_metadata.pipeline` includes:
 
 | Field | Meaning |
 | - | - |
@@ -197,7 +197,7 @@ Jev Router is available only in the global data region and only in workspaces th
 
 * [Jev](../../community/jev.md): the decision model behind the router
 * [Auto Router](auto-router.md): a separate router with its own cost-tier behavior
-* [Router metadata](../../features/router-metadata.md): the `openrouter_metadata` response field
+* [Router metadata](router-metadata.md): the `openrouter_metadata` response field
 
 ## Author routers
 

@@ -6,7 +6,7 @@
 
 > Pick a coding model by minimum coding score without choosing a specific model
 
-The [Pareto Router](https://openrouter.ai/openrouter/pareto-code) (`openrouter/pareto-code`) is a way to have OpenRouter always pick a strong coding model for your needs without committing to a specific one. You express a single `min_coding_score` preference between `0` and `1`, and the router routes your request to a coding model that meets that bar.
+The [Pareto Router](https://openrouter.ai/openrouter/pareto-code) (`openrouter/pareto-code`) selects a coding model based on benchmark scores. You set a single `min_coding_score` preference between `0` and `1`, and the router sends your request to one coding model that meets that bar. It picks one model per request by score and price and doesn't adapt its choice to each turn the way the [Auto Router](auto-router.md) does. [Session stickiness](#session-stickiness) keeps a session on the same model when it can.
 
 ## Overview
 
@@ -242,5 +242,5 @@ The Pareto Router itself adds no fee. You pay only for the underlying model that
 
 * [Auto Router](auto-router.md) - Intelligent model selection across all task types
 * [Free Models Router](free-router.md) - Zero-cost model selection
-* [Body Builder](body-builder.md) - Generate multiple parallel API requests
+* [Body Builder](../../features/body-builder.md) - Generate multiple parallel API requests
 * [Model Fallbacks](../model-fallbacks.md) - Configure fallback models

@@ -161,7 +161,7 @@ A request rejected by a data region restriction is refused before any inference 
 }
 ```
 
-If you opt in to [router metadata](router-metadata.md) via the `X-OpenRouter-Experimental-Metadata: enabled` header, the 403 response also includes the full `openrouter_metadata` object with routing context and a `pipeline` array showing every guardrail stage that ran:
+If you opt in to [router metadata](../routing/routers/router-metadata.md) via the `X-OpenRouter-Experimental-Metadata: enabled` header, the 403 response also includes the full `openrouter_metadata` object with routing context and a `pipeline` array showing every guardrail stage that ran:
 
 ```json expandable lines theme={null}
 {
@@ -204,7 +204,7 @@ If you opt in to [router metadata](router-metadata.md) via the `X-OpenRouter-Exp
 }
 ```
 
-See [Router Metadata, Error Responses](router-metadata.md#error-responses) and [Errors, Guardrail Errors](../../api_reference/errors-and-debugging.md#guardrail-errors) for the full response shapes and pipeline stage reference.
+See [Router Metadata, Error Responses](../routing/routers/router-metadata.md#error-responses) and [Errors, Guardrail Errors](../../api_reference/errors-and-debugging.md#guardrail-errors) for the full response shapes and pipeline stage reference.
 
 ## API Access
 

@@ -320,6 +320,6 @@ Example model references that work:
 
 ## Related
 
-* [Auto Router](auto-router.md) - Automatic single-model selection
-* [Model Fallbacks](../model-fallbacks.md) - Configure fallback models
-* [Structured Outputs](../../features/structured-outputs.md) - Get structured JSON responses
+* [Auto Router](../routing/routers/auto-router.md) - Automatic single-model selection
+* [Model Fallbacks](../routing/model-fallbacks.md) - Configure fallback models
+* [Structured Outputs](structured-outputs.md) - Get structured JSON responses
