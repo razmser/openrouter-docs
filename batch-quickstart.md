@@ -59,7 +59,7 @@ A batch has one model, one endpoint, and a list of requests. Each request `body`
 
 ## Add images and files
 
-Batch accepts text, public image URLs, and some file URLs. It returns text and embeddings only. What works depends on the provider that runs the batch, so pin a provider with [`provider.only`](#choose-a-provider) when you send images. A batch with file URLs or inline files that lands on a provider that can't take them moves to another provider for the model that can. This happens only for batches billed through OpenRouter, not ones sent with your own provider key, when `provider.allow_fallbacks` is not `false` and, if you set `provider.only`, the new provider is in that list.
+Batch accepts text, public image URLs, and some file URLs. It returns text and embeddings only. What works depends on the provider that runs the batch, so pin a provider with [`provider.only`](#choose-a-provider) when you send images. A batch with file URLs, inline files, or YouTube URLs that lands on a provider that can't take them moves to another provider for the model that can. This happens only for batches billed through OpenRouter, not ones sent with your own provider key, when `provider.allow_fallbacks` is not `false` and, if you set `provider.only`, the new provider is in that list.
 
 | Provider | Image URL | File URL |
 | - | - | - |
@@ -73,9 +73,9 @@ Batch accepts text, public image URLs, and some file URLs. It returns text and e
 | Alibaba (`/v1/chat/completions` only) | Yes | No |
 | Fireworks, Morph | No | No |
 
-File parts use the endpoint's own type: `input_file` on `/v1/responses`, `file` on `/v1/chat/completions`, and `document` on `/v1/messages`. The entries below use the Responses shape so they drop into the batch above; on a `/v1/chat/completions` batch, send `messages` with `image_url` and `file` parts instead.
+File parts use the endpoint's own type: `input_file` on `/v1/responses`, `file` on `/v1/chat/completions`, and `document` on `/v1/messages`. The entries below use the Responses shape so they drop into the batch above; on a `/v1/chat/completions` batch, send `messages` with `image_url` and `file` parts instead. The YouTube entry is the exception: it is a `/v1/chat/completions` line, so use it in a chat completions batch with a model that takes video input, such as `google/gemini-2.5-flash`.
 
-On Google Vertex, image URLs must use HTTPS, end in `.png`, `.jpg`, `.jpeg`, `.webp`, `.heic`, or `.heif`, and not point at Google API, Googleusercontent, or Cloud Storage HTTPS hosts. A provider can also turn off image URLs for one model. File URLs work only on models that list file input. If the provider chosen at submit can't take file URLs, the batch moves to the cheapest other provider for the model that can, under the same conditions, as long as it costs at most twice the original provider's price. It fails with `No batch provider for model '<model>' that this batch can route to accepts file URLs; use the sync API.` when no provider qualifies.
+On Google Vertex, image URLs must use HTTPS, end in `.png`, `.jpg`, `.jpeg`, `.webp`, `.heic`, or `.heif`, and not point at Google API, Googleusercontent, or Cloud Storage HTTPS hosts. A provider can also turn off image URLs for one model. File URLs work only on models that list file input. If the provider chosen at submit can't take file URLs, the batch moves to the cheapest other provider for the model that can, under the same conditions, as long as it costs at most twice the original provider's price. It fails with `No batch provider for model '<model>' that this batch can route to accepts file URLs; use the sync API.` when no provider qualifies. Public YouTube URLs work only on Google AI Studio, as `video_url` parts on `/v1/chat/completions`. For a model that takes video input, a YouTube batch that lands on Google Vertex moves to Google AI Studio for the same model under the same conditions and price limit, and fails with `No batch provider for model '<model>' that this batch can route to accepts YouTube URLs; use the sync API.` when no provider qualifies.
 
 ```json title="Image URL" lines theme={null}
 {
@@ -104,6 +104,23 @@ On Google Vertex, image URLs must use HTTPS, end in `.png`, `.jpg`, `.jpeg`, `.w
         "content": [
           { "type": "input_text", "text": "Summarize this contract." },
           { "type": "input_file", "filename": "contract.pdf", "file_url": "https://example.com/contract.pdf" }
+        ]
+      }
+    ]
+  }
+}
+```
+
+```json title="YouTube URL (/v1/chat/completions)" lines theme={null}
+{
+  "custom_id": "video-1",
+  "body": {
+    "messages": [
+      {
+        "role": "user",
+        "content": [
+          { "type": "text", "text": "Summarize this video in one sentence." },
+          { "type": "video_url", "video_url": { "url": "https://www.youtube.com/watch?v=jNQXAC9IVRw" } }
         ]
       }
     ]
@@ -231,7 +248,7 @@ Most batches finish in minutes, and nearly all finish within 24 hours. Use a web
 
 ### Option A: Wait with a webhook
 
-Set `callback_url` on the batch or **Default batch webhook URL** in your workspace settings. A batch-level URL overrides the workspace default and must use public HTTPS. A private or internal address makes the submit fail with `400`.
+Set `callback_url` on the batch or **Default batch webhook URL** in your workspace settings. A batch-level URL overrides the workspace default and must use public HTTPS, and its hostname must resolve in DNS to public addresses only. A private or internal address, or a hostname that does not resolve, makes the submit fail with `400`. If OpenRouter's DNS resolver fails while checking the hostname, the submit returns `503`; retry it. OpenRouter checks the hostname again before it hands the event to its webhook delivery service, and skips the webhook if the hostname now resolves to a private address. That service handles delivery retries; these checks are not repeated on each retry or redirect. Webhooks are delivered over IPv4, so the hostname needs at least one public `A` record; a host with only `AAAA` records never receives deliveries.
 
 OpenRouter sends one `POST` when the batch reaches a final status:
 
@@ -693,7 +710,7 @@ When the BYOK-only switch is on for your account or workspace, batches run only 
 
 | Status | Cause | Fix |
 | - | - | - |
-| `400` | Bad input, `requests` before other fields, a private `callback_url`, or a model with no batch variant. | Read `error.message`. Pick a model from the [batch models list](https://openrouter.ai/models?variant=batch). |
+| `400` | Bad input, `requests` before other fields, a private or unresolvable `callback_url`, or a model with no batch variant. | Read `error.message`. Pick a model from the [batch models list](https://openrouter.ai/models?variant=batch). |
 | `402` | The estimated cost is more than your balance. | Add credits, or split the batch. |
 | `404` | No provider in `provider.only`, your account's allowlist, or your guardrails serves the model in batch mode, or every batch endpoint for the model requires your own [provider key](guides/overview/auth/byok.md) and no eligible key is configured (the error names those providers). | Change `provider.only`, your provider settings, or the guardrail on your key; add a provider key; or pick a model with a platform-billed batch endpoint. |
 | `409` | You tried to delete a batch that is still running. | Wait until it finishes. |

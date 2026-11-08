@@ -852,7 +852,10 @@ components:
     DeferredToolsControl:
       description: >-
         Opt-in versioned router-level deferred-tool protocol. Replay assistant
-        reasoning unchanged on continuation; keep the catalog unchanged.
+        reasoning unchanged on continuation. The portable profile needs the
+        catalog unchanged across a continuation; the universal profile accepts a
+        changed catalog and, with `announce_catalog_changes`, tells the model
+        about it.
       example:
         profile: portable
         protocol: v1
@@ -861,6 +864,42 @@ components:
           type: bm25
         validation: runtime
       properties:
+        announce_catalog_changes:
+          description: >-
+            Universal profile only. When true, a catalog whose deferred tools
+            changed between two of the model's own turns (a client that connects
+            MCP servers while the model works) is re-announced before the next
+            model turn, with the sources added, changed and removed since the
+            previous index, or that no deferred tools remain. Applies when the
+            router lists the catalog itself; a client whose own tool search was
+            adopted lists its deferred tools itself and is not re-announced. The
+            announcement shares the result budget of the turn and is skipped
+            when it does not fit. Absent or false: the catalog index is
+            announced on a user turn only.
+          type: boolean
+        cascade_mode:
+          description: >-
+            How a universal `tool_search` query reaches the client's own tool
+            search. Absent or `keywords`: a `select:` query becomes the words of
+            the selected names and the limit is always filled. `native`: a
+            `select:` query passes through verbatim when the client search
+            documents `select:`, and the limit field is sent only when the model
+            gave one, unless the client search requires it, in which case its
+            documented default is sent. Experimental.
+          enum:
+            - keywords
+            - native
+          type: string
+        hint:
+          description: >-
+            Universal profile only. Caller text announced to the model with the
+            deferred catalog before its first turn, for example which sources
+            the task needs. Repeated only when it changes. Trimmed before the
+            length bounds apply. Recorded in the `catalog_index` discovery
+            record of the response, so it is replayed with the conversation.
+          maxLength: 2000
+          minLength: 1
+          type: string
         interface:
           description: >-
             How the universal profile exposes the hidden catalog to the
@@ -895,10 +934,15 @@ components:
             wrappable tool outside the coding-harness core set. `mcp`: only MCP
             server tools (`mcp__*` names and Responses namespaces outside
             `functions`); the harness keeps its own built-in tools direct.
-            Experimental.
+            `client`: only the tools the client itself marked `defer_loading`,
+            so a harness with its own tool search keeps its other direct tools
+            direct; an adopted client tool search is still replaced by the
+            router wrappers, and a client-deferred tool the router cannot wrap
+            stays direct. Experimental.
           enum:
             - all
             - mcp
+            - client
           type: string
         search:
           $ref: '#/components/schemas/DeferredToolsSearchStrategy'
@@ -4022,6 +4066,29 @@ components:
       properties:
         max_results:
           type: integer
+        siblings:
+          description: >-
+            Universal profile only, for searches the router answers through the
+            `tool_search` wrapper; code-mode `search()` and a client-owned tool
+            search list the matched tools alone. When true, each result also
+            names up to 16 other deferred tools of every source a match came
+            from, so a model that found one tool of an MCP server learns its
+            neighbours without another search. Absent or false: results list the
+            matched tools alone.
+          type: boolean
+        spread:
+          description: >-
+            Universal profile only, for keyword searches the router answers
+            through the `tool_search` wrapper. When true, a result spreads
+            across sources: of the 3 x limit best-scoring candidates, those
+            scoring at least 60% of the best match take at most 2 slots per
+            source (MCP server, namespace or shared `<server>_` prefix; a tool
+            with no source is never capped), and the remaining slots fill in
+            score order, so a catalog with several systems for one job (web
+            search, page extraction) shows one of each instead of the top
+            system's siblings. Absent or false: results are the best matches in
+            score order.
+          type: boolean
         type:
           enum:
             - bm25
@@ -4064,6 +4131,16 @@ components:
       properties:
         max_results:
           type: integer
+        siblings:
+          description: >-
+            Universal profile only, for searches the router answers through the
+            `tool_search` wrapper; code-mode `search()` and a client-owned tool
+            search list the matched tools alone. When true, each result also
+            names up to 16 other deferred tools of every source a match came
+            from, so a model that found one tool of an MCP server learns its
+            neighbours without another search. Absent or false: results list the
+            matched tools alone.
+          type: boolean
         type:
           enum:
             - regex

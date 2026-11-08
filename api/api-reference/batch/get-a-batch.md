@@ -4555,7 +4555,10 @@ components:
         - type
       type: object
     FileSearchServerTool:
-      description: File search tool configuration
+      description: >-
+        File search tool configuration. `vector_store_ids` names OpenAI vector
+        stores, so it requires BYOK (your own OpenAI key); requests on
+        OpenRouter credits get a 400.
       example:
         type: file_search
         vector_store_ids:
@@ -4650,7 +4653,10 @@ components:
         - environment
       type: object
     CodeInterpreterServerTool:
-      description: Code interpreter tool configuration
+      description: >-
+        Code interpreter tool configuration. An existing container id or
+        `container.file_ids` requires BYOK (your own OpenAI key); requests on
+        OpenRouter credits must use `auto` with no `file_ids`.
       example:
         container: auto
         type: code_interpreter
@@ -6233,6 +6239,14 @@ components:
             reuses it.
           example: call_search_1
           type: string
+        catalog_changes:
+          description: >-
+            What the announced index added and removed since the previous one,
+            when the request opted into `announce_catalog_changes` and the
+            catalog changed between model turns. Replaying the item shows the
+            same lines.
+          example: 'Added since the previous index: mcp__okta (113).'
+          type: string
         catalog_index:
           description: >-
             The deferred-tool index the router showed the model with a
@@ -6284,6 +6298,20 @@ components:
           type: array
         query:
           type: string
+        sources:
+          additionalProperties:
+            items:
+              type: string
+            type: array
+          description: >-
+            The other deferred tools of each source a match came from, by name,
+            when the search listed siblings. Replaying the item shows the same
+            names.
+          example:
+            mcp__tavily:
+              - mcp__tavily__tavily_extract
+              - mcp__tavily__tavily_crawl
+          type: object
         status:
           $ref: '#/components/schemas/FailableToolCallStatus'
         turn_call_ids:
