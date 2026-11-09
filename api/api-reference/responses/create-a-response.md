@@ -1242,7 +1242,10 @@ components:
             `select:` query passes through verbatim when the client search
             documents `select:`, and the limit field is sent only when the model
             gave one, unless the client search requires it, in which case its
-            documented default is sent. Experimental.
+            documented default is sent. A tool the client sent with
+            `defer_loading: true` that universal keeps direct is forwarded with
+            that flag, so the provider loads it through the client search as it
+            would without universal. Experimental.
           enum:
             - keywords
             - native
@@ -1269,14 +1272,25 @@ components:
             - wrappers
             - code_mode
           type: string
+        min_deferred_tools:
+          description: >-
+            Universal profile only. When fewer tools than this would be
+            deferred, the universal profile defers none of them and sends the
+            client tools unchanged, so a harness with a handful of non-core
+            tools and no MCP servers pays no search turn for them. Counted after
+            the interface exclusions; ignored with a custom search, whose client
+            decides what it loads. Absent: every wrappable tool in scope is
+            deferred.
+          type: integer
         profile:
           description: >-
             Loading profile. `portable` serves the `defer_loading` tools with
             router-built search and call wrappers on any model and keeps the
             catalog fixed. `universal` defers every wrappable tool behind the
-            same wrappers so the provider-facing tool list never changes, and
-            rebuilds the catalog from each request so tools can be added or
-            removed mid-conversation.
+            same wrappers so the provider-facing tool list never changes (unless
+            `min_deferred_tools` inlines a small catalog), and rebuilds the
+            catalog from each request so tools can be added or removed
+            mid-conversation.
           enum:
             - portable
             - universal
@@ -1291,15 +1305,10 @@ components:
             wrappable tool outside the coding-harness core set. `mcp`: only MCP
             server tools (`mcp__*` names and Responses namespaces outside
             `functions`); the harness keeps its own built-in tools direct.
-            `client`: only the tools the client itself marked `defer_loading`,
-            so a harness with its own tool search keeps its other direct tools
-            direct; an adopted client tool search is still replaced by the
-            router wrappers, and a client-deferred tool the router cannot wrap
-            stays direct. Experimental.
+            Experimental.
           enum:
             - all
             - mcp
-            - client
           type: string
         search:
           $ref: '#/components/schemas/DeferredToolsSearchStrategy'
@@ -11426,6 +11435,29 @@ components:
       properties:
         max_results:
           type: integer
+        miss_sources:
+          description: >-
+            Universal profile only, for searches the router answers through the
+            `tool_search` wrapper. When true, a search that matches nothing also
+            names the deferred sources this search covers (namespaces, MCP
+            servers, and shared `<server>_` prefixes; up to 40 names or 2,000
+            characters, with a count of any omitted) and tells the model that a
+            source the search does not cover is unreachable through it in this
+            request, so it can make a client tool call the task already needs
+            (or a read-only one) and search again on a later turn instead of
+            concluding the integration is missing. A hit gets the same guidance
+            after its matches when, as a heuristic on the model's own words, the
+            query's leading word has 3 to 64 characters, no query word names a
+            searchable source, and the leading word is not among the words of
+            the deferred tools' names (the union of every deferred tool name's
+            tokens, whole and split as the search index splits names; a
+            camel-case word counts when each of its parts is), with descriptions
+            left out so a tool that merely mentions another product cannot mask
+            it (`jira create issue` answered with another tracker's issue
+            tools). Direct tools, including a client's built-in tools, are
+            already in the tool list and are not named. Absent or false: a miss
+            suggests other keywords and the closest names only.
+          type: boolean
         siblings:
           description: >-
             Universal profile only, for searches the router answers through the
@@ -11491,6 +11523,29 @@ components:
       properties:
         max_results:
           type: integer
+        miss_sources:
+          description: >-
+            Universal profile only, for searches the router answers through the
+            `tool_search` wrapper. When true, a search that matches nothing also
+            names the deferred sources this search covers (namespaces, MCP
+            servers, and shared `<server>_` prefixes; up to 40 names or 2,000
+            characters, with a count of any omitted) and tells the model that a
+            source the search does not cover is unreachable through it in this
+            request, so it can make a client tool call the task already needs
+            (or a read-only one) and search again on a later turn instead of
+            concluding the integration is missing. A hit gets the same guidance
+            after its matches when, as a heuristic on the model's own words, the
+            query's leading word has 3 to 64 characters, no query word names a
+            searchable source, and the leading word is not among the words of
+            the deferred tools' names (the union of every deferred tool name's
+            tokens, whole and split as the search index splits names; a
+            camel-case word counts when each of its parts is), with descriptions
+            left out so a tool that merely mentions another product cannot mask
+            it (`jira create issue` answered with another tracker's issue
+            tools). Direct tools, including a client's built-in tools, are
+            already in the tool list and are not named. Absent or false: a miss
+            suggests other keywords and the closest names only.
+          type: boolean
         siblings:
           description: >-
             Universal profile only, for searches the router answers through the
