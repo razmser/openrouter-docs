@@ -2558,6 +2558,7 @@ components:
             - cyber_policy
             - misalignment_policy_violation
             - data_residency_mismatch
+            - flex_unavailable
             - permission_denied
           title: CodeEnum
           type: string
@@ -3491,6 +3492,7 @@ components:
             - cyber_policy
             - misalignment_policy_violation
             - data_residency_mismatch
+            - flex_unavailable
             - permission_denied
           type: string
         message:

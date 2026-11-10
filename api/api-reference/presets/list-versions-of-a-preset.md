@@ -178,6 +178,22 @@ paths:
             maximum: 100
             minimum: 1
             type: integer
+        - description: >-
+            Workspace to act in. Also accepted as a `workspace_id` field in a
+            JSON request body. Defaults to the key's workspace for a key limited
+            to one workspace, otherwise to the account's default workspace.
+          in: query
+          name: workspace_id
+          required: false
+          schema:
+            description: >-
+              Workspace to act in. Also accepted as a `workspace_id` field in a
+              JSON request body. Defaults to the key's workspace for a key
+              limited to one workspace, otherwise to the account's default
+              workspace.
+            example: 750e8400-e29b-41d4-a716-446655440002
+            format: uuid
+            type: string
       responses:
         '200':
           content:

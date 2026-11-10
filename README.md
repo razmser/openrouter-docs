@@ -2,7 +2,7 @@
 
 Markdown mirror of [OpenRouter's documentation](https://openrouter.ai/docs/quickstart).
 
-Contains **551 pages**, discovered from the [page index](https://openrouter.ai/docs/llms.txt) and [supplementary index](https://openrouter.ai/docs/sitemap.xml).
+Contains **553 pages**, discovered from the [page index](https://openrouter.ai/docs/llms.txt) and [supplementary index](https://openrouter.ai/docs/sitemap.xml).
 
 Links to mirrored pages point to local files; external links and images remain online. Code examples and OpenAPI blocks are preserved.
 
@@ -139,10 +139,12 @@ Generated files are replaced by the next successful sync. Original content belon
 - [Create a preset from a chat-completions request body](api/api-reference/presets/create-a-preset-from-a-chat-completions-request-body.md)
 - [Create a preset from a messages request body](api/api-reference/presets/create-a-preset-from-a-messages-request-body.md)
 - [Create a preset from a responses request body](api/api-reference/presets/create-a-preset-from-a-responses-request-body.md)
+- [Delete a preset](api/api-reference/presets/delete-a-preset.md)
 - [Get a preset](api/api-reference/presets/get-a-preset.md)
 - [Get a specific version of a preset](api/api-reference/presets/get-a-specific-version-of-a-preset.md)
 - [List presets](api/api-reference/presets/list-presets.md)
 - [List versions of a preset](api/api-reference/presets/list-versions-of-a-preset.md)
+- [Restore a preset](api/api-reference/presets/restore-a-preset.md)
 - [Activate a validated private endpoint](api/api-reference/private-endpoints/activate-a-validated-private-endpoint.md)
 - [Create a private endpoint](api/api-reference/private-endpoints/create-a-private-endpoint.md)
 - [Delete a private endpoint](api/api-reference/private-endpoints/delete-a-private-endpoint.md)

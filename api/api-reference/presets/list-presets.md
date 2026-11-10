@@ -169,6 +169,22 @@ paths:
             maximum: 100
             minimum: 1
             type: integer
+        - description: >-
+            Workspace to act in. Also accepted as a `workspace_id` field in a
+            JSON request body. Defaults to the key's workspace for a key limited
+            to one workspace, otherwise to the account's default workspace.
+          in: query
+          name: workspace_id
+          required: false
+          schema:
+            description: >-
+              Workspace to act in. Also accepted as a `workspace_id` field in a
+              JSON request body. Defaults to the key's workspace for a key
+              limited to one workspace, otherwise to the account's default
+              workspace.
+            example: 750e8400-e29b-41d4-a716-446655440002
+            format: uuid
+            type: string
       responses:
         '200':
           content:
@@ -220,6 +236,16 @@ paths:
               schema:
                 $ref: '#/components/schemas/ForbiddenResponse'
           description: Forbidden - Authentication successful but insufficient permissions
+        '404':
+          content:
+            application/json:
+              example:
+                error:
+                  code: 404
+                  message: Resource not found
+              schema:
+                $ref: '#/components/schemas/NotFoundResponse'
+          description: Not Found - Resource does not exist
         '500':
           content:
             application/json:
@@ -322,6 +348,27 @@ components:
       properties:
         error:
           $ref: '#/components/schemas/ForbiddenResponseErrorData'
+        openrouter_metadata:
+          additionalProperties: {}
+          type:
+            - object
+            - 'null'
+        user_id:
+          type:
+            - string
+            - 'null'
+      required:
+        - error
+      type: object
+    NotFoundResponse:
+      description: Not Found - Resource does not exist
+      example:
+        error:
+          code: 404
+          message: Resource not found
+      properties:
+        error:
+          $ref: '#/components/schemas/NotFoundResponseErrorData'
         openrouter_metadata:
           additionalProperties: {}
           type:
@@ -479,6 +526,25 @@ components:
       example:
         code: 403
         message: Only management keys can perform this operation
+      properties:
+        code:
+          type: integer
+        message:
+          type: string
+        metadata:
+          additionalProperties: {}
+          type:
+            - object
+            - 'null'
+      required:
+        - code
+        - message
+      type: object
+    NotFoundResponseErrorData:
+      description: Error data for NotFoundResponse
+      example:
+        code: 404
+        message: Resource not found
       properties:
         code:
           type: integer

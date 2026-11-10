@@ -1217,7 +1217,6 @@ curl -X POST https://openrouter.ai/api/v1/providers/my-provider/abuse-reports \
         { "request_id": "req_8f3a1c", "timestamp": "2026-10-22T14:05:11Z" },
         { "request_id": "req_8f3a1d", "timestamp": "2026-10-22T14:05:12Z" }
       ],
-      "model": "my-model-70b",
       "notes": "~50 rps of single-token prompts from one caller",
       "report_ref": "case-1042"
     }]
@@ -1231,6 +1230,10 @@ The response returns one receipt per report, in submission order. Resending a re
   "results": [{ "id": "0198c3f1-7b9a-7c31-a2d4-5e6f7a8b9c0d", "status": "received" }]
 }
 ```
+
+To check a report before filing it, send the same body to `POST /api/v1/providers/{provider_slug}/abuse-reports/validate`. Nothing is stored; the response says, per report, whether the ids identify exactly one account (`resolvable`), belong to more than one (`multiple_accounts`, so file one report per account), or matched nothing (`not_found`), and lists the request ids that did not match. When a report carries a `user_id` that matches, that account is the answer and the request ids are only counted, which is also how filing resolves it. Requests from the last few minutes can show as unmatched until they are ingested. `user_id` must be the hashed id OpenRouter sent you; a bare OpenRouter account id is rejected with a 400 on both routes. Validation checks the evidence only and ignores `report_ref`: a body whose `report_ref` you already filed validates normally, but submitting it returns the original receipt without re-reading the new evidence.
+
+`GET /api/v1/providers/{provider_slug}/abuse-reports` lists the reports you filed, newest first, with a `status`: `received` (OpenRouter is still linking it to an account), `under_review` (linked and with the trust & safety team), `not_identified` (the ids did not identify exactly one account; check them and file again), or `reviewed` (trust & safety closed it; the outcome is not shared). The list never names the account.
 
 #### Team members
 

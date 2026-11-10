@@ -162,17 +162,18 @@ paths:
             minLength: 1
             type: string
         - description: >-
-            Workspace to create the preset in. Defaults to the key's workspace
-            for a key limited to one workspace, otherwise to the account's
-            default workspace.
+            Workspace to act in. Also accepted as a `workspace_id` field in a
+            JSON request body. Defaults to the key's workspace for a key limited
+            to one workspace, otherwise to the account's default workspace.
           in: query
           name: workspace_id
           required: false
           schema:
             description: >-
-              Workspace to create the preset in. Defaults to the key's workspace
-              for a key limited to one workspace, otherwise to the account's
-              default workspace.
+              Workspace to act in. Also accepted as a `workspace_id` field in a
+              JSON request body. Defaults to the key's workspace for a key
+              limited to one workspace, otherwise to the account's default
+              workspace.
             example: 750e8400-e29b-41d4-a716-446655440002
             format: uuid
             type: string
@@ -4078,8 +4079,8 @@ components:
         miss_sources:
           description: >-
             Universal profile only, for searches the router answers through the
-            `tool_search` wrapper. When true, a search that matches nothing also
-            names the deferred sources this search covers (namespaces, MCP
+            `tool_search` wrapper. Unless false, a search that matches nothing
+            also names the deferred sources this search covers (namespaces, MCP
             servers, and shared `<server>_` prefixes; up to 40 names or 2,000
             characters, with a count of any omitted) and tells the model that a
             source the search does not cover is unreachable through it in this
@@ -4095,8 +4096,8 @@ components:
             left out so a tool that merely mentions another product cannot mask
             it (`jira create issue` answered with another tracker's issue
             tools). Direct tools, including a client's built-in tools, are
-            already in the tool list and are not named. Absent or false: a miss
-            suggests other keywords and the closest names only.
+            already in the tool list and are not named. False: a miss suggests
+            other keywords and the closest names only.
           type: boolean
         siblings:
           description: >-
@@ -4166,8 +4167,8 @@ components:
         miss_sources:
           description: >-
             Universal profile only, for searches the router answers through the
-            `tool_search` wrapper. When true, a search that matches nothing also
-            names the deferred sources this search covers (namespaces, MCP
+            `tool_search` wrapper. Unless false, a search that matches nothing
+            also names the deferred sources this search covers (namespaces, MCP
             servers, and shared `<server>_` prefixes; up to 40 names or 2,000
             characters, with a count of any omitted) and tells the model that a
             source the search does not cover is unreachable through it in this
@@ -4183,8 +4184,8 @@ components:
             left out so a tool that merely mentions another product cannot mask
             it (`jira create issue` answered with another tracker's issue
             tools). Direct tools, including a client's built-in tools, are
-            already in the tool list and are not named. Absent or false: a miss
-            suggests other keywords and the closest names only.
+            already in the tool list and are not named. False: a miss suggests
+            other keywords and the closest names only.
           type: boolean
         siblings:
           description: >-
