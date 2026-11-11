@@ -370,11 +370,13 @@ components:
           description: >-
             Assets keyed by reference string. Write a reference wherever the
             asset belongs in `state` or a field `instructions`; every asset must
-            be referenced at least once. A `state` that is exactly the sole
-            asset's key carries no text of its own and is read as file-only. A
-            model that reads either text or a document per request, not both
-            (ScaleDown Extract with a PDF), needs that form: any other text
-            around the key is state text and is rejected with 400.
+            be referenced at least once, unless `state` is empty or omitted, in
+            which case the assets are read without a reference. A `state` that
+            is exactly the sole asset's key carries no text of its own and is
+            read as file-only. A model that reads either text or a document per
+            request, not both (ScaleDown Extract with a PDF), takes that form or
+            an empty or omitted `state`: any other text around the key is state
+            text and is rejected with 400.
           type: object
         fields:
           additionalProperties:
@@ -427,9 +429,10 @@ components:
           maxLength: 256
           type: string
         state:
+          default: ''
           description: >-
-            The text to read from. May be empty only when the request carries
-            image assets.
+            The text to read from. May be empty or omitted only when the request
+            carries assets, which are then read without being referenced by key.
           type: string
         trace:
           $ref: '#/components/schemas/TraceConfig'
@@ -438,7 +441,6 @@ components:
           type: string
       required:
         - model
-        - state
         - fields
       type: object
     ExtractionsResponse:
@@ -750,8 +752,9 @@ components:
       additionalProperties: false
       description: >-
         An image or PDF sent once and referenced by its key in the `assets` map.
-        `data_base64` is the file in standard base64 with no `data:` prefix. PDF
-        is read by document models only.
+        `data_base64` is the file in standard base64 with no `data:` prefix.
+        Which formats are read is model-specific: a format the model cannot read
+        fails with a 400.
       properties:
         data_base64:
           minLength: 1
@@ -762,6 +765,7 @@ components:
             - png
             - jpg
             - jpeg
+            - webp
             - pdf
           type: string
         type:
@@ -789,6 +793,9 @@ components:
           enum:
             - date
           type: string
+        unit:
+          description: Unit label for the value.
+          type: string
       required:
         - type
       type: object
@@ -808,6 +815,9 @@ components:
           enum:
             - datetime
           type: string
+        unit:
+          description: Unit label for the value.
+          type: string
       required:
         - type
       type: object
@@ -823,6 +833,7 @@ components:
           description: What the field should contain.
           type: string
         integer:
+          description: Whole numbers only.
           type: boolean
         null_threshold:
           description: Probability of null above which `value` is null. Default 0.5.
@@ -857,7 +868,9 @@ components:
               type: number
             - type: string
         null_threshold:
-          description: Probability of null above which `value` is null. Default 0.5.
+          description: >-
+            Not read on this field type: no model takes a null threshold here,
+            and a request that sets it fails with a 400.
           format: double
           maximum: 1
           minimum: 0
@@ -883,6 +896,7 @@ components:
             - estimate
           type: string
         unit:
+          description: Unit label for the value.
           type: string
       required:
         - type
@@ -922,7 +936,9 @@ components:
               type: number
             - type: string
         null_threshold:
-          description: Probability of null above which `value` is null. Default 0.5.
+          description: >-
+            Not read on this field type: no model takes a null threshold here,
+            and a request that sets it fails with a 400.
           format: double
           maximum: 1
           minimum: 0
@@ -948,6 +964,7 @@ components:
             - forecast
           type: string
         unit:
+          description: Unit label for the value.
           type: string
       required:
         - type
@@ -967,6 +984,9 @@ components:
         instructions:
           description: What the field should contain.
           type: string
+        integer:
+          description: Whole numbers only. Lists of numbers only.
+          type: boolean
         items:
           enum:
             - text
@@ -982,6 +1002,9 @@ components:
         type:
           enum:
             - list
+          type: string
+        unit:
+          description: Unit label for the value.
           type: string
       required:
         - type
@@ -999,6 +1022,7 @@ components:
           description: What the field should contain.
           type: string
         integer:
+          description: Whole numbers only.
           type: boolean
         null_threshold:
           description: Probability of null above which `value` is null. Default 0.5.
@@ -1011,6 +1035,7 @@ components:
             - number
           type: string
         unit:
+          description: Unit label for the value.
           type: string
       required:
         - type
@@ -1031,6 +1056,9 @@ components:
           enum:
             - text
           type: string
+        unit:
+          description: Unit label for the value.
+          type: string
       required:
         - type
       type: object
@@ -1049,6 +1077,9 @@ components:
         type:
           enum:
             - time
+          type: string
+        unit:
+          description: Unit label for the value.
           type: string
       required:
         - type
@@ -1258,7 +1289,10 @@ components:
           description: >-
             Unicode code point offsets [start, end) into the state text: index
             code points (not UTF-16 code units or UTF-8 bytes), so an emoji or
-            accented letter counts once.
+            accented letter counts once. Absent for an answer that has no
+            offsets in the state text, for example a null answer, one read from
+            an image or a document, or one the provider returned without offsets
+            that delimit it.
           items:
             type: integer
           maxItems: 2
@@ -1307,7 +1341,10 @@ components:
           description: >-
             Unicode code point offsets [start, end) into the state text: index
             code points (not UTF-16 code units or UTF-8 bytes), so an emoji or
-            accented letter counts once.
+            accented letter counts once. Absent for an answer that has no
+            offsets in the state text, for example a null answer, one read from
+            an image or a document, or one the provider returned without offsets
+            that delimit it.
           items:
             type: integer
           maxItems: 2
@@ -1357,7 +1394,10 @@ components:
           description: >-
             Unicode code point offsets [start, end) into the state text: index
             code points (not UTF-16 code units or UTF-8 bytes), so an emoji or
-            accented letter counts once.
+            accented letter counts once. Absent for an answer that has no
+            offsets in the state text, for example a null answer, one read from
+            an image or a document, or one the provider returned without offsets
+            that delimit it.
           items:
             type: integer
           maxItems: 2
@@ -1579,6 +1619,11 @@ components:
             - document
           type: string
         spans:
+          description: >-
+            One span per item of `value`, in the same order; null for an item
+            that has no offsets in the state text: one read from an image or a
+            document, or one the provider returned without offsets that delimit
+            it.
           items:
             description: >-
               Unicode code point offsets [start, end) into the state text: index
@@ -1588,7 +1633,9 @@ components:
               type: integer
             maxItems: 2
             minItems: 2
-            type: array
+            type:
+              - array
+              - 'null'
           type: array
         spell_confidence:
           description: Confidence in the spelling of text read from an image.
@@ -1639,7 +1686,10 @@ components:
           description: >-
             Unicode code point offsets [start, end) into the state text: index
             code points (not UTF-16 code units or UTF-8 bytes), so an emoji or
-            accented letter counts once.
+            accented letter counts once. Absent for an answer that has no
+            offsets in the state text, for example a null answer, one read from
+            an image or a document, or one the provider returned without offsets
+            that delimit it.
           items:
             type: integer
           maxItems: 2
@@ -1689,7 +1739,10 @@ components:
           description: >-
             Unicode code point offsets [start, end) into the state text: index
             code points (not UTF-16 code units or UTF-8 bytes), so an emoji or
-            accented letter counts once.
+            accented letter counts once. Absent for an answer that has no
+            offsets in the state text, for example a null answer, one read from
+            an image or a document, or one the provider returned without offsets
+            that delimit it.
           items:
             type: integer
           maxItems: 2
@@ -1738,7 +1791,10 @@ components:
           description: >-
             Unicode code point offsets [start, end) into the state text: index
             code points (not UTF-16 code units or UTF-8 bytes), so an emoji or
-            accented letter counts once.
+            accented letter counts once. Absent for an answer that has no
+            offsets in the state text, for example a null answer, one read from
+            an image or a document, or one the provider returned without offsets
+            that delimit it.
           items:
             type: integer
           maxItems: 2

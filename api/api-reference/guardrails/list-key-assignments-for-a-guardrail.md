@@ -4,7 +4,7 @@
 
 # List key assignments for a guardrail
 
-> List all API key assignments for a specific guardrail. [Management key](../../../guides/overview/auth/management-api-keys.md) required.
+> List all API key assignments for a specific guardrail. A workspace-scoped management key reaches only guardrails in its own workspace; any other guardrail returns 404. [Management key](../../../guides/overview/auth/management-api-keys.md) required.
 
 
 
@@ -142,7 +142,9 @@ paths:
         - Guardrails
       summary: List key assignments for a guardrail
       description: >-
-        List all API key assignments for a specific guardrail. [Management
+        List all API key assignments for a specific guardrail. A
+        workspace-scoped management key reaches only guardrails in its own
+        workspace; any other guardrail returns 404. [Management
         key](/docs/guides/overview/auth/management-api-keys) required.
       operationId: listGuardrailKeyAssignments
       parameters:

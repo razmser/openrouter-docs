@@ -156,12 +156,18 @@ paths:
             example: c56454edb818d6b14bc0d61c46025f1450b0f4012d12304ab40aacb519fcbc93
             minLength: 1
             type: string
-        - description: Workspace the policy belongs to
+        - description: >-
+            Workspace the policy belongs to. Required for an organization
+            management key; a workspace-scoped key defaults to its own workspace
+            and gets 403 for any other.
           in: query
           name: workspace_id
-          required: true
+          required: false
           schema:
-            description: Workspace the policy belongs to
+            description: >-
+              Workspace the policy belongs to. Required for an organization
+              management key; a workspace-scoped key defaults to its own
+              workspace and gets 403 for any other.
             example: 0df9e665-d932-5740-b2c7-b52af166bc11
             format: uuid
             type: string

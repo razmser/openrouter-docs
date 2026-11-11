@@ -236,6 +236,16 @@ paths:
                   - data
                 type: object
           description: Returns a list of endpoints
+        '401':
+          content:
+            application/json:
+              example:
+                error:
+                  code: 401
+                  message: Missing Authentication header
+              schema:
+                $ref: '#/components/schemas/UnauthorizedResponse'
+          description: Unauthorized - Authentication required or invalid credentials
         '403':
           content:
             application/json:
@@ -395,6 +405,27 @@ components:
         - description
         - architecture
         - endpoints
+      type: object
+    UnauthorizedResponse:
+      description: Unauthorized - Authentication required or invalid credentials
+      example:
+        error:
+          code: 401
+          message: Missing Authentication header
+      properties:
+        error:
+          $ref: '#/components/schemas/UnauthorizedResponseErrorData'
+        openrouter_metadata:
+          additionalProperties: {}
+          type:
+            - object
+            - 'null'
+        user_id:
+          type:
+            - string
+            - 'null'
+      required:
+        - error
       type: object
     ForbiddenResponse:
       description: Forbidden - Authentication successful but insufficient permissions
@@ -802,6 +833,25 @@ components:
         - supports_diarization
         - latency_last_30m
         - throughput_last_30m
+      type: object
+    UnauthorizedResponseErrorData:
+      description: Error data for UnauthorizedResponse
+      example:
+        code: 401
+        message: Missing Authentication header
+      properties:
+        code:
+          type: integer
+        message:
+          type: string
+        metadata:
+          additionalProperties: {}
+          type:
+            - object
+            - 'null'
+      required:
+        - code
+        - message
       type: object
     ForbiddenResponseErrorData:
       description: Error data for ForbiddenResponse

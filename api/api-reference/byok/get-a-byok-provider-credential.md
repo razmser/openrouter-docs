@@ -4,7 +4,7 @@
 
 # Get a BYOK provider credential
 
-> Get a single bring-your-own-key (BYOK) provider credential by its `id`. [Management key](../../../guides/overview/auth/management-api-keys.md) required.
+> Get a single bring-your-own-key (BYOK) provider credential by its `id`. A workspace-scoped management key only reaches credentials in its own workspace; any other `id` returns 404. [Management key](../../../guides/overview/auth/management-api-keys.md) required.
 
 
 
@@ -143,8 +143,9 @@ paths:
       summary: Get a BYOK provider credential
       description: >-
         Get a single bring-your-own-key (BYOK) provider credential by its `id`.
-        [Management key](/docs/guides/overview/auth/management-api-keys)
-        required.
+        A workspace-scoped management key only reaches credentials in its own
+        workspace; any other `id` returns 404. [Management
+        key](/docs/guides/overview/auth/management-api-keys) required.
       operationId: getBYOKKey
       parameters:
         - description: The BYOK credential ID (UUID).
@@ -356,7 +357,9 @@ components:
         allowed_api_key_hashes:
           description: >-
             Optional allowlist of OpenRouter API key hashes (`api_keys.hash`)
-            that may use this credential. `null` means no restriction.
+            that may use this credential. `null` means no restriction. A
+            workspace-scoped management key can only name API keys in its own
+            workspace.
           example:
             - f01d52606dc8f0a8303a7b5cc3fa07109c2e346cec7c0a16b40de462992ce943
           items:

@@ -4,7 +4,7 @@
 
 # Update a guardrail
 
-> Update an existing guardrail, or materialize an unconfigured workspace default guardrail. Collection fields use replace semantics: send the full desired set on every update. [Management key](../../../guides/overview/auth/management-api-keys.md) required.
+> Update an existing guardrail, or materialize an unconfigured workspace default guardrail. Collection fields use replace semantics: send the full desired set on every update. A workspace-scoped management key reaches only guardrails in its own workspace; any other guardrail returns 404. [Management key](../../../guides/overview/auth/management-api-keys.md) required.
 
 
 
@@ -144,7 +144,9 @@ paths:
       description: >-
         Update an existing guardrail, or materialize an unconfigured workspace
         default guardrail. Collection fields use replace semantics: send the
-        full desired set on every update. [Management
+        full desired set on every update. A workspace-scoped management key
+        reaches only guardrails in its own workspace; any other guardrail
+        returns 404. [Management
         key](/docs/guides/overview/auth/management-api-keys) required.
       operationId: updateGuardrail
       parameters:

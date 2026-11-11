@@ -4,7 +4,7 @@
 
 # Bulk unassign keys from a guardrail
 
-> Unassign multiple API keys from a specific guardrail. [Management key](../../../guides/overview/auth/management-api-keys.md) required.
+> Unassign multiple API keys from a specific guardrail. A workspace-scoped management key reaches only guardrails in its own workspace (any other returns 404), and a batch naming an unknown or out-of-workspace key hash is rejected with 400 before anything changes. [Management key](../../../guides/overview/auth/management-api-keys.md) required.
 
 
 
@@ -142,7 +142,10 @@ paths:
         - Guardrails
       summary: Bulk unassign keys from a guardrail
       description: >-
-        Unassign multiple API keys from a specific guardrail. [Management
+        Unassign multiple API keys from a specific guardrail. A workspace-scoped
+        management key reaches only guardrails in its own workspace (any other
+        returns 404), and a batch naming an unknown or out-of-workspace key hash
+        is rejected with 400 before anything changes. [Management
         key](/docs/guides/overview/auth/management-api-keys) required.
       operationId: bulkUnassignKeysFromGuardrail
       parameters:

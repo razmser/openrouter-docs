@@ -4,7 +4,7 @@
 
 # List observability destinations
 
-> List the observability destinations configured for the authenticated entity's default workspace. Use the `workspace_id` query parameter to scope the result to a different workspace. Only destinations with stable release status are surfaced — destinations of other types are excluded. [Management key](../../../guides/overview/auth/management-api-keys.md) required.
+> List the observability destinations configured for the authenticated entity's default workspace, or a workspace-scoped management key's own workspace. Use the `workspace_id` query parameter to scope the result to a different workspace. A workspace-scoped management key can only list its own workspace; any other `workspace_id` returns 403. Only destinations with stable release status are surfaced — destinations of other types are excluded. [Management key](../../../guides/overview/auth/management-api-keys.md) required.
 
 
 
@@ -143,11 +143,13 @@ paths:
       summary: List observability destinations
       description: >-
         List the observability destinations configured for the authenticated
-        entity's default workspace. Use the `workspace_id` query parameter to
-        scope the result to a different workspace. Only destinations with stable
-        release status are surfaced — destinations of other types are excluded.
-        [Management key](/docs/guides/overview/auth/management-api-keys)
-        required.
+        entity's default workspace, or a workspace-scoped management key's own
+        workspace. Use the `workspace_id` query parameter to scope the result to
+        a different workspace. A workspace-scoped management key can only list
+        its own workspace; any other `workspace_id` returns 403. Only
+        destinations with stable release status are surfaced — destinations of
+        other types are excluded. [Management
+        key](/docs/guides/overview/auth/management-api-keys) required.
       operationId: listObservabilityDestinations
       parameters:
         - description: Number of records to skip for pagination
@@ -175,14 +177,16 @@ paths:
             type: integer
         - description: >-
             Optional workspace ID to filter by. Defaults to the authenticated
-            entity's default workspace.
+            entity's default workspace, or a workspace-scoped management key's
+            own workspace.
           in: query
           name: workspace_id
           required: false
           schema:
             description: >-
               Optional workspace ID to filter by. Defaults to the authenticated
-              entity's default workspace.
+              entity's default workspace, or a workspace-scoped management key's
+              own workspace.
             example: 550e8400-e29b-41d4-a716-446655440000
             format: uuid
             type: string

@@ -149,7 +149,7 @@ With **Cost** enabled under **Additional generation metadata**, the same quantit
 }
 ```
 
-The example shows attribute values as a flat map; OTLP encodes numbers as `intValue` and the estimate flag as `boolValue`. Root spans also carry generation metadata under `trace.metadata.openrouter_generation.*`. Read each generation once. These representations repeat the same generation quantities; do not add them together. Unavailable quantities are omitted from OTEL attributes, while zero and `false` are preserved. See [Token and cost fields](../broadcast.md#token-and-cost-fields) for interpretation and billing caveats.
+The example shows attribute values as a flat map; OTLP encodes numbers as `intValue` and the estimate flag as `boolValue`. Root spans also carry generation metadata under `trace.metadata.openrouter_generation.*`. Read each generation once. These representations repeat the same generation quantities; do not add them together. Unavailable quantities are omitted from OTEL attributes, while zero and `false` are preserved. See [Cost](../broadcast.md#cost) for interpretation and billing caveats.
 
 ### Cost allocation
 

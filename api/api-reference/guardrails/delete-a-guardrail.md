@@ -4,7 +4,7 @@
 
 # Delete a guardrail
 
-> Delete an existing guardrail. [Management key](../../../guides/overview/auth/management-api-keys.md) required.
+> Delete an existing guardrail. A workspace-scoped management key reaches only guardrails in its own workspace; any other guardrail returns 404. [Management key](../../../guides/overview/auth/management-api-keys.md) required.
 
 
 
@@ -142,8 +142,10 @@ paths:
         - Guardrails
       summary: Delete a guardrail
       description: >-
-        Delete an existing guardrail. [Management
-        key](/docs/guides/overview/auth/management-api-keys) required.
+        Delete an existing guardrail. A workspace-scoped management key reaches
+        only guardrails in its own workspace; any other guardrail returns 404.
+        [Management key](/docs/guides/overview/auth/management-api-keys)
+        required.
       operationId: deleteGuardrail
       parameters:
         - description: The unique identifier of the guardrail to delete

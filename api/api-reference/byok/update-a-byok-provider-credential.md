@@ -4,7 +4,7 @@
 
 # Update a BYOK provider credential
 
-> Update an existing bring-your-own-key (BYOK) provider credential by its `id`. Include the `key` field to rotate the raw provider API key in-place (the previous key material is overwritten). Use `allowed_api_key_hashes` to restrict the credential to specific OpenRouter API keys (`null` clears the restriction). [Management key](../../../guides/overview/auth/management-api-keys.md) required.
+> Update an existing bring-your-own-key (BYOK) provider credential by its `id`. Include the `key` field to rotate the raw provider API key in-place (the previous key material is overwritten). Use `allowed_api_key_hashes` to restrict the credential to specific OpenRouter API keys (`null` clears the restriction). A workspace-scoped management key only reaches credentials in its own workspace; any other `id` returns 404. [Management key](../../../guides/overview/auth/management-api-keys.md) required.
 
 
 
@@ -146,7 +146,9 @@ paths:
         `id`. Include the `key` field to rotate the raw provider API key
         in-place (the previous key material is overwritten). Use
         `allowed_api_key_hashes` to restrict the credential to specific
-        OpenRouter API keys (`null` clears the restriction). [Management
+        OpenRouter API keys (`null` clears the restriction). A workspace-scoped
+        management key only reaches credentials in its own workspace; any other
+        `id` returns 404. [Management
         key](/docs/guides/overview/auth/management-api-keys) required.
       operationId: updateBYOKKey
       parameters:
@@ -265,7 +267,8 @@ components:
             Optional allowlist of OpenRouter API key hashes (`api_keys.hash`)
             that may use this credential. `null` clears the restriction. Must
             contain at least one hash if provided. Hashes that do not belong to
-            your account return a 400.
+            your account return a 400; for a workspace-scoped management key, so
+            do hashes of API keys outside its own workspace.
           example:
             - f01d52606dc8f0a8303a7b5cc3fa07109c2e346cec7c0a16b40de462992ce943
           items:
@@ -559,7 +562,9 @@ components:
         allowed_api_key_hashes:
           description: >-
             Optional allowlist of OpenRouter API key hashes (`api_keys.hash`)
-            that may use this credential. `null` means no restriction.
+            that may use this credential. `null` means no restriction. A
+            workspace-scoped management key can only name API keys in its own
+            workspace.
           example:
             - f01d52606dc8f0a8303a7b5cc3fa07109c2e346cec7c0a16b40de462992ce943
           items:

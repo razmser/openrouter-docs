@@ -4,7 +4,7 @@
 
 # Get an observability destination
 
-> Fetch a single observability destination by its UUID. [Management key](../../../guides/overview/auth/management-api-keys.md) required.
+> Fetch a single observability destination by its UUID. A workspace-scoped management key only reaches destinations in its own workspace; any other `id` returns 404. [Management key](../../../guides/overview/auth/management-api-keys.md) required.
 
 
 
@@ -142,7 +142,9 @@ paths:
         - Observability
       summary: Get an observability destination
       description: >-
-        Fetch a single observability destination by its UUID. [Management
+        Fetch a single observability destination by its UUID. A workspace-scoped
+        management key only reaches destinations in its own workspace; any other
+        `id` returns 404. [Management
         key](/docs/guides/overview/auth/management-api-keys) required.
       operationId: getObservabilityDestination
       parameters:

@@ -4,7 +4,7 @@
 
 # Bulk unassign members from a guardrail
 
-> Unassign multiple organization members from a specific guardrail. [Management key](../../../guides/overview/auth/management-api-keys.md) required.
+> Unassign multiple organization members from a specific guardrail. Requires an organization-scoped management key; workspace-scoped management keys return 403. [Management key](../../../guides/overview/auth/management-api-keys.md) required.
 
 
 
@@ -143,8 +143,9 @@ paths:
       summary: Bulk unassign members from a guardrail
       description: >-
         Unassign multiple organization members from a specific guardrail.
-        [Management key](/docs/guides/overview/auth/management-api-keys)
-        required.
+        Requires an organization-scoped management key; workspace-scoped
+        management keys return 403. [Management
+        key](/docs/guides/overview/auth/management-api-keys) required.
       operationId: bulkUnassignMembersFromGuardrail
       parameters:
         - description: The unique identifier of the guardrail

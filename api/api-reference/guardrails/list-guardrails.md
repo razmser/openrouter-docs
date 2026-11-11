@@ -4,7 +4,7 @@
 
 # List guardrails
 
-> List all guardrails for the authenticated user. [Management key](../../../guides/overview/auth/management-api-keys.md) required.
+> List all guardrails for the authenticated user. A workspace-scoped management key lists only its own workspace, which `workspace_id` defaults to; naming another workspace returns 403. [Management key](../../../guides/overview/auth/management-api-keys.md) required.
 
 
 
@@ -142,7 +142,9 @@ paths:
         - Guardrails
       summary: List guardrails
       description: >-
-        List all guardrails for the authenticated user. [Management
+        List all guardrails for the authenticated user. A workspace-scoped
+        management key lists only its own workspace, which `workspace_id`
+        defaults to; naming another workspace returns 403. [Management
         key](/docs/guides/overview/auth/management-api-keys) required.
       operationId: listGuardrails
       parameters:
@@ -170,15 +172,19 @@ paths:
             minimum: 1
             type: integer
         - description: >-
-            Filter guardrails by workspace ID. By default, guardrails in the
-            default workspace are returned.
+            Filter guardrails by workspace ID. When omitted, an organization
+            management key gets guardrails in the default workspace and a
+            workspace-scoped key gets guardrails in its own workspace. A
+            workspace-scoped key gets 403 for any other workspace.
           in: query
           name: workspace_id
           required: false
           schema:
             description: >-
-              Filter guardrails by workspace ID. By default, guardrails in the
-              default workspace are returned.
+              Filter guardrails by workspace ID. When omitted, an organization
+              management key gets guardrails in the default workspace and a
+              workspace-scoped key gets guardrails in its own workspace. A
+              workspace-scoped key gets 403 for any other workspace.
             example: 0df9e665-d932-5740-b2c7-b52af166bc11
             format: uuid
             type: string

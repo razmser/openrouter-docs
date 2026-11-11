@@ -4,7 +4,7 @@
 
 # Bulk assign keys to a guardrail
 
-> Assign multiple API keys to a specific guardrail. A key may hold at most one guardrail; assigning replaces any existing assignment. [Management key](../../../guides/overview/auth/management-api-keys.md) required.
+> Assign multiple API keys to a specific guardrail. A key may hold at most one guardrail; assigning replaces any existing assignment. A workspace-scoped management key reaches only guardrails in its own workspace (any other returns 404), and a batch naming an unknown or out-of-workspace key hash is rejected with 400 before anything changes. [Management key](../../../guides/overview/auth/management-api-keys.md) required.
 
 
 
@@ -143,8 +143,12 @@ paths:
       summary: Bulk assign keys to a guardrail
       description: >-
         Assign multiple API keys to a specific guardrail. A key may hold at most
-        one guardrail; assigning replaces any existing assignment. [Management
-        key](/docs/guides/overview/auth/management-api-keys) required.
+        one guardrail; assigning replaces any existing assignment. A
+        workspace-scoped management key reaches only guardrails in its own
+        workspace (any other returns 404), and a batch naming an unknown or
+        out-of-workspace key hash is rejected with 400 before anything changes.
+        [Management key](/docs/guides/overview/auth/management-api-keys)
+        required.
       operationId: bulkAssignKeysToGuardrail
       parameters:
         - description: The unique identifier of the guardrail

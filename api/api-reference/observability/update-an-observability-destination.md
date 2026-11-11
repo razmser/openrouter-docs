@@ -4,7 +4,7 @@
 
 # Update an observability destination
 
-> Update an existing observability destination. Only the fields provided in the request body are updated. [Management key](../../../guides/overview/auth/management-api-keys.md) required.
+> Update an existing observability destination. Only the fields provided in the request body are updated. A workspace-scoped management key only reaches destinations in its own workspace; any other `id` returns 404. [Management key](../../../guides/overview/auth/management-api-keys.md) required.
 
 
 
@@ -143,8 +143,10 @@ paths:
       summary: Update an observability destination
       description: >-
         Update an existing observability destination. Only the fields provided
-        in the request body are updated. [Management
-        key](/docs/guides/overview/auth/management-api-keys) required.
+        in the request body are updated. A workspace-scoped management key only
+        reaches destinations in its own workspace; any other `id` returns 404.
+        [Management key](/docs/guides/overview/auth/management-api-keys)
+        required.
       operationId: updateObservabilityDestination
       parameters:
         - description: The destination ID (UUID).
@@ -265,8 +267,11 @@ components:
         api_key_hashes:
           description: >-
             Optional allowlist of OpenRouter API key hashes. `null` clears the
-            filter (all keys). Omitting leaves the current value. Must contain
-            at least one hash if provided.
+            filter (all keys). Omitting leaves the current value, including any
+            API key from another workspace that an organization-scoped key
+            attached. Must contain at least one hash if provided. A
+            workspace-scoped management key can only name API keys in its own
+            workspace; any other hash returns 400.
           example: null
           items:
             type: string

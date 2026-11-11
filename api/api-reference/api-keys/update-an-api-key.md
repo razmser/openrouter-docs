@@ -230,10 +230,12 @@ paths:
                 workspace_id:
                   description: >-
                     Move the API key to this workspace. The key keeps its value;
-                    guardrail selections move with it, while other
-                    workspace-scoped settings (presets, BYOK keys, broadcast
-                    destinations, routing rules) do not. Sending the key's
-                    current workspace is a no-op.
+                    guardrail selections move with it, except direct guardrail
+                    assignments owned by the key's current workspace, which are
+                    removed along with the selections derived from them, while
+                    other workspace-scoped settings (presets, BYOK keys,
+                    broadcast destinations, routing rules) do not. Sending the
+                    key's current workspace is a no-op.
                   example: 0df9e665-d932-5740-b2c7-b52af166bc11
                   format: uuid
                   type: string

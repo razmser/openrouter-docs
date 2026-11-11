@@ -4,7 +4,7 @@
 
 # Delete a BYOK provider credential
 
-> Delete (soft-delete) a bring-your-own-key (BYOK) provider credential by its `id`. The encrypted key material is wiped and the record is marked as deleted. [Management key](../../../guides/overview/auth/management-api-keys.md) required.
+> Delete (soft-delete) a bring-your-own-key (BYOK) provider credential by its `id`. The encrypted key material is wiped and the record is marked as deleted. A workspace-scoped management key only reaches credentials in its own workspace; any other `id` returns 404. [Management key](../../../guides/overview/auth/management-api-keys.md) required.
 
 
 
@@ -144,7 +144,8 @@ paths:
       description: >-
         Delete (soft-delete) a bring-your-own-key (BYOK) provider credential by
         its `id`. The encrypted key material is wiped and the record is marked
-        as deleted. [Management
+        as deleted. A workspace-scoped management key only reaches credentials
+        in its own workspace; any other `id` returns 404. [Management
         key](/docs/guides/overview/auth/management-api-keys) required.
       operationId: deleteBYOKKey
       parameters:

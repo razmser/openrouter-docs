@@ -4,7 +4,7 @@
 
 # Create an observability destination
 
-> Create a new observability destination. A maximum of 5 destinations per type is allowed. Defaults to the authenticated entity's default workspace; use the `workspace_id` body field to scope to a different workspace. [Management key](../../../guides/overview/auth/management-api-keys.md) required.
+> Create a new observability destination. A maximum of 5 destinations per type is allowed. Defaults to the authenticated entity's default workspace, or a workspace-scoped management key's own workspace; use the `workspace_id` body field to scope to a different workspace. A workspace-scoped management key can only create in its own workspace; any other `workspace_id` returns 403. [Management key](../../../guides/overview/auth/management-api-keys.md) required.
 
 
 
@@ -144,8 +144,10 @@ paths:
       description: >-
         Create a new observability destination. A maximum of 5 destinations per
         type is allowed. Defaults to the authenticated entity's default
-        workspace; use the `workspace_id` body field to scope to a different
-        workspace. [Management
+        workspace, or a workspace-scoped management key's own workspace; use the
+        `workspace_id` body field to scope to a different workspace. A
+        workspace-scoped management key can only create in its own workspace;
+        any other `workspace_id` returns 403. [Management
         key](/docs/guides/overview/auth/management-api-keys) required.
       operationId: createObservabilityDestination
       requestBody:
@@ -256,7 +258,8 @@ components:
           description: >-
             Optional allowlist of OpenRouter API key hashes whose traffic is
             forwarded. `null` or omitted means all keys. Must contain at least
-            one hash if provided.
+            one hash if provided. A workspace-scoped management key can only
+            name API keys in its own workspace; any other hash returns 400.
           example: null
           items:
             type: string
@@ -357,7 +360,8 @@ components:
         workspace_id:
           description: >-
             Optional workspace ID. Defaults to the authenticated entity's
-            default workspace.
+            default workspace, or a workspace-scoped management key's own
+            workspace.
           example: 550e8400-e29b-41d4-a716-446655440000
           format: uuid
           type: string

@@ -4,7 +4,7 @@
 
 # List BYOK provider credentials
 
-> List the bring-your-own-key (BYOK) provider credentials for the authenticated entity's default workspace. Use the `workspace_id` query parameter to scope the result to a different workspace, or the `provider` query parameter to filter by upstream provider. [Management key](../../../guides/overview/auth/management-api-keys.md) required.
+> List the bring-your-own-key (BYOK) provider credentials for the authenticated entity's default workspace, or a workspace-scoped management key's own workspace. Use the `workspace_id` query parameter to scope the result to a different workspace, or the `provider` query parameter to filter by upstream provider. A workspace-scoped management key can only list its own workspace; any other `workspace_id` returns 403. [Management key](../../../guides/overview/auth/management-api-keys.md) required.
 
 
 
@@ -143,10 +143,13 @@ paths:
       summary: List BYOK provider credentials
       description: >-
         List the bring-your-own-key (BYOK) provider credentials for the
-        authenticated entity's default workspace. Use the `workspace_id` query
-        parameter to scope the result to a different workspace, or the
-        `provider` query parameter to filter by upstream provider. [Management
-        key](/docs/guides/overview/auth/management-api-keys) required.
+        authenticated entity's default workspace, or a workspace-scoped
+        management key's own workspace. Use the `workspace_id` query parameter
+        to scope the result to a different workspace, or the `provider` query
+        parameter to filter by upstream provider. A workspace-scoped management
+        key can only list its own workspace; any other `workspace_id` returns
+        403. [Management key](/docs/guides/overview/auth/management-api-keys)
+        required.
       operationId: listBYOKKeys
       parameters:
         - description: Number of records to skip for pagination
@@ -173,17 +176,21 @@ paths:
             minimum: 1
             type: integer
         - description: >-
-            Optional workspace ID to filter by. When omitted, resolves to the
-            account’s default workspace; if that default has been deleted, the
-            request returns a 400 and you must pass `workspace_id` explicitly.
+            Optional workspace ID to filter by. When omitted, a workspace-scoped
+            management key uses its own workspace. An organization management
+            key uses the account’s default workspace; if that default has been
+            deleted, the request returns a 400 and you must pass `workspace_id`
+            explicitly.
           in: query
           name: workspace_id
           required: false
           schema:
             description: >-
-              Optional workspace ID to filter by. When omitted, resolves to the
-              account’s default workspace; if that default has been deleted, the
-              request returns a 400 and you must pass `workspace_id` explicitly.
+              Optional workspace ID to filter by. When omitted, a
+              workspace-scoped management key uses its own workspace. An
+              organization management key uses the account’s default workspace;
+              if that default has been deleted, the request returns a 400 and
+              you must pass `workspace_id` explicitly.
             example: 550e8400-e29b-41d4-a716-446655440000
             format: uuid
             type: string
@@ -532,7 +539,9 @@ components:
         allowed_api_key_hashes:
           description: >-
             Optional allowlist of OpenRouter API key hashes (`api_keys.hash`)
-            that may use this credential. `null` means no restriction.
+            that may use this credential. `null` means no restriction. A
+            workspace-scoped management key can only name API keys in its own
+            workspace.
           example:
             - f01d52606dc8f0a8303a7b5cc3fa07109c2e346cec7c0a16b40de462992ce943
           items:

@@ -4,7 +4,7 @@
 
 # List all member assignments
 
-> List all organization member guardrail assignments for the authenticated user. [Management key](../../../guides/overview/auth/management-api-keys.md) required.
+> List all organization member guardrail assignments for the authenticated user. A workspace-scoped management key lists only its own workspace, which `workspace_id` defaults to; naming another workspace returns 403. [Management key](../../../guides/overview/auth/management-api-keys.md) required.
 
 
 
@@ -143,7 +143,9 @@ paths:
       summary: List all member assignments
       description: >-
         List all organization member guardrail assignments for the authenticated
-        user. [Management key](/docs/guides/overview/auth/management-api-keys)
+        user. A workspace-scoped management key lists only its own workspace,
+        which `workspace_id` defaults to; naming another workspace returns 403.
+        [Management key](/docs/guides/overview/auth/management-api-keys)
         required.
       operationId: listMemberAssignments
       parameters:
@@ -170,6 +172,23 @@ paths:
             maximum: 100
             minimum: 1
             type: integer
+        - description: >-
+            Only list assignments of guardrails in this workspace. When omitted,
+            an organization management key lists every workspace and a
+            workspace-scoped key lists its own workspace. A workspace-scoped key
+            gets 403 for any other workspace.
+          in: query
+          name: workspace_id
+          required: false
+          schema:
+            description: >-
+              Only list assignments of guardrails in this workspace. When
+              omitted, an organization management key lists every workspace and
+              a workspace-scoped key lists its own workspace. A workspace-scoped
+              key gets 403 for any other workspace.
+            example: 0df9e665-d932-5740-b2c7-b52af166bc11
+            format: uuid
+            type: string
       responses:
         '200':
           content:

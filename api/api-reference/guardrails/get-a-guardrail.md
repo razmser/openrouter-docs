@@ -4,7 +4,7 @@
 
 # Get a guardrail
 
-> Get a single guardrail by ID. [Management key](../../../guides/overview/auth/management-api-keys.md) required.
+> Get a single guardrail by ID. A workspace-scoped management key reaches only guardrails in its own workspace; any other guardrail returns 404. [Management key](../../../guides/overview/auth/management-api-keys.md) required.
 
 
 
@@ -142,8 +142,10 @@ paths:
         - Guardrails
       summary: Get a guardrail
       description: >-
-        Get a single guardrail by ID. [Management
-        key](/docs/guides/overview/auth/management-api-keys) required.
+        Get a single guardrail by ID. A workspace-scoped management key reaches
+        only guardrails in its own workspace; any other guardrail returns 404.
+        [Management key](/docs/guides/overview/auth/management-api-keys)
+        required.
       operationId: getGuardrail
       parameters:
         - description: The unique identifier of the guardrail to retrieve
