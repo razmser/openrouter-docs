@@ -960,6 +960,7 @@ components:
         - Seed
         - SiliconFlow
         - Sourceful
+        - Speechify
         - StepFun
         - Stealth
         - StreamLake

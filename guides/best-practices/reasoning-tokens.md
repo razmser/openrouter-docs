@@ -141,17 +141,297 @@ To enable reasoning with the default parameters:
 
 #### Basic Usage with Reasoning Tokens
 
+```typescript title="TypeScript SDK" expandable lines theme={null}
+import { OpenRouter } from '@openrouter/sdk';
+
+const openRouter = new OpenRouter({
+  apiKey: '<OPENROUTER_API_KEY>',
+});
+
+const response = await openRouter.responses.send({
+  responsesRequest: {
+    model: 'openai/o3',
+    input: "How would you build the world's tallest skyscraper?",
+    reasoning: {
+      effort: 'high',
+      summary: 'detailed',
+    },
+    stream: false,
+  },
+});
+
+if (!('output' in response)) {
+  throw new Error('Expected a non-streaming response');
+}
+
+const reasoning = [...response.output].reverse().find((item) => item.type === 'reasoning');
+const message = [...response.output].reverse().find((item) => item.type === 'message');
+
+// Raw reasoning arrives in `content`; OpenAI models return a summary in `summary` instead.
+const reasoningText = [...(reasoning?.content ?? []), ...(reasoning?.summary ?? [])]
+  .map((part) => part.text)
+  .join('');
+console.log('REASONING:', reasoningText);
+console.log('CONTENT:', message?.content.find((part) => part.type === 'output_text')?.text);
+```
+
+```python title="Python (OpenAI SDK)" expandable lines theme={null}
+from openai import OpenAI
+
+client = OpenAI(
+    base_url="https://openrouter.ai/api/v1",
+    api_key="<OPENROUTER_API_KEY>",
+)
+
+response = client.responses.create(
+    model="openai/o3",
+    input="How would you build the world's tallest skyscraper?",
+    reasoning={
+        "effort": "high",
+        "summary": "detailed",
+    },
+)
+
+for item in response.output:
+    if item.type == "reasoning":
+        # Raw reasoning arrives in `content`; OpenAI models return a summary in `summary` instead.
+        parts = [*(item.content or []), *item.summary]
+        print("REASONING:", "".join(part.text for part in parts))
+print("CONTENT:", response.output_text)
+```
+
+```typescript title="TypeScript (OpenAI SDK)" expandable lines theme={null}
+import OpenAI from 'openai';
+
+const openai = new OpenAI({
+  baseURL: 'https://openrouter.ai/api/v1',
+  apiKey: '<OPENROUTER_API_KEY>',
+});
+
+async function getResponseWithReasoning() {
+  const response = await openai.responses.create({
+    model: 'openai/o3',
+    input: "How would you build the world's tallest skyscraper?",
+    reasoning: {
+      effort: 'high',
+      summary: 'detailed',
+    },
+  });
+
+  for (const item of response.output) {
+    if (item.type === 'reasoning') {
+      // Raw reasoning arrives in `content`; OpenAI models return a summary in `summary` instead.
+      const parts = [...(item.content ?? []), ...item.summary];
+      console.log('REASONING:', parts.map((part) => part.text).join(''));
+    }
+  }
+  console.log('CONTENT:', response.output_text);
+}
+
+getResponseWithReasoning();
+```
+
 #### Using Max Tokens for Reasoning
 
 For models that support direct token allocation (like Anthropic models), you can specify the exact number of tokens to use for reasoning:
+
+```python Python expandable lines theme={null}
+from openai import OpenAI
+
+client = OpenAI(
+    base_url="https://openrouter.ai/api/v1",
+    api_key="<OPENROUTER_API_KEY>",
+)
+
+response = client.responses.create(
+    model="~anthropic/claude-sonnet-latest",
+    input="What's the most efficient algorithm for sorting a large dataset?",
+    extra_body={
+        "reasoning": {
+            "max_tokens": 2000
+        }
+    },
+)
+
+for item in response.output:
+    if item.type == "reasoning":
+        print("REASONING:", "".join(part.text for part in item.content or []))
+print("CONTENT:", response.output_text)
+```
+
+```typescript TypeScript expandable lines theme={null}
+import OpenAI from 'openai';
+
+const openai = new OpenAI({
+  baseURL: 'https://openrouter.ai/api/v1',
+  apiKey: '<OPENROUTER_API_KEY>',
+});
+
+async function getResponseWithReasoning() {
+  const response = await openai.responses.create({
+    model: '~anthropic/claude-sonnet-latest',
+    input: "How would you build the world's tallest skyscraper?",
+    reasoning: {
+      // @ts-expect-error max_tokens is an OpenRouter extension
+      max_tokens: 2000,
+    },
+  });
+
+  for (const item of response.output) {
+    if (item.type === 'reasoning') {
+      console.log('REASONING:', item.content?.map((part) => part.text).join(''));
+    }
+  }
+  console.log('CONTENT:', response.output_text);
+}
+
+getResponseWithReasoning();
+```
 
 #### Excluding Reasoning Tokens from Response (Chat Completions)
 
 If you want the model to use reasoning internally but not include it in the response, use Chat Completions (`/api/v1/chat/completions`). The Responses API ignores `reasoning.exclude` and always returns `reasoning` items in `output`.
 
+```python Python expandable lines theme={null}
+from openai import OpenAI
+
+client = OpenAI(
+    base_url="https://openrouter.ai/api/v1",
+    api_key="<OPENROUTER_API_KEY>",
+)
+
+response = client.chat.completions.create(
+    model="deepseek/deepseek-r1-0528",
+    messages=[
+        {"role": "user", "content": "Explain quantum computing in simple terms."}
+    ],
+    extra_body={
+        "reasoning": {
+            "effort": "high",
+            "exclude": True
+        }
+    },
+)
+
+print(response.choices[0].message.content)
+```
+
+```typescript TypeScript expandable lines theme={null}
+import OpenAI from 'openai';
+
+const openai = new OpenAI({
+  baseURL: 'https://openrouter.ai/api/v1',
+  apiKey: '<OPENROUTER_API_KEY>',
+});
+
+async function getResponseWithReasoning() {
+  const response = await openai.chat.completions.create({
+    model: 'deepseek/deepseek-r1-0528',
+    messages: [
+      {
+        role: 'user',
+        content: "How would you build the world's tallest skyscraper?",
+      },
+    ],
+    // @ts-expect-error reasoning is an OpenRouter extension
+    reasoning: {
+      effort: 'high',
+      exclude: true,
+    },
+  });
+
+  console.log('CONTENT:', response.choices[0].message.content);
+}
+
+getResponseWithReasoning();
+```
+
 #### Advanced Usage: Reasoning Chain-of-Thought
 
 This example shows how to use reasoning tokens in a more complex workflow. It injects one model's reasoning into another model to improve its response quality:
+
+```python Python expandable lines theme={null}
+from openai import OpenAI
+
+client = OpenAI(
+    base_url="https://openrouter.ai/api/v1",
+    api_key="<OPENROUTER_API_KEY>",
+)
+
+question = "Which is bigger: 9.11 or 9.9?"
+
+def do_req(model: str, content: str, reasoning_config: dict | None = None):
+    extra_body = {"stop": "</think>"}
+    if reasoning_config:
+        extra_body.update(reasoning_config)
+    return client.responses.create(model=model, input=content, extra_body=extra_body)
+
+def get_reasoning(response) -> str:
+    return "".join(
+        part.text
+        for item in response.output
+        if item.type == "reasoning"
+        for part in item.content or []
+    )
+
+# Get reasoning from a capable model
+content = f"{question} Please think this through, but don't output an answer"
+reasoning_response = do_req("deepseek/deepseek-r1-0528", content)
+reasoning = get_reasoning(reasoning_response)
+
+# Let's test! Here's the naive response:
+simple_response = do_req("~openai/gpt-mini-latest", question)
+print(simple_response.output_text)
+
+# Here's the response with the reasoning token injected:
+content = f"{question}. Here is some context to help you: {reasoning}"
+smart_response = do_req("~openai/gpt-mini-latest", content)
+print(smart_response.output_text)
+```
+
+```typescript TypeScript expandable lines theme={null}
+import OpenAI from 'openai';
+
+const openai = new OpenAI({
+  baseURL: 'https://openrouter.ai/api/v1',
+  apiKey: '<OPENROUTER_API_KEY>',
+});
+
+async function doReq(model: string, content: string, reasoningConfig: Record<string, unknown> = {}) {
+  const payload = {
+    model,
+    input: content,
+    stop: '</think>',
+    ...reasoningConfig,
+  };
+
+  return openai.responses.create(payload);
+}
+
+async function getResponseWithReasoning() {
+  const question = 'Which is bigger: 9.11 or 9.9?';
+  const reasoningResponse = await doReq(
+    'deepseek/deepseek-r1-0528',
+    `${question} Please think this through, but don't output an answer`,
+  );
+  const reasoning = reasoningResponse.output
+    .filter((item) => item.type === 'reasoning')
+    .flatMap((item) => item.content ?? [])
+    .map((part) => part.text)
+    .join('');
+
+  // Let's test! Here's the naive response:
+  const simpleResponse = await doReq('~openai/gpt-mini-latest', question);
+  console.log(simpleResponse.output_text);
+
+  // Here's the response with the reasoning token injected:
+  const content = `${question}. Here is some context to help you: ${reasoning}`;
+  const smartResponse = await doReq('~openai/gpt-mini-latest', content);
+  console.log(smartResponse.output_text);
+}
+
+getResponseWithReasoning();
+```
 
 ## Preserving Reasoning
 
@@ -201,6 +481,156 @@ Preserving reasoning blocks is useful specifically for tool calling. When models
 > When providing reasoning\_details blocks, the entire sequence of consecutive reasoning blocks must match the outputs generated by the model during the original request; you cannot rearrange or modify the sequence of these blocks.
 
 ### Example: Preserving Reasoning Blocks with OpenRouter and Claude
+
+```python Python expandable lines theme={null}
+from openai import OpenAI
+from openai.types.chat import ChatCompletionToolParam
+
+client = OpenAI(
+    base_url="https://openrouter.ai/api/v1",
+    api_key="<OPENROUTER_API_KEY>",
+)
+
+# Define tools once and reuse
+tools: list[ChatCompletionToolParam] = [{
+    "type": "function",
+    "function": {
+        "name": "get_weather",
+        "description": "Get current weather",
+        "parameters": {
+            "type": "object",
+            "properties": {
+                "location": {"type": "string"}
+            },
+            "required": ["location"]
+        }
+    }
+}]
+
+# First API call with tools
+# Note: You can use '~openai/gpt-sol-latest' instead of '~anthropic/claude-sonnet-latest' - they're completely interchangeable
+response = client.chat.completions.create(
+    model="~anthropic/claude-sonnet-latest",
+    messages=[
+        {"role": "user", "content": "What's the weather like in Boston? Then recommend what to wear."}
+    ],
+    tools=tools,
+    extra_body={"reasoning": {"max_tokens": 2000}}
+)
+
+# Extract the assistant message with reasoning_details (an OpenRouter extension,
+# so the OpenAI SDK types do not declare it)
+message = response.choices[0].message
+if not message.tool_calls:
+    raise RuntimeError("Expected the model to request a tool call")
+
+# Preserve the complete reasoning_details when passing back
+messages = [
+    {"role": "user", "content": "What's the weather like in Boston? Then recommend what to wear."},
+    {
+        "role": "assistant",
+        "content": message.content,
+        "tool_calls": message.tool_calls,
+        "reasoning_details": getattr(message, "reasoning_details", None)  # Pass back unmodified
+    },
+    {
+        "role": "tool",
+        "tool_call_id": message.tool_calls[0].id,
+        "content": '{"temperature": 45, "condition": "rainy", "humidity": 85}'
+    }
+]
+
+# Second API call - Claude continues reasoning from where it left off
+response2 = client.chat.completions.create(
+    model="~anthropic/claude-sonnet-latest",
+    messages=messages,  # Includes preserved thinking blocks
+    tools=tools
+)
+```
+
+```typescript TypeScript expandable lines theme={null}
+import OpenAI from 'openai';
+
+const client = new OpenAI({
+  baseURL: 'https://openrouter.ai/api/v1',
+  apiKey: '<OPENROUTER_API_KEY>',
+});
+
+// Define tools once and reuse
+const tools = [
+  {
+    type: 'function',
+    function: {
+      name: 'get_weather',
+      description: 'Get current weather',
+      parameters: {
+        type: 'object',
+        properties: {
+          location: { type: 'string' },
+        },
+        required: ['location'],
+      },
+    },
+  },
+] satisfies OpenAI.Chat.ChatCompletionTool[];
+
+// First API call with tools
+// Note: You can use '~openai/gpt-sol-latest' instead of '~anthropic/claude-sonnet-latest' - they're completely interchangeable
+const response = await client.chat.completions.create({
+  model: '~anthropic/claude-sonnet-latest',
+  messages: [
+    {
+      role: 'user',
+      content:
+        "What's the weather like in Boston? Then recommend what to wear.",
+    },
+  ],
+  tools,
+  // @ts-expect-error reasoning is an OpenRouter extension
+  reasoning: { max_tokens: 2000 },
+});
+
+// Extract the assistant message with reasoning_details
+type ORChatMessage = (typeof response)['choices'][number]['message'] & {
+  reasoning_details?: unknown;
+};
+const message = response.choices[0].message as ORChatMessage;
+const toolCallId = message.tool_calls?.[0]?.id;
+if (!toolCallId) {
+  throw new Error('Expected the model to request a tool call');
+}
+
+// Preserve the complete reasoning_details when passing back
+const messages: OpenAI.Chat.ChatCompletionMessageParam[] = [
+  {
+    role: 'user',
+    content: "What's the weather like in Boston? Then recommend what to wear.",
+  },
+  {
+    role: 'assistant',
+    content: message.content,
+    tool_calls: message.tool_calls,
+    // @ts-expect-error reasoning_details is an OpenRouter extension
+    reasoning_details: message.reasoning_details, // Pass back unmodified
+  },
+  {
+    role: 'tool',
+    tool_call_id: toolCallId,
+    content: JSON.stringify({
+      temperature: 45,
+      condition: 'rainy',
+      humidity: 85,
+    }),
+  },
+];
+
+// Second API call - Claude continues reasoning from where it left off
+const response2 = await client.chat.completions.create({
+  model: '~anthropic/claude-sonnet-latest',
+  messages, // Includes preserved thinking blocks
+  tools,
+});
+```
 
 For more detailed information about thinking encryption, redacted blocks, and advanced use cases, see [Anthropic's documentation on extended thinking](https://docs.anthropic.com/en/docs/build-with-claude/tool-use#extended-thinking).
 
@@ -562,6 +992,72 @@ If you're using the Anthropic Messages API format directly, you can control this
 
 #### Example: Streaming with Anthropic Reasoning Tokens
 
+```python Python expandable lines theme={null}
+from openai import OpenAI
+
+client = OpenAI(
+    base_url="https://openrouter.ai/api/v1",
+    api_key="<OPENROUTER_API_KEY>",
+)
+
+def response_with_reasoning(input):
+    return client.responses.create(
+        model="~anthropic/claude-sonnet-latest",
+        input=input,
+        max_output_tokens=10000,
+        extra_body={
+            "reasoning": {
+                "max_tokens": 8000
+            }
+        },
+        stream=True
+    )
+
+for event in response_with_reasoning("What's bigger, 9.9 or 9.11?"):
+    if event.type in {
+        "response.reasoning_text.delta",
+        "response.reasoning_summary_text.delta",
+    }:
+        print(f"REASONING: {event.delta}")
+    elif event.type == "response.output_text.delta":
+        print(f"CONTENT: {event.delta}")
+```
+
+```typescript TypeScript expandable lines theme={null}
+import OpenAI from 'openai';
+
+const openai = new OpenAI({
+  baseURL: 'https://openrouter.ai/api/v1',
+  apiKey: '<OPENROUTER_API_KEY>',
+});
+
+async function responseWithReasoning(input: string) {
+  return openai.responses.create({
+    model: '~anthropic/claude-sonnet-latest',
+    input,
+    max_output_tokens: 10000,
+    reasoning: {
+      // @ts-expect-error max_tokens is an OpenRouter extension
+      max_tokens: 8000,
+    },
+    stream: true,
+  });
+}
+
+(async () => {
+  for await (const event of await responseWithReasoning("What's bigger, 9.9 or 9.11?")) {
+    if (
+      event.type === 'response.reasoning_text.delta' ||
+      event.type === 'response.reasoning_summary_text.delta'
+    ) {
+      console.log(`REASONING: ${event.delta}`);
+    } else if (event.type === 'response.output_text.delta') {
+      console.log(`CONTENT: ${event.delta}`);
+    }
+  }
+})();
+```
+
 ### Google Gemini 3 Models with Thinking Levels
 
 Gemini 3 models (such as [google/gemini-3.1-pro-preview](https://openrouter.ai/google/gemini-3.1-pro-preview) and [google/gemini-3-flash-preview](https://openrouter.ai/google/gemini-3-flash-preview)) use Google's `thinkingLevel` API instead of the older `thinkingBudget` API used by Gemini 2.5 models.
@@ -589,3 +1085,53 @@ If a model doesn't support a specific effort level (for example, if a model only
 If you specify `reasoning.max_tokens` explicitly, OpenRouter will pass it through as `thinkingBudget` to Google's API. However, for Gemini 3 models, Google internally maps this budget value to a `thinkingLevel`, so you will not get precise token control. The actual token consumption is still determined by Google's thinkingLevel implementation, not by the specific budget value you provide.
 
 #### Example: Using Thinking Levels with Gemini 3
+
+```python Python expandable lines theme={null}
+from openai import OpenAI
+
+client = OpenAI(
+    base_url="https://openrouter.ai/api/v1",
+    api_key="<OPENROUTER_API_KEY>",
+)
+
+response = client.responses.create(
+    model="google/gemini-3.1-pro-preview",
+    input="Explain the implications of quantum entanglement.",
+    reasoning={
+        "effort": "low"  # Maps to thinkingLevel: "low"
+    },
+)
+
+for item in response.output:
+    if item.type == "reasoning":
+        print("REASONING:", "".join(part.text for part in item.content or []))
+print("CONTENT:", response.output_text)
+```
+
+```typescript TypeScript expandable lines theme={null}
+import OpenAI from 'openai';
+
+const openai = new OpenAI({
+  baseURL: 'https://openrouter.ai/api/v1',
+  apiKey: '<OPENROUTER_API_KEY>',
+});
+
+async function getResponseWithThinkingLevel() {
+  const response = await openai.responses.create({
+    model: 'google/gemini-3.1-pro-preview',
+    input: 'Explain the implications of quantum entanglement.',
+    reasoning: {
+      effort: 'low', // Maps to thinkingLevel: "low"
+    },
+  });
+
+  for (const item of response.output) {
+    if (item.type === 'reasoning') {
+      console.log('REASONING:', item.content?.map((part) => part.text).join(''));
+    }
+  }
+  console.log('CONTENT:', response.output_text);
+}
+
+getResponseWithThinkingLevel();
+```

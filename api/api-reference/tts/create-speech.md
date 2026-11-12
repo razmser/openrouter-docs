@@ -743,7 +743,8 @@ components:
       description: >-
         Text to synthesize, or a list of turns for multi-speaker input. Each
         turn has its own text, voice, and instructions. Multi-speaker input is
-        supported by Gemini TTS models and by Fish Audio models other than S1.
+        supported by Gemini TTS models, by Fish Audio models other than S1, and
+        by Speechify dialogue models.
       example: Hello world
     SpeechInputReference:
       description: Reference content part for stateless voice cloning or voice design
@@ -866,6 +867,7 @@ components:
         - Seed
         - SiliconFlow
         - Sourceful
+        - Speechify
         - StepFun
         - Stealth
         - StreamLake
@@ -1295,6 +1297,9 @@ components:
           additionalProperties: {}
           type: object
         sourceful:
+          additionalProperties: {}
+          type: object
+        speechify:
           additionalProperties: {}
           type: object
         stealth:

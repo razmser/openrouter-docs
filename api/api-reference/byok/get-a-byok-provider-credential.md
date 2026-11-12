@@ -357,9 +357,10 @@ components:
         allowed_api_key_hashes:
           description: >-
             Optional allowlist of OpenRouter API key hashes (`api_keys.hash`)
-            that may use this credential. `null` means no restriction. A
-            workspace-scoped management key can only name API keys in its own
-            workspace.
+            that may use this credential. `null` means no restriction. Keys
+            newly added to a credential pinned to a workspace must be in that
+            workspace; a listed key that has since moved to another workspace
+            stays listed.
           example:
             - f01d52606dc8f0a8303a7b5cc3fa07109c2e346cec7c0a16b40de462992ce943
           items:
@@ -699,6 +700,7 @@ components:
         - seed
         - siliconflow
         - sourceful
+        - speechify
         - stepfun
         - streamlake
         - switchpoint

@@ -282,7 +282,10 @@ components:
         resolution: 720p
       properties:
         aspect_ratio:
-          description: Aspect ratio of the generated video
+          description: >-
+            Aspect ratio of the generated video. Omit it to use the model
+            default, which on models with adaptive aspect ratio (e.g. BytePlus
+            Seedance) follows the input image or video.
           enum:
             - '16:9'
             - '9:16'
@@ -310,9 +313,12 @@ components:
           example: 1
           type: integer
         duration:
-          description: Duration of the generated video in seconds
+          description: >-
+            Duration of the generated video in seconds, or -1 to let the
+            provider choose the length (e.g. following an input video). -1 is
+            only accepted by models that list it in supported_durations.
           example: 8
-          minimum: 1
+          minimum: -1
           type: integer
         frame_images:
           description: >-
@@ -890,6 +896,7 @@ components:
         - Seed
         - SiliconFlow
         - Sourceful
+        - Speechify
         - StepFun
         - Stealth
         - StreamLake
@@ -1319,6 +1326,9 @@ components:
           additionalProperties: {}
           type: object
         sourceful:
+          additionalProperties: {}
+          type: object
+        speechify:
           additionalProperties: {}
           type: object
         stealth:

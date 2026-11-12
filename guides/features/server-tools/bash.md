@@ -44,11 +44,11 @@ Send the tool on a Messages API request. Set `engine: "openrouter"` to run comma
 const response = await fetch('https://openrouter.ai/api/v1/messages', {
   method: 'POST',
   headers: {
-    Authorization: 'Bearer {{API_KEY_REF}}',
+    Authorization: 'Bearer <OPENROUTER_API_KEY>',
     'Content-Type': 'application/json',
   },
   body: JSON.stringify({
-    model: '{{MODEL}}',
+    model: 'anthropic/claude-sonnet-4.5',
     max_tokens: 1024,
     messages: [
       {
@@ -72,11 +72,11 @@ import requests
 response = requests.post(
   "https://openrouter.ai/api/v1/messages",
   headers={
-    "Authorization": f"Bearer {{API_KEY_REF}}",
+    "Authorization": f"Bearer <OPENROUTER_API_KEY>",
     "Content-Type": "application/json",
   },
   json={
-    "model": "{{MODEL}}",
+    "model": "anthropic/claude-sonnet-4.5",
     "max_tokens": 1024,
     "messages": [
       {
@@ -96,10 +96,10 @@ print(data)
 
 ```bash title="cURL" lines theme={null}
 curl https://openrouter.ai/api/v1/messages \
-  -H "Authorization: Bearer {{API_KEY_REF}}" \
+  -H "Authorization: Bearer <OPENROUTER_API_KEY>" \
   -H "Content-Type: application/json" \
   -d '{
-    "model": "{{MODEL}}",
+    "model": "anthropic/claude-sonnet-4.5",
     "max_tokens": 1024,
     "messages": [
       {

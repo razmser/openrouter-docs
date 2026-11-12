@@ -26,6 +26,63 @@ The `openrouter:web_search` server tool gives any model on OpenRouter access to 
 
 ## Quick Start
 
+```typescript title="TypeScript" expandable lines theme={null}
+const response = await fetch('https://openrouter.ai/api/v1/responses', {
+  method: 'POST',
+  headers: {
+    Authorization: 'Bearer <OPENROUTER_API_KEY>',
+    'Content-Type': 'application/json',
+  },
+  body: JSON.stringify({
+    model: 'openai/gpt-5.2',
+    input: 'What were the major AI announcements this week?',
+    tools: [
+      { type: 'openrouter:web_search' }
+    ]
+  }),
+});
+
+const data = await response.json();
+const message = [...data.output].reverse().find((item: { type: string }) => item.type === 'message');
+console.log(message?.content.find((part: { type: string; text?: string }) => part.type === 'output_text')?.text);
+```
+
+```python title="Python" expandable lines theme={null}
+import requests
+
+response = requests.post(
+  "https://openrouter.ai/api/v1/responses",
+  headers={
+    "Authorization": f"Bearer <OPENROUTER_API_KEY>",
+    "Content-Type": "application/json",
+  },
+  json={
+    "model": "openai/gpt-5.2",
+    "input": "What were the major AI announcements this week?",
+    "tools": [
+      {"type": "openrouter:web_search"}
+    ]
+  }
+)
+
+data = response.json()
+message = next(item for item in reversed(data["output"]) if item["type"] == "message")
+print(next(part["text"] for part in message["content"] if part["type"] == "output_text"))
+```
+
+```bash title="cURL" lines theme={null}
+curl https://openrouter.ai/api/v1/responses \
+  -H "Authorization: Bearer <OPENROUTER_API_KEY>" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "model": "openai/gpt-5.2",
+    "input": "What were the major AI announcements this week?",
+    "tools": [
+      {"type": "openrouter:web_search"}
+    ]
+  }'
+```
+
 ## Configuration
 
 The web search tool accepts optional `parameters` to customize search behavior:
@@ -300,6 +357,50 @@ When omitted, the budget defaults to **30** steps, which is also the maximum. Fo
 
 Pass `parameters` on the tool entry to configure the search:
 
+```typescript title="TypeScript" lines theme={null}
+const response = await fetch('https://openrouter.ai/api/v1/responses', {
+  method: 'POST',
+  headers: {
+    Authorization: 'Bearer <OPENROUTER_API_KEY>',
+    'Content-Type': 'application/json',
+  },
+  body: JSON.stringify({
+    model: 'openai/gpt-5.2',
+    input: 'What is the current price of Bitcoin?',
+    tools: [
+      { type: 'openrouter:web_search', parameters: { max_results: 3 } }
+    ]
+  }),
+});
+
+const data = await response.json();
+const message = [...data.output].reverse().find((item: { type: string }) => item.type === 'message');
+console.log(message?.content.find((part: { type: string; text?: string }) => part.type === 'output_text')?.text);
+```
+
+```python title="Python" lines theme={null}
+import requests
+
+response = requests.post(
+  "https://openrouter.ai/api/v1/responses",
+  headers={
+    "Authorization": f"Bearer <OPENROUTER_API_KEY>",
+    "Content-Type": "application/json",
+  },
+  json={
+    "model": "openai/gpt-5.2",
+    "input": "What is the current price of Bitcoin?",
+    "tools": [
+      {"type": "openrouter:web_search", "parameters": {"max_results": 3}}
+    ]
+  }
+)
+
+data = response.json()
+message = next(item for item in reversed(data["output"]) if item["type"] == "message")
+print(next(part["text"] for part in message["content"] if part["type"] == "output_text"))
+```
+
 ## Workspace Settings
 
 Workspace admins can set an engine list, allowed domains, and excluded domains for `openrouter:web_search` on the workspace's Server Tools page. Each tool entry is either locked or a default:
@@ -327,7 +428,7 @@ Web search usage is reported in the response `usage` object:
 }
 ```
 
-The `web_search_requests` field counts the total number of search queries the model made during the request.
+The `web_search_requests` field counts the total number of search queries the model made during the request. A server-orchestrated search is also counted in `tool_calls_requested`, while provider-native web search may report only `web_search_requests`, so don't add the two together.
 
 ## Pricing
 

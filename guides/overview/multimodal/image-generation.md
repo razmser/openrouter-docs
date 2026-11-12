@@ -145,7 +145,7 @@ headers = {
 }
 
 payload = {
-    "model": "{{MODEL}}",
+    "model": "bytedance-seed/seedream-4.5",
     "prompt": "a red panda astronaut floating in space, studio lighting"
 }
 
@@ -165,7 +165,7 @@ const response = await fetch('https://openrouter.ai/api/v1/images', {
     'Content-Type': 'application/json',
   },
   body: JSON.stringify({
-    model: '{{MODEL}}',
+    model: 'bytedance-seed/seedream-4.5',
     prompt: 'a red panda astronaut floating in space, studio lighting',
   }),
 });
@@ -183,7 +183,7 @@ curl -X POST "https://openrouter.ai/api/v1/images" \
   -H "Authorization: Bearer $OPENROUTER_API_KEY" \
   -H "Content-Type: application/json" \
   -d '{
-    "model": "{{MODEL}}",
+    "model": "bytedance-seed/seedream-4.5",
     "prompt": "a red panda astronaut floating in space, studio lighting"
   }'
 ```

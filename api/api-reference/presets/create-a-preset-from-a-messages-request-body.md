@@ -3761,6 +3761,7 @@ components:
         - Seed
         - SiliconFlow
         - Sourceful
+        - Speechify
         - StepFun
         - Stealth
         - StreamLake
@@ -4190,6 +4191,9 @@ components:
           additionalProperties: {}
           type: object
         sourceful:
+          additionalProperties: {}
+          type: object
+        speechify:
           additionalProperties: {}
           type: object
         stealth:

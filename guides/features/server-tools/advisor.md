@@ -26,11 +26,11 @@ Each advisor also **remembers its own prior consultations across requests** when
 const response = await fetch('https://openrouter.ai/api/v1/responses', {
   method: 'POST',
   headers: {
-    Authorization: 'Bearer {{API_KEY_REF}}',
+    Authorization: 'Bearer <OPENROUTER_API_KEY>',
     'Content-Type': 'application/json',
   },
   body: JSON.stringify({
-    model: '{{MODEL}}',
+    model: 'openai/gpt-4o-mini',
     input: 'Build a concurrent worker pool in Go with graceful shutdown.',
     tools: [
       {
@@ -52,11 +52,11 @@ import requests
 response = requests.post(
   "https://openrouter.ai/api/v1/responses",
   headers={
-    "Authorization": f"Bearer {{API_KEY_REF}}",
+    "Authorization": f"Bearer <OPENROUTER_API_KEY>",
     "Content-Type": "application/json",
   },
   json={
-    "model": "{{MODEL}}",
+    "model": "openai/gpt-4o-mini",
     "input": "Build a concurrent worker pool in Go with graceful shutdown.",
     "tools": [
       {

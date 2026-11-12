@@ -374,7 +374,9 @@ components:
             - array
             - 'null'
         supported_durations:
-          description: Supported video durations in seconds
+          description: >-
+            Supported video durations in seconds. -1 means the model accepts
+            duration -1 and chooses the length itself.
           items:
             type: integer
           type:

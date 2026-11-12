@@ -173,6 +173,24 @@ paths:
                         minLength: 1
                         type: string
                       type: array
+                    - description: >-
+                        Documents to embed with document-level context: each
+                        item is an ordered list of chunk strings. One embedding
+                        is returned per chunk, in document order, with
+                        `document_index` set on each. Only models that support
+                        contextual embeddings accept this shape.
+                      example:
+                        - - Paris is the capital of France.
+                          - It sits on the Seine.
+                        - - Berlin is the capital of Germany.
+                      items:
+                        items:
+                          minLength: 1
+                          type: string
+                        minItems: 1
+                        type: array
+                      minItems: 1
+                      type: array
                     - items:
                         type: number
                       type: array
@@ -226,7 +244,10 @@ paths:
                   description: Text, token, or multimodal input(s) to embed
                   example: The quick brown fox jumps over the lazy dog
                 input_type:
-                  description: The type of input (e.g. search_query, search_document)
+                  description: >-
+                    The type of input (e.g. search_query, search_document).
+                    Document-chunk input (`string[][]`) is only valid with a
+                    document input type.
                   example: search_query
                   type: string
                 model:
@@ -298,6 +319,13 @@ paths:
                         index: 0
                         object: embedding
                       properties:
+                        document_index:
+                          description: >-
+                            Index of the source document when `input` was a list
+                            of documents (contextual embeddings). Absent
+                            otherwise.
+                          example: 0
+                          type: integer
                         embedding:
                           anyOf:
                             - items:
@@ -1254,6 +1282,7 @@ components:
         - Seed
         - SiliconFlow
         - Sourceful
+        - Speechify
         - StepFun
         - Stealth
         - StreamLake
@@ -1683,6 +1712,9 @@ components:
           additionalProperties: {}
           type: object
         sourceful:
+          additionalProperties: {}
+          type: object
+        speechify:
           additionalProperties: {}
           type: object
         stealth:

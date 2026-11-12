@@ -67,6 +67,136 @@ If your downstream model does not accept image input at all, OCR-extracted image
 
 For publicly accessible PDFs, you can send the URL directly without needing to download and encode the file:
 
+```typescript title="TypeScript SDK" expandable lines theme={null}
+import { OpenRouter } from '@openrouter/sdk';
+
+const openRouter = new OpenRouter({
+  apiKey: '<OPENROUTER_API_KEY>',
+});
+
+const result = await openRouter.responses.send({
+  responsesRequest: {
+    model: '~anthropic/claude-sonnet-latest',
+    input: [
+      {
+        role: 'user',
+        content: [
+          {
+            type: 'input_text',
+            text: 'What are the main points in this document?',
+          },
+          {
+            type: 'input_file',
+            filename: 'document.pdf',
+            fileUrl: 'https://bitcoin.org/bitcoin.pdf',
+          },
+        ],
+      },
+    ],
+    // Optional: Configure PDF processing engine
+    plugins: [
+      {
+        id: 'file-parser',
+        pdf: {
+          engine: 'mistral-ocr',
+        },
+      },
+    ],
+    stream: false,
+  },
+});
+
+console.log(result);
+```
+
+```python Python expandable lines theme={null}
+import requests
+import json
+
+url = "https://openrouter.ai/api/v1/responses"
+headers = {
+    "Authorization": f"Bearer {API_KEY_REF}",
+    "Content-Type": "application/json"
+}
+
+input_items = [
+    {
+        "role": "user",
+        "content": [
+            {
+                "type": "input_text",
+                "text": "What are the main points in this document?"
+            },
+            {
+                "type": "input_file",
+                "filename": "document.pdf",
+                "file_url": "https://bitcoin.org/bitcoin.pdf"
+            },
+        ]
+    }
+]
+
+# Optional: Configure PDF processing engine
+plugins = [
+    {
+        "id": "file-parser",
+        "pdf": {
+            "engine": "mistral-ocr"
+        }
+    }
+]
+
+payload = {
+    "model": "~anthropic/claude-sonnet-latest",
+    "input": input_items,
+    "plugins": plugins
+}
+
+response = requests.post(url, headers=headers, json=payload)
+print(response.json())
+```
+
+```typescript title="TypeScript (fetch)" expandable lines theme={null}
+const response = await fetch('https://openrouter.ai/api/v1/responses', {
+  method: 'POST',
+  headers: {
+    Authorization: `Bearer ${API_KEY_REF}`,
+    'Content-Type': 'application/json',
+  },
+  body: JSON.stringify({
+    model: '~anthropic/claude-sonnet-latest',
+    input: [
+      {
+        role: 'user',
+        content: [
+          {
+            type: 'input_text',
+            text: 'What are the main points in this document?',
+          },
+          {
+            type: 'input_file',
+            filename: 'document.pdf',
+            file_url: 'https://bitcoin.org/bitcoin.pdf',
+          },
+        ],
+      },
+    ],
+    // Optional: Configure PDF processing engine
+    plugins: [
+      {
+        id: 'file-parser',
+        pdf: {
+          engine: 'mistral-ocr',
+        },
+      },
+    ],
+  }),
+});
+
+const data = await response.json();
+console.log(data);
+```
+
 > [!NOTE]
 >
 > PDF URLs work with all processing engines. For Mistral OCR, the URL is passed directly to the service. For other engines, OpenRouter fetches the PDF and processes it internally.
@@ -75,11 +205,327 @@ For publicly accessible PDFs, you can send the URL directly without needing to d
 
 For local PDF files or when you need to send PDF content directly, you can base64 encode the file:
 
+```python Python expandable lines theme={null}
+import requests
+import json
+import base64
+from pathlib import Path
+
+def encode_pdf_to_base64(pdf_path):
+    with open(pdf_path, "rb") as pdf_file:
+        return base64.b64encode(pdf_file.read()).decode('utf-8')
+
+url = "https://openrouter.ai/api/v1/responses"
+headers = {
+    "Authorization": f"Bearer {API_KEY_REF}",
+    "Content-Type": "application/json"
+}
+
+# Read and encode the PDF
+pdf_path = "path/to/your/document.pdf"
+base64_pdf = encode_pdf_to_base64(pdf_path)
+data_url = f"data:application/pdf;base64,{base64_pdf}"
+
+input_items = [
+    {
+        "role": "user",
+        "content": [
+            {
+                "type": "input_text",
+                "text": "What are the main points in this document?"
+            },
+            {
+                "type": "input_file",
+                "filename": "document.pdf",
+                "file_data": data_url
+            },
+        ]
+    }
+]
+
+# Optional: Configure PDF processing engine
+# PDF parsing will still work even if the plugin is not explicitly set
+plugins = [
+    {
+        "id": "file-parser",
+        "pdf": {
+            "engine": "cloudflare-ai"  # defaults to "mistral-ocr". See Pricing above
+        }
+    }
+]
+
+payload = {
+    "model": "google/gemma-3-27b-it",
+    "input": input_items,
+    "plugins": plugins
+}
+
+response = requests.post(url, headers=headers, json=payload)
+print(response.json())
+```
+
+```typescript TypeScript expandable lines theme={null}
+import * as fs from 'fs';
+
+async function encodePDFToBase64(pdfPath: string): Promise<string> {
+  const pdfBuffer = await fs.promises.readFile(pdfPath);
+  const base64PDF = pdfBuffer.toString('base64');
+  return `data:application/pdf;base64,${base64PDF}`;
+}
+
+// Read and encode the PDF
+const pdfPath = 'path/to/your/document.pdf';
+const base64PDF = await encodePDFToBase64(pdfPath);
+
+const response = await fetch('https://openrouter.ai/api/v1/responses', {
+  method: 'POST',
+  headers: {
+    Authorization: `Bearer ${API_KEY_REF}`,
+    'Content-Type': 'application/json',
+  },
+  body: JSON.stringify({
+    model: 'google/gemma-3-27b-it',
+    input: [
+      {
+        role: 'user',
+        content: [
+          {
+            type: 'input_text',
+            text: 'What are the main points in this document?',
+          },
+          {
+            type: 'input_file',
+            filename: 'document.pdf',
+            file_data: base64PDF,
+          },
+        ],
+      },
+    ],
+    // Optional: Configure PDF processing engine
+    // PDF parsing will still work even if the plugin is not explicitly set
+    plugins: [
+      {
+        id: 'file-parser',
+        pdf: {
+          engine: 'cloudflare-ai', // defaults to "mistral-ocr". See Pricing above
+        },
+      },
+    ],
+  }),
+});
+
+const data = await response.json();
+console.log(data);
+```
+
 ## Skip Parsing Costs
 
 When you send a PDF to the Chat Completions API (`/api/v1/chat/completions`), the response may include file annotations in the assistant's message. These annotations contain structured information about the PDF document that was parsed. By sending these annotations back in subsequent requests, you can avoid re-parsing the same PDF document multiple times, which saves both processing time and costs. The Responses API returns `file_citation` annotations instead, which can't be sent back to skip parsing, so the examples in this section and the annotation schema below use Chat Completions.
 
 Here's how to reuse file annotations:
+
+```python Python expandable lines theme={null}
+import requests
+import json
+import base64
+from pathlib import Path
+
+# First, encode and send the PDF
+def encode_pdf_to_base64(pdf_path):
+    with open(pdf_path, "rb") as pdf_file:
+        return base64.b64encode(pdf_file.read()).decode('utf-8')
+
+url = "https://openrouter.ai/api/v1/chat/completions"
+headers = {
+    "Authorization": f"Bearer {API_KEY_REF}",
+    "Content-Type": "application/json"
+}
+
+# Read and encode the PDF
+pdf_path = "path/to/your/document.pdf"
+base64_pdf = encode_pdf_to_base64(pdf_path)
+data_url = f"data:application/pdf;base64,{base64_pdf}"
+
+# Initial request with the PDF
+messages = [
+    {
+        "role": "user",
+        "content": [
+            {
+                "type": "text",
+                "text": "What are the main points in this document?"
+            },
+            {
+                "type": "file",
+                "file": {
+                    "filename": "document.pdf",
+                    "file_data": data_url
+                }
+            },
+        ]
+    }
+]
+
+payload = {
+    "model": "google/gemma-3-27b-it",
+    "messages": messages
+}
+
+response = requests.post(url, headers=headers, json=payload)
+response_data = response.json()
+
+# Store the annotations from the response
+file_annotations = None
+if response_data.get("choices") and len(response_data["choices"]) > 0:
+    if "annotations" in response_data["choices"][0]["message"]:
+        file_annotations = response_data["choices"][0]["message"]["annotations"]
+
+# Follow-up request using the annotations (without sending the PDF again)
+if file_annotations:
+    follow_up_messages = [
+        {
+            "role": "user",
+            "content": [
+                {
+                    "type": "text",
+                    "text": "What are the main points in this document?"
+                },
+                {
+                    "type": "file",
+                    "file": {
+                        "filename": "document.pdf",
+                        "file_data": data_url
+                    }
+                }
+            ]
+        },
+        {
+            "role": "assistant",
+            "content": "The document contains information about...",
+            "annotations": file_annotations
+        },
+        {
+            "role": "user",
+            "content": "Can you elaborate on the second point?"
+        }
+    ]
+
+    follow_up_payload = {
+        "model": "google/gemma-3-27b-it",
+        "messages": follow_up_messages
+    }
+
+    follow_up_response = requests.post(url, headers=headers, json=follow_up_payload)
+    print(follow_up_response.json())
+```
+
+```typescript TypeScript expandable lines theme={null}
+import fs from 'fs/promises';
+
+async function encodePDFToBase64(pdfPath: string): Promise<string> {
+  const pdfBuffer = await fs.readFile(pdfPath);
+  const base64PDF = pdfBuffer.toString('base64');
+  return `data:application/pdf;base64,${base64PDF}`;
+}
+
+// Initial request with the PDF
+async function processDocument() {
+  // Read and encode the PDF
+  const pdfPath = 'path/to/your/document.pdf';
+  const base64PDF = await encodePDFToBase64(pdfPath);
+
+  const initialResponse = await fetch(
+    'https://openrouter.ai/api/v1/chat/completions',
+    {
+      method: 'POST',
+      headers: {
+        Authorization: `Bearer ${API_KEY_REF}`,
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        model: 'google/gemma-3-27b-it',
+        messages: [
+          {
+            role: 'user',
+            content: [
+              {
+                type: 'text',
+                text: 'What are the main points in this document?',
+              },
+              {
+                type: 'file',
+                file: {
+                  filename: 'document.pdf',
+                  file_data: base64PDF,
+                },
+              },
+            ],
+          },
+        ],
+      }),
+    },
+  );
+
+  const initialData = await initialResponse.json();
+
+  // Store the annotations from the response
+  let fileAnnotations = null;
+  if (initialData.choices && initialData.choices.length > 0) {
+    if (initialData.choices[0].message.annotations) {
+      fileAnnotations = initialData.choices[0].message.annotations;
+    }
+  }
+
+  // Follow-up request using the annotations (without sending the PDF again)
+  if (fileAnnotations) {
+    const followUpResponse = await fetch(
+      'https://openrouter.ai/api/v1/chat/completions',
+      {
+        method: 'POST',
+        headers: {
+          Authorization: `Bearer ${API_KEY_REF}`,
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          model: 'google/gemma-3-27b-it',
+          messages: [
+            {
+              role: 'user',
+              content: [
+                {
+                  type: 'text',
+                  text: 'What are the main points in this document?',
+                },
+                {
+                  type: 'file',
+                  file: {
+                    filename: 'document.pdf',
+                    file_data: base64PDF,
+                  },
+                },
+              ],
+            },
+            {
+              role: 'assistant',
+              content: 'The document contains information about...',
+              annotations: fileAnnotations,
+            },
+            {
+              role: 'user',
+              content: 'Can you elaborate on the second point?',
+            },
+          ],
+        }),
+      },
+    );
+
+    const followUpData = await followUpResponse.json();
+    console.log(followUpData);
+  }
+}
+
+processDocument();
+```
 
 > [!NOTE]
 >

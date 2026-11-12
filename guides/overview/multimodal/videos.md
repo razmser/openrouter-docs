@@ -31,9 +31,239 @@ You can search for models that support video by filtering to video input modalit
 
 Here's how to send a video using a URL. Note that for Google Gemini on AI Studio, only YouTube links are supported:
 
+```typescript title="TypeScript SDK" expandable lines theme={null}
+import { OpenRouter } from '@openrouter/sdk';
+
+const openRouter = new OpenRouter({
+  apiKey: '<OPENROUTER_API_KEY>',
+});
+
+const result = await openRouter.responses.send({
+  responsesRequest: {
+    model: "google/gemini-2.5-flash",
+    input: [
+      {
+        role: "user",
+        content: [
+          {
+            type: "input_text",
+            text: "Please describe what's happening in this video.",
+          },
+          {
+            type: "input_video",
+            videoUrl: "https://www.youtube.com/watch?v=dQw4w9WgXcQ",
+          },
+        ],
+      },
+    ],
+    stream: false,
+  },
+});
+
+console.log(result);
+```
+
+```python Python expandable lines theme={null}
+import requests
+import json
+
+url = "https://openrouter.ai/api/v1/responses"
+headers = {
+    "Authorization": f"Bearer {API_KEY_REF}",
+    "Content-Type": "application/json"
+}
+
+input_items = [
+    {
+        "role": "user",
+        "content": [
+            {
+                "type": "input_text",
+                "text": "Please describe what's happening in this video."
+            },
+            {
+                "type": "input_video",
+                "video_url": "https://www.youtube.com/watch?v=dQw4w9WgXcQ"
+            }
+        ]
+    }
+]
+
+payload = {
+    "model": "google/gemini-2.5-flash",
+    "input": input_items
+}
+
+response = requests.post(url, headers=headers, json=payload)
+print(response.json())
+```
+
+```typescript title="TypeScript (fetch)" expandable lines theme={null}
+const response = await fetch("https://openrouter.ai/api/v1/responses", {
+  method: "POST",
+  headers: {
+    Authorization: `Bearer ${API_KEY_REF}`,
+    "Content-Type": "application/json",
+  },
+  body: JSON.stringify({
+    model: "google/gemini-2.5-flash",
+    input: [
+      {
+        role: "user",
+        content: [
+          {
+            type: "input_text",
+            text: "Please describe what's happening in this video.",
+          },
+          {
+            type: "input_video",
+            video_url: "https://www.youtube.com/watch?v=dQw4w9WgXcQ",
+          },
+        ],
+      },
+    ],
+  }),
+});
+
+const data = await response.json();
+console.log(data);
+```
+
 ### Using Base64 Encoded Videos
 
 For locally stored videos, you can send them using base64 encoding as data URLs:
+
+```typescript title="TypeScript SDK" expandable lines theme={null}
+import { OpenRouter } from '@openrouter/sdk';
+import * as fs from 'fs';
+
+const openRouter = new OpenRouter({
+  apiKey: '<OPENROUTER_API_KEY>',
+});
+
+async function encodeVideoToBase64(videoPath: string): Promise<string> {
+  const videoBuffer = await fs.promises.readFile(videoPath);
+  const base64Video = videoBuffer.toString('base64');
+  return `data:video/mp4;base64,${base64Video}`;
+}
+
+// Read and encode the video
+const videoPath = 'path/to/your/video.mp4';
+const base64Video = await encodeVideoToBase64(videoPath);
+
+const result = await openRouter.responses.send({
+  responsesRequest: {
+    model: 'google/gemini-2.5-flash',
+    input: [
+      {
+        role: 'user',
+        content: [
+          {
+            type: 'input_text',
+            text: "What's in this video?",
+          },
+          {
+            type: 'input_video',
+            videoUrl: base64Video,
+          },
+        ],
+      },
+    ],
+    stream: false,
+  },
+});
+
+console.log(result);
+```
+
+```python Python expandable lines theme={null}
+import requests
+import json
+import base64
+from pathlib import Path
+
+def encode_video_to_base64(video_path):
+    with open(video_path, "rb") as video_file:
+        return base64.b64encode(video_file.read()).decode('utf-8')
+
+url = "https://openrouter.ai/api/v1/responses"
+headers = {
+    "Authorization": f"Bearer {API_KEY_REF}",
+    "Content-Type": "application/json"
+}
+
+# Read and encode the video
+video_path = "path/to/your/video.mp4"
+base64_video = encode_video_to_base64(video_path)
+data_url = f"data:video/mp4;base64,{base64_video}"
+
+input_items = [
+    {
+        "role": "user",
+        "content": [
+            {
+                "type": "input_text",
+                "text": "What's in this video?"
+            },
+            {
+                "type": "input_video",
+                "video_url": data_url
+            }
+        ]
+    }
+]
+
+payload = {
+    "model": "google/gemini-2.5-flash",
+    "input": input_items
+}
+
+response = requests.post(url, headers=headers, json=payload)
+print(response.json())
+```
+
+```typescript title="TypeScript (fetch)" expandable lines theme={null}
+import * as fs from 'fs';
+
+async function encodeVideoToBase64(videoPath: string): Promise<string> {
+  const videoBuffer = await fs.promises.readFile(videoPath);
+  const base64Video = videoBuffer.toString('base64');
+  return `data:video/mp4;base64,${base64Video}`;
+}
+
+// Read and encode the video
+const videoPath = 'path/to/your/video.mp4';
+const base64Video = await encodeVideoToBase64(videoPath);
+
+const response = await fetch('https://openrouter.ai/api/v1/responses', {
+  method: 'POST',
+  headers: {
+    Authorization: `Bearer ${API_KEY_REF}`,
+    'Content-Type': 'application/json',
+  },
+  body: JSON.stringify({
+    model: 'google/gemini-2.5-flash',
+    input: [
+      {
+        role: 'user',
+        content: [
+          {
+            type: 'input_text',
+            text: "What's in this video?",
+          },
+          {
+            type: 'input_video',
+            video_url: base64Video,
+          },
+        ],
+      },
+    ],
+  }),
+});
+
+const data = await response.json();
+console.log(data);
+```
 
 ### Video Processing Mode
 
@@ -61,7 +291,141 @@ The Messages API (`/api/v1/messages`) does not support video inputs.
 
 #### Responses API
 
+```python Python expandable lines theme={null}
+import requests
+
+url = "https://openrouter.ai/api/v1/responses"
+headers = {
+    "Authorization": f"Bearer {API_KEY_REF}",
+    "Content-Type": "application/json"
+}
+
+payload = {
+    "model": "google/gemini-2.5-flash",
+    "input": [
+        {
+            "role": "user",
+            "content": [
+                {
+                    "type": "input_text",
+                    "text": "What is the height of the Rio Cathedral?"
+                },
+                {
+                    "type": "input_video",
+                    "video_url": "https://www.youtube.com/watch?v=-11ookL1yPA",
+                    "processing": "agentic"
+                }
+            ]
+        }
+    ]
+}
+
+response = requests.post(url, headers=headers, json=payload)
+print(response.json())
+```
+
+```typescript title="TypeScript (fetch)" expandable lines theme={null}
+const response = await fetch("https://openrouter.ai/api/v1/responses", {
+  method: "POST",
+  headers: {
+    Authorization: `Bearer ${API_KEY_REF}`,
+    "Content-Type": "application/json",
+  },
+  body: JSON.stringify({
+    model: "google/gemini-2.5-flash",
+    input: [
+      {
+        role: "user",
+        content: [
+          {
+            type: "input_text",
+            text: "What is the height of the Rio Cathedral?",
+          },
+          {
+            type: "input_video",
+            video_url: "https://www.youtube.com/watch?v=-11ookL1yPA",
+            processing: "agentic",
+          },
+        ],
+      },
+    ],
+  }),
+});
+
+const data = await response.json();
+console.log(data);
+```
+
 #### Chat Completions API
+
+```python Python expandable lines theme={null}
+import requests
+
+url = "https://openrouter.ai/api/v1/chat/completions"
+headers = {
+    "Authorization": f"Bearer {API_KEY_REF}",
+    "Content-Type": "application/json"
+}
+
+payload = {
+    "model": "google/gemini-2.5-flash",
+    "messages": [
+        {
+            "role": "user",
+            "content": [
+                {
+                    "type": "text",
+                    "text": "What is the height of the Rio Cathedral?"
+                },
+                {
+                    "type": "video_url",
+                    "video_url": {
+                        "url": "https://www.youtube.com/watch?v=-11ookL1yPA",
+                        "processing": "agentic"
+                    }
+                }
+            ]
+        }
+    ]
+}
+
+response = requests.post(url, headers=headers, json=payload)
+print(response.json())
+```
+
+```typescript title="TypeScript (fetch)" expandable lines theme={null}
+const response = await fetch("https://openrouter.ai/api/v1/chat/completions", {
+  method: "POST",
+  headers: {
+    Authorization: `Bearer ${API_KEY_REF}`,
+    "Content-Type": "application/json",
+  },
+  body: JSON.stringify({
+    model: "google/gemini-2.5-flash",
+    messages: [
+      {
+        role: "user",
+        content: [
+          {
+            type: "text",
+            text: "What is the height of the Rio Cathedral?",
+          },
+          {
+            type: "video_url",
+            video_url: {
+              url: "https://www.youtube.com/watch?v=-11ookL1yPA",
+              processing: "agentic",
+            },
+          },
+        ],
+      },
+    ],
+  }),
+});
+
+const data = await response.json();
+console.log(data);
+```
 
 #### Response handling per API
 

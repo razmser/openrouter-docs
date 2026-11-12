@@ -17,9 +17,245 @@ OpenRouter supports both **direct URLs** and **base64-encoded data** for images:
 
 Here's how to send an image using a URL:
 
+```typescript title="TypeScript SDK" expandable lines theme={null}
+import { OpenRouter } from '@openrouter/sdk';
+
+const openRouter = new OpenRouter({
+  apiKey: '<OPENROUTER_API_KEY>',
+});
+
+const result = await openRouter.responses.send({
+  responsesRequest: {
+    model: 'google/gemini-3-flash-preview',
+    input: [
+      {
+        role: 'user',
+        content: [
+          {
+            type: 'input_text',
+            text: "What's in this image?",
+          },
+          {
+            type: 'input_image',
+            imageUrl: 'https://upload.wikimedia.org/wikipedia/commons/thumb/d/dd/Gfp-wisconsin-madison-the-nature-boardwalk.jpg/2560px-Gfp-wisconsin-madison-the-nature-boardwalk.jpg',
+            detail: 'auto',
+          },
+        ],
+      },
+    ],
+    stream: false,
+  },
+});
+
+console.log(result);
+```
+
+```python Python expandable lines theme={null}
+import requests
+import json
+
+url = "https://openrouter.ai/api/v1/responses"
+headers = {
+    "Authorization": f"Bearer {API_KEY_REF}",
+    "Content-Type": "application/json"
+}
+
+input_items = [
+    {
+        "role": "user",
+        "content": [
+            {
+                "type": "input_text",
+                "text": "What's in this image?"
+            },
+            {
+                "type": "input_image",
+                "image_url": "https://upload.wikimedia.org/wikipedia/commons/thumb/d/dd/Gfp-wisconsin-madison-the-nature-boardwalk.jpg/2560px-Gfp-wisconsin-madison-the-nature-boardwalk.jpg",
+                "detail": "auto"
+            }
+        ]
+    }
+]
+
+payload = {
+    "model": "google/gemini-3-flash-preview",
+    "input": input_items
+}
+
+response = requests.post(url, headers=headers, json=payload)
+print(response.json())
+```
+
+```typescript title="TypeScript (fetch)" expandable lines theme={null}
+const response = await fetch('https://openrouter.ai/api/v1/responses', {
+  method: 'POST',
+  headers: {
+    Authorization: `Bearer ${API_KEY_REF}`,
+    'Content-Type': 'application/json',
+  },
+  body: JSON.stringify({
+    model: 'google/gemini-3-flash-preview',
+    input: [
+      {
+        role: 'user',
+        content: [
+          {
+            type: 'input_text',
+            text: "What's in this image?",
+          },
+          {
+            type: 'input_image',
+            image_url: 'https://upload.wikimedia.org/wikipedia/commons/thumb/d/dd/Gfp-wisconsin-madison-the-nature-boardwalk.jpg/2560px-Gfp-wisconsin-madison-the-nature-boardwalk.jpg',
+            detail: 'auto',
+          },
+        ],
+      },
+    ],
+  }),
+});
+
+const data = await response.json();
+console.log(data);
+```
+
 ### Using Base64 Encoded Images
 
 For locally stored images, you can send them using base64 encoding. Here's how to do it:
+
+```typescript title="TypeScript SDK" expandable lines theme={null}
+import { OpenRouter } from '@openrouter/sdk';
+import * as fs from 'fs';
+
+const openRouter = new OpenRouter({
+  apiKey: '<OPENROUTER_API_KEY>',
+});
+
+async function encodeImageToBase64(imagePath: string): Promise<string> {
+  const imageBuffer = await fs.promises.readFile(imagePath);
+  const base64Image = imageBuffer.toString('base64');
+  return `data:image/jpeg;base64,${base64Image}`;
+}
+
+// Read and encode the image
+const imagePath = 'path/to/your/image.jpg';
+const base64Image = await encodeImageToBase64(imagePath);
+
+const result = await openRouter.responses.send({
+  responsesRequest: {
+    model: 'google/gemini-3-flash-preview',
+    input: [
+      {
+        role: 'user',
+        content: [
+          {
+            type: 'input_text',
+            text: "What's in this image?",
+          },
+          {
+            type: 'input_image',
+            imageUrl: base64Image,
+            detail: 'auto',
+          },
+        ],
+      },
+    ],
+    stream: false,
+  },
+});
+
+console.log(result);
+```
+
+```python Python expandable lines theme={null}
+import requests
+import json
+import base64
+from pathlib import Path
+
+def encode_image_to_base64(image_path):
+    with open(image_path, "rb") as image_file:
+        return base64.b64encode(image_file.read()).decode('utf-8')
+
+url = "https://openrouter.ai/api/v1/responses"
+headers = {
+    "Authorization": f"Bearer {API_KEY_REF}",
+    "Content-Type": "application/json"
+}
+
+# Read and encode the image
+image_path = "path/to/your/image.jpg"
+base64_image = encode_image_to_base64(image_path)
+data_url = f"data:image/jpeg;base64,{base64_image}"
+
+input_items = [
+    {
+        "role": "user",
+        "content": [
+            {
+                "type": "input_text",
+                "text": "What's in this image?"
+            },
+            {
+                "type": "input_image",
+                "image_url": data_url,
+                "detail": "auto"
+            }
+        ]
+    }
+]
+
+payload = {
+    "model": "google/gemini-3-flash-preview",
+    "input": input_items
+}
+
+response = requests.post(url, headers=headers, json=payload)
+print(response.json())
+```
+
+```typescript title="TypeScript (fetch)" expandable lines theme={null}
+import * as fs from 'fs';
+
+async function encodeImageToBase64(imagePath: string): Promise<string> {
+  const imageBuffer = await fs.promises.readFile(imagePath);
+  const base64Image = imageBuffer.toString('base64');
+  return `data:image/jpeg;base64,${base64Image}`;
+}
+
+// Read and encode the image
+const imagePath = 'path/to/your/image.jpg';
+const base64Image = await encodeImageToBase64(imagePath);
+
+const response = await fetch('https://openrouter.ai/api/v1/responses', {
+  method: 'POST',
+  headers: {
+    Authorization: `Bearer ${API_KEY_REF}`,
+    'Content-Type': 'application/json',
+  },
+  body: JSON.stringify({
+    model: 'google/gemini-3-flash-preview',
+    input: [
+      {
+        role: 'user',
+        content: [
+          {
+            type: 'input_text',
+            text: "What's in this image?",
+          },
+          {
+            type: 'input_image',
+            image_url: base64Image,
+            detail: 'auto',
+          },
+        ],
+      },
+    ],
+  }),
+});
+
+const data = await response.json();
+console.log(data);
+```
 
 Supported image content types are:
 

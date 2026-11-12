@@ -258,8 +258,8 @@ components:
           description: >-
             Optional allowlist of OpenRouter API key hashes whose traffic is
             forwarded. `null` or omitted means all keys. Must contain at least
-            one hash if provided. A workspace-scoped management key can only
-            name API keys in its own workspace; any other hash returns 400.
+            one hash if provided. Every hash must belong to an API key in the
+            destination's workspace; any other hash returns 400.
           example: null
           items:
             type: string

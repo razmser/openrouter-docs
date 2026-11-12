@@ -78,6 +78,72 @@ Add a third candidate priced between the two if you want a fallback that serves 
 
 Set `model` to `nvidia/switchyard` and list your candidates in `models`:
 
+```typescript title="TypeScript SDK" expandable lines theme={null}
+import { OpenRouter } from '@openrouter/sdk';
+
+const openRouter = new OpenRouter({
+  apiKey: '<OPENROUTER_API_KEY>',
+});
+
+const response = await openRouter.responses.send({
+  responsesRequest: {
+    model: 'nvidia/switchyard',
+    models: ['deepseek/deepseek-v3.2', 'anthropic/claude-sonnet-4.5'],
+    input: 'Summarize this paragraph in one sentence: ...',
+  },
+});
+
+if (!('output' in response)) {
+  throw new Error('Expected a non-streaming response');
+}
+
+const message = [...response.output].reverse().find((item) => item.type === 'message');
+console.log(message?.content.find((part) => part.type === 'output_text')?.text);
+console.log('Model used:', response.model);
+```
+
+```typescript title="TypeScript (fetch)" expandable lines theme={null}
+const response = await fetch('https://openrouter.ai/api/v1/responses', {
+  method: 'POST',
+  headers: {
+    Authorization: 'Bearer <OPENROUTER_API_KEY>',
+    'Content-Type': 'application/json',
+  },
+  body: JSON.stringify({
+    model: 'nvidia/switchyard',
+    models: ['deepseek/deepseek-v3.2', 'anthropic/claude-sonnet-4.5'],
+    input: 'Summarize this paragraph in one sentence: ...',
+  }),
+});
+
+const data = await response.json();
+const message = [...data.output].reverse().find((item: { type: string }) => item.type === 'message');
+console.log(message?.content.find((part: { type: string }) => part.type === 'output_text')?.text);
+console.log('Model used:', data.model);
+```
+
+```python title="Python" expandable lines theme={null}
+import requests
+
+response = requests.post(
+    "https://openrouter.ai/api/v1/responses",
+    headers={
+        "Authorization": "Bearer <OPENROUTER_API_KEY>",
+        "Content-Type": "application/json",
+    },
+    json={
+        "model": "nvidia/switchyard",
+        "models": ["deepseek/deepseek-v3.2", "anthropic/claude-sonnet-4.5"],
+        "input": "Summarize this paragraph in one sentence: ...",
+    },
+)
+
+data = response.json()
+message = next(item for item in reversed(data["output"]) if item["type"] == "message")
+print(next(part["text"] for part in message["content"] if part["type"] == "output_text"))
+print("Model used:", data["model"])
+```
+
 The order of `models` matters in these cases: `passthrough` serves it as is; the candidates an algorithm did not rank follow the ranked ones in your order, including the fallbacks behind a `random` pick; and when every eligible candidate has the same price (except under `random`, which still picks at random and reports `strategy: "random"`), or only one candidate is eligible, or the routing service is unavailable, OpenRouter serves your order directly (`strategy` is `caller_order`). A slug-only request has no caller order; the default pair takes its place, higher-spend model first (see [Choose your candidates](#choose-your-candidates)).
 
 ## Algorithms

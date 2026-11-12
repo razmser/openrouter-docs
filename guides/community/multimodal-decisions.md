@@ -86,8 +86,8 @@ An image is an item of the `state` array with this shape, the same image part Ch
 { "type": "image_url", "image_url": { "url": "data:image/jpeg;base64,/9j/4AAQ..." } }
 ```
 
-* `url` must be a base64 data URL with the type `image/png`, `image/jpeg`, or `image/webp`. Jev accepts only `image/png` and `image/jpeg`. ScaleDown also accepts `image/tiff` and reads the image as its one document (see [Document parts](#document-parts)). Remote `http(s)` URLs are not fetched.
-* `detail` (`auto`, `low`, or `high`) is accepted, but Clef, Clef Flash, Clef Omni, Mercury Decide, and the Baseten decision models (Elephant 1, Mammoth 1, Joey 1) ignore it.
+* `url` must be a base64 data URL with the type `image/png`, `image/jpeg`, or `image/webp`. Jev accepts only `image/png` and `image/jpeg`. ScaleDown also accepts `image/tiff` and reads the image as its one document (see [Document parts](#document-parts)). Gemini Decision 1 accepts any `image/*` data URL and also a public `https://` URL, which Google fetches. Other models do not fetch remote `http(s)` URLs.
+* `detail` (`auto`, `low`, or `high`) is accepted, but Clef, Clef Flash, Clef Omni, Mercury Decide, and the Baseten decision models (Elephant 1, Mammoth 1, Joey 1) ignore it. Gemini Decision 1 forwards `low` and `high` as Google's image resolution and drops `auto`.
 * Put image parts directly in the top-level `state` array. Only Jev reads image parts in other places (see [Image positions on Jev](#image-positions-on-jev)); on every other Decisions model, an image part nested inside a `state` object or placed in a question's `instructions` or `criteria` fails with a `400` rather than being sent to the model as text. The same rule applies to audio, video, and `file` parts on every model, Jev included.
 * Send at most 4 images per request to Clef, Clef Flash, and Clef Omni, at most 16 to Mercury Decide and the Baseten decision models, and at most 128 to GPT-6 Luna Decisions.
 * Text items in the array are plain strings, not `{ "type": "text" }` parts.
@@ -153,9 +153,9 @@ Each image part counts as its own image, so repeating the same part sends the im
 
 TypeSafe marks image input as an early feature whose request format, answers, and limits can change between Jev releases. The positions above are what OpenRouter sends to Jev today, for inline image parts and for asset references alike; other Decisions models read images only in the top-level `state` array.
 
-## Audio and video parts (Clef Omni)
+## Audio and video parts (Clef Omni and Gemini Decision 1)
 
-[`cloudflare/clef-omni`](https://openrouter.ai/cloudflare/clef-omni) also takes audio and video items in the top-level `state` array, using the same part shapes Chat Completions uses in message content:
+[`cloudflare/clef-omni`](https://openrouter.ai/cloudflare/clef-omni) and [`google/gemini-decision-1`](https://openrouter.ai/google/gemini-decision-1) also take audio and video items in the top-level `state` array, using the same part shapes Chat Completions uses in message content:
 
 ```json theme={null}
 { "type": "input_audio", "input_audio": { "data": "UklGRiQAAABXQVZF...", "format": "wav" } }
@@ -166,10 +166,10 @@ TypeSafe marks image input as an early feature whose request format, answers, an
 ```
 
 * `input_audio.data` is raw base64 (no `data:` prefix). `format` must be one of `wav`, `mp3`, `mpeg`, `m4a`, `mp4`, `aac`, `aiff`, `aif`, `flac`, `ogg`, `opus`, or `webm`.
-* `video_url.url` must be a base64 `data:video/...` URL. Remote `http(s)` URLs are not fetched. `processing` is accepted but ignored. Clef Omni samples every video at 2 frames per second regardless.
-* Send at most 4 audio clips and 2 videos per request. Each audio clip can be up to 8 MiB or 300 seconds, each video up to 16 MiB or 60 seconds, and all audio and video together up to 16 MiB decoded.
-* Audio costs about 780 input tokens per minute; audio, video, and image tokens all count toward the 65,536-token context window.
-* Only Clef Omni reads audio and video. Every other model in the [capability table](#what-each-endpoint-accepts) rejects a request that contains them with a `400` capability mismatch, so routing can try another endpoint.
+* `video_url.url` must be a base64 `data:video/...` URL. On Gemini Decision 1 it can also be a public `https://` URL, which Google fetches; Clef Omni does not fetch remote URLs. `processing` is accepted but ignored. Clef Omni samples every video at 2 frames per second regardless.
+* On Clef Omni, send at most 4 audio clips and 2 videos per request. Each audio clip can be up to 8 MiB or 300 seconds, each video up to 16 MiB or 60 seconds, and all audio and video together up to 16 MiB decoded.
+* On Clef Omni, audio costs about 780 input tokens per minute; audio, video, and image tokens all count toward the 65,536-token context window. Gemini Decision 1 sets no shared count or size limit in OpenRouter; Google applies its own.
+* Only Clef Omni and Gemini Decision 1 read audio and video. Every other model in the [capability table](#what-each-endpoint-accepts) rejects a request that contains them with a `400` capability mismatch, so routing can try another endpoint.
 
 ## Document parts
 
@@ -180,6 +180,7 @@ A PDF or office document goes in the top-level `state` array as a `file` part (o
 ```
 
 * `file_data` is a base64 data URL or a public `https://` URL. `filename` is optional and ignored by the provider. Which of the two forms a model reads is listed with its capability row.
+* Gemini Decision 1 accepts `application/pdf`, `text/csv`, Microsoft Office, and OpenDocument types, as a base64 data URL or as a public `https://` URL whose file extension names one of those types. A remote URL without such an extension fails with a `400` capability mismatch; send a data URL instead.
 * ScaleDown accepts one document per request, as a base64 data URL only, of type `application/pdf`, `image/jpeg`, `image/png`, or `image/tiff`. An `image_url` part counts as that one document. Remote URLs, Office files, and a second document or image fail with a `400` capability mismatch.
 * Only the models whose row in the [capability table](#what-each-endpoint-accepts) lists `file` read document parts. Every other model rejects the request with a `400` capability mismatch so routing can try another endpoint.
 
@@ -195,14 +196,16 @@ The table is generated from the adapter registry, so it is the current contract:
 | `AzureOpenAIDecisionsAdapter` | Set per endpoint by OpenRouter | `noul`, `choice`, `score` | Resolved to `image_url` parts (next column); whole-string references only | `image_url` | Rejected with `400`; top-level `state` items only | No shared limit; the request builder and the provider apply their own |
 | `BasetenDecisionsAdapter` | BaseTen | `noul`, `choice`, `score` | Resolved to `image_url` parts (next column); whole-string references only | `image_url` | Rejected with `400`; top-level `state` items only | No shared limit; the request builder and the provider apply their own |
 | `CloudflareDecisionsAdapter` | Cloudflare | `noul`, `choice`, `score` | Resolved to `image_url` parts (next column); whole-string references only | `image_url`, `input_audio`, `video_url` | Rejected with `400`; top-level `state` items only | No shared limit; the request builder and the provider apply their own |
-| `DeepInfraSystemOneDecisionsAdapter` | Set per endpoint by OpenRouter | `noul`, `choice`, `score` | Resolved to `image_url` parts (next column); whole-string references only | `image_url` | Rejected with `400`; top-level `state` items only | No shared limit; the request builder and the provider apply their own |
+| `DeepInfraSystemOneDecisionsAdapter` | DeepInfra | `noul`, `choice`, `score` | Resolved to `image_url` parts (next column); whole-string references only | `image_url`, sent as a top-level `images` list, when the model declares image input; none for a text-only model | Rejected with `400`; top-level `state` items only | At most 4 images, inline `data:` URLs only; otherwise rejected with `400` |
+| `GoogleAIStudioDecisionsAdapter` | Google AI Studio | `noul`, `choice`, `score` | Resolved to `image_url` parts (next column); whole-string references only | `image_url`, `input_audio`, `video_url`, `file` | Rejected with `400`; top-level `state` items only | No shared limit; the request builder and the provider apply their own |
 | `InceptionDecisionsAdapter` | Inception | `noul`, `choice`, `score` | Resolved to `image_url` parts (next column); whole-string references only | `image_url` | Rejected with `400`; top-level `state` items only | At most 16 images, inline `data:` URLs only; otherwise rejected with `400` |
 | `LiquidDecisionsAdapter` | Liquid | `noul`, `choice`, `score` | Resolved to `image_url` parts (next column); whole-string references only | `image_url` | Rejected with `400`; top-level `state` items only | At most 8 images, inline `data:` URLs only; otherwise rejected with `400` |
-| `MakoraDecisionsAdapter` | Makora | `noul`, `choice`, `score` | Resolved to `image_url` parts (next column); whole-string references only | `image_url` | Rejected with `400`; top-level `state` items only | At most 8 images, inline `data:` URLs only; otherwise rejected with `400` |
+| `MakoraDecisionsAdapter` | Makora | `noul`, `choice`, `score` | Resolved to `image_url` parts (next column); whole-string references only | `image_url`, sent as a top-level `images` list, when the model declares image input; none for a text-only model | Rejected with `400`; top-level `state` items only | At most 8 images, inline `data:` URLs only; otherwise rejected with `400` |
 | `MorphDecisionsAdapter` | Morph | `noul`, `choice`, `score` | Resolved to `image_url` parts (next column); whole-string references only | `image_url` | Rejected with `400`; top-level `state` items only | At most 16 images, inline `data:` URLs only; otherwise rejected with `400` |
 | `OpenAIDecisionsAdapter` | OpenAI | `noul`, `choice`, `score` | Resolved to `image_url` parts (next column); whole-string references only | `image_url` | Rejected with `400`; top-level `state` items only | No shared limit; the request builder and the provider apply their own |
 | `ParallelDecisionsAdapter` | Parallel | `noul`, `choice`, `score` | Resolved to `image_url` parts (next column); whole-string references only | None; rejected with `400` | Rejected with `400`; top-level `state` items only | n/a |
 | `PerplexityDecisionsAdapter` | Perplexity | `noul`, `choice`, `score` | Resolved to `image_url` parts (next column); whole-string references only | `image_url` | Rejected with `400`; top-level `state` items only | No shared limit; the request builder and the provider apply their own |
+| `PrimeIntellectDecisionsAdapter` | PrimeIntellect | `noul`, `choice`, `score` | Resolved to `image_url` parts (next column); whole-string references only | `image_url`, sent as a top-level `images` list, when the model declares image input; none for a text-only model | Rejected with `400`; top-level `state` items only | At most 4 images, inline `data:` URLs only; otherwise rejected with `400` |
 | `RespanDecisionsAdapter` | Respan | `noul`, `choice`, `score` | Resolved to `image_url` parts (next column); whole-string references only | None; rejected with `400` | Rejected with `400`; top-level `state` items only | n/a |
 | `RespanSystemOneDecisionsAdapter` | Set per endpoint by OpenRouter | `noul`, `choice`, `score` | Resolved to `image_url` parts (next column); whole-string references only | `image_url` | Rejected with `400`; top-level `state` items only | No shared limit; the request builder and the provider apply their own |
 | `ScaleDownDecisionsAdapter` | ScaleDown | `noul`, `choice`, `score` | Resolved to `image_url` parts (next column); whole-string references only | `image_url`, `file` | Rejected with `400`; top-level `state` items only | No shared limit; the request builder and the provider apply their own |

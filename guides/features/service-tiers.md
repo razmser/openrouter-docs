@@ -53,6 +53,95 @@ These values work the same for every provider that sells more than one tier; the
 
 The example below requests the `flex` tier from OpenAI's `gpt-5`; the flex endpoint's pricing is listed on the [model page](https://openrouter.ai/openai/gpt-5).
 
+```bash title="cURL" lines theme={null}
+curl https://openrouter.ai/api/v1/responses \
+  -H "Authorization: Bearer <OPENROUTER_API_KEY>" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "model": "openai/gpt-5",
+    "service_tier": "flex",
+    "input": "What is the meaning of life?"
+  }'
+```
+
+```python title="Python" lines theme={null}
+import requests
+
+response = requests.post(
+    "https://openrouter.ai/api/v1/responses",
+    headers={
+        "Authorization": f"Bearer <OPENROUTER_API_KEY>",
+        "Content-Type": "application/json",
+    },
+    json={
+        "model": "openai/gpt-5",
+        "service_tier": "flex",
+        "input": "What is the meaning of life?",
+    },
+)
+
+data = response.json()
+message = next(item for item in reversed(data["output"]) if item["type"] == "message")
+print(next(part["text"] for part in message["content"] if part["type"] == "output_text"))
+print("Served by tier:", data.get("service_tier"))
+```
+
+```typescript title="TypeScript (fetch)" lines theme={null}
+const response = await fetch('https://openrouter.ai/api/v1/responses', {
+  method: 'POST',
+  headers: {
+    Authorization: 'Bearer <OPENROUTER_API_KEY>',
+    'Content-Type': 'application/json',
+  },
+  body: JSON.stringify({
+    model: 'openai/gpt-5',
+    service_tier: 'flex',
+    input: 'What is the meaning of life?',
+  }),
+});
+
+const data = await response.json();
+const message = [...data.output].reverse().find((item: { type: string }) => item.type === 'message');
+console.log(message?.content.find((part: { type: string; text?: string }) => part.type === 'output_text')?.text);
+console.log('Served by tier:', data.service_tier);
+```
+
+```python title="Python (OpenAI SDK)" lines theme={null}
+from openai import OpenAI
+
+client = OpenAI(
+    base_url="https://openrouter.ai/api/v1",
+    api_key="<OPENROUTER_API_KEY>",
+)
+
+response = client.responses.create(
+    model="openai/gpt-5",
+    service_tier="flex",
+    input="What is the meaning of life?",
+)
+
+print(response.output_text)
+print("Served by tier:", response.service_tier)
+```
+
+```typescript title="TypeScript (OpenAI SDK)" lines theme={null}
+import OpenAI from 'openai';
+
+const openai = new OpenAI({
+  baseURL: 'https://openrouter.ai/api/v1',
+  apiKey: '<OPENROUTER_API_KEY>',
+});
+
+const response = await openai.responses.create({
+  model: 'openai/gpt-5',
+  service_tier: 'flex',
+  input: 'What is the meaning of life?',
+});
+
+console.log(response.output_text);
+console.log('Served by tier:', response.service_tier);
+```
+
 The `service_tier` parameter is also accepted on the [Chat Completions API](../../api/api-reference/chat/create-a-chat-completion.md) and the [Anthropic Messages API](../../api/api-reference/anthropic-messages/create-a-message.md). See [API Response Differences](#api-response-differences) below for where the response field is returned in each.
 
 ```bash title="Anthropic Messages API" lines theme={null}

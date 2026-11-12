@@ -271,6 +271,27 @@ For advanced observability workflows, you can pass arbitrary metadata to your tr
 >
 > The `trace` field is flexible and accepts any key-value pairs. Certain keys have special meaning depending on your observability destination. See the destination-specific documentation for details on which keys each platform recognizes.
 
+#### Metadata via Headers
+
+Clients that can add headers but not body fields, such as Claude Code (`ANTHROPIC_CUSTOM_HEADERS`) and Codex (`http_headers`), can send the same metadata as HTTP headers. Header values are merged into `trace`.
+
+* **One header per key**: `x-openrouter-trace-<key>: <value>`. The key is lowercased and hyphens become underscores, so `X-OpenRouter-Trace-Customer-Id: acme` sets `trace.customer_id` to `"acme"`.
+* **One JSON header**: `x-openrouter-trace: {"environment":"production","team":"search"}`. The value must be a JSON object of at most 16,384 characters.
+
+```bash theme={null}
+curl https://openrouter.ai/api/v1/chat/completions \
+  -H "Authorization: Bearer $OPENROUTER_API_KEY" \
+  -H "Content-Type: application/json" \
+  -H "x-openrouter-trace-project: atlas" \
+  -H "x-openrouter-trace-customer-id: acme" \
+  -H 'x-openrouter-trace: {"environment":"production"}' \
+  -d '{"model": "openai/gpt-4o", "messages": [{"role": "user", "content": "Hi"}]}'
+```
+
+When the same key appears in more than one place, the request body `trace` wins, then the per-key header, then the JSON header. Each source is capped at 16 keys, and per-key header values over 1,024 characters are dropped. A malformed JSON header is ignored rather than failing the request.
+
+Both header forms work from browser requests on another origin: CORS preflight allows the JSON `x-openrouter-trace` header and any per-key `x-openrouter-trace-<key>` header.
+
 #### Common Metadata Keys
 
 These metadata keys are commonly used across observability platforms:
@@ -906,6 +927,7 @@ Turn on **Request context** (`broadcast_generation_request_context`) to see how 
 | `request_id` | Groups every generation made for one API request. |
 | `parent_generation_id`, `spawned_by` | For a generation that OpenRouter made on your behalf, the generation that spawned it and what spawned it: for example `openrouter:fusion` for a Fusion call, `server-tools` or `server-tools:<tool>` for a server-tool loop turn, or `tool_search` for a deferred tool search. Null otherwise. |
 | `provider_preferences` | The request's `provider` routing preferences, as sent. See below. |
+| `requested_models` | The model slugs the request asked for, in fallback order. See below. |
 | `preset_id` | The [preset](presets.md) the request used. Null when it used none. |
 | `plugins`, `response_format_type`, `tool_choice`, `tool_count` | Summaries of the request's plugins and output shape, without plugin settings, schemas, or tool definitions. See below. |
 | `router` | The router used for the request, for example `openrouter/auto`. |
@@ -918,6 +940,8 @@ Turn on **Request context** (`broadcast_generation_request_context`) to see how 
 | `model`, `api_type`, `tokens_prompt`, `tokens_completion`, `web_search_engine`, `num_search_results`, `num_fetches`, `num_media_prompt`, `num_input_audio_prompt`, `num_media_completion` | The same fields as in the [Cost](#cost) table. |
 
 `provider_preferences` holds the routing keys of the request's [`provider` object](../routing/provider-selection.md) after presets are applied, such as `sort`, `order`, `only`, `ignore`, `allow_fallbacks`, `quantizations`, and `max_price`, exactly as sent. Provider-specific `options` are left out. It is `null` when the request set no provider preferences (empty lists and objects don't count), or when the routing keys serialize to more than 64 KiB. The deprecated top-level `max_price` is not included even though routing applies it; read it from the request body. Sorting implied by a `:nitro` or `:floor` model variant or by `service_tier` is not included; see the `model` and `requested_service_tier` fields for those.
+
+`requested_models` is set on text-generation requests (chat completions, Responses, Messages, legacy completions, and Gemini `generateContent`): the model slugs the request asked for after presets are applied and before plugins run, in fallback order (`model` followed by `models`, or your account's default model when the request sets neither). A [preset](presets.md) used as the model, such as `@preset/my-preset`, is replaced by the models the preset configures, and a `@preset` suffix such as `openai/gpt-4o@preset/my-preset` is dropped, so preset identifiers don't appear here; read the request body for those. These are typically unversioned request slugs such as `anthropic/claude-sonnet-4.5`, while `model` is the versioned permaslug of the model that served the request, such as `anthropic/claude-4.5-sonnet-20250929`, so the two aren't reliably comparable as strings. Router, alias, and variant slugs such as `openrouter/auto`, `~openai/gpt-latest`, or `:nitro` slugs are kept as written, so they never match `model` even when no fallback happened. To find fallbacks, look at requests with more than one entry in `requested_models` and check whether `model` belongs to a later entry, after resolving alias and router slugs through the catalog. It is also exported on text-generation requests that fail before producing a generation, such as when every provider errors or the request is rate limited. On other surfaces, such as images, TTS, STT, rerank, and embeddings, `requested_models` is `null`.
 
 `requested_service_tier` is the tier the request asked for after presets are applied, with `fast` normalized to `priority`. Tiers implied by a `:nitro` (`priority`) or `:floor` (`flex`) model variant, by a dedicated Anthropic `*-fast` model (`priority`), or by tier-suffixed provider slugs such as `openai/priority` in `provider.order` or `provider.only`, are included when `service_tier` is not set. Compare `requested_service_tier` with `billed_service_tier` to find requests that were not served at the tier they asked for. `service_tier` is the provider's own reported tier value as returned upstream; it is `null` when the provider reports none and is not used for pricing.
 

@@ -57,11 +57,11 @@
 
 > [accordion] What are the fees for using OpenRouter?
 >
-> OpenRouter charges a {getTotalFeeString('stripe', null)} fee when you purchase credits. We pass through
+> OpenRouter charges a 5.5% (\$0.80 minimum) fee when you purchase credits. We pass through
 > the pricing of the underlying model providers without any markup, so you pay
 > the same rate as you would directly with the provider.
 >
-> Crypto payments are charged a fee of {getTotalFeeString('coinbase', null)}.
+> Crypto payments are charged a fee of 5%.
 
 > [accordion] Is there a fee for using my own provider keys (BYOK)?
 >

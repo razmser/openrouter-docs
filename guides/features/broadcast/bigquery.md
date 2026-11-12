@@ -6,7 +6,7 @@
 
 > Send traces to Google BigQuery
 
-[Google BigQuery](https://cloud.google.com/bigquery) is a serverless cloud data warehouse. OpenRouter can stream traces directly into a BigQuery table for custom analytics, long-term storage, and business intelligence. Each trace becomes exactly one row, so the table can be queried directly without grouping or deduplicating by `trace_id`.
+[Google BigQuery](https://cloud.google.com/bigquery) is a serverless cloud data warehouse. OpenRouter can stream traces directly into a BigQuery table for custom analytics, long-term storage, and business intelligence. Each request becomes one row, so you can sum tokens and costs without filtering by observation type. See [rows and aggregation](#rows-and-aggregation) for details.
 
 ## Step 1: Choose a project and enable the BigQuery API
 
@@ -192,25 +192,84 @@ LIMIT 10;
 
 ## Schema design
 
+The dashboard-generated `CREATE TABLE` statement is the source of truth for setup. The field reference below describes the current schema without duplicating the generated SQL.
+
+### Field reference
+
+| Column | BigQuery type | Meaning |
+| - | - | - |
+| `trace_id` | `STRING NOT NULL` | Trace identifier shared by all observations in a trace. |
+| `span_id` | `STRING NOT NULL` | Unique identifier for this observation. |
+| `parent_span_id` | `STRING` | Parent observation identifier, or `NULL` for an unparented observation. |
+| `user_id` | `STRING` | End-user identifier from the request. |
+| `session_id` | `STRING` | Session identifier used to group related requests. |
+| `organization_id` | `STRING` | Organization that owns the trace. |
+| `entity_id` | `STRING NOT NULL` | Entity that owns the trace. |
+| `api_key_name` | `STRING` | User-defined name of the API key used for the request. |
+| `timestamp` | `TIMESTAMP NOT NULL` | Trace creation timestamp. |
+| `start_time` | `TIMESTAMP NOT NULL` | Observation start time. |
+| `end_time` | `TIMESTAMP` | Observation end time, or `NULL` when unavailable. |
+| `duration_ms` | `FLOAT64` | Observation duration in milliseconds. |
+| `model` | `STRING` | Model name used for the observation. |
+| `provider_name` | `STRING` | Provider name for the observation. |
+| `provider_slug` | `STRING` | Provider slug identifier. |
+| `status` | `STRING NOT NULL` | `ok` or `error`; `error` is emitted only when `level` is `ERROR`. |
+| `level` | `STRING NOT NULL` | Observation level: `DEBUG`, `INFO`, `DEFAULT`, `WARNING`, or `ERROR`. |
+| `finish_reason` | `STRING` | Completion finish reason, such as `stop` or `length`; not an enum. |
+| `prompt_tokens` | `INT64 NOT NULL` | Input/prompt token count. |
+| `completion_tokens` | `INT64 NOT NULL` | Output/completion token count. |
+| `total_tokens` | `INT64 NOT NULL` | Total token count. |
+| `cached_tokens` | `INT64 NOT NULL` | Cached prompt token count. |
+| `cache_write_tokens` | `INT64` | Prompt tokens written to the provider prompt cache. Added in schema version 2; tables created from version 1 don't have this column. `NULL` when the provider did not report them, or when the destination's **Include cache\_write\_tokens** setting is off. The setting is off by default; turn it on after the table has this column. |
+| `reasoning_tokens` | `INT64 NOT NULL` | Reasoning/thinking token count. |
+| `input_cost` | `FLOAT64 NOT NULL` | Input cost in USD. |
+| `output_cost` | `FLOAT64 NOT NULL` | Output cost in USD. |
+| `total_cost` | `FLOAT64 NOT NULL` | Total cost in USD. |
+| `input_unit_price` | `FLOAT64` | Price per input token in USD. |
+| `output_unit_price` | `FLOAT64` | Price per output token in USD. |
+| `span_type` | `STRING NOT NULL` | Observation type; `GENERATION` for every row except the rare trace that has no generation. |
+| `span_kind` | `STRING NOT NULL` | Derived from `span_type`: `GENERATION` → `llm`, `EVENT` → `tool`, and `SPAN` → `workflow`. |
+| `operation_name` | `STRING NOT NULL` | Operation type derived from the API surface, such as `chat`, `embeddings`, or `image_generation`. |
+| `attributes` | `JSON` | OpenTelemetry-style attributes for compatibility. |
+| `input` | `JSON` | Input data, such as request messages. |
+| `output` | `JSON` | Output data, such as response messages. |
+| `metadata` | `JSON` | Combined custom, request, guardrail, and provider-attempt metadata, including per-attempt detail in `provider_responses`. |
+| `tags` | `ARRAY<STRING>` | Trace tags. |
+| `model_parameters` | `JSON` | Model parameters, such as temperature. |
+| `resource_attributes` | `JSON` | Resource attributes, including `service.name` and the Broadcast source. |
+| `schema_version` | `INT64` | Broadcast schema version; currently defaults to `2`. |
+
+### Field ownership and custom metadata
+
+OpenRouter populates all columns except for the following caller-controlled values:
+
+* `trace_id` can be set with `trace.trace_id`. If supplied, the same trace ID can span multiple API requests.
+* `parent_span_id` can be set with `trace.parent_span_id`.
+* `user_id` comes from the request `user` field.
+* `session_id` comes from the request `session_id` field.
+* Custom values are stored in the `metadata` `JSON` column.
+
+Additional keys in `trace` are merged into `metadata` using their original keys. Top-level request `metadata.<k>` values are also placed in `metadata`, under the key `metadata_<k>`. There is no separate database column for each custom key. `trace_name` and `generation_name` affect internal trace and observation names but have no dedicated table columns. `trace.span_name` is accepted as a reserved request field but is currently ignored.
+
+### Rows and aggregation
+
+Unlike the Snowflake and ClickHouse destinations, BigQuery receives one row per generation, not one row per observation. Each API request produces a single `GENERATION` row:
+
+* `span_id` is the generation ID.
+* `parent_span_id` is `NULL` unless the request set `trace.parent_span_id`.
+* Per-attempt provider detail is in `metadata.provider_responses`, and phase timings are in the `openrouter_*` fields of `attributes`.
+
+The moderation, provider-attempt, and post-generation spans aren't written as separate rows, so you can sum tokens and costs without filtering on `span_type`. If you set `trace.trace_id` across requests, several rows share one `trace_id`, so count requests with `span_id` rather than `trace_id`.
+
+BigQuery deduplicates streaming inserts on `(trace_id, span_id)` on a best-effort basis only, so a retried insert can still land a duplicate row. Deduplicate on `(trace_id, span_id)` to remove duplicates. Rows that BigQuery permanently rejects, or that still fail after transient retries, are dropped rather than redelivered, so deduplication can't recover missing rows.
+
 ### Typed columns
 
-The schema extracts commonly-queried fields as typed columns for efficient filtering and aggregation:
-
-* **Identifiers**: `trace_id`, `user_id`, `session_id`, etc.
-* **Timestamps**: `TIMESTAMP` columns for time-series analysis
-* **Model Info**: For cost and performance analysis
-* **Metrics**: Tokens and costs for billing
+The field reference above identifies commonly queried identifiers, timestamps, model information, token metrics, and cost metrics as typed columns for efficient filtering and aggregation.
 
 ### JSON columns
 
-Less commonly-accessed and variable-structure data is stored in `JSON` columns:
-
-* **attributes**: Full OTEL attribute set
-* **input/output**: Variable message structures
-* **metadata**: User-defined key-values
-* **model\_parameters**: Model-specific configurations
-
-The `tags` column is a repeated `STRING` column (`ARRAY<STRING>`). Use BigQuery's `JSON_VALUE` and `JSON_QUERY` functions to query the JSON fields.
+Less commonly accessed and variable-structure data is stored in the `JSON` columns identified in the field reference above. The `tags` column is a repeated `STRING` column (`ARRAY<STRING>`). Use BigQuery's `JSON_VALUE` and `JSON_QUERY` functions to query the JSON fields.
 
 ## Custom Metadata
 
@@ -220,10 +279,10 @@ Custom metadata from the `trace` field is stored in the `metadata` JSON column. 
 
 | Key | BigQuery Mapping | Description |
 | - | - | - |
-| `trace_id` | `trace_id` column / `metadata` JSON | Custom trace identifier for grouping |
-| `trace_name` | `metadata` JSON | Custom name for the trace |
-| `span_name` | `metadata` JSON | Name for intermediate spans |
-| `generation_name` | `metadata` JSON | Name for the LLM generation |
+| `trace_id` | `trace_id` column | Custom trace identifier for grouping |
+| `parent_span_id` | `parent_span_id` column | Parent span identifier for linking to an existing trace |
+| Additional `trace` keys | `metadata` JSON | Custom values stored under their original keys |
+| Request `metadata.<k>` | `metadata.metadata_<k>` | Request metadata stored with the `metadata_` prefix |
 
 ### Example
 
@@ -262,7 +321,9 @@ ORDER BY timestamp DESC;
 
 * The `user` field maps to the `user_id` typed column
 * The `session_id` field maps to the `session_id` typed column
-* All custom metadata keys from `trace` are stored in the `metadata` JSON column for flexible querying
+* Additional custom keys from `trace` are stored in the `metadata` JSON column for flexible querying
+* `trace_name` and `generation_name` affect internal names but have no dedicated table columns
+* `trace.span_name` is reserved and currently ignored
 
 ## Troubleshooting
 

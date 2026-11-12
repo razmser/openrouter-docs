@@ -460,6 +460,8 @@ components:
             effort: medium
             summary: concise
           properties:
+            context:
+              $ref: '#/components/schemas/ReasoningContext'
             effort:
               description: Constrains effort on reasoning for reasoning models
               enum:
@@ -475,6 +477,18 @@ components:
               type:
                 - string
                 - 'null'
+            enabled:
+              description: >-
+                Enables reasoning with default settings. Defaults to being
+                inferred from `effort` or `max_tokens`.
+              example: true
+              type: boolean
+            exclude:
+              description: >-
+                When true, the model still reasons but the reasoning is omitted
+                from the response. Defaults to false.
+              example: false
+              type: boolean
             max_tokens:
               description: >-
                 Maximum number of tokens the model may spend on reasoning, for
@@ -487,6 +501,8 @@ components:
               type:
                 - integer
                 - 'null'
+            mode:
+              $ref: '#/components/schemas/ReasoningMode'
             summary:
               $ref: '#/components/schemas/ChatReasoningSummaryVerbosityEnum'
           type: object
@@ -2036,6 +2052,34 @@ components:
       type:
         - object
         - 'null'
+    ReasoningContext:
+      description: >-
+        Controls which reasoning is available to the model. `auto` uses the
+        model default (same as omitting); `all_turns` includes reasoning from
+        earlier turns passed in input; `current_turn` limits to the current turn
+        only. Only supported by OpenAI GPT-5.6 and newer.
+      enum:
+        - auto
+        - all_turns
+        - current_turn
+        - null
+      example: all_turns
+      type:
+        - string
+        - 'null'
+    ReasoningMode:
+      description: >-
+        Selects the reasoning mode. `standard` is the default; `pro` engages
+        deeper reasoning on models that support it, billed at standard token
+        rates. Only supported by OpenAI GPT-5.6 and newer.
+      enum:
+        - standard
+        - pro
+        - null
+      example: standard
+      type:
+        - string
+        - 'null'
     ChatReasoningSummaryVerbosityEnum:
       enum:
         - auto
@@ -2970,6 +3014,7 @@ components:
         - Seed
         - SiliconFlow
         - Sourceful
+        - Speechify
         - StepFun
         - Stealth
         - StreamLake
@@ -3399,6 +3444,9 @@ components:
           additionalProperties: {}
           type: object
         sourceful:
+          additionalProperties: {}
+          type: object
+        speechify:
           additionalProperties: {}
           type: object
         stealth:

@@ -40,6 +40,65 @@ This is a **human-in-the-loop** tool: OpenRouter validates the diff but never ap
 
 ## Quick Start
 
+```typescript title="TypeScript" lines theme={null}
+const response = await fetch('https://openrouter.ai/api/v1/responses', {
+  method: 'POST',
+  headers: {
+    Authorization: 'Bearer <OPENROUTER_API_KEY>',
+    'Content-Type': 'application/json',
+  },
+  body: JSON.stringify({
+    model: 'openai/gpt-5.1-codex-mini',
+    input: 'Create a hello.py file that prints "Hello, world!"',
+    tools: [
+      { type: 'openrouter:apply_patch' }
+    ]
+  }),
+});
+
+const data = await response.json();
+// The response contains an apply_patch_call output item
+// with the operation (create_file, update_file, or delete_file)
+console.log(data.output);
+```
+
+```python title="Python" expandable lines theme={null}
+import requests
+
+response = requests.post(
+  "https://openrouter.ai/api/v1/responses",
+  headers={
+    "Authorization": f"Bearer <OPENROUTER_API_KEY>",
+    "Content-Type": "application/json",
+  },
+  json={
+    "model": "openai/gpt-5.1-codex-mini",
+    "input": "Create a hello.py file that prints 'Hello, world!'",
+    "tools": [
+      {"type": "openrouter:apply_patch"}
+    ]
+  }
+)
+
+data = response.json()
+# The response contains an apply_patch_call output item
+# with the operation (create_file, update_file, or delete_file)
+print(data["output"])
+```
+
+```bash title="cURL" lines theme={null}
+curl https://openrouter.ai/api/v1/responses \
+  -H "Authorization: Bearer <OPENROUTER_API_KEY>" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "model": "openai/gpt-5.1-codex-mini",
+    "input": "Create a hello.py file that prints \"Hello, world!\"",
+    "tools": [
+      {"type": "openrouter:apply_patch"}
+    ]
+  }'
+```
+
 ## Patch Operations
 
 The tool supports three operation types, each carried as the `operation` field on the `apply_patch_call` output item:

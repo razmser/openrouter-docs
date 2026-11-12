@@ -128,3 +128,43 @@ const message = await anthropic.beta.messages.create({
 ## Using with the OpenAI SDK
 
 To use the `models` array with the OpenAI SDK, include it in the `extra_body` parameter. In the example below, `~openai/gpt-sol-latest` will be tried first, and the `models` array will be tried in order as fallbacks.
+
+```python Python expandable lines theme={null}
+from openai import OpenAI
+
+openai_client = OpenAI(
+  base_url="https://openrouter.ai/api/v1",
+  api_key="<OPENROUTER_API_KEY>",
+)
+
+response = openai_client.responses.create(
+    model="~openai/gpt-sol-latest",
+    extra_body={
+        "models": ["~anthropic/claude-sonnet-latest", "gryphe/mythomax-l2-13b"],
+    },
+    input="What is the meaning of life?"
+)
+
+print(response.output_text)
+```
+
+```typescript TypeScript expandable lines theme={null}
+import OpenAI from 'openai';
+
+const openrouterClient = new OpenAI({
+  baseURL: 'https://openrouter.ai/api/v1',
+  apiKey: '<OPENROUTER_API_KEY>',
+});
+
+async function main() {
+  const response = await openrouterClient.responses.create({
+    model: '~openai/gpt-sol-latest',
+    // @ts-expect-error
+    models: ['~anthropic/claude-sonnet-latest', 'gryphe/mythomax-l2-13b'],
+    input: 'What is the meaning of life?',
+  });
+  console.log(response.output_text);
+}
+
+main();
+```

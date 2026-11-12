@@ -163,6 +163,66 @@ These inner budgets bound each panelist or worker model's own tool loop and are 
 
 Add server tools to the `tools` array using the `openrouter:` type prefix:
 
+```typescript title="TypeScript" expandable lines theme={null}
+const response = await fetch('https://openrouter.ai/api/v1/responses', {
+  method: 'POST',
+  headers: {
+    Authorization: 'Bearer <OPENROUTER_API_KEY>',
+    'Content-Type': 'application/json',
+  },
+  body: JSON.stringify({
+    model: 'openai/gpt-5.2',
+    input: 'What are the latest developments in AI?',
+    tools: [
+      { type: 'openrouter:web_search' },
+      { type: 'openrouter:datetime' }
+    ]
+  }),
+});
+
+const data = await response.json();
+const message = [...data.output].reverse().find((item: { type: string }) => item.type === 'message');
+console.log(message?.content.find((part: { type: string; text?: string }) => part.type === 'output_text')?.text);
+```
+
+```python title="Python" expandable lines theme={null}
+import requests
+
+response = requests.post(
+  "https://openrouter.ai/api/v1/responses",
+  headers={
+    "Authorization": f"Bearer <OPENROUTER_API_KEY>",
+    "Content-Type": "application/json",
+  },
+  json={
+    "model": "openai/gpt-5.2",
+    "input": "What are the latest developments in AI?",
+    "tools": [
+      {"type": "openrouter:web_search"},
+      {"type": "openrouter:datetime"}
+    ]
+  }
+)
+
+data = response.json()
+message = next(item for item in reversed(data["output"]) if item["type"] == "message")
+print(next(part["text"] for part in message["content"] if part["type"] == "output_text"))
+```
+
+```bash title="cURL" lines theme={null}
+curl https://openrouter.ai/api/v1/responses \
+  -H "Authorization: Bearer <OPENROUTER_API_KEY>" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "model": "openai/gpt-5.2",
+    "input": "What are the latest developments in AI?",
+    "tools": [
+      {"type": "openrouter:web_search"},
+      {"type": "openrouter:datetime"}
+    ]
+  }'
+```
+
 ## Combining with User-Defined Tools
 
 Server tools and user-defined tools can be used in the same request:
@@ -194,7 +254,7 @@ The model can call any combination of server tools and user-defined tools. OpenR
 
 ## Usage Tracking
 
-Server tool usage is tracked in the response `usage` object:
+Server tool usage is tracked in the response `usage.server_tool_use_details` object on the Chat Completions and Responses APIs:
 
 ```json lines theme={null}
 {
@@ -203,11 +263,21 @@ Server tool usage is tracked in the response `usage` object:
     "output_tokens": 250,
     "total_tokens": 355,
     "server_tool_use_details": {
+      "tool_calls_requested": 2,
+      "tool_calls_executed": 2,
       "web_search_requests": 2
     }
   }
 }
 ```
+
+The object is omitted when no server-side tool usage is recorded. The Messages API reports the same counters in Anthropic's `usage.server_tool_use` object, which is `null` instead of omitted when no server tool runs. Provider-native web search may still report `web_search_requests` without an OpenRouter server-tool invocation. The object reports aggregate activity for the request rather than a separate entry for every tool; `web_search_requests` is currently the only tool-specific counter. Its fields are:
+
+* `tool_calls_requested`: Total OpenRouter server-orchestrated tool calls requested by the model, across all tool types. Provider-native tools are not included.
+* `tool_calls_executed`: Server tool calls that executed and produced a result.
+* `web_search_requests`: Search queries performed by server-side tools. A server-orchestrated web search is also included in `tool_calls_requested`; provider-native web search may report `web_search_requests` without incrementing that field, so do not add the two together.
+
+Server tool usage is included in the request's overall `usage.cost`; see [Web Search pricing](server-tools/web-search.md#pricing) for search-specific charges.
 
 ## Next Steps
 

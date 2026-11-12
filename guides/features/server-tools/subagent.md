@@ -24,11 +24,11 @@ You can give the model a choice of **several named workers** by including multip
 const response = await fetch('https://openrouter.ai/api/v1/responses', {
   method: 'POST',
   headers: {
-    Authorization: 'Bearer {{API_KEY_REF}}',
+    Authorization: 'Bearer <OPENROUTER_API_KEY>',
     'Content-Type': 'application/json',
   },
   body: JSON.stringify({
-    model: '{{MODEL}}',
+    model: '~anthropic/claude-opus-latest',
     input: 'Audit this release: summarize the changelog, list breaking changes, and draft the announcement.',
     tools: [
       {
@@ -50,11 +50,11 @@ import requests
 response = requests.post(
   "https://openrouter.ai/api/v1/responses",
   headers={
-    "Authorization": f"Bearer {{API_KEY_REF}}",
+    "Authorization": f"Bearer <OPENROUTER_API_KEY>",
     "Content-Type": "application/json",
   },
   json={
-    "model": "{{MODEL}}",
+    "model": "~anthropic/claude-opus-latest",
     "input": "Audit this release: summarize the changelog, list breaking changes, and draft the announcement.",
     "tools": [
       {

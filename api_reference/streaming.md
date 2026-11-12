@@ -10,6 +10,178 @@ To enable streaming, you can set the `stream` parameter to `true` in your reques
 
 Here is an example of how to stream a response, and process it:
 
+```typescript title="TypeScript SDK" expandable lines theme={null}
+import { OpenRouter } from '@openrouter/sdk';
+
+const openRouter = new OpenRouter({
+  apiKey: '<OPENROUTER_API_KEY>',
+});
+
+const question = 'How would you build the tallest building ever?';
+
+const stream = await openRouter.responses.send({
+  responsesRequest: {
+    model: 'openai/gpt-4o',
+    input: question,
+    stream: true,
+  },
+});
+
+if (!(stream instanceof ReadableStream)) {
+  throw new Error('Expected a streaming response');
+}
+
+for await (const event of stream) {
+  if (event.type === 'response.failed') {
+    throw new Error(event.response.error?.message ?? 'Response failed');
+  }
+  if (event.type === 'response.incomplete') {
+    throw new Error(
+      `Response incomplete: ${event.response.incompleteDetails?.reason ?? 'unknown reason'}`,
+    );
+  }
+
+  if (event.type === 'response.output_text.delta') {
+    console.log(event.delta);
+  }
+
+  // The final response.completed event includes usage stats
+  if (event.type === 'response.completed') {
+    console.log('Usage:', event.response.usage);
+  }
+}
+```
+
+```python Python expandable lines theme={null}
+import requests
+import json
+
+question = "How would you build the tallest building ever?"
+
+url = "https://openrouter.ai/api/v1/responses"
+headers = {
+  "Authorization": f"Bearer <OPENROUTER_API_KEY>",
+  "Content-Type": "application/json"
+}
+
+payload = {
+  "model": "openai/gpt-4o",
+  "input": question,
+  "stream": True
+}
+
+buffer = ""
+with requests.post(url, headers=headers, json=payload, stream=True) as r:
+  r.raise_for_status()
+  for chunk in r.iter_content(chunk_size=1024, decode_unicode=True):
+    buffer += chunk
+    while True:
+      # Find the next complete SSE line
+      line_end = buffer.find('\n')
+      if line_end == -1:
+        break
+
+      line = buffer[:line_end].strip()
+      buffer = buffer[line_end + 1:]
+
+      # Skip SSE comments (lines starting with ":"), e.g. the
+      # ": OPENROUTER PROCESSING" keep-alive — they are not JSON
+      if line.startswith(':'):
+        continue
+      if not line.startswith('data: '):
+        continue
+
+      data = line[6:]
+      if data == '[DONE]':
+        break
+
+      try:
+        data_obj = json.loads(data)
+      except json.JSONDecodeError:
+        continue
+
+      if data_obj.get("type") == "response.failed":
+        error = data_obj["response"].get("error") or {}
+        raise RuntimeError(error.get("message", "Response failed"))
+      if data_obj.get("type") == "response.incomplete":
+        details = data_obj["response"].get("incomplete_details") or {}
+        raise RuntimeError(f"Response incomplete: {details.get('reason', 'unknown reason')}")
+      if data_obj.get("type") == "response.output_text.delta":
+        print(data_obj["delta"], end="", flush=True)
+```
+
+```typescript title="TypeScript (fetch)" expandable lines theme={null}
+const question = 'How would you build the tallest building ever?';
+const response = await fetch('https://openrouter.ai/api/v1/responses', {
+  method: 'POST',
+  headers: {
+    Authorization: `Bearer ${API_KEY_REF}`,
+    'Content-Type': 'application/json',
+  },
+  body: JSON.stringify({
+    model: 'openai/gpt-4o',
+    input: question,
+    stream: true,
+  }),
+});
+
+const reader = response.body?.getReader();
+if (!reader) {
+  throw new Error('Response body is not readable');
+}
+
+const decoder = new TextDecoder();
+let buffer = '';
+
+try {
+  while (true) {
+    const { done, value } = await reader.read();
+    if (done) break;
+
+    // Append new chunk to buffer
+    buffer += decoder.decode(value, { stream: true });
+
+    // Process complete lines from buffer
+    while (true) {
+      const lineEnd = buffer.indexOf('\n');
+      if (lineEnd === -1) break;
+
+      const line = buffer.slice(0, lineEnd).trim();
+      buffer = buffer.slice(lineEnd + 1);
+
+      // Skip SSE comments (lines starting with ":"), e.g. the
+      // ": OPENROUTER PROCESSING" keep-alive — they are not JSON
+      if (line.startsWith(':')) continue;
+
+      if (line.startsWith('data: ')) {
+        const data = line.slice(6);
+        if (data === '[DONE]') break;
+
+        try {
+          const parsed = JSON.parse(data);
+          if (parsed.type === 'response.failed') {
+            throw new Error(parsed.response.error?.message ?? 'Response failed');
+          }
+          if (parsed.type === 'response.incomplete') {
+            throw new Error(
+              `Response incomplete: ${parsed.response.incomplete_details?.reason ?? 'unknown reason'}`,
+            );
+          }
+          if (parsed.type === 'response.output_text.delta') {
+            console.log(parsed.delta);
+          }
+        } catch (error) {
+          if (error instanceof SyntaxError) continue;
+          throw error;
+        }
+      }
+    }
+  }
+} finally {
+  reader.cancel();
+}
+```
+
 ### Additional information
 
 For SSE (Server-Sent Events) streams, OpenRouter occasionally sends comments to prevent connection timeouts. These comments look like:
@@ -125,6 +297,115 @@ Streaming requests can be cancelled by aborting the connection. For supported pr
 
 To implement stream cancellation:
 
+```typescript title="TypeScript SDK" expandable lines theme={null}
+import { OpenRouter } from '@openrouter/sdk';
+import { RequestAbortedError } from '@openrouter/sdk/models/errors';
+
+const openRouter = new OpenRouter({
+  apiKey: '<OPENROUTER_API_KEY>',
+});
+
+const controller = new AbortController();
+
+try {
+  const stream = await openRouter.responses.send({
+    responsesRequest: {
+      model: 'openai/gpt-4o',
+      input: 'Write a story',
+      stream: true,
+    },
+  }, {
+    signal: controller.signal,
+  });
+
+  if (!(stream instanceof ReadableStream)) {
+    throw new Error('Expected a streaming response');
+  }
+
+  for await (const event of stream) {
+    if (event.type === 'response.output_text.delta') {
+      console.log(event.delta);
+    }
+  }
+} catch (error) {
+  // Aborting before the response arrives throws RequestAbortedError; aborting mid-stream throws AbortError.
+  if (error instanceof RequestAbortedError || (error instanceof Error && error.name === 'AbortError')) {
+    console.log('Stream cancelled');
+  } else {
+    throw error;
+  }
+}
+
+// To cancel the stream:
+controller.abort();
+```
+
+```python Python expandable lines theme={null}
+import requests
+from threading import Event, Thread
+
+def stream_with_cancellation(prompt: str, cancel_event: Event):
+    with requests.Session() as session:
+        response = session.post(
+            "https://openrouter.ai/api/v1/responses",
+            headers={"Authorization": f"Bearer <OPENROUTER_API_KEY>"},
+            json={"model": "openai/gpt-4o", "input": prompt, "stream": True},
+            stream=True
+        )
+
+        try:
+            for line in response.iter_lines():
+                if cancel_event.is_set():
+                    response.close()
+                    return
+                if line:
+                    print(line.decode(), end="", flush=True)
+        finally:
+            response.close()
+
+# Example usage:
+cancel_event = Event()
+stream_thread = Thread(target=lambda: stream_with_cancellation("Write a story", cancel_event))
+stream_thread.start()
+
+# To cancel the stream:
+cancel_event.set()
+```
+
+```typescript title="TypeScript (fetch)" expandable lines theme={null}
+const controller = new AbortController();
+
+try {
+  const response = await fetch(
+    'https://openrouter.ai/api/v1/responses',
+    {
+      method: 'POST',
+      headers: {
+        Authorization: `Bearer <OPENROUTER_API_KEY>`,
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        model: 'openai/gpt-4o',
+        input: 'Write a story',
+        stream: true,
+      }),
+      signal: controller.signal,
+    },
+  );
+
+  // Process the stream...
+} catch (error) {
+  if (error instanceof Error && error.name === 'AbortError') {
+    console.log('Stream cancelled');
+  } else {
+    throw error;
+  }
+}
+
+// To cancel the stream:
+controller.abort();
+```
+
 > [!WARNING]
 >
 > Cancellation only works for streaming requests with supported providers. For non-streaming requests or unsupported providers, the model will continue processing and you will be billed for the complete response.
@@ -197,6 +478,198 @@ See [Errors and debugging](errors-and-debugging.md#chat-completions-apiv1chatcom
 #### Code examples
 
 Here's how to properly handle both types of errors in your streaming implementation:
+
+```typescript title="TypeScript SDK" expandable lines theme={null}
+import { OpenRouter } from '@openrouter/sdk';
+
+const openRouter = new OpenRouter({
+  apiKey: '<OPENROUTER_API_KEY>',
+});
+
+async function streamWithErrorHandling(prompt: string) {
+  try {
+    const stream = await openRouter.responses.send({
+      responsesRequest: {
+        model: 'openai/gpt-4o',
+        input: prompt,
+        stream: true,
+      },
+    });
+
+    if (!(stream instanceof ReadableStream)) {
+      throw new Error('Expected a streaming response');
+    }
+
+    for await (const event of stream) {
+      // Check for mid-stream errors
+      if (event.type === 'response.failed') {
+        console.error(`Stream error: ${event.response.error?.message}`);
+        console.log('Stream terminated due to error');
+        return;
+      }
+      if (event.type === 'response.incomplete') {
+        console.error(
+          `Stream incomplete: ${event.response.incompleteDetails?.reason ?? 'unknown reason'}`,
+        );
+        return;
+      }
+      if (event.type === 'error') {
+        console.error(`Stream error: ${event.message}`);
+        return;
+      }
+
+      // Process normal content
+      if (event.type === 'response.output_text.delta') {
+        console.log(event.delta);
+      }
+    }
+  } catch (error) {
+    // Handle pre-stream errors
+    console.error(`Error: ${error instanceof Error ? error.message : String(error)}`);
+  }
+}
+```
+
+```python Python expandable lines theme={null}
+import requests
+import json
+
+async def stream_with_error_handling(prompt):
+    response = requests.post(
+        'https://openrouter.ai/api/v1/responses',
+        headers={'Authorization': f'Bearer <OPENROUTER_API_KEY>'},
+        json={
+            'model': 'openai/gpt-4o',
+            'input': prompt,
+            'stream': True
+        },
+        stream=True
+    )
+
+    # Check initial HTTP status for pre-stream errors
+    if response.status_code != 200:
+        error_data = response.json()
+        print(f"Error: {error_data['error']['message']}")
+        return
+
+    # Process stream and handle mid-stream errors
+    for line in response.iter_lines():
+        if line:
+            line_text = line.decode('utf-8')
+            if line_text.startswith('data: '):
+                data = line_text[6:]
+                if data == '[DONE]':
+                    break
+
+                try:
+                    parsed = json.loads(data)
+
+                    # Check for mid-stream errors
+                    if parsed.get('type') == 'response.failed':
+                        print(f"Stream error: {parsed['response']['error']['message']}")
+                        print("Stream terminated due to error")
+                        break
+                    if parsed.get('type') == 'response.incomplete':
+                        details = parsed['response'].get('incomplete_details') or {}
+                        reason = details.get('reason', 'unknown reason')
+                        print(f"Stream incomplete: {reason}")
+                        break
+                    if parsed.get('type') == 'error':
+                        print(f"Stream error: {parsed['message']}")
+                        break
+
+                    # Process normal content
+                    if parsed.get('type') == 'response.output_text.delta':
+                        print(parsed['delta'], end='', flush=True)
+
+                except json.JSONDecodeError:
+                    pass
+```
+
+```typescript title="TypeScript (fetch)" expandable lines theme={null}
+async function streamWithErrorHandling(prompt: string) {
+  const response = await fetch(
+    'https://openrouter.ai/api/v1/responses',
+    {
+      method: 'POST',
+      headers: {
+        'Authorization': `Bearer <OPENROUTER_API_KEY>`,
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        model: 'openai/gpt-4o',
+        input: prompt,
+        stream: true,
+      }),
+    }
+  );
+
+  // Check initial HTTP status for pre-stream errors
+  if (!response.ok) {
+    const error = await response.json();
+    console.error(`Error: ${error.error.message}`);
+    return;
+  }
+
+  const reader = response.body?.getReader();
+  if (!reader) throw new Error('No response body');
+
+  const decoder = new TextDecoder();
+  let buffer = '';
+
+  try {
+    while (true) {
+      const { done, value } = await reader.read();
+      if (done) break;
+
+      buffer += decoder.decode(value, { stream: true });
+
+      while (true) {
+        const lineEnd = buffer.indexOf('\n');
+        if (lineEnd === -1) break;
+
+        const line = buffer.slice(0, lineEnd).trim();
+        buffer = buffer.slice(lineEnd + 1);
+
+        if (line.startsWith('data: ')) {
+          const data = line.slice(6);
+          if (data === '[DONE]') return;
+
+          try {
+            const parsed = JSON.parse(data);
+
+            // Check for mid-stream errors
+            if (parsed.type === 'response.failed') {
+              console.error(`Stream error: ${parsed.response.error?.message}`);
+              console.log('Stream terminated due to error');
+              return;
+            }
+            if (parsed.type === 'response.incomplete') {
+              console.error(
+                `Stream incomplete: ${parsed.response.incomplete_details?.reason ?? 'unknown reason'}`,
+              );
+              return;
+            }
+            if (parsed.type === 'error') {
+              console.error(`Stream error: ${parsed.message}`);
+              return;
+            }
+
+            // Process normal content
+            if (parsed.type === 'response.output_text.delta') {
+              console.log(parsed.delta);
+            }
+          } catch (e) {
+            // Ignore parsing errors
+          }
+        }
+      }
+    }
+  } finally {
+    reader.cancel();
+  }
+}
+```
 
 #### API-specific behavior
 

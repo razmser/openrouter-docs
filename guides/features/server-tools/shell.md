@@ -38,6 +38,61 @@ Unlike the [Bash](bash.md) tool, the shell tool has no client-side execution mod
 
 ## Quick Start
 
+```typescript title="TypeScript" expandable lines theme={null}
+const response = await fetch('https://openrouter.ai/api/v1/responses', {
+  method: 'POST',
+  headers: {
+    Authorization: 'Bearer <OPENROUTER_API_KEY>',
+    'Content-Type': 'application/json',
+  },
+  body: JSON.stringify({
+    model: 'anthropic/claude-sonnet-4.5',
+    input: 'List the files in the current directory and show me the OS version.',
+    tools: [
+      { type: 'openrouter:shell', parameters: { engine: 'openrouter' } }
+    ]
+  }),
+});
+
+const data = await response.json();
+console.log(data);
+```
+
+```python title="Python" expandable lines theme={null}
+import requests
+
+response = requests.post(
+  "https://openrouter.ai/api/v1/responses",
+  headers={
+    "Authorization": f"Bearer <OPENROUTER_API_KEY>",
+    "Content-Type": "application/json",
+  },
+  json={
+    "model": "anthropic/claude-sonnet-4.5",
+    "input": "List the files in the current directory and show me the OS version.",
+    "tools": [
+      {"type": "openrouter:shell", "parameters": {"engine": "openrouter"}}
+    ]
+  }
+)
+
+data = response.json()
+print(data)
+```
+
+```bash title="cURL" lines theme={null}
+curl https://openrouter.ai/api/v1/responses \
+  -H "Authorization: Bearer <OPENROUTER_API_KEY>" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "model": "anthropic/claude-sonnet-4.5",
+    "input": "List the files in the current directory and show me the OS version.",
+    "tools": [
+      {"type": "openrouter:shell", "parameters": {"engine": "openrouter"}}
+    ]
+  }'
+```
+
 ## Configuration
 
 The shell tool accepts optional `parameters` to choose its execution engine and environment:

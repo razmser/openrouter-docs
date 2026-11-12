@@ -128,6 +128,11 @@ Files created inside a container can be downloaded through the container files e
 
 List the files in a container:
 
+```bash title="cURL" lines theme={null}
+curl "https://openrouter.ai/api/v1/containers/sess_abc123/files" \
+  -H "Authorization: Bearer <OPENROUTER_API_KEY>"
+```
+
 ```json lines theme={null}
 {
   "object": "list",
@@ -157,6 +162,11 @@ Container file ids start with `cfile_`. They encode the file path, and they matc
 ## Save a container file to your workspace
 
 Container files live with the container. To keep a file for the long term, promote it to a workspace document:
+
+```bash title="cURL" lines theme={null}
+curl -X POST "https://openrouter.ai/api/v1/containers/sess_abc123/files/cfile_b3V0L3JlcG9ydC5jc3Y/promote" \
+  -H "Authorization: Bearer <OPENROUTER_API_KEY>"
+```
 
 ```json lines theme={null}
 {

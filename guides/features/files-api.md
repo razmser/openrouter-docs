@@ -30,6 +30,38 @@ You can also manage files in the web app. Open [your workspace files page](https
 
 Send a `multipart/form-data` request to `POST /api/v1/files`. Put the file in the `file` field.
 
+```bash title="cURL" lines theme={null}
+curl https://openrouter.ai/api/v1/files \
+  -H "Authorization: Bearer <OPENROUTER_API_KEY>" \
+  -F "file=@report.pdf"
+```
+
+```typescript title="TypeScript" lines theme={null}
+const form = new FormData();
+form.append('file', new File([pdfBytes], 'report.pdf'));
+
+const response = await fetch('https://openrouter.ai/api/v1/files', {
+  method: 'POST',
+  headers: { Authorization: 'Bearer <OPENROUTER_API_KEY>' },
+  body: form,
+});
+
+const file = await response.json();
+console.log(file.id); // or_file_...
+```
+
+```python title="Python" lines theme={null}
+import requests
+
+response = requests.post(
+    "https://openrouter.ai/api/v1/files",
+    headers={"Authorization": f"Bearer <OPENROUTER_API_KEY>"},
+    files={"file": ("report.pdf", open("report.pdf", "rb"))},
+)
+
+print(response.json()["id"])  # or_file_...
+```
+
 The response contains the file id. File ids start with `or_file_`. Use this id in later requests.
 
 ### Upload limits
@@ -66,6 +98,11 @@ A filename can contain `/` to form a folder path, for example `data/report.csv`.
 ## List files
 
 `GET /api/v1/files` returns the files in the workspace.
+
+```bash title="cURL" lines theme={null}
+curl "https://openrouter.ai/api/v1/files?limit=100" \
+  -H "Authorization: Bearer <OPENROUTER_API_KEY>"
+```
 
 * `limit` sets the page size, from 1 to 1000. The default is 100.
 * The response contains `data`, `has_more`, and a `cursor`. Send the `cursor` value in the next request to get the next page.

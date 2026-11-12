@@ -522,7 +522,6 @@ async function run() {
       },
       policyId: "550e8400-e29b-41d4-a716-446655440000",
       policyType: "budget",
-      workspaceId: "0df9e665-d932-5740-b2c7-b52af166bc11",
     },
   });
 
@@ -563,7 +562,6 @@ async function run() {
       },
       policyId: "550e8400-e29b-41d4-a716-446655440000",
       policyType: "budget",
-      workspaceId: "0df9e665-d932-5740-b2c7-b52af166bc11",
     },
   });
   if (res.ok) {
@@ -719,7 +717,6 @@ async function run() {
       },
       policyId: "550e8400-e29b-41d4-a716-446655440000",
       policyType: "budget",
-      workspaceId: "0df9e665-d932-5740-b2c7-b52af166bc11",
     },
   });
 
@@ -760,7 +757,6 @@ async function run() {
       },
       policyId: "550e8400-e29b-41d4-a716-446655440000",
       policyType: "budget",
-      workspaceId: "0df9e665-d932-5740-b2c7-b52af166bc11",
     },
   });
   if (res.ok) {
@@ -816,9 +812,7 @@ const openRouter = new OpenRouter({
 });
 
 async function run() {
-  const result = await openRouter.guardrailPolicies.listBudgetPolicies({
-    workspaceId: "0df9e665-d932-5740-b2c7-b52af166bc11",
-  });
+  const result = await openRouter.guardrailPolicies.listBudgetPolicies();
 
   for await (const page of result) {
     console.log(page);
@@ -846,9 +840,7 @@ const openRouter = new OpenRouterCore({
 });
 
 async function run() {
-  const res = await guardrailPoliciesListBudgetPolicies(openRouter, {
-    workspaceId: "0df9e665-d932-5740-b2c7-b52af166bc11",
-  });
+  const res = await guardrailPoliciesListBudgetPolicies(openRouter);
   if (res.ok) {
     const { value: result } = res;
     for await (const page of result) {
@@ -912,7 +904,6 @@ async function run() {
       },
       name: "Engineering monthly budget",
       policyType: "budget",
-      workspaceId: "0df9e665-d932-5740-b2c7-b52af166bc11",
     },
   });
 
@@ -949,7 +940,6 @@ async function run() {
       },
       name: "Engineering monthly budget",
       policyType: "budget",
-      workspaceId: "0df9e665-d932-5740-b2c7-b52af166bc11",
     },
   });
   if (res.ok) {
@@ -1185,7 +1175,6 @@ async function run() {
         resetInterval: "monthly",
       },
       name: "Engineering monthly budget",
-      workspaceId: "0df9e665-d932-5740-b2c7-b52af166bc11",
     },
   });
 
@@ -1222,7 +1211,6 @@ async function run() {
         resetInterval: "monthly",
       },
       name: "Engineering monthly budget",
-      workspaceId: "0df9e665-d932-5740-b2c7-b52af166bc11",
     },
   });
   if (res.ok) {
@@ -1278,9 +1266,7 @@ const openRouter = new OpenRouter({
 });
 
 async function run() {
-  const result = await openRouter.guardrailPolicies.listModelAvailabilityPolicies({
-    workspaceId: "0df9e665-d932-5740-b2c7-b52af166bc11",
-  });
+  const result = await openRouter.guardrailPolicies.listModelAvailabilityPolicies();
 
   for await (const page of result) {
     console.log(page);
@@ -1308,9 +1294,7 @@ const openRouter = new OpenRouterCore({
 });
 
 async function run() {
-  const res = await guardrailPoliciesListModelAvailabilityPolicies(openRouter, {
-    workspaceId: "0df9e665-d932-5740-b2c7-b52af166bc11",
-  });
+  const res = await guardrailPoliciesListModelAvailabilityPolicies(openRouter);
   if (res.ok) {
     const { value: result } = res;
     for await (const page of result) {
@@ -1370,7 +1354,6 @@ async function run() {
       config: {},
       name: "Engineering monthly budget",
       policyType: "model_availability",
-      workspaceId: "0df9e665-d932-5740-b2c7-b52af166bc11",
     },
   });
 
@@ -1403,7 +1386,6 @@ async function run() {
       config: {},
       name: "Engineering monthly budget",
       policyType: "model_availability",
-      workspaceId: "0df9e665-d932-5740-b2c7-b52af166bc11",
     },
   });
   if (res.ok) {
@@ -1635,7 +1617,6 @@ async function run() {
     updateModelAvailabilityGuardrailPolicyRequest: {
       config: {},
       name: "Engineering monthly budget",
-      workspaceId: "0df9e665-d932-5740-b2c7-b52af166bc11",
     },
   });
 
@@ -1668,7 +1649,6 @@ async function run() {
     updateModelAvailabilityGuardrailPolicyRequest: {
       config: {},
       name: "Engineering monthly budget",
-      workspaceId: "0df9e665-d932-5740-b2c7-b52af166bc11",
     },
   });
   if (res.ok) {
@@ -1724,9 +1704,7 @@ const openRouter = new OpenRouter({
 });
 
 async function run() {
-  const result = await openRouter.guardrailPolicies.listModerationPolicies({
-    workspaceId: "0df9e665-d932-5740-b2c7-b52af166bc11",
-  });
+  const result = await openRouter.guardrailPolicies.listModerationPolicies();
 
   for await (const page of result) {
     console.log(page);
@@ -1754,9 +1732,7 @@ const openRouter = new OpenRouterCore({
 });
 
 async function run() {
-  const res = await guardrailPoliciesListModerationPolicies(openRouter, {
-    workspaceId: "0df9e665-d932-5740-b2c7-b52af166bc11",
-  });
+  const res = await guardrailPoliciesListModerationPolicies(openRouter);
   if (res.ok) {
     const { value: result } = res;
     for await (const page of result) {
@@ -1816,7 +1792,6 @@ async function run() {
       config: {},
       name: "Engineering monthly budget",
       policyType: "moderation",
-      workspaceId: "0df9e665-d932-5740-b2c7-b52af166bc11",
     },
   });
 
@@ -1849,7 +1824,6 @@ async function run() {
       config: {},
       name: "Engineering monthly budget",
       policyType: "moderation",
-      workspaceId: "0df9e665-d932-5740-b2c7-b52af166bc11",
     },
   });
   if (res.ok) {
@@ -2081,7 +2055,6 @@ async function run() {
     updateModerationGuardrailPolicyRequest: {
       config: {},
       name: "Engineering monthly budget",
-      workspaceId: "0df9e665-d932-5740-b2c7-b52af166bc11",
     },
   });
 
@@ -2114,7 +2087,6 @@ async function run() {
     updateModerationGuardrailPolicyRequest: {
       config: {},
       name: "Engineering monthly budget",
-      workspaceId: "0df9e665-d932-5740-b2c7-b52af166bc11",
     },
   });
   if (res.ok) {

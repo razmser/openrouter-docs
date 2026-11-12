@@ -26,6 +26,86 @@ The `openrouter:image_generation` server tool enables any model to generate imag
 
 ## Quick Start
 
+```typescript title="TypeScript" expandable lines theme={null}
+const response = await fetch('https://openrouter.ai/api/v1/responses', {
+  method: 'POST',
+  headers: {
+    Authorization: 'Bearer <OPENROUTER_API_KEY>',
+    'Content-Type': 'application/json',
+  },
+  body: JSON.stringify({
+    model: 'openai/gpt-5.2',
+    input: 'Create an image of a futuristic city at sunset',
+    tools: [
+      { type: 'openrouter:image_generation' }
+    ]
+  }),
+});
+
+const data = await response.json();
+const message = [...data.output].reverse().find((item: { type: string }) => item.type === 'message');
+console.log(message?.content.find((part: { type: string; text?: string }) => part.type === 'output_text')?.text);
+
+// The generated image is a separate output item, as a data: URL
+const images = data.output.filter(
+  (item: { type: string; result?: string }) => item.type === 'openrouter:image_generation',
+);
+for (const image of images) {
+  if (image.result) console.log(image.result);
+}
+```
+
+```python title="Python" expandable lines theme={null}
+import requests
+
+response = requests.post(
+  "https://openrouter.ai/api/v1/responses",
+  headers={
+    "Authorization": f"Bearer <OPENROUTER_API_KEY>",
+    "Content-Type": "application/json",
+  },
+  json={
+    "model": "openai/gpt-5.2",
+    "input": "Create an image of a futuristic city at sunset",
+    "tools": [
+      {"type": "openrouter:image_generation"}
+    ]
+  }
+)
+
+data = response.json()
+message = next((item for item in reversed(data["output"]) if item["type"] == "message"), None)
+text = next(
+  (part["text"] for part in message["content"] if part["type"] == "output_text"),
+  None,
+) if message else None
+if text:
+  print(text)
+
+# The generated image is a separate output item, as a data: URL
+images = [
+  item for item in data["output"] if item["type"] == "openrouter:image_generation"
+]
+for image in images:
+  if image.get("result"):
+    print(image["result"])
+if not text and not any(image.get("result") for image in images):
+  raise RuntimeError("Response contained neither text nor a generated image")
+```
+
+```bash title="cURL" lines theme={null}
+curl https://openrouter.ai/api/v1/responses \
+  -H "Authorization: Bearer <OPENROUTER_API_KEY>" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "model": "openai/gpt-5.2",
+    "input": "Create an image of a futuristic city at sunset",
+    "tools": [
+      {"type": "openrouter:image_generation"}
+    ]
+  }'
+```
+
 ## Configuration
 
 The image generation tool accepts optional `parameters` to customize the output:
@@ -93,6 +173,83 @@ If generation fails, the response includes an error:
 ## Example with Parameters
 
 Pass `parameters` on the tool entry to configure it:
+
+```typescript title="TypeScript" lines theme={null}
+const response = await fetch('https://openrouter.ai/api/v1/responses', {
+  method: 'POST',
+  headers: {
+    Authorization: 'Bearer <OPENROUTER_API_KEY>',
+    'Content-Type': 'application/json',
+  },
+  body: JSON.stringify({
+    model: 'openai/gpt-5.2',
+    input: 'Generate an image of a mountain landscape',
+    tools: [
+      {
+        type: 'openrouter:image_generation',
+        parameters: { quality: 'high' }
+      }
+    ]
+  }),
+});
+
+const data = await response.json();
+const message = [...data.output].reverse().find((item: { type: string }) => item.type === 'message');
+const text = message?.content.find(
+  (part: { type: string; text?: string }) => part.type === 'output_text',
+)?.text;
+if (text) console.log(text);
+
+const images = data.output.filter(
+  (item: { type: string; result?: string }) => item.type === 'openrouter:image_generation',
+);
+for (const image of images) {
+  if (image.result) console.log(image.result);
+}
+if (!text && !images.some((image) => image.result)) {
+  throw new Error('Response contained neither text nor a generated image');
+}
+```
+
+```python title="Python" expandable lines theme={null}
+import requests
+
+response = requests.post(
+  "https://openrouter.ai/api/v1/responses",
+  headers={
+    "Authorization": f"Bearer <OPENROUTER_API_KEY>",
+    "Content-Type": "application/json",
+  },
+  json={
+    "model": "openai/gpt-5.2",
+    "input": "Generate an image of a mountain landscape",
+    "tools": [
+      {
+        "type": "openrouter:image_generation",
+        "parameters": {"quality": "high"}
+      }
+    ]
+  }
+)
+
+data = response.json()
+message = next((item for item in data["output"] if item["type"] == "message"), None)
+text = next(
+  (part["text"] for part in message["content"] if part["type"] == "output_text"),
+  None,
+) if message else None
+if text:
+  print(text)
+
+images = [
+  item for item in data["output"] if item["type"] == "openrouter:image_generation"
+]
+for image in images:
+  if image.get("result"):
+    print(image["result"])
+if not text and not any(image.get("result") for image in images):
+  raise RuntimeError("Response contained neither text nor a generated image")
+```
 
 ## Pricing
 

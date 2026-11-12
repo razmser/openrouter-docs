@@ -134,6 +134,149 @@ To ensure your request is only routed to endpoints that support structured outpu
 
 Here's a complete example using the Fetch API:
 
+```typescript title="TypeScript SDK" expandable lines theme={null}
+import { OpenRouter } from '@openrouter/sdk';
+
+const openRouter = new OpenRouter({
+  apiKey: '<OPENROUTER_API_KEY>',
+});
+
+const response = await openRouter.responses.send({
+  responsesRequest: {
+    model: 'openai/gpt-4o',
+    input: 'What is the weather like in London?',
+    text: {
+      format: {
+        type: 'json_schema',
+        name: 'weather',
+        strict: true,
+        schema: {
+          type: 'object',
+          properties: {
+            location: {
+              type: 'string',
+              description: 'City or location name',
+            },
+            temperature: {
+              type: 'number',
+              description: 'Temperature in Celsius',
+            },
+            conditions: {
+              type: 'string',
+              description: 'Weather conditions description',
+            },
+          },
+          required: ['location', 'temperature', 'conditions'],
+          additionalProperties: false,
+        },
+      },
+    },
+    stream: false,
+  },
+});
+
+if (!('output' in response)) {
+  throw new Error('Expected a non-streaming response');
+}
+
+const message = [...response.output].reverse().find((item) => item.type === 'message');
+const weatherInfo = message?.content.find((part) => part.type === 'output_text')?.text;
+```
+
+```python title="Python" expandable lines theme={null}
+import requests
+import json
+
+response = requests.post(
+  "https://openrouter.ai/api/v1/responses",
+  headers={
+    "Authorization": f"Bearer <OPENROUTER_API_KEY>",
+    "Content-Type": "application/json",
+  },
+
+  json={
+    "model": "openai/gpt-4o",
+    "input": "What is the weather like in London?",
+    "text": {
+      "format": {
+        "type": "json_schema",
+        "name": "weather",
+        "strict": True,
+        "schema": {
+          "type": "object",
+          "properties": {
+            "location": {
+              "type": "string",
+              "description": "City or location name",
+            },
+            "temperature": {
+              "type": "number",
+              "description": "Temperature in Celsius",
+            },
+            "conditions": {
+              "type": "string",
+              "description": "Weather conditions description",
+            },
+          },
+          "required": ["location", "temperature", "conditions"],
+          "additionalProperties": False,
+        },
+      },
+    },
+  },
+)
+
+data = response.json()
+message = next(item for item in reversed(data["output"]) if item["type"] == "message")
+weather_info = next(part["text"] for part in message["content"] if part["type"] == "output_text")
+```
+
+```typescript title="TypeScript (fetch)" expandable lines theme={null}
+const response = await fetch('https://openrouter.ai/api/v1/responses', {
+  method: 'POST',
+  headers: {
+    Authorization: 'Bearer <OPENROUTER_API_KEY>',
+    'Content-Type': 'application/json',
+  },
+  body: JSON.stringify({
+    model: 'openai/gpt-4o',
+    input: 'What is the weather like in London?',
+    text: {
+      format: {
+        type: 'json_schema',
+        name: 'weather',
+        strict: true,
+        schema: {
+          type: 'object',
+          properties: {
+            location: {
+              type: 'string',
+              description: 'City or location name',
+            },
+            temperature: {
+              type: 'number',
+              description: 'Temperature in Celsius',
+            },
+            conditions: {
+              type: 'string',
+              description: 'Weather conditions description',
+            },
+          },
+          required: ['location', 'temperature', 'conditions'],
+          additionalProperties: false,
+        },
+      },
+    },
+  }),
+});
+
+const data = await response.json();
+const weatherInfo = [...data.output]
+  .reverse()
+  .find((item: { type: string }) => item.type === 'message')
+  ?.content.find((part: { type: string; text?: string }) => part.type === 'output_text')?.text;
+```
+
 ## Streaming with Structured Outputs
 
 Structured outputs are also supported with streaming responses. The model will stream valid partial JSON that, when complete, forms a valid response matching your schema.

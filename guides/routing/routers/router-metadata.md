@@ -14,6 +14,49 @@ Router metadata is a **per-request opt-in** that adds an `openrouter_metadata` f
 
 Opt in by sending the `X-OpenRouter-Metadata` request header with the value `enabled`:
 
+```bash title="cURL" lines theme={null}
+curl https://openrouter.ai/api/v1/responses \
+  -H "Authorization: Bearer <OPENROUTER_API_KEY>" \
+  -H "Content-Type: application/json" \
+  -H "X-OpenRouter-Metadata: enabled" \
+  -d '{
+    "model": "openai/gpt-4o-mini",
+    "input": "Hello"
+  }'
+```
+
+```typescript title="TypeScript" lines theme={null}
+const response = await fetch('https://openrouter.ai/api/v1/responses', {
+  method: 'POST',
+  headers: {
+    Authorization: `Bearer <OPENROUTER_API_KEY>`,
+    'Content-Type': 'application/json',
+    'X-OpenRouter-Metadata': 'enabled',
+  },
+  body: JSON.stringify({
+    model: 'openai/gpt-4o-mini',
+    input: 'Hello',
+  }),
+});
+```
+
+```python title="Python" lines theme={null}
+import requests
+
+response = requests.post(
+    'https://openrouter.ai/api/v1/responses',
+    headers={
+        'Authorization': f'Bearer <OPENROUTER_API_KEY>',
+        'Content-Type': 'application/json',
+        'X-OpenRouter-Metadata': 'enabled',
+    },
+    json={
+        'model': 'openai/gpt-4o-mini',
+        'input': 'Hello',
+    },
+)
+```
+
 ### Accepted Values
 
 The header accepts the following values, matched case-insensitively:

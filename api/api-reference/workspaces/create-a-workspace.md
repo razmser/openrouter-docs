@@ -304,7 +304,10 @@ components:
           format: double
           type: number
         is_data_discount_logging_enabled:
-          description: Whether data discount logging is enabled
+          description: >-
+            Whether data discount logging is enabled. Enabling it requires the
+            account to allow workspace data-discount logging; otherwise the
+            request returns 403.
           example: true
           type: boolean
         is_observability_broadcast_enabled:

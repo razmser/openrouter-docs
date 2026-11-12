@@ -20,6 +20,83 @@ There are two ways to enable response caching:
 
 Add the `X-OpenRouter-Cache` header to enable caching for individual requests:
 
+```bash title="cURL" lines theme={null}
+curl -i https://openrouter.ai/api/v1/responses \
+  -H "Authorization: Bearer <OPENROUTER_API_KEY>" \
+  -H "Content-Type: application/json" \
+  -H "X-OpenRouter-Cache: true" \
+  -d '{
+    "model": "google/gemini-2.5-flash",
+    "input": "What is the meaning of life?"
+  }'
+```
+
+```python title="Python" lines theme={null}
+import requests
+
+response = requests.post(
+    "https://openrouter.ai/api/v1/responses",
+    headers={
+        "Authorization": f"Bearer <OPENROUTER_API_KEY>",
+        "Content-Type": "application/json",
+        "X-OpenRouter-Cache": "true",
+    },
+    json={
+        "model": "google/gemini-2.5-flash",
+        "input": "What is the meaning of life?",
+    },
+)
+```
+
+```typescript title="TypeScript (fetch)" lines theme={null}
+const response = await fetch('https://openrouter.ai/api/v1/responses', {
+  method: 'POST',
+  headers: {
+    Authorization: 'Bearer <OPENROUTER_API_KEY>',
+    'Content-Type': 'application/json',
+    'X-OpenRouter-Cache': 'true',
+  },
+  body: JSON.stringify({
+    model: 'google/gemini-2.5-flash',
+    input: 'What is the meaning of life?',
+  }),
+});
+```
+
+```python title="Python (OpenAI SDK)" lines theme={null}
+from openai import OpenAI
+
+client = OpenAI(
+  base_url="https://openrouter.ai/api/v1",
+  api_key="<OPENROUTER_API_KEY>",
+)
+
+response = client.responses.create(
+  extra_headers={
+    "X-OpenRouter-Cache": "true",
+  },
+  model="google/gemini-2.5-flash",
+  input="What is the meaning of life?",
+)
+```
+
+```typescript title="TypeScript (OpenAI SDK)" lines theme={null}
+import OpenAI from 'openai';
+
+const openai = new OpenAI({
+  baseURL: 'https://openrouter.ai/api/v1',
+  apiKey: '<OPENROUTER_API_KEY>',
+  defaultHeaders: {
+    'X-OpenRouter-Cache': 'true',
+  },
+});
+
+const response = await openai.responses.create({
+  model: 'google/gemini-2.5-flash',
+  input: 'What is the meaning of life?',
+});
+```
+
 The first request results in a cache `MISS`. The response is stored and billed normally:
 
 ```http title="Response Headers (MISS)" lines theme={null}

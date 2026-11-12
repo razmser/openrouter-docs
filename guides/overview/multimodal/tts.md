@@ -31,6 +31,121 @@ Send a `POST` request to `/api/v1/audio/speech` with the text you want to synthe
 
 ### Basic Example
 
+```typescript title="TypeScript SDK" expandable lines theme={null}
+import { OpenRouter } from '@openrouter/sdk';
+import fs from 'fs';
+
+const openRouter = new OpenRouter({
+  apiKey: '<OPENROUTER_API_KEY>',
+});
+
+const stream = await openRouter.tts.createSpeech({
+  model: 'openai/gpt-4o-mini-tts-2025-12-15',
+  input: 'Hello! This is a text-to-speech test.',
+  voice: 'alloy',
+  responseFormat: 'mp3',
+});
+
+// Collect the audio stream and save to a file
+const reader = stream.getReader();
+const chunks: Uint8Array[] = [];
+while (true) {
+  const { done, value } = await reader.read();
+  if (done) break;
+  chunks.push(value);
+}
+const totalLength = chunks.reduce((sum, c) => sum + c.length, 0);
+const buffer = new Uint8Array(totalLength);
+let offset = 0;
+for (const chunk of chunks) {
+  buffer.set(chunk, offset);
+  offset += chunk.length;
+}
+await fs.promises.writeFile('output.mp3', buffer);
+console.log('Audio saved to output.mp3');
+```
+
+```python title="OpenAI Python" lines theme={null}
+from openai import OpenAI
+
+client = OpenAI(
+  base_url="https://openrouter.ai/api/v1",
+  api_key="<OPENROUTER_API_KEY>",
+)
+
+with client.audio.speech.with_streaming_response.create(
+  model="openai/gpt-4o-mini-tts-2025-12-15",
+  input="Hello! This is a text-to-speech test.",
+  voice="alloy",
+  response_format="mp3"
+) as response:
+  response.stream_to_file("output.mp3")
+```
+
+```python title="Python 1" expandable lines theme={null}
+import requests
+
+response = requests.post(
+  url="https://openrouter.ai/api/v1/audio/speech",
+  headers={
+    "Authorization": f"Bearer {API_KEY_REF}",
+    "Content-Type": "application/json"
+  },
+  json={
+    "model": "openai/gpt-4o-mini-tts-2025-12-15",
+    "input": "Hello! This is a text-to-speech test.",
+    "voice": "alloy",
+    "response_format": "mp3"
+  }
+)
+response.raise_for_status()
+
+with open("output.mp3", "wb") as f:
+  f.write(response.content)
+
+generation_id = response.headers.get("X-Generation-Id")
+print(f"Audio saved. Generation ID: {generation_id}")
+```
+
+```typescript title="TypeScript (fetch)" expandable lines theme={null}
+const response = await fetch('https://openrouter.ai/api/v1/audio/speech', {
+  method: 'POST',
+  headers: {
+    Authorization: `Bearer ${API_KEY_REF}`,
+    'Content-Type': 'application/json',
+  },
+  body: JSON.stringify({
+    model: 'openai/gpt-4o-mini-tts-2025-12-15',
+    input: 'Hello! This is a text-to-speech test.',
+    voice: 'alloy',
+    response_format: 'mp3',
+  }),
+});
+
+if (!response.ok) {
+  const err = await response.json();
+  throw new Error(`TTS error ${response.status}: ${JSON.stringify(err)}`);
+}
+
+const audioBuffer = await response.arrayBuffer();
+const generationId = response.headers.get('X-Generation-Id');
+console.log(`Generation ID: ${generationId}`);
+// Save audioBuffer to a file or play it directly
+```
+
+```bash title="cURL" lines theme={null}
+curl https://openrouter.ai/api/v1/audio/speech \
+  -H "Content-Type: application/json" \
+  -H "Authorization: Bearer $OPENROUTER_API_KEY" \
+  --output output.mp3 \
+  -d '{
+    "model": "openai/gpt-4o-mini-tts-2025-12-15",
+    "input": "Hello! This is a text-to-speech test.",
+    "voice": "alloy",
+    "response_format": "mp3"
+  }'
+```
+
 ### Request Parameters
 
 | Parameter | Type | Required | Description |
@@ -62,7 +177,9 @@ Some models can voice a conversation between several speakers in one request. To
 }
 ```
 
-Multi-speaker input is supported by Gemini TTS models and by Fish Audio models other than S1. Other providers return a 400 error for it.
+Multi-speaker input is supported by Gemini TTS models, by Fish Audio models other than S1, and by Speechify dialogue models. Other providers return a 400 error for it.
+
+Speechify dialogue models need a voice for every turn and at least two distinct voices. They ignore per-turn `instructions`, don't support `speed`, and limit each request to about 2 minutes of `pcm` audio or 6 minutes of `mp3` audio.
 
 ### Voice Cloning
 
@@ -273,6 +390,54 @@ Most TTS models are priced **per character** of input text. Some audio generatio
 ## OpenAI SDK Compatibility
 
 The TTS endpoint is fully compatible with the OpenAI SDK. You can use the OpenAI client libraries by pointing them at OpenRouter's base URL:
+
+```python title="OpenAI Python SDK" expandable lines theme={null}
+from openai import OpenAI
+
+client = OpenAI(
+  base_url="https://openrouter.ai/api/v1",
+  api_key="<OPENROUTER_API_KEY>",
+)
+
+# Non-streaming: get the full audio response
+response = client.audio.speech.create(
+  model="openai/gpt-4o-mini-tts-2025-12-15",
+  input="The quick brown fox jumps over the lazy dog.",
+  voice="nova",
+  response_format="mp3"
+)
+response.write_to_file("output.mp3")
+
+# Streaming: process audio chunks as they arrive
+with client.audio.speech.with_streaming_response.create(
+  model="openai/gpt-4o-mini-tts-2025-12-15",
+  input="The quick brown fox jumps over the lazy dog.",
+  voice="nova",
+  response_format="mp3"
+) as response:
+  response.stream_to_file("output.mp3")
+```
+
+```typescript title="OpenAI TypeScript SDK" lines theme={null}
+import OpenAI from 'openai';
+import fs from 'fs';
+
+const client = new OpenAI({
+  baseURL: 'https://openrouter.ai/api/v1',
+  apiKey: '<OPENROUTER_API_KEY>',
+});
+
+const response = await client.audio.speech.create({
+  model: 'openai/gpt-4o-mini-tts-2025-12-15',
+  input: 'The quick brown fox jumps over the lazy dog.',
+  voice: 'nova',
+  response_format: 'mp3',
+});
+
+const buffer = Buffer.from(await response.arrayBuffer());
+await fs.promises.writeFile('output.mp3', buffer);
+console.log('Audio saved to output.mp3');
+```
 
 ## Best Practices
 

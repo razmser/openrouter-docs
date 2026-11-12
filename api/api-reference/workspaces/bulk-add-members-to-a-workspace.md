@@ -4,7 +4,7 @@
 
 # Bulk add members to a workspace
 
-> Add multiple organization members to a workspace. Members are assigned the same role they hold in the organization. [Management key](../../../guides/overview/auth/management-api-keys.md) required.
+> Add multiple organization members to a workspace. New members are assigned the workspace role that matches their organization role. Users who are already members of the workspace keep their current role and are not included in the response. [Management key](../../../guides/overview/auth/management-api-keys.md) required.
 
 
 
@@ -142,8 +142,10 @@ paths:
         - Workspaces
       summary: Bulk add members to a workspace
       description: >-
-        Add multiple organization members to a workspace. Members are assigned
-        the same role they hold in the organization. [Management
+        Add multiple organization members to a workspace. New members are
+        assigned the workspace role that matches their organization role. Users
+        who are already members of the workspace keep their current role and are
+        not included in the response. [Management
         key](/docs/guides/overview/auth/management-api-keys) required.
       operationId: bulkAddWorkspaceMembers
       parameters:
@@ -241,8 +243,9 @@ components:
       properties:
         user_ids:
           description: >-
-            List of user IDs to add to the workspace. Members are assigned the
-            same role they hold in the organization.
+            List of user IDs to add to the workspace. New members are assigned
+            the workspace role that matches their organization role; users
+            already in the workspace keep their current role.
           example:
             - user_abc123
             - user_def456
@@ -265,7 +268,7 @@ components:
             workspace_id: 550e8400-e29b-41d4-a716-446655440000
       properties:
         added_count:
-          description: Number of workspace memberships created or updated
+          description: Number of workspace memberships created
           example: 2
           type: integer
         data:

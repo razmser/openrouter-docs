@@ -31,6 +31,98 @@ Send a `POST` request to `/api/v1/audio/transcriptions` with a JSON body contain
 
 ### Basic Example
 
+```typescript title="TypeScript SDK" lines theme={null}
+import { OpenRouter } from '@openrouter/sdk';
+import fs from 'fs';
+
+const openRouter = new OpenRouter({
+  apiKey: '<OPENROUTER_API_KEY>',
+});
+
+const audioBuffer = await fs.promises.readFile('audio.wav');
+const base64Audio = audioBuffer.toString('base64');
+
+const result = await openRouter.stt.createTranscription({
+  sttRequest: {
+    model: 'openai/whisper-1',
+    inputAudio: {
+      data: base64Audio,
+      format: 'wav',
+    },
+  },
+});
+
+console.log(result.text);
+```
+
+```python title="Python" expandable lines theme={null}
+import requests
+import base64
+import json
+
+with open("audio.wav", "rb") as f:
+    base64_audio = base64.b64encode(f.read()).decode("utf-8")
+
+response = requests.post(
+    url="https://openrouter.ai/api/v1/audio/transcriptions",
+    headers={
+        "Authorization": "Bearer <OPENROUTER_API_KEY>",
+        "Content-Type": "application/json"
+    },
+    data=json.dumps({
+        "model": "openai/whisper-1",
+        "input_audio": {
+            "data": base64_audio,
+            "format": "wav"
+        }
+    })
+)
+
+result = response.json()
+print(result["text"])
+```
+
+```typescript title="TypeScript (fetch)" expandable lines theme={null}
+import fs from 'fs';
+
+const audioBuffer = await fs.promises.readFile('audio.wav');
+const base64Audio = audioBuffer.toString('base64');
+
+const response = await fetch('https://openrouter.ai/api/v1/audio/transcriptions', {
+  method: 'POST',
+  headers: {
+    Authorization: `Bearer <OPENROUTER_API_KEY>`,
+    'Content-Type': 'application/json',
+  },
+  body: JSON.stringify({
+    model: 'openai/whisper-1',
+    input_audio: {
+      data: base64Audio,
+      format: 'wav',
+    },
+  }),
+});
+
+const result = await response.json();
+console.log(result.text);
+```
+
+```bash title="cURL" lines theme={null}
+# Base64-encode your audio file
+AUDIO_BASE64=$(base64 < audio.wav | tr -d '\n')
+
+curl https://openrouter.ai/api/v1/audio/transcriptions \
+  -H "Content-Type: application/json" \
+  -H "Authorization: Bearer $OPENROUTER_API_KEY" \
+  -d '{
+    "model": "openai/whisper-1",
+    "input_audio": {
+      "data": "'"$AUDIO_BASE64"'",
+      "format": "wav"
+    }
+  }'
+```
+
 ### Request Parameters
 
 | Parameter | Type | Required | Description |

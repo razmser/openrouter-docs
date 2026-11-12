@@ -4,7 +4,7 @@
 
 # Create a batch
 
-> Creates a batch of requests that run asynchronously against a single endpoint (`/v1/chat/completions`, `/v1/responses`, `/v1/messages`, `/v1/embeddings`). Returns `202` with `status: "validating"`. Poll `GET /batches/{id}` for progress and results. See the [Batch API Quickstart](../../../batch-quickstart.md).
+> Creates a batch of requests that run asynchronously against a single endpoint (`/v1/chat/completions`, `/v1/responses`, `/v1/messages`, `/v1/embeddings`, `/v1/audio/speech`). Returns `202` with `status: "validating"`. Poll `GET /batches/{id}` for progress and results. See the [Batch API Quickstart](../../../batch-quickstart.md).
 
 
 
@@ -144,9 +144,9 @@ paths:
       description: >-
         Creates a batch of requests that run asynchronously against a single
         endpoint (`/v1/chat/completions`, `/v1/responses`, `/v1/messages`,
-        `/v1/embeddings`). Returns `202` with `status: "validating"`. Poll `GET
-        /batches/{id}` for progress and results. See the [Batch API
-        Quickstart](https://openrouter.ai/docs/batch-quickstart).
+        `/v1/embeddings`, `/v1/audio/speech`). Returns `202` with `status:
+        "validating"`. Poll `GET /batches/{id}` for progress and results. See
+        the [Batch API Quickstart](https://openrouter.ai/docs/batch-quickstart).
       operationId: createBatches
       requestBody:
         content:
@@ -349,6 +349,7 @@ components:
             - /v1/responses
             - /v1/messages
             - /v1/embeddings
+            - /v1/audio/speech
           type: string
         model:
           minLength: 1
@@ -1096,6 +1097,13 @@ components:
                                 index: 0
                                 object: embedding
                               properties:
+                                document_index:
+                                  description: >-
+                                    Index of the source document when `input`
+                                    was a list of documents (contextual
+                                    embeddings). Absent otherwise.
+                                  example: 0
+                                  type: integer
                                 embedding:
                                   anyOf:
                                     - items:
@@ -1196,6 +1204,103 @@ components:
                           - object
                           - data
                           - model
+                        type: object
+                      - additionalProperties: false
+                        properties:
+                          audio:
+                            anyOf:
+                              - additionalProperties: false
+                                properties:
+                                  bits_per_sample:
+                                    enum:
+                                      - 16
+                                    type: number
+                                  channels:
+                                    exclusiveMinimum: true
+                                    minimum: 0
+                                    type: integer
+                                  data:
+                                    description: >-
+                                      Base64-encoded PCM16 audio in the format
+                                      the sibling fields give.
+                                    minLength: 1
+                                    type: string
+                                  format:
+                                    enum:
+                                      - pcm
+                                    type: string
+                                  sample_rate:
+                                    exclusiveMinimum: true
+                                    minimum: 0
+                                    type: integer
+                                required:
+                                  - format
+                                  - sample_rate
+                                  - channels
+                                  - bits_per_sample
+                                  - data
+                                type: object
+                              - additionalProperties: false
+                                properties:
+                                  bits_per_sample:
+                                    enum:
+                                      - 16
+                                    type: number
+                                  byte_length:
+                                    exclusiveMinimum: true
+                                    minimum: 0
+                                    type: integer
+                                  channels:
+                                    exclusiveMinimum: true
+                                    minimum: 0
+                                    type: integer
+                                  format:
+                                    enum:
+                                      - pcm
+                                    type: string
+                                  sample_rate:
+                                    exclusiveMinimum: true
+                                    minimum: 0
+                                    type: integer
+                                  sha256:
+                                    pattern: ^[0-9a-f]{64}$
+                                    type: string
+                                required:
+                                  - format
+                                  - sample_rate
+                                  - channels
+                                  - bits_per_sample
+                                  - byte_length
+                                  - sha256
+                                type: object
+                          model:
+                            type: string
+                          object:
+                            enum:
+                              - audio.speech
+                            type: string
+                          usage:
+                            additionalProperties: false
+                            properties:
+                              completion_tokens:
+                                minimum: 0
+                                type: integer
+                              prompt_tokens:
+                                minimum: 0
+                                type: integer
+                              total_tokens:
+                                minimum: 0
+                                type: integer
+                            required:
+                              - prompt_tokens
+                              - completion_tokens
+                              - total_tokens
+                            type: object
+                        required:
+                          - object
+                          - model
+                          - audio
+                          - usage
                         type: object
                   request_id:
                     type:
@@ -2203,6 +2308,7 @@ components:
         - Seed
         - SiliconFlow
         - Sourceful
+        - Speechify
         - StepFun
         - Stealth
         - StreamLake

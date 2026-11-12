@@ -98,6 +98,109 @@ Here's the data you requested:
 
 ## Complete Example
 
+```typescript title="TypeScript" expandable lines theme={null}
+const response = await fetch('https://openrouter.ai/api/v1/responses', {
+  method: 'POST',
+  headers: {
+    Authorization: 'Bearer <OPENROUTER_API_KEY>',
+    'Content-Type': 'application/json',
+  },
+  body: JSON.stringify({
+    model: 'google/gemini-2.5-flash',
+    input: 'Generate a product listing with name, price, and description',
+    text: {
+      format: {
+        type: 'json_schema',
+        name: 'Product',
+        schema: {
+          type: 'object',
+          properties: {
+            name: {
+              type: 'string',
+              description: 'Product name'
+            },
+            price: {
+              type: 'number',
+              description: 'Price in USD'
+            },
+            description: {
+              type: 'string',
+              description: 'Product description'
+            }
+          },
+          required: ['name', 'price']
+        }
+      }
+    },
+    plugins: [
+      { id: 'response-healing' }
+    ]
+  }),
+});
+
+const data = await response.json();
+const message = [...data.output].reverse().find((item: { type: string }) => item.type === 'message');
+const text = message?.content.find((part: { type: string; text?: string }) => part.type === 'output_text')?.text;
+if (text === undefined) {
+  throw new Error('No output_text in response');
+}
+// The plugin attempts to repair malformed JSON syntax
+const product = JSON.parse(text);
+console.log(product.name, product.price);
+```
+
+```python title="Python" expandable lines theme={null}
+import requests
+import json
+
+response = requests.post(
+  "https://openrouter.ai/api/v1/responses",
+  headers={
+    "Authorization": f"Bearer <OPENROUTER_API_KEY>",
+    "Content-Type": "application/json",
+  },
+  json={
+    "model": "google/gemini-2.5-flash",
+    "input": "Generate a product listing with name, price, and description",
+    "text": {
+      "format": {
+        "type": "json_schema",
+        "name": "Product",
+        "schema": {
+          "type": "object",
+          "properties": {
+            "name": {
+              "type": "string",
+              "description": "Product name"
+            },
+            "price": {
+              "type": "number",
+              "description": "Price in USD"
+            },
+            "description": {
+              "type": "string",
+              "description": "Product description"
+            }
+          },
+          "required": ["name", "price"]
+        }
+      }
+    },
+    "plugins": [
+      {"id": "response-healing"}
+    ]
+  }
+)
+
+data = response.json()
+message = next(item for item in reversed(data["output"]) if item["type"] == "message")
+product = json.loads(
+  next(part["text"] for part in message["content"] if part["type"] == "output_text")
+)
+# The plugin attempts to repair malformed JSON syntax
+print(product["name"], product["price"])
+```
+
 ## Limitations
 
 > [!WARNING]

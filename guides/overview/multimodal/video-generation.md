@@ -109,6 +109,122 @@ Unlike text or image generation, video generation is **asynchronous** because ge
 
 ### Submitting a Video Generation Request
 
+```python Python expandable lines theme={null}
+import requests
+import json
+import time
+
+url = "https://openrouter.ai/api/v1/videos"
+headers = {
+    "Authorization": f"Bearer {API_KEY_REF}",
+    "Content-Type": "application/json"
+}
+
+payload = {
+    "model": "google/veo-3.1",
+    "prompt": "A golden retriever playing fetch on a sunny beach with waves crashing in the background"
+}
+
+# Step 1: Submit the generation request
+response = requests.post(url, headers=headers, json=payload)
+result = response.json()
+
+job_id = result["id"]
+polling_url = result["polling_url"]
+print(f"Job submitted: {job_id}")
+print(f"Status: {result['status']}")
+
+# Step 2: Poll until completion
+while True:
+    time.sleep(30)  # Wait 30 seconds between polls
+    poll_response = requests.get(polling_url, headers=headers)
+    status = poll_response.json()
+
+    print(f"Status: {status['status']}")
+
+    if status["status"] == "completed":
+        # Step 3: Download the video
+        content_url = status["unsigned_urls"][0]
+        video_response = requests.get(content_url, headers=headers)
+        with open("output.mp4", "wb") as f:
+            f.write(video_response.content)
+        print("Video saved to output.mp4")
+        break
+    elif status["status"] == "failed":
+        print(f"Generation failed: {status.get('error', 'Unknown error')}")
+        break
+```
+
+```typescript title="TypeScript (fetch)" expandable lines theme={null}
+const headers = {
+  Authorization: `Bearer ${API_KEY_REF}`,
+  'Content-Type': 'application/json',
+};
+
+// Step 1: Submit the generation request
+const response = await fetch('https://openrouter.ai/api/v1/videos', {
+  method: 'POST',
+  headers,
+  body: JSON.stringify({
+    model: 'google/veo-3.1',
+    prompt: 'A golden retriever playing fetch on a sunny beach with waves crashing in the background',
+  }),
+});
+
+const result = await response.json();
+const jobId = result.id;
+const pollingUrl = result.polling_url;
+console.log(`Job submitted: ${jobId}`);
+console.log(`Status: ${result.status}`);
+
+// Step 2: Poll until completion
+while (true) {
+  await new Promise((resolve) => setTimeout(resolve, 30000)); // Wait 30 seconds
+  const pollResponse = await fetch(pollingUrl, { headers });
+  const status = await pollResponse.json();
+
+  console.log(`Status: ${status.status}`);
+
+  if (status.status === 'completed') {
+    // Step 3: Download the video
+    const contentUrl = status.unsigned_urls[0];
+    const videoResponse = await fetch(contentUrl, { headers });
+    const videoBuffer = await videoResponse.arrayBuffer();
+    // Save or process the video buffer
+    console.log(`Video ready: ${contentUrl}`);
+    break;
+  } else if (status.status === 'failed') {
+    console.error(`Generation failed: ${status.error ?? 'Unknown error'}`);
+    break;
+  }
+}
+```
+
+```bash title="cURL" expandable lines theme={null}
+# Step 1: Submit the generation request
+curl -X POST "https://openrouter.ai/api/v1/videos" \
+  -H "Authorization: Bearer $OPENROUTER_API_KEY" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "model": "google/veo-3.1",
+    "prompt": "A golden retriever playing fetch on a sunny beach with waves crashing in the background"
+  }'
+
+# Response:
+# {
+#   "id": "<job_id>",
+#   "polling_url": "https://openrouter.ai/api/v1/videos/<job_id>",
+#   "status": "pending"
+# }
+
+# Step 2: Poll for status
+curl "https://openrouter.ai/api/v1/videos/<job_id>" \
+  -H "Authorization: Bearer $OPENROUTER_API_KEY"
+
+# Step 3: Once status is "completed", download from unsigned_urls[0]
+# using the same Authorization header
+```
+
 ### Request Parameters
 
 | Parameter | Type | Required | Description |
