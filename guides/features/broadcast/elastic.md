@@ -10,7 +10,7 @@
 
 > [!NOTE]
 >
-> Broadcast sends traces only. It doesn't send logs or metrics.
+> The Elastic destination sends traces only. It doesn't send logs or metrics.
 
 ## Step 1: Get your Elastic endpoint and API key
 

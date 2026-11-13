@@ -6,7 +6,7 @@
 
 > Curated release notes for the Ori CLI, with version history and changes across releases.
 
-Curated release notes for the Ori CLI, newest version first. If you are new to Ori, start with [Ori Eval](eval.md), then [Ori Harness](harness.md), which also covers installing Ori and running your existing agent CLI. [File Writing](files.md) explains what Ori puts in your project.
+Curated release notes for the Ori CLI, newest version first. If you are new to Ori, start with [Ori Harness](harness.md), which covers installing Ori and running your existing agent CLI. [File Writing](files.md) explains what Ori puts in your project.
 
 **0.10.1**
 

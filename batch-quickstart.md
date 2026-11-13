@@ -24,7 +24,8 @@ A batch has one model, one endpoint, and a list of requests. Each request `body`
 | - | - | - |
 | `endpoint` | Yes | `/v1/chat/completions`, `/v1/responses`, `/v1/messages`, or `/v1/embeddings`. Every request uses this endpoint. |
 | `model` | Yes | The model for every request. A request body can leave out `model`. If it sets `model`, the value must match. |
-| `requests` | Yes | A non-empty array of `{ custom_id, body }`. `custom_id` must be unique in the batch. |
+| `requests` | Yes, unless `input` is set | A non-empty array of `{ custom_id, body }`. `custom_id` must be unique in the batch. |
+| `input` | No | `{ "uri": "gs://bucket/object" }` or `{ "uri": "bq://project.dataset.table" }`: an input file in your own Cloud Storage bucket, or an input table in your own BigQuery dataset, sent in place of `requests`. Enabled per account, on Google Vertex with your own provider key only. See [BYOK](#byok). |
 | `callback_url` | No | A public HTTPS URL that receives a webhook when the batch finishes. See [Wait with a webhook](#option-a-wait-with-a-webhook). |
 | `provider` | No | `only` and `allow_fallbacks`. See [Choose a provider](#choose-a-provider). |
 | `completion_window` | No | `24h`, which is the default and the only accepted value. |
@@ -363,6 +364,8 @@ async function waitForBatch(id: string) {
 
 The status moves through `validating`, `in_progress`, and `finalizing` before it reaches a final status. If you use both a webhook and polling, process each batch once.
 
+This example waits for `results` on a `completed` batch. Do not use it as written for a Google Vertex BYOK batch submitted with an `input` file or table: its `results` stay `null`, so the loop never ends. For that kind of batch, stop as soon as the status is final. See [BYOK](#byok).
+
 To check many batches at once, list them. List items have metadata only, and `results` is always `null`.
 
 ```shell title="List batches still running" lines theme={null}
@@ -407,7 +410,7 @@ Batches are listed newest first. Every API key in a workspace sees the same batc
 
 ## Read the results
 
-When the status is `completed`, `results` holds one entry per request. There is no separate download endpoint. Each entry has either a `response` or an `error`. Results are not in input order, so match them on `custom_id`.
+When the status is `completed`, `results` holds one entry per request. There is no separate download endpoint. The one exception is a Google Vertex BYOK batch submitted with an `input` file or table: its `results` stay `null` and, when Vertex reported an output location, `output.uri` names the output folder in your bucket or the output table in your dataset. See [BYOK](#byok). Each entry has either a `response` or an `error`. Results are not in input order, so match them on `custom_id`.
 
 ```typescript title="Read the results" lines theme={null}
 const batch = await waitForBatch(batchId);
@@ -513,7 +516,7 @@ Each `response.body` has the same shape as the sync endpoint's response. Its `id
 
 > [!NOTE]
 >
-> OpenRouter deletes requests and results 30 days after you submit. After that, `GET` on the batch returns `410 Gone`. Save the results you need before then.
+> OpenRouter deletes requests and results 30 days after you submit. After that, `GET` on the batch returns `410 Gone`. Save the results you need before then. A Google Vertex BYOK batch submitted with an `input` file or table is the exception: OpenRouter serves no results for it, so `GET` keeps returning the batch and, when Vertex reported one, its `output` location. See [BYOK](#byok).
 
 ***
 
@@ -690,6 +693,84 @@ When the BYOK-only switch is on for your account or workspace, batches run only 
 >
 > Vertex batches use a bucket in your GCP project for input and output. Leave out `bucket`, and OpenRouter creates a private bucket on the first batch in each region. You can also give an existing bucket. See [Google Vertex API keys](guides/overview/auth/byok.md#google-vertex-api-keys) for permissions.
 >
+> Accounts that OpenRouter has enabled for it can name an input file that is already in their own bucket, in place of `requests`: `"input": { "uri": "gs://your-bucket/batches/input.jsonl" }`. Send exactly one of `input` or `requests`. The URI names one object: no wildcard and no folder. Vertex reads the file directly as the job input. OpenRouter does not copy, convert, or read its contents, so the file must meet these rules:
+>
+> * It is in Vertex's own Gemini batch input format (one JSON object per line with a `request`), not the `{ custom_id, body }` format of `requests`.
+>
+> * Every line has a unique `custom_id` that does not look like a number. Vertex rewrites numeric-looking values (`"000042"` comes back as `42`), and OpenRouter cannot prefix IDs in a file it does not write.
+>
+> * Your project's Vertex AI service agent (`service-<PROJECT_NUMBER>@gcp-sa-aiplatform.iam.gserviceaccount.com`) can read the object. Google's batch guide names that agent as the reader of a Cloud Storage input file, and it is the same one that needs access to your batch bucket. If Vertex fails the job with a permission error on the input file, OpenRouter reports only the error code, not Google's message. Read the job's error in your own Google Cloud project to see which identity needs read access.
+>
+> * The service account of your provider key can read the object's metadata (`storage.objects.get`, for example through `roles/storage.objectViewer` on the bucket). OpenRouter uses it to check, before the job is created, that the object exists and is within Google's size limit for a Cloud Storage batch input file (1 GB when this page was written).
+>
+> * The batch uses the chat completions, responses, or messages endpoint. Other endpoints return `400` at submit.
+>
+> * The object is not under `openrouter-batch/input/` in your batch bucket. OpenRouter writes its own input files there, and a batch that names an object under it ends `failed` without creating a Vertex job.
+>
+> * The object stays unchanged and readable until the batch ends. OpenRouter checks only its size and passes the URI on, so Vertex reads whatever the object holds when the job starts. An auto-provisioned batch bucket deletes objects 30 days after they are created, so an input file kept there can be deleted before you submit it.
+>
+> After `202 Accepted`, the batch ends `failed` without creating a Vertex job when the object is missing, your key cannot read it, or it is over the size limit. `error.message` says which. Fix the file or its permissions and submit again.
+>
+> OpenRouter does not know how many requests the file holds, so `request_counts.total` is `0` when the batch is accepted and stays `0` while it runs. The counts come from Vertex when the job ends. At submit, the batch adds nothing toward the limits on requests per batch and requests in progress. The limit on batches in progress applies. Google also limits how many requests one job can hold. OpenRouter does not count the lines, so Vertex applies that limit, not the submit.
+>
+> Vertex writes the output under `openrouter-batch/output/` in your batch bucket, the same place as for other Vertex BYOK batches.
+>
+> The same field takes a BigQuery table: `"input": { "uri": "bq://your-project.your_dataset.your_table" }`. The URI names one table by project, dataset, and table: no wildcard. The same account enablement, the same three endpoints (chat completions, responses, and messages), and the same account-level limits apply as for an input file. The project ID, dataset ID, and table ID can hold only the characters Google documents for unquoted names: a table name with other Unicode characters is refused. These rules replace the file rules above:
+>
+> * The table is in Vertex's own Gemini batch table format (a `request` column per row), with a `custom_id` column that is unique per row.
+> * The table's dataset is in the region the batch job runs in, and is not a multi-region dataset. Google requires this for a table job. When the dataset is in a different single region, the batch ends `failed` without creating a Vertex job. Other mismatches fail in Vertex.
+> * The service account of your provider key can read the table's metadata (`bigquery.tables.get`). OpenRouter uses it to check, before the job is created, that the table exists and that the row count BigQuery reports for it is within Google's limit on requests in one batch job (200,000 rows when this page was written). A table that is missing, unreadable, or reports more rows than the limit ends the batch `failed` without creating a Vertex job. BigQuery does not report a count for every table type and does not count rows still in the streaming buffer, so Vertex's own limit still applies.
+> * Vertex writes the output to a new table named `openrouter_<batch id>` in the same project and dataset as the input table, with the dashes of the batch ID written as underscores. You do not name the output table, and each batch gets its own. The identity Vertex runs the job as must be able to create that table and write to it, and the service account of your provider key must be able to read it. That service account also needs `bigquery.tables.get` on the dataset, because OpenRouter looks up the output table name before the job is created. If a table with that name already exists, the batch ends `failed` without creating a Vertex job.
+> * The table stays unchanged and readable until the batch ends. OpenRouter checks only its metadata and passes the URI on, so Vertex reads whatever rows the table holds when the job starts.
+> * OpenRouter does not delete the output table.
+>
+> No batch has been run against a real BigQuery table yet, so the permissions above are what the code needs, not a tested setup. The same holds for what this section says about billing and the output location of a table batch.
+>
+> When the Vertex job ends, OpenRouter reads the job output with your provider key, stores a copy, and bills from that copy. For an input table, the output it reads is the output table, one page of rows at a time. Once the copy is recorded, OpenRouter does not read your bucket or your table again for this batch. If an attempt fails before then, the next attempt reads the output again. OpenRouter keeps the copy for 30 days as the record of what it billed. Vertex writes each request back on its output line, so the copy of an output file holds your requests as well as the answers. The copy of an output table holds each row's `custom_id`, `response`, and `status`, and no other column. Each output line or table row is billed once, from the token counts in its own `usageMetadata`, with the same BYOK fee as any other BYOK batch:
+>
+> * A line or row with a complete answer is billed whether or not it has a `custom_id`. Lines or rows that repeat a `custom_id` are each billed.
+> * A line or row is not billed when it carries a Vertex error, is not valid JSON, has no `usageMetadata`, or has no finish reason. A line that Vertex blocked, at the prompt or with a finish reason such as `SAFETY` or `RECITATION`, is not billed either, even when it reports token counts.
+>
+> OpenRouter does not have the requests, so it cannot estimate tokens for a line or row that reports none, and activity for these batches carries no `user` value.
+>
+> OpenRouter does not serve the results of these batches. When the batch has ended, `GET /api/v1/batches/{id}` returns `"results": null` and, when Vertex reported an output location, an `output` field that names it. For an input file that is a Cloud Storage folder:
+>
+> ```json title="Completed batch submitted with an input file" theme={null}
+> {
+>   "id": "batch_123",
+>   "status": "completed",
+>   "results": null,
+>   "output": {
+>     "uri": "gs://your-bucket/openrouter-batch/output/org_abc/batch_123/batch_123/prediction-model-2026-01-01T00:00:00.000000Z"
+>   }
+> }
+> ```
+>
+> Read the `predictions` JSONL files in that folder from your bucket, as you would for a job you ran on Vertex yourself. The lines are in Vertex's own batch output format. OpenRouter does not convert them to the `results` format, does not restore the order of your input lines, and adds no generation IDs. For a batch Vertex completed, `output` appears only once billing has read the output, so the batch can report `finalizing` for a short time first. A `failed`, `cancelled`, or `expired` batch also names the folder when Vertex reported one. That folder may hold rows Vertex exported before the job ended, and it can be empty. OpenRouter does not read or bill those rows. `output` is left out of batch lists.
+>
+> For an input table, `output.uri` names the output table instead:
+>
+> ```json title="Completed batch submitted with an input table" theme={null}
+> {
+>   "id": "batch_123",
+>   "status": "completed",
+>   "results": null,
+>   "output": {
+>     "uri": "bq://your-project.your_dataset.openrouter_batch_123"
+>   }
+> }
+> ```
+>
+> Query that table in your own project. Its rows are in Vertex's own batch output format, with the columns of your input table plus `response` and `status`. The same rules apply as for a folder: `output` appears on a completed batch only once billing has read the table, and a `failed`, `cancelled`, or `expired` batch names the table only when Vertex reported output for the job. Rows in the table of a batch that did not complete are not read or billed.
+>
+> The output folder or table is yours. OpenRouter never deletes it: not when you [delete the batch](#delete-the-batch), and not after 30 days. Deleting the batch removes the Vertex job and OpenRouter's billing copy of the output, and nothing in your bucket or dataset. If the folder is in a bucket that OpenRouter created for your key, that bucket's own rule deletes objects 30 days after they are written, so copy what you need before then. Do not change that rule: OpenRouter checks it and refuses to use the bucket without it. To keep output longer, set your own bucket on the key. The status response keeps naming the folder after the files are gone.
+>
+> Input files and tables are not enabled for any account yet.
+>
+> OpenRouter does not run [content screening](#common-errors) or moderation on a batch submitted this way, because it never reads the file's lines. The per-request checks that `requests` gets at submit do not run either: Vertex decides what it accepts.
+>
+> Account-level limits still apply. The batch ends `failed` without creating a Vertex job when your account cannot run inference, cannot send image inputs, or must have its input moderated or its image inputs screened, and when your settings block the model or its author. A provider block in your settings does not apply to your own provider key, as on every BYOK request. OpenRouter cannot tell whether the file holds images, so it treats every input file as if it does.
+>
 > Vertex BYOK also accepts `gs://your-bucket/image.jpg` image URLs. Your project's Vertex AI service agent must be able to read the image until the batch finishes. Image names must end in `.png`, `.jpg`, `.jpeg`, `.webp`, `.heic`, or `.heif`.
 >
 > Vertex BYOK accepts PDFs in Cloud Storage the same way. Put the `gs://your-bucket/report.pdf` URI where a file URL goes: `file_url` on an `input_file` part, `file_data` on a `file` part, or the `url` of a `document` source. The PDF must be in a user message, the object name must end in `.pdf` (upper or lower case), and the model must list file input. Other file types, and `gs://` files on batches billed through OpenRouter, are rejected. OpenRouter has confirmed that Vertex reads a `gs://` PDF on its synchronous API, but not yet inside a batch job, so try a small batch first.
@@ -715,7 +796,9 @@ When the BYOK-only switch is on for your account or workspace, batches run only 
 | Status | Cause | Fix |
 | - | - | - |
 | `400` | Bad input, `requests` before other fields, a private or unresolvable `callback_url`, or a model with no batch variant. | Read `error.message`. Pick a model from the [batch models list](https://openrouter.ai/models?variant=batch). |
+| `400` | `input` was sent, but the batch did not resolve to a Google Vertex endpoint on your own provider key. | Add a Vertex provider key that covers the model. If you also have a key for another provider that serves the model, pin the batch with `provider: { only: ["google-vertex"] }`. Otherwise send `requests`. |
 | `402` | The estimated cost is more than your balance. | Add credits, or split the batch. |
+| `403` | `input` was sent, and input files are not enabled for your account. | Send `requests`. |
 | `404` | No provider in `provider.only`, your account's allowlist, or your guardrails serves the model in batch mode, or every batch endpoint for the model requires your own [provider key](guides/overview/auth/byok.md) and no eligible key is configured (the error names those providers). | Change `provider.only`, your provider settings, or the guardrail on your key; add a provider key; or pick a model with a platform-billed batch endpoint. |
 | `409` | You tried to delete a batch that is still running. | Wait until it finishes. |
 | `410` | The batch is older than 30 days, so its results were deleted. | Results cannot be recovered. |
@@ -723,4 +806,4 @@ When the BYOK-only switch is on for your account or workspace, batches run only 
 | `422` | The model targets the `:online` variant, or the batch uses a feature batch rejects at submit. | Remove it, or use the sync API. |
 | `429` | Too many submits, or too many batches or requests in progress. | Wait for running batches to finish, then retry. |
 
-**Content screening.** A batch can fail validation after `202 Accepted` when image screening rejects a request. The batch moves to `status: "failed"`, its `error` identifies the request and reports `This request contains prohibited content.`, and no requests in that batch are submitted to the provider. This refusal is terminal; do not retry the same content. If screening is temporarily unavailable, the batch usually continues to the provider without waiting for screening. For accounts where screening is required, the batch instead stays in `validating` while OpenRouter retries screening; keep polling the same batch instead of submitting a replacement, which could leave both batches eligible to run. Screening one batch has a time limit: when it runs out, the remaining requests usually continue unscreened, but where screening is required the batch fails with `This batch has too many images to screen within the submit window. Split it into smaller batches.` and will not succeed on retry, so split it into smaller batches.
+**Content screening.** A batch that names an `input` file or table is not screened; see [BYOK](#byok). A batch can fail validation after `202 Accepted` when image screening rejects a request. The batch moves to `status: "failed"`, its `error` identifies the request and reports `This request contains prohibited content.`, and no requests in that batch are submitted to the provider. This refusal is terminal; do not retry the same content. If screening is temporarily unavailable, the batch usually continues to the provider without waiting for screening. For accounts where screening is required, the batch instead stays in `validating` while OpenRouter retries screening; keep polling the same batch instead of submitting a replacement, which could leave both batches eligible to run. Screening one batch has a time limit: when it runs out, the remaining requests usually continue unscreened, but where screening is required the batch fails with `This batch has too many images to screen within the submit window. Split it into smaller batches.` and will not succeed on retry, so split it into smaller batches.

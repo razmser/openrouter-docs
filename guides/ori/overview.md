@@ -14,7 +14,6 @@
 | - | - | - |
 | [Ori Harness](https://openrouter.ai/ori/harness) | Runs the agent CLI you already use, such as Claude Code, Codex, OpenCode, or Hermes, on OpenRouter with one command. See the [Ori Harness guide](harness.md). | Available |
 | Ori Code | OpenRouter's native terminal coding agent, built for working with many models. | Available |
-| [Ori Eval](https://openrouter.ai/ori/eval) | Finds the best model for your project by running your agent on your own prompts and grading the results. See the [Ori Eval guide](eval.md). | Available |
 | Ori Intern | Slack agents that learn skills and run on any model. | Waitlist |
 | Ori Desktop | Send tasks to any OpenRouter model from the Mac menu bar. | Waitlist |
 
@@ -44,14 +43,13 @@ Then run the tool you want:
 
 ```sh theme={null}
 ori claude          # Claude Code on OpenRouter (or codex, opencode, hermes, ...)
-ori code -p "What is the best model for my support agent?"   # writes and runs an eval, then recommends a model
+ori code            # Ori Code, OpenRouter's native coding agent
 ```
 
-After the agent writes the eval, `ori eval` runs every `*.eval.ts` file in your project again, locally or in CI.
+Without a model setting, Ori Code uses `openrouter/auto`. Pass `--model` with any OpenRouter model ID to choose one.
 
 ## Next steps
 
 * [Ori Harness](harness.md): run your agent CLI on OpenRouter.
-* [Ori Eval](eval.md): write and run evals that pick the best model.
 * [Configuration](configuration.md): settings, models, and defaults for every Ori tool.
 * [Changelog](changelog.md): what changed in each Ori release.

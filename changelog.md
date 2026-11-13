@@ -8,6 +8,1594 @@
 
 Entries on this page are generated automatically from [OpenAPI specification](api_reference/overview.md) diffs when releases ship. Breaking changes are reviewed by a human before publication. See [API Versioning](api_reference/versioning.md) for what counts as a breaking change and how deprecations are announced. Endpoint paths are shown relative to the API base URL (`https://openrouter.ai/api/v1`).
 
+**November 12, 2026**
+
+## Modified endpoints
+
+* [`POST /embeddings`](api/api-reference/embeddings/submit-an-embedding-request.md): request schema updated; description updated; response schema updated
+* [`POST /workspaces/{id}/members/add`](api/api-reference/workspaces/bulk-add-members-to-a-workspace.md): description updated
+* [`POST /credits/purchases`](https://openrouter.ai/docs/api/api-reference/credits/buy-credits-with-a-machine-payment): description updated; response schema updated
+* [`POST /responses`](api/api-reference/responses/create-a-response.md): description updated; response schema updated
+
+## New schemas
+
+* `CreditPurchaseUnavailableResponse`
+  * Used by [`POST /credits/purchases`](https://openrouter.ai/docs/api/api-reference/credits/buy-credits-with-a-machine-payment)
+* `ResponsesBadRequestResponse`
+  * Used by [`POST /responses`](api/api-reference/responses/create-a-response.md)
+* `ResponsesBadRequestResponseErrorData`
+  * Used by [`POST /responses`](api/api-reference/responses/create-a-response.md)
+* `ContentFilterReadEntry`
+
+  **4 endpoints using this schema**
+
+  * [`GET /guardrails`](api/api-reference/guardrails/list-guardrails.md)
+  * [`GET /guardrails/{id}`](api/api-reference/guardrails/get-a-guardrail.md)
+  * [`PATCH /guardrails/{id}`](api/api-reference/guardrails/update-a-guardrail.md)
+  * [`POST /guardrails`](api/api-reference/guardrails/create-a-guardrail.md)
+
+## Modified schemas
+
+* `BulkAddWorkspaceMembersRequest`: description updated
+  * Used by [`POST /workspaces/{id}/members/add`](api/api-reference/workspaces/bulk-add-members-to-a-workspace.md)
+* `BulkAddWorkspaceMembersResponse`: description updated
+  * Used by [`POST /workspaces/{id}/members/add`](api/api-reference/workspaces/bulk-add-members-to-a-workspace.md)
+* `CreateWorkspaceRequest`: description updated
+  * Used by [`POST /workspaces`](api/api-reference/workspaces/create-a-workspace.md)
+* `UpdateWorkspaceRequest`: description updated
+  * Used by [`PATCH /workspaces/{id}`](api/api-reference/workspaces/update-a-workspace.md)
+* `ObservabilityOtelCollectorDestination`: new property `config.metricsEndpoint`; new property `config.shouldSendMetrics`
+
+  **4 endpoints using this schema**
+
+  * [`GET /observability/destinations`](api/api-reference/observability/list-observability-destinations.md)
+  * [`GET /observability/destinations/{id}`](api/api-reference/observability/get-an-observability-destination.md)
+  * [`PATCH /observability/destinations/{id}`](api/api-reference/observability/update-an-observability-destination.md)
+  * [`POST /observability/destinations`](api/api-reference/observability/create-an-observability-destination.md)
+* `OutputToolSearchServerToolItem`: new property `catalog_index_note`
+
+  **4 endpoints using this schema**
+
+  * [`GET /batches/{id}`](api/api-reference/batch/get-a-batch.md)
+  * [`POST /batches`](api/api-reference/batch/create-a-batch.md)
+  * [`POST /presets/{slug}/responses`](api/api-reference/presets/create-a-preset-from-a-responses-request-body.md)
+  * [`POST /responses`](api/api-reference/responses/create-a-response.md)
+* `ResponseIncludesEnum`: enum property\_added
+  * Used by [`POST /presets/{slug}/responses`](api/api-reference/presets/create-a-preset-from-a-responses-request-body.md), [`POST /responses`](api/api-reference/responses/create-a-response.md)
+* `Guardrail`: example modified; \$ref modified
+
+  **4 endpoints using this schema**
+
+  * [`GET /guardrails`](api/api-reference/guardrails/list-guardrails.md)
+  * [`GET /guardrails/{id}`](api/api-reference/guardrails/get-a-guardrail.md)
+  * [`PATCH /guardrails/{id}`](api/api-reference/guardrails/update-a-guardrail.md)
+  * [`POST /guardrails`](api/api-reference/guardrails/create-a-guardrail.md)
+* `OutputWebFetchServerToolItem`: new property `retrieved_at`
+
+  **4 endpoints using this schema**
+
+  * [`GET /batches/{id}`](api/api-reference/batch/get-a-batch.md)
+  * [`POST /batches`](api/api-reference/batch/create-a-batch.md)
+  * [`POST /presets/{slug}/responses`](api/api-reference/presets/create-a-preset-from-a-responses-request-body.md)
+  * [`POST /responses`](api/api-reference/responses/create-a-response.md)
+
+**November 11, 2026**
+
+## Breaking changes
+
+* `ExtractionsRequest`: required `state` property removedNo action needed
+  * Used by [`POST /api/alpha/extractions`](api/api-reference/alphaextractions/submit-an-extractions-request.md)
+* `ChangeGuardrailPolicyAssignmentRequest`: required `workspace_id` property removedNo action needed
+  * Used by [`PUT /guardrails/policies/assignments/api-keys/{hash}`](api/api-reference/guardrail-policies/change-an-api-key-policy-assignment.md), [`PUT /guardrails/policies/assignments/members/{member_id}`](api/api-reference/guardrail-policies/change-a-member-policy-assignment.md)
+* `CreateBudgetGuardrailPolicyRequest`: required `workspace_id` property removedNo action needed
+  * Used by [`POST /guardrails/policies/budget`](api/api-reference/guardrail-policies/create-a-budget-policy.md)
+* `CreateModelAvailabilityGuardrailPolicyRequest`: required `workspace_id` property removedNo action needed
+  * Used by [`POST /guardrails/policies/model-availability`](api/api-reference/guardrail-policies/create-a-model-availability-policy.md)
+* `CreateModerationGuardrailPolicyRequest`: required `workspace_id` property removedNo action needed
+  * Used by [`POST /guardrails/policies/moderation`](api/api-reference/guardrail-policies/create-a-moderation-policy.md)
+* `UpdateBudgetGuardrailPolicyRequest`: required `workspace_id` property removedNo action needed
+  * Used by [`PUT /guardrails/policies/budget/{id}`](api/api-reference/guardrail-policies/update-a-budget-policy.md)
+* `UpdateModelAvailabilityGuardrailPolicyRequest`: required `workspace_id` property removedNo action needed
+  * Used by [`PUT /guardrails/policies/model-availability/{id}`](api/api-reference/guardrail-policies/update-a-model-availability-policy.md)
+* `UpdateModerationGuardrailPolicyRequest`: required `workspace_id` property removedNo action needed
+  * Used by [`PUT /guardrails/policies/moderation/{id}`](api/api-reference/guardrail-policies/update-a-moderation-policy.md)
+* [`GET /guardrails/policies/assignments/api-keys/{hash}`](api/api-reference/guardrail-policies/get-an-api-key-policy-assignment.md): required changed from `true` to `false`No action needed
+* [`GET /guardrails/policies/assignments/members/{member_id}`](api/api-reference/guardrail-policies/get-a-member-policy-assignment.md): required changed from `true` to `false`No action needed
+* [`GET /guardrails/policies/budget`](api/api-reference/guardrail-policies/list-budget-policies.md): required changed from `true` to `false`No action needed
+* [`DELETE /guardrails/policies/budget/{id}`](api/api-reference/guardrail-policies/delete-a-budget-policy.md): required changed from `true` to `false`No action needed
+* [`GET /guardrails/policies/budget/{id}`](api/api-reference/guardrail-policies/get-a-budget-policy.md): required changed from `true` to `false`No action needed
+* [`GET /guardrails/policies/model-availability`](api/api-reference/guardrail-policies/list-model-availability-policies.md): required changed from `true` to `false`No action needed
+* [`DELETE /guardrails/policies/model-availability/{id}`](api/api-reference/guardrail-policies/delete-a-model-availability-policy.md): required changed from `true` to `false`No action needed
+* [`GET /guardrails/policies/model-availability/{id}`](api/api-reference/guardrail-policies/get-a-model-availability-policy.md): required changed from `true` to `false`No action needed
+* [`GET /guardrails/policies/moderation`](api/api-reference/guardrail-policies/list-moderation-policies.md): required changed from `true` to `false`No action needed
+* [`DELETE /guardrails/policies/moderation/{id}`](api/api-reference/guardrail-policies/delete-a-moderation-policy.md): required changed from `true` to `false`No action needed
+* [`GET /guardrails/policies/moderation/{id}`](api/api-reference/guardrail-policies/get-a-moderation-policy.md): required changed from `true` to `false`No action needed
+* `VideoGenerationRequest.duration`: minimum changed from `1` to `-1`No action needed
+  * Used by [`POST /videos`](api/api-reference/video-generation/submit-a-video-generation-request.md)
+
+## Modified endpoints
+
+* [`GET /guardrails`](api/api-reference/guardrails/list-guardrails.md): description updated
+* [`POST /guardrails`](api/api-reference/guardrails/create-a-guardrail.md): description updated
+* [`GET /guardrails/assignments/keys`](api/api-reference/guardrails/list-all-key-assignments.md): description updated
+* [`GET /guardrails/assignments/members`](api/api-reference/guardrails/list-all-member-assignments.md): description updated
+* [`DELETE /guardrails/{id}`](api/api-reference/guardrails/delete-a-guardrail.md): description updated
+* [`GET /guardrails/{id}`](api/api-reference/guardrails/get-a-guardrail.md): description updated
+* [`PATCH /guardrails/{id}`](api/api-reference/guardrails/update-a-guardrail.md): description updated
+* [`GET /guardrails/{id}/assignments/keys`](api/api-reference/guardrails/list-key-assignments-for-a-guardrail.md): description updated
+* [`POST /guardrails/{id}/assignments/keys`](api/api-reference/guardrails/bulk-assign-keys-to-a-guardrail.md): description updated
+* [`POST /guardrails/{id}/assignments/keys/remove`](api/api-reference/guardrails/bulk-unassign-keys-from-a-guardrail.md): description updated
+* [`GET /guardrails/{id}/assignments/members`](api/api-reference/guardrails/list-member-assignments-for-a-guardrail.md): description updated
+* [`POST /guardrails/{id}/assignments/members`](api/api-reference/guardrails/bulk-assign-members-to-a-guardrail.md): description updated
+* [`POST /guardrails/{id}/assignments/members/remove`](api/api-reference/guardrails/bulk-unassign-members-from-a-guardrail.md): description updated
+* [`GET /observability/destinations`](api/api-reference/observability/list-observability-destinations.md): description updated
+* [`POST /observability/destinations`](api/api-reference/observability/create-an-observability-destination.md): description updated
+* [`DELETE /observability/destinations/{id}`](api/api-reference/observability/delete-an-observability-destination.md): description updated
+* [`GET /observability/destinations/{id}`](api/api-reference/observability/get-an-observability-destination.md): description updated
+* [`PATCH /observability/destinations/{id}`](api/api-reference/observability/update-an-observability-destination.md): description updated
+* [`GET /activity`](api/api-reference/analytics/get-user-activity-grouped-by-endpoint.md): description updated
+* [`POST /credits/purchases`](https://openrouter.ai/docs/api/api-reference/credits/buy-credits-with-a-machine-payment): description updated; response schema updated
+* [`GET /guardrails/assignments/keys`](api/api-reference/guardrails/list-all-key-assignments.md): new parameter `workspace_id`
+* [`GET /guardrails/assignments/members`](api/api-reference/guardrails/list-all-member-assignments.md): new parameter `workspace_id`
+* [`GET /guardrails/policies/assignments/api-keys/{hash}`](api/api-reference/guardrail-policies/get-an-api-key-policy-assignment.md): description updated
+* [`GET /guardrails/policies/assignments/members/{member_id}`](api/api-reference/guardrail-policies/get-a-member-policy-assignment.md): description updated
+* [`GET /guardrails/policies/budget`](api/api-reference/guardrail-policies/list-budget-policies.md): description updated
+* [`DELETE /guardrails/policies/budget/{id}`](api/api-reference/guardrail-policies/delete-a-budget-policy.md): description updated
+* [`GET /guardrails/policies/budget/{id}`](api/api-reference/guardrail-policies/get-a-budget-policy.md): description updated
+* [`GET /guardrails/policies/model-availability`](api/api-reference/guardrail-policies/list-model-availability-policies.md): description updated
+* [`DELETE /guardrails/policies/model-availability/{id}`](api/api-reference/guardrail-policies/delete-a-model-availability-policy.md): description updated
+* [`GET /guardrails/policies/model-availability/{id}`](api/api-reference/guardrail-policies/get-a-model-availability-policy.md): description updated
+* [`GET /guardrails/policies/moderation`](api/api-reference/guardrail-policies/list-moderation-policies.md): description updated
+* [`DELETE /guardrails/policies/moderation/{id}`](api/api-reference/guardrail-policies/delete-a-moderation-policy.md): description updated
+* [`GET /guardrails/policies/moderation/{id}`](api/api-reference/guardrail-policies/get-a-moderation-policy.md): description updated
+* [`PATCH /keys/{hash}`](api/api-reference/api-keys/update-an-api-key.md): description updated
+* [`GET /byok`](api/api-reference/byok/list-byok-provider-credentials.md): parameter `provider` updated
+* [`PATCH /private-endpoints/{id}`](api/api-reference/private-endpoints/update-a-private-endpoint.md): description updated
+* [`POST /batches`](api/api-reference/batch/create-a-batch.md): description updated
+
+## New response codes
+
+* [`GET /endpoints/zdr`](api/api-reference/endpoints/preview-the-impact-of-zdr-on-the-available-endpoints.md): now returns `401`
+* [`GET /models/{author}/{slug}/endpoints`](api/api-reference/endpoints/list-all-endpoints-for-a-model.md): now returns `401`
+
+## Modified schemas
+
+* `CreateGuardrailRequest`: description updated
+  * Used by [`POST /guardrails`](api/api-reference/guardrails/create-a-guardrail.md)
+* `CreateObservabilityDestinationRequest`: description updated
+  * Used by [`POST /observability/destinations`](api/api-reference/observability/create-an-observability-destination.md)
+* `ExtractionAsset`: description updated; enum property\_added
+  * Used by [`POST /api/alpha/extractions`](api/api-reference/alphaextractions/submit-an-extractions-request.md)
+* `ExtractionDateAnswer`: description updated
+  * Used by [`POST /api/alpha/extractions`](api/api-reference/alphaextractions/submit-an-extractions-request.md)
+* `ExtractionDateField`: new property `unit`
+  * Used by [`POST /api/alpha/extractions`](api/api-reference/alphaextractions/submit-an-extractions-request.md)
+* `ExtractionDatetimeAnswer`: description updated
+  * Used by [`POST /api/alpha/extractions`](api/api-reference/alphaextractions/submit-an-extractions-request.md)
+* `ExtractionDatetimeField`: new property `unit`
+  * Used by [`POST /api/alpha/extractions`](api/api-reference/alphaextractions/submit-an-extractions-request.md)
+* `ExtractionDurationAnswer`: description updated
+  * Used by [`POST /api/alpha/extractions`](api/api-reference/alphaextractions/submit-an-extractions-request.md)
+* `ExtractionDurationField`: description updated
+  * Used by [`POST /api/alpha/extractions`](api/api-reference/alphaextractions/submit-an-extractions-request.md)
+* `ExtractionEstimateField`: description updated
+  * Used by [`POST /api/alpha/extractions`](api/api-reference/alphaextractions/submit-an-extractions-request.md)
+* `ExtractionForecastField`: description updated
+  * Used by [`POST /api/alpha/extractions`](api/api-reference/alphaextractions/submit-an-extractions-request.md)
+* `ExtractionListAnswer`: description updated
+  * Used by [`POST /api/alpha/extractions`](api/api-reference/alphaextractions/submit-an-extractions-request.md)
+* `ExtractionListField`: new property `integer`; new property `unit`
+  * Used by [`POST /api/alpha/extractions`](api/api-reference/alphaextractions/submit-an-extractions-request.md)
+* `ExtractionNumberAnswer`: description updated
+  * Used by [`POST /api/alpha/extractions`](api/api-reference/alphaextractions/submit-an-extractions-request.md)
+* `ExtractionNumberField`: description updated
+  * Used by [`POST /api/alpha/extractions`](api/api-reference/alphaextractions/submit-an-extractions-request.md)
+* `ExtractionTextAnswer`: description updated
+  * Used by [`POST /api/alpha/extractions`](api/api-reference/alphaextractions/submit-an-extractions-request.md)
+* `ExtractionTextField`: new property `unit`
+  * Used by [`POST /api/alpha/extractions`](api/api-reference/alphaextractions/submit-an-extractions-request.md)
+* `ExtractionTimeAnswer`: description updated
+  * Used by [`POST /api/alpha/extractions`](api/api-reference/alphaextractions/submit-an-extractions-request.md)
+* `ExtractionTimeField`: new property `unit`
+  * Used by [`POST /api/alpha/extractions`](api/api-reference/alphaextractions/submit-an-extractions-request.md)
+* `ExtractionsRequest`: description updated
+  * Used by [`POST /api/alpha/extractions`](api/api-reference/alphaextractions/submit-an-extractions-request.md)
+* `UpdateObservabilityDestinationRequest`: description updated
+  * Used by [`PATCH /observability/destinations/{id}`](api/api-reference/observability/update-an-observability-destination.md)
+* `ChangeGuardrailPolicyAssignmentRequest`: description updated
+  * Used by [`PUT /guardrails/policies/assignments/api-keys/{hash}`](api/api-reference/guardrail-policies/change-an-api-key-policy-assignment.md), [`PUT /guardrails/policies/assignments/members/{member_id}`](api/api-reference/guardrail-policies/change-a-member-policy-assignment.md)
+* `CreateBudgetGuardrailPolicyRequest`: description updated
+  * Used by [`POST /guardrails/policies/budget`](api/api-reference/guardrail-policies/create-a-budget-policy.md)
+* `CreateModelAvailabilityGuardrailPolicyRequest`: description updated
+  * Used by [`POST /guardrails/policies/model-availability`](api/api-reference/guardrail-policies/create-a-model-availability-policy.md)
+* `CreateModerationGuardrailPolicyRequest`: description updated
+  * Used by [`POST /guardrails/policies/moderation`](api/api-reference/guardrail-policies/create-a-moderation-policy.md)
+* `UpdateBudgetGuardrailPolicyRequest`: description updated
+  * Used by [`PUT /guardrails/policies/budget/{id}`](api/api-reference/guardrail-policies/update-a-budget-policy.md)
+* `UpdateModelAvailabilityGuardrailPolicyRequest`: description updated
+  * Used by [`PUT /guardrails/policies/model-availability/{id}`](api/api-reference/guardrail-policies/update-a-model-availability-policy.md)
+* `UpdateModerationGuardrailPolicyRequest`: description updated
+  * Used by [`PUT /guardrails/policies/moderation/{id}`](api/api-reference/guardrail-policies/update-a-moderation-policy.md)
+* `BYOKProviderSlug`: enum property\_added
+
+  **4 endpoints using this schema**
+
+  * [`GET /byok`](api/api-reference/byok/list-byok-provider-credentials.md)
+  * [`GET /byok/{id}`](api/api-reference/byok/get-a-byok-provider-credential.md)
+  * [`PATCH /byok/{id}`](api/api-reference/byok/update-a-byok-provider-credential.md)
+  * [`POST /byok`](api/api-reference/byok/create-a-byok-provider-credential.md)
+* `MessagesStartEvent`: property `provider` updated
+  * Used by [`POST /messages`](api/api-reference/anthropic-messages/create-a-message.md)
+* `ProviderName`: enum property\_added
+
+  **18 endpoints using this schema**
+
+  * [`GET /endpoints/zdr`](api/api-reference/endpoints/preview-the-impact-of-zdr-on-the-available-endpoints.md)
+  * [`GET /models/{author}/{slug}/endpoints`](api/api-reference/endpoints/list-all-endpoints-for-a-model.md)
+  * [`POST /api/alpha/decisions`](api/api-reference/alphadecisions/submit-a-decisions-request.md)
+  * [`POST /api/alpha/extractions`](api/api-reference/alphaextractions/submit-an-extractions-request.md)
+  * [`POST /audio/speech`](api/api-reference/tts/create-speech.md)
+  * [`POST /audio/transcriptions`](api/api-reference/stt/create-transcription.md)
+  * [`POST /batches`](api/api-reference/batch/create-a-batch.md)
+  * [`POST /chat/completions`](api/api-reference/chat/create-a-chat-completion.md)
+  * [`POST /embeddings`](api/api-reference/embeddings/submit-an-embedding-request.md)
+  * [`POST /images`](api/api-reference/images/generate-an-image.md)
+  * [`POST /messages`](api/api-reference/anthropic-messages/create-a-message.md)
+  * [`POST /presets/{slug}/chat/completions`](api/api-reference/presets/create-a-preset-from-a-chat-completions-request-body.md)
+  * [`POST /presets/{slug}/messages`](api/api-reference/presets/create-a-preset-from-a-messages-request-body.md)
+  * [`POST /presets/{slug}/responses`](api/api-reference/presets/create-a-preset-from-a-responses-request-body.md)
+  * [`POST /rerank`](api/api-reference/rerank/submit-a-rerank-request.md)
+  * [`POST /responses`](api/api-reference/responses/create-a-response.md)
+  * [`POST /systemone`](api/api-reference/systemone/submit-a-system-one-request.md)
+  * [`POST /videos`](api/api-reference/video-generation/submit-a-video-generation-request.md)
+* `ProviderOptions`: new property `speechify`
+
+  **15 endpoints using this schema**
+
+  * [`POST /api/alpha/decisions`](api/api-reference/alphadecisions/submit-a-decisions-request.md)
+  * [`POST /api/alpha/extractions`](api/api-reference/alphaextractions/submit-an-extractions-request.md)
+  * [`POST /audio/speech`](api/api-reference/tts/create-speech.md)
+  * [`POST /audio/transcriptions`](api/api-reference/stt/create-transcription.md)
+  * [`POST /chat/completions`](api/api-reference/chat/create-a-chat-completion.md)
+  * [`POST /embeddings`](api/api-reference/embeddings/submit-an-embedding-request.md)
+  * [`POST /images`](api/api-reference/images/generate-an-image.md)
+  * [`POST /messages`](api/api-reference/anthropic-messages/create-a-message.md)
+  * [`POST /presets/{slug}/chat/completions`](api/api-reference/presets/create-a-preset-from-a-chat-completions-request-body.md)
+  * [`POST /presets/{slug}/messages`](api/api-reference/presets/create-a-preset-from-a-messages-request-body.md)
+  * [`POST /presets/{slug}/responses`](api/api-reference/presets/create-a-preset-from-a-responses-request-body.md)
+  * [`POST /rerank`](api/api-reference/rerank/submit-a-rerank-request.md)
+  * [`POST /responses`](api/api-reference/responses/create-a-response.md)
+  * [`POST /systemone`](api/api-reference/systemone/submit-a-system-one-request.md)
+  * [`POST /videos`](api/api-reference/video-generation/submit-a-video-generation-request.md)
+* `ProviderResponse`: enum property\_added
+  * Used by [`GET /generation`](api/api-reference/generations/get-request-&-usage-metadata-for-a-generation.md)
+* `ChatRequest`:
+  * new property `reasoning.context`
+  * new property `reasoning.enabled`
+  * new property `reasoning.exclude`
+  * new property `reasoning.mode`
+  * Used by [`POST /chat/completions`](api/api-reference/chat/create-a-chat-completion.md), [`POST /presets/{slug}/chat/completions`](api/api-reference/presets/create-a-preset-from-a-chat-completions-request-body.md)
+* `BYOKKey`: description updated
+
+  **4 endpoints using this schema**
+
+  * [`GET /byok`](api/api-reference/byok/list-byok-provider-credentials.md)
+  * [`GET /byok/{id}`](api/api-reference/byok/get-a-byok-provider-credential.md)
+  * [`PATCH /byok/{id}`](api/api-reference/byok/update-a-byok-provider-credential.md)
+  * [`POST /byok`](api/api-reference/byok/create-a-byok-provider-credential.md)
+* `CreateBYOKKeyRequest`: description updated
+  * Used by [`POST /byok`](api/api-reference/byok/create-a-byok-provider-credential.md)
+* `UpdateBYOKKeyRequest`: description updated
+  * Used by [`PATCH /byok/{id}`](api/api-reference/byok/update-a-byok-provider-credential.md)
+* `VideoGenerationRequest`: description updated
+  * Used by [`POST /videos`](api/api-reference/video-generation/submit-a-video-generation-request.md)
+* `VideoModel`: description updated
+  * Used by [`GET /videos/models`](api/api-reference/video-generation/list-all-video-generation-models.md)
+* `SpeechInput`: description updated
+  * Used by [`POST /audio/speech`](api/api-reference/tts/create-speech.md)
+* `BatchObject`: new union variant added
+  * Used by [`GET /batches/{id}`](api/api-reference/batch/get-a-batch.md), [`POST /batches`](api/api-reference/batch/create-a-batch.md)
+* `BatchSubmitBody`: enum property\_added
+  * Used by [`POST /batches`](api/api-reference/batch/create-a-batch.md)
+
+**November 10, 2026**
+
+## Breaking changes
+
+* [`POST /credits/purchases`](https://openrouter.ai/docs/api/api-reference/credits/buy-credits-with-a-machine-payment): content `application/json` object removedNo action needed
+* `ExtractionListAnswer.spans`: type changed from `array` to `array | null`Action required
+  * Used by [`POST /api/alpha/extractions`](api/api-reference/alphaextractions/submit-an-extractions-request.md)
+  * **Migration: handle a `null` entry in `spans`.** `spans` still has one entry per item of `value`, in the same order, but an entry is now `null` when that item has no offsets in the state text, for example a list item read from an image or a document. Before this release such a response returned 502; it now returns 200. Check each entry for `null` before you read its `[start, end)` offsets. Responses whose list items all come from the state text are unchanged.
+
+## New endpoints
+
+* [`POST /presets/{slug}/restore`](api/api-reference/presets/restore-a-preset.md): Restore a preset
+* [`POST /credits/purchases`](https://openrouter.ai/docs/api/api-reference/credits/buy-credits-with-a-machine-payment): Buy credits with a machine payment
+* [`GET /credits/purchases/{id}`](https://openrouter.ai/docs/api/api-reference/credits/get-a-credit-purchase): Get a credit purchase
+* [`GET /credits/purchases/SKILL.md`](https://openrouter.ai/docs/api/api-reference/credits/agent-skill-for-buying-openrouter-credits): Agent skill for buying OpenRouter credits
+* [`GET /credits/purchases/setup`](https://openrouter.ai/docs/api/api-reference/credits/agent-setup-guide-for-buying-credits-with-a-machine-payment): Agent setup guide for buying credits with a machine payment
+
+## Modified endpoints
+
+* [`GET /presets`](api/api-reference/presets/list-presets.md): new parameter `workspace_id`
+* [`GET /presets/{slug}`](api/api-reference/presets/get-a-preset.md): new parameter `workspace_id`
+* [`POST /presets/{slug}/chat/completions`](api/api-reference/presets/create-a-preset-from-a-chat-completions-request-body.md): description updated
+* [`POST /presets/{slug}/messages`](api/api-reference/presets/create-a-preset-from-a-messages-request-body.md): description updated
+* [`POST /presets/{slug}/responses`](api/api-reference/presets/create-a-preset-from-a-responses-request-body.md): description updated
+* [`GET /presets/{slug}/versions`](api/api-reference/presets/list-versions-of-a-preset.md): new parameter `workspace_id`
+* [`GET /presets/{slug}/versions/{version}`](api/api-reference/presets/get-a-specific-version-of-a-preset.md): new parameter `workspace_id`
+* [`GET /byok`](api/api-reference/byok/list-byok-provider-credentials.md): description updated
+* [`POST /byok`](api/api-reference/byok/create-a-byok-provider-credential.md): description updated
+* [`DELETE /byok/{id}`](api/api-reference/byok/delete-a-byok-provider-credential.md): description updated
+* [`GET /byok/{id}`](api/api-reference/byok/get-a-byok-provider-credential.md): description updated
+* [`PATCH /byok/{id}`](api/api-reference/byok/update-a-byok-provider-credential.md): description updated
+* [`POST /credits/purchases`](https://openrouter.ai/docs/api/api-reference/credits/buy-credits-with-a-machine-payment): response schema updated; description updated
+* [`GET /analytics/meta`](api/api-reference/analytics/get-available-analytics-metrics-and-dimensions.md): description updated
+* [`POST /analytics/query`](api/api-reference/analytics/query-analytics-data.md): description updated
+
+## New response codes
+
+* [`GET /presets`](api/api-reference/presets/list-presets.md): now returns `404`
+* [`POST /auth/keys/code`](api/api-reference/oauth/create-authorization-code.md): now returns `503`
+
+## New schemas
+
+* `CreateCreditPurchaseRequest`
+  * Used by [`POST /credits/purchases`](https://openrouter.ai/docs/api/api-reference/credits/buy-credits-with-a-machine-payment)
+* `CreditPurchase`
+  * Used by [`GET /credits/purchases/{id}`](https://openrouter.ai/docs/api/api-reference/credits/get-a-credit-purchase), [`POST /credits/purchases`](https://openrouter.ai/docs/api/api-reference/credits/buy-credits-with-a-machine-payment)
+* `CreditPurchaseResponse`
+  * Used by [`GET /credits/purchases/{id}`](https://openrouter.ai/docs/api/api-reference/credits/get-a-credit-purchase), [`POST /credits/purchases`](https://openrouter.ai/docs/api/api-reference/credits/buy-credits-with-a-machine-payment)
+* `CreditPurchasePaymentRequired`
+  * Used by [`POST /credits/purchases`](https://openrouter.ai/docs/api/api-reference/credits/buy-credits-with-a-machine-payment)
+
+## Modified schemas
+
+* `DeferredBm25Search`: description updated
+
+  **6 endpoints using this schema**
+
+  * [`POST /chat/completions`](api/api-reference/chat/create-a-chat-completion.md)
+  * [`POST /messages`](api/api-reference/anthropic-messages/create-a-message.md)
+  * [`POST /presets/{slug}/chat/completions`](api/api-reference/presets/create-a-preset-from-a-chat-completions-request-body.md)
+  * [`POST /presets/{slug}/messages`](api/api-reference/presets/create-a-preset-from-a-messages-request-body.md)
+  * [`POST /presets/{slug}/responses`](api/api-reference/presets/create-a-preset-from-a-responses-request-body.md)
+  * [`POST /responses`](api/api-reference/responses/create-a-response.md)
+* `DeferredRegexSearch`: description updated
+
+  **6 endpoints using this schema**
+
+  * [`POST /chat/completions`](api/api-reference/chat/create-a-chat-completion.md)
+  * [`POST /messages`](api/api-reference/anthropic-messages/create-a-message.md)
+  * [`POST /presets/{slug}/chat/completions`](api/api-reference/presets/create-a-preset-from-a-chat-completions-request-body.md)
+  * [`POST /presets/{slug}/messages`](api/api-reference/presets/create-a-preset-from-a-messages-request-body.md)
+  * [`POST /presets/{slug}/responses`](api/api-reference/presets/create-a-preset-from-a-responses-request-body.md)
+  * [`POST /responses`](api/api-reference/responses/create-a-response.md)
+* `ImageGenerationRequest`: enum property\_added
+  * Used by [`POST /images`](api/api-reference/images/generate-an-image.md)
+* `ReasoningFormat`: enum property\_added
+
+  **6 endpoints using this schema**
+
+  * [`GET /batches/{id}`](api/api-reference/batch/get-a-batch.md)
+  * [`POST /batches`](api/api-reference/batch/create-a-batch.md)
+  * [`POST /chat/completions`](api/api-reference/chat/create-a-chat-completion.md)
+  * [`POST /presets/{slug}/chat/completions`](api/api-reference/presets/create-a-preset-from-a-chat-completions-request-body.md)
+  * [`POST /presets/{slug}/responses`](api/api-reference/presets/create-a-preset-from-a-responses-request-body.md)
+  * [`POST /responses`](api/api-reference/responses/create-a-response.md)
+* `BYOKKey`: description updated
+
+  **4 endpoints using this schema**
+
+  * [`GET /byok`](api/api-reference/byok/list-byok-provider-credentials.md)
+  * [`GET /byok/{id}`](api/api-reference/byok/get-a-byok-provider-credential.md)
+  * [`PATCH /byok/{id}`](api/api-reference/byok/update-a-byok-provider-credential.md)
+  * [`POST /byok`](api/api-reference/byok/create-a-byok-provider-credential.md)
+* `CreateBYOKKeyRequest`: description updated
+  * Used by [`POST /byok`](api/api-reference/byok/create-a-byok-provider-credential.md)
+* `UpdateBYOKKeyRequest`: description updated
+  * Used by [`PATCH /byok/{id}`](api/api-reference/byok/update-a-byok-provider-credential.md)
+* `ExtractionListAnswer`: description updated
+  * Used by [`POST /api/alpha/extractions`](api/api-reference/alphaextractions/submit-an-extractions-request.md)
+
+**November 9, 2026**
+
+## Breaking changes
+
+* `DeferredToolsControl.scope`: enum `client` property removedAction required
+
+  * **Migration: remove `"scope": "client"` from `deferred_tools`.** `deferred_tools.scope` now accepts only `"all"` (the default when omitted) or `"mcp"`; requests or saved presets sending `"scope": "client"` now return 400. Omit `scope` or set `"scope": "all"` to defer across all eligible tools, or set `"scope": "mcp"` to defer MCP tools only.
+
+  **6 endpoints using this schema**
+
+  * [`POST /chat/completions`](api/api-reference/chat/create-a-chat-completion.md)
+  * [`POST /messages`](api/api-reference/anthropic-messages/create-a-message.md)
+  * [`POST /presets/{slug}/chat/completions`](api/api-reference/presets/create-a-preset-from-a-chat-completions-request-body.md)
+  * [`POST /presets/{slug}/messages`](api/api-reference/presets/create-a-preset-from-a-messages-request-body.md)
+  * [`POST /presets/{slug}/responses`](api/api-reference/presets/create-a-preset-from-a-responses-request-body.md)
+  * [`POST /responses`](api/api-reference/responses/create-a-response.md)
+
+## Modified schemas
+
+* `DeferredBm25Search`: description updated
+
+  **6 endpoints using this schema**
+
+  * [`POST /chat/completions`](api/api-reference/chat/create-a-chat-completion.md)
+  * [`POST /messages`](api/api-reference/anthropic-messages/create-a-message.md)
+  * [`POST /presets/{slug}/chat/completions`](api/api-reference/presets/create-a-preset-from-a-chat-completions-request-body.md)
+  * [`POST /presets/{slug}/messages`](api/api-reference/presets/create-a-preset-from-a-messages-request-body.md)
+  * [`POST /presets/{slug}/responses`](api/api-reference/presets/create-a-preset-from-a-responses-request-body.md)
+  * [`POST /responses`](api/api-reference/responses/create-a-response.md)
+* `DeferredRegexSearch`: description updated
+
+  **6 endpoints using this schema**
+
+  * [`POST /chat/completions`](api/api-reference/chat/create-a-chat-completion.md)
+  * [`POST /messages`](api/api-reference/anthropic-messages/create-a-message.md)
+  * [`POST /presets/{slug}/chat/completions`](api/api-reference/presets/create-a-preset-from-a-chat-completions-request-body.md)
+  * [`POST /presets/{slug}/messages`](api/api-reference/presets/create-a-preset-from-a-messages-request-body.md)
+  * [`POST /presets/{slug}/responses`](api/api-reference/presets/create-a-preset-from-a-responses-request-body.md)
+  * [`POST /responses`](api/api-reference/responses/create-a-response.md)
+* `DeferredToolsControl`: description updated
+
+  **6 endpoints using this schema**
+
+  * [`POST /chat/completions`](api/api-reference/chat/create-a-chat-completion.md)
+  * [`POST /messages`](api/api-reference/anthropic-messages/create-a-message.md)
+  * [`POST /presets/{slug}/chat/completions`](api/api-reference/presets/create-a-preset-from-a-chat-completions-request-body.md)
+  * [`POST /presets/{slug}/messages`](api/api-reference/presets/create-a-preset-from-a-messages-request-body.md)
+  * [`POST /presets/{slug}/responses`](api/api-reference/presets/create-a-preset-from-a-responses-request-body.md)
+  * [`POST /responses`](api/api-reference/responses/create-a-response.md)
+* `OpenResponsesErrorField`: enum property\_added
+  * Used by [`GET /batches/{id}`](api/api-reference/batch/get-a-batch.md), [`POST /batches`](api/api-reference/batch/create-a-batch.md), [`POST /responses`](api/api-reference/responses/create-a-response.md)
+* `ResponsesErrorField`: enum property\_added
+  * Used by [`GET /batches/{id}`](api/api-reference/batch/get-a-batch.md), [`POST /batches`](api/api-reference/batch/create-a-batch.md), [`POST /responses`](api/api-reference/responses/create-a-response.md)
+
+**November 8, 2026**
+
+## Modified schemas
+
+* `DeferredBm25Search`: new property `spread`
+
+  **6 endpoints using this schema**
+
+  * [`POST /chat/completions`](api/api-reference/chat/create-a-chat-completion.md)
+  * [`POST /messages`](api/api-reference/anthropic-messages/create-a-message.md)
+  * [`POST /presets/{slug}/chat/completions`](api/api-reference/presets/create-a-preset-from-a-chat-completions-request-body.md)
+  * [`POST /presets/{slug}/messages`](api/api-reference/presets/create-a-preset-from-a-messages-request-body.md)
+  * [`POST /presets/{slug}/responses`](api/api-reference/presets/create-a-preset-from-a-responses-request-body.md)
+  * [`POST /responses`](api/api-reference/responses/create-a-response.md)
+* `DeferredToolsControl`: description updated; new property `announce_catalog_changes`
+
+  **6 endpoints using this schema**
+
+  * [`POST /chat/completions`](api/api-reference/chat/create-a-chat-completion.md)
+  * [`POST /messages`](api/api-reference/anthropic-messages/create-a-message.md)
+  * [`POST /presets/{slug}/chat/completions`](api/api-reference/presets/create-a-preset-from-a-chat-completions-request-body.md)
+  * [`POST /presets/{slug}/messages`](api/api-reference/presets/create-a-preset-from-a-messages-request-body.md)
+  * [`POST /presets/{slug}/responses`](api/api-reference/presets/create-a-preset-from-a-responses-request-body.md)
+  * [`POST /responses`](api/api-reference/responses/create-a-response.md)
+* `OutputToolSearchServerToolItem`: new property `catalog_changes`
+
+  **4 endpoints using this schema**
+
+  * [`GET /batches/{id}`](api/api-reference/batch/get-a-batch.md)
+  * [`POST /batches`](api/api-reference/batch/create-a-batch.md)
+  * [`POST /presets/{slug}/responses`](api/api-reference/presets/create-a-preset-from-a-responses-request-body.md)
+  * [`POST /responses`](api/api-reference/responses/create-a-response.md)
+* `DeferredBm25Search`: new property `miss_sources`
+
+  **6 endpoints using this schema**
+
+  * [`POST /chat/completions`](api/api-reference/chat/create-a-chat-completion.md)
+  * [`POST /messages`](api/api-reference/anthropic-messages/create-a-message.md)
+  * [`POST /presets/{slug}/chat/completions`](api/api-reference/presets/create-a-preset-from-a-chat-completions-request-body.md)
+  * [`POST /presets/{slug}/messages`](api/api-reference/presets/create-a-preset-from-a-messages-request-body.md)
+  * [`POST /presets/{slug}/responses`](api/api-reference/presets/create-a-preset-from-a-responses-request-body.md)
+  * [`POST /responses`](api/api-reference/responses/create-a-response.md)
+* `DeferredRegexSearch`: new property `miss_sources`
+
+  **6 endpoints using this schema**
+
+  * [`POST /chat/completions`](api/api-reference/chat/create-a-chat-completion.md)
+  * [`POST /messages`](api/api-reference/anthropic-messages/create-a-message.md)
+  * [`POST /presets/{slug}/chat/completions`](api/api-reference/presets/create-a-preset-from-a-chat-completions-request-body.md)
+  * [`POST /presets/{slug}/messages`](api/api-reference/presets/create-a-preset-from-a-messages-request-body.md)
+  * [`POST /presets/{slug}/responses`](api/api-reference/presets/create-a-preset-from-a-responses-request-body.md)
+  * [`POST /responses`](api/api-reference/responses/create-a-response.md)
+* `DeferredToolsControl`: new property `min_deferred_tools`; description updated
+
+  **6 endpoints using this schema**
+
+  * [`POST /chat/completions`](api/api-reference/chat/create-a-chat-completion.md)
+  * [`POST /messages`](api/api-reference/anthropic-messages/create-a-message.md)
+  * [`POST /presets/{slug}/chat/completions`](api/api-reference/presets/create-a-preset-from-a-chat-completions-request-body.md)
+  * [`POST /presets/{slug}/messages`](api/api-reference/presets/create-a-preset-from-a-messages-request-body.md)
+  * [`POST /presets/{slug}/responses`](api/api-reference/presets/create-a-preset-from-a-responses-request-body.md)
+  * [`POST /responses`](api/api-reference/responses/create-a-response.md)
+* `DeferredBm25Search`: description updated
+
+  **6 endpoints using this schema**
+
+  * [`POST /chat/completions`](api/api-reference/chat/create-a-chat-completion.md)
+  * [`POST /messages`](api/api-reference/anthropic-messages/create-a-message.md)
+  * [`POST /presets/{slug}/chat/completions`](api/api-reference/presets/create-a-preset-from-a-chat-completions-request-body.md)
+  * [`POST /presets/{slug}/messages`](api/api-reference/presets/create-a-preset-from-a-messages-request-body.md)
+  * [`POST /presets/{slug}/responses`](api/api-reference/presets/create-a-preset-from-a-responses-request-body.md)
+  * [`POST /responses`](api/api-reference/responses/create-a-response.md)
+* `DeferredRegexSearch`: description updated
+
+  **6 endpoints using this schema**
+
+  * [`POST /chat/completions`](api/api-reference/chat/create-a-chat-completion.md)
+  * [`POST /messages`](api/api-reference/anthropic-messages/create-a-message.md)
+  * [`POST /presets/{slug}/chat/completions`](api/api-reference/presets/create-a-preset-from-a-chat-completions-request-body.md)
+  * [`POST /presets/{slug}/messages`](api/api-reference/presets/create-a-preset-from-a-messages-request-body.md)
+  * [`POST /presets/{slug}/responses`](api/api-reference/presets/create-a-preset-from-a-responses-request-body.md)
+  * [`POST /responses`](api/api-reference/responses/create-a-response.md)
+
+**November 7, 2026**
+
+## Modified schemas
+
+* `ImageGenerationServerToolConfig`: example modified; description updated
+
+  **6 endpoints using this schema**
+
+  * [`POST /chat/completions`](api/api-reference/chat/create-a-chat-completion.md)
+  * [`POST /messages`](api/api-reference/anthropic-messages/create-a-message.md)
+  * [`POST /presets/{slug}/chat/completions`](api/api-reference/presets/create-a-preset-from-a-chat-completions-request-body.md)
+  * [`POST /presets/{slug}/messages`](api/api-reference/presets/create-a-preset-from-a-messages-request-body.md)
+  * [`POST /presets/{slug}/responses`](api/api-reference/presets/create-a-preset-from-a-responses-request-body.md)
+  * [`POST /responses`](api/api-reference/responses/create-a-response.md)
+* `ImageGenerationServerTool_OpenRouter`: example modified
+
+  **6 endpoints using this schema**
+
+  * [`POST /chat/completions`](api/api-reference/chat/create-a-chat-completion.md)
+  * [`POST /messages`](api/api-reference/anthropic-messages/create-a-message.md)
+  * [`POST /presets/{slug}/chat/completions`](api/api-reference/presets/create-a-preset-from-a-chat-completions-request-body.md)
+  * [`POST /presets/{slug}/messages`](api/api-reference/presets/create-a-preset-from-a-messages-request-body.md)
+  * [`POST /presets/{slug}/responses`](api/api-reference/presets/create-a-preset-from-a-responses-request-body.md)
+  * [`POST /responses`](api/api-reference/responses/create-a-response.md)
+* `CodeInterpreterServerTool`: description updated
+
+  **4 endpoints using this schema**
+
+  * [`GET /batches/{id}`](api/api-reference/batch/get-a-batch.md)
+  * [`POST /batches`](api/api-reference/batch/create-a-batch.md)
+  * [`POST /presets/{slug}/responses`](api/api-reference/presets/create-a-preset-from-a-responses-request-body.md)
+  * [`POST /responses`](api/api-reference/responses/create-a-response.md)
+* `DeferredToolsControl`: new property `cascade_mode`; description updated; enum property\_added
+
+  **6 endpoints using this schema**
+
+  * [`POST /chat/completions`](api/api-reference/chat/create-a-chat-completion.md)
+  * [`POST /messages`](api/api-reference/anthropic-messages/create-a-message.md)
+  * [`POST /presets/{slug}/chat/completions`](api/api-reference/presets/create-a-preset-from-a-chat-completions-request-body.md)
+  * [`POST /presets/{slug}/messages`](api/api-reference/presets/create-a-preset-from-a-messages-request-body.md)
+  * [`POST /presets/{slug}/responses`](api/api-reference/presets/create-a-preset-from-a-responses-request-body.md)
+  * [`POST /responses`](api/api-reference/responses/create-a-response.md)
+* `FileSearchServerTool`: description updated
+
+  **4 endpoints using this schema**
+
+  * [`GET /batches/{id}`](api/api-reference/batch/get-a-batch.md)
+  * [`POST /batches`](api/api-reference/batch/create-a-batch.md)
+  * [`POST /presets/{slug}/responses`](api/api-reference/presets/create-a-preset-from-a-responses-request-body.md)
+  * [`POST /responses`](api/api-reference/responses/create-a-response.md)
+* `DeferredBm25Search`: new property `siblings`
+
+  **6 endpoints using this schema**
+
+  * [`POST /chat/completions`](api/api-reference/chat/create-a-chat-completion.md)
+  * [`POST /messages`](api/api-reference/anthropic-messages/create-a-message.md)
+  * [`POST /presets/{slug}/chat/completions`](api/api-reference/presets/create-a-preset-from-a-chat-completions-request-body.md)
+  * [`POST /presets/{slug}/messages`](api/api-reference/presets/create-a-preset-from-a-messages-request-body.md)
+  * [`POST /presets/{slug}/responses`](api/api-reference/presets/create-a-preset-from-a-responses-request-body.md)
+  * [`POST /responses`](api/api-reference/responses/create-a-response.md)
+* `DeferredRegexSearch`: new property `siblings`
+
+  **6 endpoints using this schema**
+
+  * [`POST /chat/completions`](api/api-reference/chat/create-a-chat-completion.md)
+  * [`POST /messages`](api/api-reference/anthropic-messages/create-a-message.md)
+  * [`POST /presets/{slug}/chat/completions`](api/api-reference/presets/create-a-preset-from-a-chat-completions-request-body.md)
+  * [`POST /presets/{slug}/messages`](api/api-reference/presets/create-a-preset-from-a-messages-request-body.md)
+  * [`POST /presets/{slug}/responses`](api/api-reference/presets/create-a-preset-from-a-responses-request-body.md)
+  * [`POST /responses`](api/api-reference/responses/create-a-response.md)
+* `DeferredToolsControl`: new property `hint`
+
+  **6 endpoints using this schema**
+
+  * [`POST /chat/completions`](api/api-reference/chat/create-a-chat-completion.md)
+  * [`POST /messages`](api/api-reference/anthropic-messages/create-a-message.md)
+  * [`POST /presets/{slug}/chat/completions`](api/api-reference/presets/create-a-preset-from-a-chat-completions-request-body.md)
+  * [`POST /presets/{slug}/messages`](api/api-reference/presets/create-a-preset-from-a-messages-request-body.md)
+  * [`POST /presets/{slug}/responses`](api/api-reference/presets/create-a-preset-from-a-responses-request-body.md)
+  * [`POST /responses`](api/api-reference/responses/create-a-response.md)
+* `OutputToolSearchServerToolItem`: new property `sources`
+
+  **4 endpoints using this schema**
+
+  * [`GET /batches/{id}`](api/api-reference/batch/get-a-batch.md)
+  * [`POST /batches`](api/api-reference/batch/create-a-batch.md)
+  * [`POST /presets/{slug}/responses`](api/api-reference/presets/create-a-preset-from-a-responses-request-body.md)
+  * [`POST /responses`](api/api-reference/responses/create-a-response.md)
+
+**November 6, 2026**
+
+## New endpoints
+
+* [`GET /guardrails/policies/account`](api/api-reference/guardrail-policies/list-workspace-wide-policies.md): List workspace-wide policies
+* [`POST /guardrails/policies/account`](api/api-reference/guardrail-policies/create-a-workspace-wide-policy.md): Create a workspace-wide policy
+* [`PUT /guardrails/policies/account/{id}`](api/api-reference/guardrail-policies/update-a-workspace-wide-policy.md): Update a workspace-wide policy
+* [`DELETE /guardrails/policies/account/{id}`](api/api-reference/guardrail-policies/delete-a-workspace-wide-policy.md): Delete a workspace-wide policy
+* [`GET /guardrails/policies/assignments/api-keys/{hash}`](api/api-reference/guardrail-policies/get-an-api-key-policy-assignment.md): Get an API key policy assignment
+* [`PUT /guardrails/policies/assignments/api-keys/{hash}`](api/api-reference/guardrail-policies/change-an-api-key-policy-assignment.md): Change an API key policy assignment
+* [`GET /guardrails/policies/assignments/members/{member_id}`](api/api-reference/guardrail-policies/get-a-member-policy-assignment.md): Get a member policy assignment
+* [`PUT /guardrails/policies/assignments/members/{member_id}`](api/api-reference/guardrail-policies/change-a-member-policy-assignment.md): Change a member policy assignment
+* [`GET /guardrails/policies/budget`](api/api-reference/guardrail-policies/list-budget-policies.md): List budget policies
+* [`POST /guardrails/policies/budget`](api/api-reference/guardrail-policies/create-a-budget-policy.md): Create a budget policy
+* [`GET /guardrails/policies/budget/{id}`](api/api-reference/guardrail-policies/get-a-budget-policy.md): Get a budget policy
+* [`PUT /guardrails/policies/budget/{id}`](api/api-reference/guardrail-policies/update-a-budget-policy.md): Update a budget policy
+* [`DELETE /guardrails/policies/budget/{id}`](api/api-reference/guardrail-policies/delete-a-budget-policy.md): Delete a budget policy
+* [`GET /guardrails/policies/model-availability`](api/api-reference/guardrail-policies/list-model-availability-policies.md): List model availability policies
+* [`POST /guardrails/policies/model-availability`](api/api-reference/guardrail-policies/create-a-model-availability-policy.md): Create a model availability policy
+* [`GET /guardrails/policies/model-availability/{id}`](api/api-reference/guardrail-policies/get-a-model-availability-policy.md): Get a model availability policy
+* [`PUT /guardrails/policies/model-availability/{id}`](api/api-reference/guardrail-policies/update-a-model-availability-policy.md): Update a model availability policy
+* [`DELETE /guardrails/policies/model-availability/{id}`](api/api-reference/guardrail-policies/delete-a-model-availability-policy.md): Delete a model availability policy
+* [`GET /guardrails/policies/moderation`](api/api-reference/guardrail-policies/list-moderation-policies.md): List moderation policies
+* [`POST /guardrails/policies/moderation`](api/api-reference/guardrail-policies/create-a-moderation-policy.md): Create a moderation policy
+* [`GET /guardrails/policies/moderation/{id}`](api/api-reference/guardrail-policies/get-a-moderation-policy.md): Get a moderation policy
+* [`PUT /guardrails/policies/moderation/{id}`](api/api-reference/guardrail-policies/update-a-moderation-policy.md): Update a moderation policy
+* [`DELETE /guardrails/policies/moderation/{id}`](api/api-reference/guardrail-policies/delete-a-moderation-policy.md): Delete a moderation policy
+
+## Modified endpoints
+
+* [`PATCH /private-endpoints/{id}`](api/api-reference/private-endpoints/update-a-private-endpoint.md): description updated
+* [`POST /presets/{slug}/chat/completions`](api/api-reference/presets/create-a-preset-from-a-chat-completions-request-body.md): description updated; new parameter `workspace_id`
+* [`POST /presets/{slug}/messages`](api/api-reference/presets/create-a-preset-from-a-messages-request-body.md): description updated; new parameter `workspace_id`
+* [`POST /presets/{slug}/responses`](api/api-reference/presets/create-a-preset-from-a-responses-request-body.md): description updated; new parameter `workspace_id`
+
+## New schemas
+
+* `AccountGuardrailPolicy`
+  * Used by [`GET /guardrails/policies/account`](api/api-reference/guardrail-policies/list-workspace-wide-policies.md), [`POST /guardrails/policies/account`](api/api-reference/guardrail-policies/create-a-workspace-wide-policy.md), [`PUT /guardrails/policies/account/{id}`](api/api-reference/guardrail-policies/update-a-workspace-wide-policy.md)
+* `AccountGuardrailPolicyRequest`
+  * Used by [`POST /guardrails/policies/account`](api/api-reference/guardrail-policies/create-a-workspace-wide-policy.md), [`PUT /guardrails/policies/account/{id}`](api/api-reference/guardrail-policies/update-a-workspace-wide-policy.md)
+* `AccountGuardrailPolicyResponse`
+  * Used by [`POST /guardrails/policies/account`](api/api-reference/guardrail-policies/create-a-workspace-wide-policy.md), [`PUT /guardrails/policies/account/{id}`](api/api-reference/guardrail-policies/update-a-workspace-wide-policy.md)
+* `BudgetAccountGuardrailPolicy`
+  * Used by [`GET /guardrails/policies/account`](api/api-reference/guardrail-policies/list-workspace-wide-policies.md), [`POST /guardrails/policies/account`](api/api-reference/guardrail-policies/create-a-workspace-wide-policy.md), [`PUT /guardrails/policies/account/{id}`](api/api-reference/guardrail-policies/update-a-workspace-wide-policy.md)
+* `BudgetAccountGuardrailPolicyRequest`
+  * Used by [`POST /guardrails/policies/account`](api/api-reference/guardrail-policies/create-a-workspace-wide-policy.md), [`PUT /guardrails/policies/account/{id}`](api/api-reference/guardrail-policies/update-a-workspace-wide-policy.md)
+* `BudgetGuardrailPolicy`
+  * Used by [`POST /guardrails/policies/budget`](api/api-reference/guardrail-policies/create-a-budget-policy.md), [`PUT /guardrails/policies/budget/{id}`](api/api-reference/guardrail-policies/update-a-budget-policy.md)
+* `BudgetGuardrailPolicyDetail`
+  * Used by [`GET /guardrails/policies/budget/{id}`](api/api-reference/guardrail-policies/get-a-budget-policy.md)
+* `BudgetGuardrailPolicyDetailResponse`
+  * Used by [`GET /guardrails/policies/budget/{id}`](api/api-reference/guardrail-policies/get-a-budget-policy.md)
+* `BudgetGuardrailPolicyResponse`
+  * Used by [`POST /guardrails/policies/budget`](api/api-reference/guardrail-policies/create-a-budget-policy.md), [`PUT /guardrails/policies/budget/{id}`](api/api-reference/guardrail-policies/update-a-budget-policy.md)
+* `BudgetGuardrailPolicySummary`
+  * Used by [`GET /guardrails/policies/budget`](api/api-reference/guardrail-policies/list-budget-policies.md)
+* `ChangeGuardrailPolicyAssignmentRequest`
+  * Used by [`PUT /guardrails/policies/assignments/api-keys/{hash}`](api/api-reference/guardrail-policies/change-an-api-key-policy-assignment.md), [`PUT /guardrails/policies/assignments/members/{member_id}`](api/api-reference/guardrail-policies/change-a-member-policy-assignment.md)
+* `ChangeGuardrailPolicyAssignmentResponse`
+  * Used by [`PUT /guardrails/policies/assignments/api-keys/{hash}`](api/api-reference/guardrail-policies/change-an-api-key-policy-assignment.md), [`PUT /guardrails/policies/assignments/members/{member_id}`](api/api-reference/guardrail-policies/change-a-member-policy-assignment.md)
+* `CreateBudgetGuardrailPolicyRequest`
+  * Used by [`POST /guardrails/policies/budget`](api/api-reference/guardrail-policies/create-a-budget-policy.md)
+* `CreateModelAvailabilityGuardrailPolicyRequest`
+  * Used by [`POST /guardrails/policies/model-availability`](api/api-reference/guardrail-policies/create-a-model-availability-policy.md)
+* `CreateModerationGuardrailPolicyRequest`
+  * Used by [`POST /guardrails/policies/moderation`](api/api-reference/guardrail-policies/create-a-moderation-policy.md)
+* `DeleteGuardrailPolicyResponse`
+
+  **4 endpoints using this schema**
+
+  * [`DELETE /guardrails/policies/account/{id}`](api/api-reference/guardrail-policies/delete-a-workspace-wide-policy.md)
+  * [`DELETE /guardrails/policies/budget/{id}`](api/api-reference/guardrail-policies/delete-a-budget-policy.md)
+  * [`DELETE /guardrails/policies/model-availability/{id}`](api/api-reference/guardrail-policies/delete-a-model-availability-policy.md)
+  * [`DELETE /guardrails/policies/moderation/{id}`](api/api-reference/guardrail-policies/delete-a-moderation-policy.md)
+* `GuardrailBudgetPolicyAuthoringConfig`
+
+  **4 endpoints using this schema**
+
+  * [`POST /guardrails/policies/account`](api/api-reference/guardrail-policies/create-a-workspace-wide-policy.md)
+  * [`POST /guardrails/policies/budget`](api/api-reference/guardrail-policies/create-a-budget-policy.md)
+  * [`PUT /guardrails/policies/account/{id}`](api/api-reference/guardrail-policies/update-a-workspace-wide-policy.md)
+  * [`PUT /guardrails/policies/budget/{id}`](api/api-reference/guardrail-policies/update-a-budget-policy.md)
+* `GuardrailBudgetPolicyConfig`
+
+  **7 endpoints using this schema**
+
+  * [`GET /guardrails/policies/account`](api/api-reference/guardrail-policies/list-workspace-wide-policies.md)
+  * [`GET /guardrails/policies/budget`](api/api-reference/guardrail-policies/list-budget-policies.md)
+  * [`GET /guardrails/policies/budget/{id}`](api/api-reference/guardrail-policies/get-a-budget-policy.md)
+  * [`POST /guardrails/policies/account`](api/api-reference/guardrail-policies/create-a-workspace-wide-policy.md)
+  * [`POST /guardrails/policies/budget`](api/api-reference/guardrail-policies/create-a-budget-policy.md)
+  * [`PUT /guardrails/policies/account/{id}`](api/api-reference/guardrail-policies/update-a-workspace-wide-policy.md)
+  * [`PUT /guardrails/policies/budget/{id}`](api/api-reference/guardrail-policies/update-a-budget-policy.md)
+* `GuardrailModelAvailabilityPolicyAuthoringConfig`
+
+  **4 endpoints using this schema**
+
+  * [`POST /guardrails/policies/account`](api/api-reference/guardrail-policies/create-a-workspace-wide-policy.md)
+  * [`POST /guardrails/policies/model-availability`](api/api-reference/guardrail-policies/create-a-model-availability-policy.md)
+  * [`PUT /guardrails/policies/account/{id}`](api/api-reference/guardrail-policies/update-a-workspace-wide-policy.md)
+  * [`PUT /guardrails/policies/model-availability/{id}`](api/api-reference/guardrail-policies/update-a-model-availability-policy.md)
+* `GuardrailModelAvailabilityPolicyConfig`
+
+  **7 endpoints using this schema**
+
+  * [`GET /guardrails/policies/account`](api/api-reference/guardrail-policies/list-workspace-wide-policies.md)
+  * [`GET /guardrails/policies/model-availability`](api/api-reference/guardrail-policies/list-model-availability-policies.md)
+  * [`GET /guardrails/policies/model-availability/{id}`](api/api-reference/guardrail-policies/get-a-model-availability-policy.md)
+  * [`POST /guardrails/policies/account`](api/api-reference/guardrail-policies/create-a-workspace-wide-policy.md)
+  * [`POST /guardrails/policies/model-availability`](api/api-reference/guardrail-policies/create-a-model-availability-policy.md)
+  * [`PUT /guardrails/policies/account/{id}`](api/api-reference/guardrail-policies/update-a-workspace-wide-policy.md)
+  * [`PUT /guardrails/policies/model-availability/{id}`](api/api-reference/guardrail-policies/update-a-model-availability-policy.md)
+* `GuardrailModerationPolicyConfig`
+
+  **7 endpoints using this schema**
+
+  * [`GET /guardrails/policies/account`](api/api-reference/guardrail-policies/list-workspace-wide-policies.md)
+  * [`GET /guardrails/policies/moderation`](api/api-reference/guardrail-policies/list-moderation-policies.md)
+  * [`GET /guardrails/policies/moderation/{id}`](api/api-reference/guardrail-policies/get-a-moderation-policy.md)
+  * [`POST /guardrails/policies/account`](api/api-reference/guardrail-policies/create-a-workspace-wide-policy.md)
+  * [`POST /guardrails/policies/moderation`](api/api-reference/guardrail-policies/create-a-moderation-policy.md)
+  * [`PUT /guardrails/policies/account/{id}`](api/api-reference/guardrail-policies/update-a-workspace-wide-policy.md)
+  * [`PUT /guardrails/policies/moderation/{id}`](api/api-reference/guardrail-policies/update-a-moderation-policy.md)
+* `GuardrailPolicyAssignmentResponse`
+  * Used by [`GET /guardrails/policies/assignments/api-keys/{hash}`](api/api-reference/guardrail-policies/get-an-api-key-policy-assignment.md), [`GET /guardrails/policies/assignments/members/{member_id}`](api/api-reference/guardrail-policies/get-a-member-policy-assignment.md)
+* `GuardrailPolicyAssignmentState`
+
+  **4 endpoints using this schema**
+
+  * [`GET /guardrails/policies/assignments/api-keys/{hash}`](api/api-reference/guardrail-policies/get-an-api-key-policy-assignment.md)
+  * [`GET /guardrails/policies/assignments/members/{member_id}`](api/api-reference/guardrail-policies/get-a-member-policy-assignment.md)
+  * [`PUT /guardrails/policies/assignments/api-keys/{hash}`](api/api-reference/guardrail-policies/change-an-api-key-policy-assignment.md)
+  * [`PUT /guardrails/policies/assignments/members/{member_id}`](api/api-reference/guardrail-policies/change-a-member-policy-assignment.md)
+* `ListAccountGuardrailPoliciesResponse`
+  * Used by [`GET /guardrails/policies/account`](api/api-reference/guardrail-policies/list-workspace-wide-policies.md)
+* `ListBudgetGuardrailPoliciesResponse`
+  * Used by [`GET /guardrails/policies/budget`](api/api-reference/guardrail-policies/list-budget-policies.md)
+* `ListModelAvailabilityGuardrailPoliciesResponse`
+  * Used by [`GET /guardrails/policies/model-availability`](api/api-reference/guardrail-policies/list-model-availability-policies.md)
+* `ListModerationGuardrailPoliciesResponse`
+  * Used by [`GET /guardrails/policies/moderation`](api/api-reference/guardrail-policies/list-moderation-policies.md)
+* `ModelAvailabilityAccountGuardrailPolicy`
+  * Used by [`GET /guardrails/policies/account`](api/api-reference/guardrail-policies/list-workspace-wide-policies.md), [`POST /guardrails/policies/account`](api/api-reference/guardrail-policies/create-a-workspace-wide-policy.md), [`PUT /guardrails/policies/account/{id}`](api/api-reference/guardrail-policies/update-a-workspace-wide-policy.md)
+* `ModelAvailabilityAccountGuardrailPolicyRequest`
+  * Used by [`POST /guardrails/policies/account`](api/api-reference/guardrail-policies/create-a-workspace-wide-policy.md), [`PUT /guardrails/policies/account/{id}`](api/api-reference/guardrail-policies/update-a-workspace-wide-policy.md)
+* `ModelAvailabilityGuardrailPolicy`
+  * Used by [`POST /guardrails/policies/model-availability`](api/api-reference/guardrail-policies/create-a-model-availability-policy.md), [`PUT /guardrails/policies/model-availability/{id}`](api/api-reference/guardrail-policies/update-a-model-availability-policy.md)
+* `ModelAvailabilityGuardrailPolicyDetail`
+  * Used by [`GET /guardrails/policies/model-availability/{id}`](api/api-reference/guardrail-policies/get-a-model-availability-policy.md)
+* `ModelAvailabilityGuardrailPolicyDetailResponse`
+  * Used by [`GET /guardrails/policies/model-availability/{id}`](api/api-reference/guardrail-policies/get-a-model-availability-policy.md)
+* `ModelAvailabilityGuardrailPolicyResponse`
+  * Used by [`POST /guardrails/policies/model-availability`](api/api-reference/guardrail-policies/create-a-model-availability-policy.md), [`PUT /guardrails/policies/model-availability/{id}`](api/api-reference/guardrail-policies/update-a-model-availability-policy.md)
+* `ModelAvailabilityGuardrailPolicySummary`
+  * Used by [`GET /guardrails/policies/model-availability`](api/api-reference/guardrail-policies/list-model-availability-policies.md)
+* `ModerationAccountGuardrailPolicy`
+  * Used by [`GET /guardrails/policies/account`](api/api-reference/guardrail-policies/list-workspace-wide-policies.md), [`POST /guardrails/policies/account`](api/api-reference/guardrail-policies/create-a-workspace-wide-policy.md), [`PUT /guardrails/policies/account/{id}`](api/api-reference/guardrail-policies/update-a-workspace-wide-policy.md)
+* `ModerationAccountGuardrailPolicyRequest`
+  * Used by [`POST /guardrails/policies/account`](api/api-reference/guardrail-policies/create-a-workspace-wide-policy.md), [`PUT /guardrails/policies/account/{id}`](api/api-reference/guardrail-policies/update-a-workspace-wide-policy.md)
+* `ModerationGuardrailPolicy`
+  * Used by [`POST /guardrails/policies/moderation`](api/api-reference/guardrail-policies/create-a-moderation-policy.md), [`PUT /guardrails/policies/moderation/{id}`](api/api-reference/guardrail-policies/update-a-moderation-policy.md)
+* `ModerationGuardrailPolicyDetail`
+  * Used by [`GET /guardrails/policies/moderation/{id}`](api/api-reference/guardrail-policies/get-a-moderation-policy.md)
+* `ModerationGuardrailPolicyDetailResponse`
+  * Used by [`GET /guardrails/policies/moderation/{id}`](api/api-reference/guardrail-policies/get-a-moderation-policy.md)
+* `ModerationGuardrailPolicyResponse`
+  * Used by [`POST /guardrails/policies/moderation`](api/api-reference/guardrail-policies/create-a-moderation-policy.md), [`PUT /guardrails/policies/moderation/{id}`](api/api-reference/guardrail-policies/update-a-moderation-policy.md)
+* `ModerationGuardrailPolicySummary`
+  * Used by [`GET /guardrails/policies/moderation`](api/api-reference/guardrail-policies/list-moderation-policies.md)
+* `UpdateBudgetGuardrailPolicyRequest`
+  * Used by [`PUT /guardrails/policies/budget/{id}`](api/api-reference/guardrail-policies/update-a-budget-policy.md)
+* `UpdateModelAvailabilityGuardrailPolicyRequest`
+  * Used by [`PUT /guardrails/policies/model-availability/{id}`](api/api-reference/guardrail-policies/update-a-model-availability-policy.md)
+* `UpdateModerationGuardrailPolicyRequest`
+  * Used by [`PUT /guardrails/policies/moderation/{id}`](api/api-reference/guardrail-policies/update-a-moderation-policy.md)
+
+## Modified schemas
+
+* `UpdatePrivateEndpointRequest`: description updated
+  * Used by [`PATCH /private-endpoints/{id}`](api/api-reference/private-endpoints/update-a-private-endpoint.md)
+* `DeferredToolsControl`: new property `interface`; new property `scope`
+
+  **6 endpoints using this schema**
+
+  * [`POST /chat/completions`](api/api-reference/chat/create-a-chat-completion.md)
+  * [`POST /messages`](api/api-reference/anthropic-messages/create-a-message.md)
+  * [`POST /presets/{slug}/chat/completions`](api/api-reference/presets/create-a-preset-from-a-chat-completions-request-body.md)
+  * [`POST /presets/{slug}/messages`](api/api-reference/presets/create-a-preset-from-a-messages-request-body.md)
+  * [`POST /presets/{slug}/responses`](api/api-reference/presets/create-a-preset-from-a-responses-request-body.md)
+  * [`POST /responses`](api/api-reference/responses/create-a-response.md)
+* `DecisionsNoulAnswer`: new property `confidence`
+  * Used by [`POST /api/alpha/decisions`](api/api-reference/alphadecisions/submit-a-decisions-request.md), [`POST /systemone`](api/api-reference/systemone/submit-a-system-one-request.md)
+
+**November 5, 2026**
+
+## Breaking changes
+
+* spec: OutputMcpServerToolItem object removedNo action needed
+* `OutputMcpServerToolItem`: schema object removedNo action needed
+* `OutputItems`: openrouter:mcp `#/components/schemas/OutputMcpServerToolItem` object removedNo action needed
+  * These types were never returned or used, so no migration should be necessary, other than handling exhaustive switch statements.
+* spec: additionalProperties object addedNo action needed
+* spec: removed enum from `connector_id` No action needed
+* `DecisionsChoiceQuestion`: required `instructions` property removedNo action needed
+  * Used by [`POST /api/alpha/decisions`](api/api-reference/alphadecisions/submit-a-decisions-request.md), [`POST /systemone`](api/api-reference/systemone/submit-a-system-one-request.md)
+  * `instructions` is now optional and nullable. Requests that omit it, or send `null`, are accepted instead of rejected with a 400 before routing.
+* `DecisionsNoulQuestion`: required `instructions` property removedNo action needed
+  * Used by [`POST /api/alpha/decisions`](api/api-reference/alphadecisions/submit-a-decisions-request.md), [`POST /systemone`](api/api-reference/systemone/submit-a-system-one-request.md)
+  * `instructions` is now optional and nullable; callers that still send it are unaffected.
+* `DecisionsNoulQuestion.criteria`: required `false` property removedNo action needed
+  * Used by [`POST /api/alpha/decisions`](api/api-reference/alphadecisions/submit-a-decisions-request.md), [`POST /systemone`](api/api-reference/systemone/submit-a-system-one-request.md)
+  * The `false` side is now optional and nullable, so a question can supply one side only.
+* `DecisionsNoulQuestion.criteria`: required `true` property removedNo action needed
+  * Used by [`POST /api/alpha/decisions`](api/api-reference/alphadecisions/submit-a-decisions-request.md), [`POST /systemone`](api/api-reference/systemone/submit-a-system-one-request.md)
+  * The `true` side is now optional and nullable, so a question can supply one side only.
+* `DecisionsScoreQuestion`: required `instructions` property removedNo action needed
+  * Used by [`POST /api/alpha/decisions`](api/api-reference/alphadecisions/submit-a-decisions-request.md), [`POST /systemone`](api/api-reference/systemone/submit-a-system-one-request.md)
+  * `instructions` is now optional and nullable; callers that still send it are unaffected.
+* `McpServerTool`: additionalProperties `additionalProperties` object addedNo action needed
+
+  **4 endpoints using this schema**
+
+  * [`GET /batches/{id}`](api/api-reference/batch/get-a-batch.md)
+  * [`POST /batches`](api/api-reference/batch/create-a-batch.md)
+  * [`POST /presets/{slug}/responses`](api/api-reference/presets/create-a-preset-from-a-responses-request-body.md)
+  * [`POST /responses`](api/api-reference/responses/create-a-response.md)
+* `McpServerTool.connector_id`: removed enum from `connector_id` No action needed
+  * `connector_id` now accepts any string instead of a fixed enum, so existing connector IDs continue to work and new provider-defined connectors are forwarded as written. Only generated SDK type names move: the closed `connector_id` enum is replaced by a plain string, so typed SDK callers pass connector IDs as string literals instead of enum members.
+* [`POST /auth/keys/code`](api/api-reference/oauth/create-authorization-code.md): properties `spawn_agent` object removedNo action needed
+* [`POST /auth/keys/code`](api/api-reference/oauth/create-authorization-code.md): properties `spawn_cloud` object removedNo action needed
+
+## Modified endpoints
+
+* [`GET /organization/members`](api/api-reference/organization/list-organization-members.md): description updated; response schema updated
+* [`GET /byok`](api/api-reference/byok/list-byok-provider-credentials.md): parameter `provider` updated
+* [`GET /keys`](api/api-reference/api-keys/list-api-keys.md): extension `x-speakeasy-pagination` added
+
+## New schemas
+
+* `DeferredToolsDetails`
+
+  **4 endpoints using this schema**
+
+  * [`GET /batches/{id}`](api/api-reference/batch/get-a-batch.md)
+  * [`POST /batches`](api/api-reference/batch/create-a-batch.md)
+  * [`POST /chat/completions`](api/api-reference/chat/create-a-chat-completion.md)
+  * [`POST /responses`](api/api-reference/responses/create-a-response.md)
+* `McpCallArgumentsDeltaEvent`
+  * Used by [`POST /responses`](api/api-reference/responses/create-a-response.md)
+* `McpCallArgumentsDoneEvent`
+  * Used by [`POST /responses`](api/api-reference/responses/create-a-response.md)
+* `McpCallCompletedEvent`
+  * Used by [`POST /responses`](api/api-reference/responses/create-a-response.md)
+* `McpCallFailedEvent`
+  * Used by [`POST /responses`](api/api-reference/responses/create-a-response.md)
+* `McpCallInProgressEvent`
+  * Used by [`POST /responses`](api/api-reference/responses/create-a-response.md)
+* `McpListToolsCompletedEvent`
+  * Used by [`POST /responses`](api/api-reference/responses/create-a-response.md)
+* `McpListToolsFailedEvent`
+  * Used by [`POST /responses`](api/api-reference/responses/create-a-response.md)
+* `McpListToolsInProgressEvent`
+  * Used by [`POST /responses`](api/api-reference/responses/create-a-response.md)
+* `McpServerToolParameters`
+  * Used by [`POST /presets/{slug}/responses`](api/api-reference/presets/create-a-preset-from-a-responses-request-body.md), [`POST /responses`](api/api-reference/responses/create-a-response.md)
+* `McpServerTool_OpenRouter`
+  * Used by [`POST /presets/{slug}/responses`](api/api-reference/presets/create-a-preset-from-a-responses-request-body.md), [`POST /responses`](api/api-reference/responses/create-a-response.md)
+* `OutputItemMcpApprovalRequest`
+  * Used by [`GET /batches/{id}`](api/api-reference/batch/get-a-batch.md), [`POST /batches`](api/api-reference/batch/create-a-batch.md), [`POST /responses`](api/api-reference/responses/create-a-response.md)
+* `OutputItemMcpCall`
+  * Used by [`GET /batches/{id}`](api/api-reference/batch/get-a-batch.md), [`POST /batches`](api/api-reference/batch/create-a-batch.md), [`POST /responses`](api/api-reference/responses/create-a-response.md)
+* `OutputItemMcpListTools`
+  * Used by [`GET /batches/{id}`](api/api-reference/batch/get-a-batch.md), [`POST /batches`](api/api-reference/batch/create-a-batch.md), [`POST /responses`](api/api-reference/responses/create-a-response.md)
+* `ToolChoiceMcp`
+
+  **4 endpoints using this schema**
+
+  * [`GET /batches/{id}`](api/api-reference/batch/get-a-batch.md)
+  * [`POST /batches`](api/api-reference/batch/create-a-batch.md)
+  * [`POST /presets/{slug}/responses`](api/api-reference/presets/create-a-preset-from-a-responses-request-body.md)
+  * [`POST /responses`](api/api-reference/responses/create-a-response.md)
+
+## Modified schemas
+
+* `ChatUsage`: new property `deferred_tools_details`
+  * Used by [`POST /chat/completions`](api/api-reference/chat/create-a-chat-completion.md)
+* `DeferredToolsControl`: description updated; enum property\_added
+
+  **6 endpoints using this schema**
+
+  * [`POST /chat/completions`](api/api-reference/chat/create-a-chat-completion.md)
+  * [`POST /messages`](api/api-reference/anthropic-messages/create-a-message.md)
+  * [`POST /presets/{slug}/chat/completions`](api/api-reference/presets/create-a-preset-from-a-chat-completions-request-body.md)
+  * [`POST /presets/{slug}/messages`](api/api-reference/presets/create-a-preset-from-a-messages-request-body.md)
+  * [`POST /presets/{slug}/responses`](api/api-reference/presets/create-a-preset-from-a-responses-request-body.md)
+  * [`POST /responses`](api/api-reference/responses/create-a-response.md)
+* `OutputToolSearchServerToolItem`:
+
+  * new property `arguments`
+  * new property `call_id`
+  * new property `catalog_index`
+  * new property `format`
+  * new property `hint`
+  * new property `turn_call_ids`
+
+  **4 endpoints using this schema**
+
+  * [`GET /batches/{id}`](api/api-reference/batch/get-a-batch.md)
+  * [`POST /batches`](api/api-reference/batch/create-a-batch.md)
+  * [`POST /presets/{slug}/responses`](api/api-reference/presets/create-a-preset-from-a-responses-request-body.md)
+  * [`POST /responses`](api/api-reference/responses/create-a-response.md)
+* `PrivateEndpointCheck`: deprecated property\_added; description updated
+  * Used by [`POST /private-endpoints`](api/api-reference/private-endpoints/create-a-private-endpoint.md), [`POST /private-endpoints/{id}/validate`](api/api-reference/private-endpoints/validate-a-draft-private-endpoint.md)
+* `RangeCapability`: format property\_added
+  * Used by [`GET /images/models`](api/api-reference/images/list-image-generation-models.md), [`GET /images/models/{author}/{slug}/endpoints`](api/api-reference/images/list-endpoints-for-an-image-model.md)
+* `VideoGenerationRequest`: format property\_added
+  * Used by [`POST /videos`](api/api-reference/video-generation/submit-a-video-generation-request.md)
+* `OutputItems`: new union variant added
+  * Used by [`GET /batches/{id}`](api/api-reference/batch/get-a-batch.md), [`POST /batches`](api/api-reference/batch/create-a-batch.md), [`POST /responses`](api/api-reference/responses/create-a-response.md)
+* `StreamEvents`: new union variant added
+  * Used by [`POST /responses`](api/api-reference/responses/create-a-response.md)
+* `SpeechInputReference`: example property\_added
+  * Used by [`POST /audio/speech`](api/api-reference/tts/create-speech.md)
+* `SpeechInputReferenceAudioInput`: example property\_added
+  * Used by [`POST /audio/speech`](api/api-reference/tts/create-speech.md)
+* `SpeechInputReferenceImageInput`: example property\_added
+  * Used by [`POST /audio/speech`](api/api-reference/tts/create-speech.md)
+* `ImageGenerationRequest`:
+  * new property `frame_count`
+  * new property `frame_duration_ms`
+  * new property `markup`
+  * description updated
+  * enum property\_added
+  * Used by [`POST /images`](api/api-reference/images/generate-an-image.md)
+* `AdditionalToolsItem`: new union variant added
+  * Used by [`POST /presets/{slug}/responses`](api/api-reference/presets/create-a-preset-from-a-responses-request-body.md), [`POST /responses`](api/api-reference/responses/create-a-response.md)
+* `AlignmentResponsesRejected`: new union variant added
+  * Used by [`GET /batches/{id}`](api/api-reference/batch/get-a-batch.md), [`POST /batches`](api/api-reference/batch/create-a-batch.md), [`POST /responses`](api/api-reference/responses/create-a-response.md)
+* `BYOKProviderSlug`: enum property\_added
+
+  **4 endpoints using this schema**
+
+  * [`GET /byok`](api/api-reference/byok/list-byok-provider-credentials.md)
+  * [`GET /byok/{id}`](api/api-reference/byok/get-a-byok-provider-credential.md)
+  * [`PATCH /byok/{id}`](api/api-reference/byok/update-a-byok-provider-credential.md)
+  * [`POST /byok`](api/api-reference/byok/create-a-byok-provider-credential.md)
+* `BaseResponsesResult`: new union variant added
+  * Used by [`GET /batches/{id}`](api/api-reference/batch/get-a-batch.md), [`POST /batches`](api/api-reference/batch/create-a-batch.md), [`POST /responses`](api/api-reference/responses/create-a-response.md)
+* `CreateWorkspaceRequest`: enum property\_added
+  * Used by [`POST /workspaces`](api/api-reference/workspaces/create-a-workspace.md)
+* `DecisionsChoiceQuestion`: new union variant added
+  * Used by [`POST /api/alpha/decisions`](api/api-reference/alphadecisions/submit-a-decisions-request.md), [`POST /systemone`](api/api-reference/systemone/submit-a-system-one-request.md)
+* `DecisionsNoulQuestion`: new union variant added
+  * Used by [`POST /api/alpha/decisions`](api/api-reference/alphadecisions/submit-a-decisions-request.md), [`POST /systemone`](api/api-reference/systemone/submit-a-system-one-request.md)
+* `DecisionsScoreQuestion`: new union variant added
+  * Used by [`POST /api/alpha/decisions`](api/api-reference/alphadecisions/submit-a-decisions-request.md), [`POST /systemone`](api/api-reference/systemone/submit-a-system-one-request.md)
+* `ImageGenerationRequest`: description updated
+  * Used by [`POST /images`](api/api-reference/images/generate-an-image.md)
+* `McpCallItem`: new property `approval_request_id`; new property `status`
+
+  **4 endpoints using this schema**
+
+  * [`GET /batches/{id}`](api/api-reference/batch/get-a-batch.md)
+  * [`POST /batches`](api/api-reference/batch/create-a-batch.md)
+  * [`POST /presets/{slug}/responses`](api/api-reference/presets/create-a-preset-from-a-responses-request-body.md)
+  * [`POST /responses`](api/api-reference/responses/create-a-response.md)
+* `MessagesStartEvent`: property `provider` updated
+  * Used by [`POST /messages`](api/api-reference/anthropic-messages/create-a-message.md)
+* `OpenAIResponsesToolChoice`: new union variant added
+
+  **4 endpoints using this schema**
+
+  * [`GET /batches/{id}`](api/api-reference/batch/get-a-batch.md)
+  * [`POST /batches`](api/api-reference/batch/create-a-batch.md)
+  * [`POST /presets/{slug}/responses`](api/api-reference/presets/create-a-preset-from-a-responses-request-body.md)
+  * [`POST /responses`](api/api-reference/responses/create-a-response.md)
+* `OutputItemAddedEvent`: new union variant added
+  * Used by [`POST /responses`](api/api-reference/responses/create-a-response.md)
+* `OutputItemDoneEvent`: new union variant added
+  * Used by [`POST /responses`](api/api-reference/responses/create-a-response.md)
+* `ProviderName`: enum property\_added
+
+  **18 endpoints using this schema**
+
+  * [`GET /endpoints/zdr`](api/api-reference/endpoints/preview-the-impact-of-zdr-on-the-available-endpoints.md)
+  * [`GET /models/{author}/{slug}/endpoints`](api/api-reference/endpoints/list-all-endpoints-for-a-model.md)
+  * [`POST /api/alpha/decisions`](api/api-reference/alphadecisions/submit-a-decisions-request.md)
+  * [`POST /api/alpha/extractions`](api/api-reference/alphaextractions/submit-an-extractions-request.md)
+  * [`POST /audio/speech`](api/api-reference/tts/create-speech.md)
+  * [`POST /audio/transcriptions`](api/api-reference/stt/create-transcription.md)
+  * [`POST /batches`](api/api-reference/batch/create-a-batch.md)
+  * [`POST /chat/completions`](api/api-reference/chat/create-a-chat-completion.md)
+  * [`POST /embeddings`](api/api-reference/embeddings/submit-an-embedding-request.md)
+  * [`POST /images`](api/api-reference/images/generate-an-image.md)
+  * [`POST /messages`](api/api-reference/anthropic-messages/create-a-message.md)
+  * [`POST /presets/{slug}/chat/completions`](api/api-reference/presets/create-a-preset-from-a-chat-completions-request-body.md)
+  * [`POST /presets/{slug}/messages`](api/api-reference/presets/create-a-preset-from-a-messages-request-body.md)
+  * [`POST /presets/{slug}/responses`](api/api-reference/presets/create-a-preset-from-a-responses-request-body.md)
+  * [`POST /rerank`](api/api-reference/rerank/submit-a-rerank-request.md)
+  * [`POST /responses`](api/api-reference/responses/create-a-response.md)
+  * [`POST /systemone`](api/api-reference/systemone/submit-a-system-one-request.md)
+  * [`POST /videos`](api/api-reference/video-generation/submit-a-video-generation-request.md)
+* `ProviderOptions`: new property `river`
+
+  **15 endpoints using this schema**
+
+  * [`POST /api/alpha/decisions`](api/api-reference/alphadecisions/submit-a-decisions-request.md)
+  * [`POST /api/alpha/extractions`](api/api-reference/alphaextractions/submit-an-extractions-request.md)
+  * [`POST /audio/speech`](api/api-reference/tts/create-speech.md)
+  * [`POST /audio/transcriptions`](api/api-reference/stt/create-transcription.md)
+  * [`POST /chat/completions`](api/api-reference/chat/create-a-chat-completion.md)
+  * [`POST /embeddings`](api/api-reference/embeddings/submit-an-embedding-request.md)
+  * [`POST /images`](api/api-reference/images/generate-an-image.md)
+  * [`POST /messages`](api/api-reference/anthropic-messages/create-a-message.md)
+  * [`POST /presets/{slug}/chat/completions`](api/api-reference/presets/create-a-preset-from-a-chat-completions-request-body.md)
+  * [`POST /presets/{slug}/messages`](api/api-reference/presets/create-a-preset-from-a-messages-request-body.md)
+  * [`POST /presets/{slug}/responses`](api/api-reference/presets/create-a-preset-from-a-responses-request-body.md)
+  * [`POST /rerank`](api/api-reference/rerank/submit-a-rerank-request.md)
+  * [`POST /responses`](api/api-reference/responses/create-a-response.md)
+  * [`POST /systemone`](api/api-reference/systemone/submit-a-system-one-request.md)
+  * [`POST /videos`](api/api-reference/video-generation/submit-a-video-generation-request.md)
+* `ProviderResponse`: enum property\_added
+  * Used by [`GET /generation`](api/api-reference/generations/get-request-&-usage-metadata-for-a-generation.md)
+* `ResponsesRequest`: new union variant added
+  * Used by [`POST /presets/{slug}/responses`](api/api-reference/presets/create-a-preset-from-a-responses-request-body.md), [`POST /responses`](api/api-reference/responses/create-a-response.md)
+* `ToolSearchOutputItem`: new union variant added
+  * Used by [`POST /presets/{slug}/responses`](api/api-reference/presets/create-a-preset-from-a-responses-request-body.md), [`POST /responses`](api/api-reference/responses/create-a-response.md)
+* `UpdateWorkspaceRequest`: enum property\_added
+  * Used by [`PATCH /workspaces/{id}`](api/api-reference/workspaces/update-a-workspace.md)
+* `DecisionsResponse`: new property `usage.cost_details`; new property `usage.is_byok`; property `cost` updated
+  * Used by [`POST /api/alpha/decisions`](api/api-reference/alphadecisions/submit-a-decisions-request.md), [`POST /systemone`](api/api-reference/systemone/submit-a-system-one-request.md)
+* `ChatRequest`: new property `reasoning.max_tokens`
+  * Used by [`POST /chat/completions`](api/api-reference/chat/create-a-chat-completion.md), [`POST /presets/{slug}/chat/completions`](api/api-reference/presets/create-a-preset-from-a-chat-completions-request-body.md)
+
+**November 4, 2026**
+
+## Breaking changes
+
+* `UpdatePrivateEndpointParametersRequest`: schema object removedAction required
+  * **Migration: use [`PATCH /private-endpoints/{id}`](api/api-reference/private-endpoints/update-a-private-endpoint.md) with `declared_parameters`.** The deprecated `PUT /private-endpoints/{id}/parameters` endpoint and its `UpdatePrivateEndpointParametersRequest` schema have been removed and now return 404. Send `{ "declared_parameters": [...] }` to [`PATCH /private-endpoints/{id}`](api/api-reference/private-endpoints/update-a-private-endpoint.md) (`UpdatePrivateEndpointRequest`) instead.
+* `UpdatePrivateEndpointPricingRequest`: schema object removedAction required
+  * **Migration: use [`PATCH /private-endpoints/{id}`](api/api-reference/private-endpoints/update-a-private-endpoint.md) with `pricing`.** The deprecated `PUT /private-endpoints/{id}/pricing` endpoint and its `UpdatePrivateEndpointPricingRequest` schema have been removed and now return 404. Send `{ "pricing": { ... } }` to [`PATCH /private-endpoints/{id}`](api/api-reference/private-endpoints/update-a-private-endpoint.md) (`UpdatePrivateEndpointRequest`) instead.
+* `CreatePrivateEndpointRequest`: properties `max_completion_tokens` object removedAction required
+  * Used by [`POST /private-endpoints`](api/api-reference/private-endpoints/create-a-private-endpoint.md)
+  * **Migration: move `max_completion_tokens` to `settings.max_completion_tokens`.** `POST /private-endpoints` no longer reads a top-level `max_completion_tokens` field (a top-level value is ignored). Pass `{ "settings": { "max_completion_tokens": ... } }` instead, matching [`PATCH /private-endpoints/{id}`](api/api-reference/private-endpoints/update-a-private-endpoint.md). Response objects continue to include `max_completion_tokens`.
+* `/private-endpoints/{id}/parameters`: endpoint object removedAction required
+  * **Migration: use [`PATCH /private-endpoints/{id}`](api/api-reference/private-endpoints/update-a-private-endpoint.md) with `declared_parameters`.** The deprecated `PUT /private-endpoints/{id}/parameters` endpoint has been removed and now returns 404. Send `{ "declared_parameters": [...] }` to [`PATCH /private-endpoints/{id}`](api/api-reference/private-endpoints/update-a-private-endpoint.md) instead.
+* `/private-endpoints/{id}/pricing`: endpoint object removedAction required
+  * **Migration: use [`PATCH /private-endpoints/{id}`](api/api-reference/private-endpoints/update-a-private-endpoint.md) with `pricing`.** The deprecated `PUT /private-endpoints/{id}/pricing` endpoint has been removed and now returns 404. Send `{ "pricing": { ... } }` to [`PATCH /private-endpoints/{id}`](api/api-reference/private-endpoints/update-a-private-endpoint.md) instead.
+* `EndpointRef`: schema object removedNo action needed
+* `EndpointSummary`: schema object removedNo action needed
+* `EndpointTestProfile`: schema object removedNo action needed
+* `ProviderEndpointStats`: schema object removedNo action needed
+* `ProviderEndpointStatsAvailable`: schema object removedNo action needed
+* `ProviderEndpointStatsUnavailable`: schema object removedNo action needed
+* `ProviderEndpoints`: schema object removedNo action needed
+* `ProviderEndpointsResponse`: schema object removedNo action needed
+* `/providers/{provider_slug}/endpoints`: endpoint object removedNo action needed
+
+## New endpoints
+
+* `GET /providers/{provider_slug}/endpoints`: List a provider's endpoints with provider-wide stats
+
+## Modified endpoints
+
+* [`POST /private-endpoints`](api/api-reference/private-endpoints/create-a-private-endpoint.md): description updated
+* [`GET /byok`](api/api-reference/byok/list-byok-provider-credentials.md): parameter `provider` updated
+* [`POST /private-providers`](api/api-reference/private-providers/create-a-private-provider.md): description updated
+* [`POST /keys`](api/api-reference/api-keys/create-a-new-api-key.md): description updated
+
+## New schemas
+
+* `Extractions`
+  * Used by [`GET /endpoints/zdr`](api/api-reference/endpoints/preview-the-impact-of-zdr-on-the-available-endpoints.md), [`GET /models/{author}/{slug}/endpoints`](api/api-reference/endpoints/list-all-endpoints-for-a-model.md)
+* `EndpointRef`
+  * Used by `GET /providers/{provider_slug}/endpoints`
+* `EndpointSummary`
+  * Used by `GET /providers/{provider_slug}/endpoints`
+* `EndpointTestProfile`
+  * Used by `GET /providers/{provider_slug}/endpoints`
+* `ProviderEndpointStats`
+  * Used by `GET /providers/{provider_slug}/endpoints`
+* `ProviderEndpointStatsAvailable`
+  * Used by `GET /providers/{provider_slug}/endpoints`
+* `ProviderEndpointStatsUnavailable`
+  * Used by `GET /providers/{provider_slug}/endpoints`
+* `ProviderEndpoints`
+  * Used by `GET /providers/{provider_slug}/endpoints`
+* `ProviderEndpointsResponse`
+  * Used by `GET /providers/{provider_slug}/endpoints`
+* `DecisionsRefusalAnswer`
+  * Used by [`POST /api/alpha/decisions`](api/api-reference/alphadecisions/submit-a-decisions-request.md), [`POST /systemone`](api/api-reference/systemone/submit-a-system-one-request.md)
+* `DecisionsUrlCitationAnnotation`
+  * Used by [`POST /api/alpha/decisions`](api/api-reference/alphadecisions/submit-a-decisions-request.md), [`POST /systemone`](api/api-reference/systemone/submit-a-system-one-request.md)
+* `CompactionTriggerItem`
+  * Used by [`POST /presets/{slug}/responses`](api/api-reference/presets/create-a-preset-from-a-responses-request-body.md), [`POST /responses`](api/api-reference/responses/create-a-response.md)
+* `OutputCompactionItem`
+  * Used by [`GET /batches/{id}`](api/api-reference/batch/get-a-batch.md), [`POST /batches`](api/api-reference/batch/create-a-batch.md), [`POST /responses`](api/api-reference/responses/create-a-response.md)
+* `OutputItemCompaction`
+  * Used by [`GET /batches/{id}`](api/api-reference/batch/get-a-batch.md), [`POST /batches`](api/api-reference/batch/create-a-batch.md), [`POST /responses`](api/api-reference/responses/create-a-response.md)
+
+## Modified schemas
+
+* `BYOKProviderSlug`: enum property\_added
+
+  **4 endpoints using this schema**
+
+  * [`GET /byok`](api/api-reference/byok/list-byok-provider-credentials.md)
+  * [`GET /byok/{id}`](api/api-reference/byok/get-a-byok-provider-credential.md)
+  * [`PATCH /byok/{id}`](api/api-reference/byok/update-a-byok-provider-credential.md)
+  * [`POST /byok`](api/api-reference/byok/create-a-byok-provider-credential.md)
+* `MessagesStartEvent`: property `provider` updated
+  * Used by [`POST /messages`](api/api-reference/anthropic-messages/create-a-message.md)
+* `ProviderName`: enum property\_added
+
+  **15 endpoints using this schema**
+
+  * [`GET /endpoints/zdr`](api/api-reference/endpoints/preview-the-impact-of-zdr-on-the-available-endpoints.md)
+  * [`GET /models/{author}/{slug}/endpoints`](api/api-reference/endpoints/list-all-endpoints-for-a-model.md)
+  * [`POST /api/alpha/decisions`](api/api-reference/alphadecisions/submit-a-decisions-request.md)
+  * [`POST /api/alpha/extractions`](api/api-reference/alphaextractions/submit-an-extractions-request.md)
+  * [`POST /batches`](api/api-reference/batch/create-a-batch.md)
+  * [`POST /chat/completions`](api/api-reference/chat/create-a-chat-completion.md)
+  * [`POST /embeddings`](api/api-reference/embeddings/submit-an-embedding-request.md)
+  * [`POST /images`](api/api-reference/images/generate-an-image.md)
+  * [`POST /messages`](api/api-reference/anthropic-messages/create-a-message.md)
+  * [`POST /presets/{slug}/chat/completions`](api/api-reference/presets/create-a-preset-from-a-chat-completions-request-body.md)
+  * [`POST /presets/{slug}/messages`](api/api-reference/presets/create-a-preset-from-a-messages-request-body.md)
+  * [`POST /presets/{slug}/responses`](api/api-reference/presets/create-a-preset-from-a-responses-request-body.md)
+  * [`POST /rerank`](api/api-reference/rerank/submit-a-rerank-request.md)
+  * [`POST /responses`](api/api-reference/responses/create-a-response.md)
+  * [`POST /systemone`](api/api-reference/systemone/submit-a-system-one-request.md)
+* `ProviderOptions`: new property `parallel`
+
+  **15 endpoints using this schema**
+
+  * [`POST /api/alpha/decisions`](api/api-reference/alphadecisions/submit-a-decisions-request.md)
+  * [`POST /api/alpha/extractions`](api/api-reference/alphaextractions/submit-an-extractions-request.md)
+  * [`POST /audio/speech`](api/api-reference/tts/create-speech.md)
+  * [`POST /audio/transcriptions`](api/api-reference/stt/create-transcription.md)
+  * [`POST /chat/completions`](api/api-reference/chat/create-a-chat-completion.md)
+  * [`POST /embeddings`](api/api-reference/embeddings/submit-an-embedding-request.md)
+  * [`POST /images`](api/api-reference/images/generate-an-image.md)
+  * [`POST /messages`](api/api-reference/anthropic-messages/create-a-message.md)
+  * [`POST /presets/{slug}/chat/completions`](api/api-reference/presets/create-a-preset-from-a-chat-completions-request-body.md)
+  * [`POST /presets/{slug}/messages`](api/api-reference/presets/create-a-preset-from-a-messages-request-body.md)
+  * [`POST /presets/{slug}/responses`](api/api-reference/presets/create-a-preset-from-a-responses-request-body.md)
+  * [`POST /rerank`](api/api-reference/rerank/submit-a-rerank-request.md)
+  * [`POST /responses`](api/api-reference/responses/create-a-response.md)
+  * [`POST /systemone`](api/api-reference/systemone/submit-a-system-one-request.md)
+  * [`POST /videos`](api/api-reference/video-generation/submit-a-video-generation-request.md)
+* `ProviderResponse`: enum property\_added
+  * Used by [`GET /generation`](api/api-reference/generations/get-request-&-usage-metadata-for-a-generation.md)
+* `GenerationResponse`: property `api_type` updated
+  * Used by [`GET /generation`](api/api-reference/generations/get-request-&-usage-metadata-for-a-generation.md)
+* `PerfLast30mByWorkload`: new property `extractions`
+  * Used by [`GET /endpoints/zdr`](api/api-reference/endpoints/preview-the-impact-of-zdr-on-the-available-endpoints.md), [`GET /models/{author}/{slug}/endpoints`](api/api-reference/endpoints/list-all-endpoints-for-a-model.md)
+* `DecisionsResponse`: new property `annotations`; description updated; new union variant added
+  * Used by [`POST /api/alpha/decisions`](api/api-reference/alphadecisions/submit-a-decisions-request.md), [`POST /systemone`](api/api-reference/systemone/submit-a-system-one-request.md)
+* `STTRequest`:
+  * description updated
+  * new property `provider.allow_fallbacks`
+  * new property `provider.ignore`
+  * new property `provider.only`
+  * new property `provider.order`
+  * Used by [`POST /audio/transcriptions`](api/api-reference/stt/create-transcription.md)
+* `SpeechRequest`:
+  * description updated
+  * new property `provider.allow_fallbacks`
+  * new property `provider.ignore`
+  * new property `provider.only`
+  * new property `provider.order`
+  * Used by [`POST /audio/speech`](api/api-reference/tts/create-speech.md)
+* `VideoGenerationRequest`:
+  * description updated
+  * new property `provider.ignore`
+  * new property `provider.only`
+  * new property `provider.order`
+  * Used by [`POST /videos`](api/api-reference/video-generation/submit-a-video-generation-request.md)
+* `WorkspaceMember`: description updated; enum property\_added
+  * Used by [`GET /workspaces/{id}/members`](api/api-reference/workspaces/list-workspace-members.md), [`POST /workspaces/{id}/members/add`](api/api-reference/workspaces/bulk-add-members-to-a-workspace.md)
+* `AlignmentResponsesRejected`: new union variant added
+  * Used by [`GET /batches/{id}`](api/api-reference/batch/get-a-batch.md), [`POST /batches`](api/api-reference/batch/create-a-batch.md), [`POST /responses`](api/api-reference/responses/create-a-response.md)
+* `BaseResponsesResult`: new union variant added
+  * Used by [`GET /batches/{id}`](api/api-reference/batch/get-a-batch.md), [`POST /batches`](api/api-reference/batch/create-a-batch.md), [`POST /responses`](api/api-reference/responses/create-a-response.md)
+* `OutputItemAddedEvent`: new union variant added
+  * Used by [`POST /responses`](api/api-reference/responses/create-a-response.md)
+* `OutputItemDoneEvent`: new union variant added
+  * Used by [`POST /responses`](api/api-reference/responses/create-a-response.md)
+* `OutputItems`: new union variant added
+  * Used by [`GET /batches/{id}`](api/api-reference/batch/get-a-batch.md), [`POST /batches`](api/api-reference/batch/create-a-batch.md), [`POST /responses`](api/api-reference/responses/create-a-response.md)
+
+**November 3, 2026**
+
+## Modified endpoints
+
+* [`POST /api/alpha/decisions`](api/api-reference/alphadecisions/submit-a-decisions-request.md): description updated
+* [`GET /byok`](api/api-reference/byok/list-byok-provider-credentials.md): parameter `provider` updated
+* [`GET /models`](api/api-reference/models/list-all-models-and-their-properties.md): new parameter `endpoints`
+
+## New schemas
+
+* `DecisionsUsageInputTokensDetails`
+  * Used by [`POST /api/alpha/decisions`](api/api-reference/alphadecisions/submit-a-decisions-request.md), [`POST /systemone`](api/api-reference/systemone/submit-a-system-one-request.md)
+
+## Modified schemas
+
+* `DecisionsBoxQuestion`: description updated
+  * Used by [`POST /api/alpha/decisions`](api/api-reference/alphadecisions/submit-a-decisions-request.md), [`POST /systemone`](api/api-reference/systemone/submit-a-system-one-request.md)
+* `DecisionsRequest`: description updated
+  * Used by [`POST /api/alpha/decisions`](api/api-reference/alphadecisions/submit-a-decisions-request.md), [`POST /systemone`](api/api-reference/systemone/submit-a-system-one-request.md)
+* `ReasoningFormat`: enum property\_added
+
+  **6 endpoints using this schema**
+
+  * [`GET /batches/{id}`](api/api-reference/batch/get-a-batch.md)
+  * [`POST /batches`](api/api-reference/batch/create-a-batch.md)
+  * [`POST /chat/completions`](api/api-reference/chat/create-a-chat-completion.md)
+  * [`POST /presets/{slug}/chat/completions`](api/api-reference/presets/create-a-preset-from-a-chat-completions-request-body.md)
+  * [`POST /presets/{slug}/responses`](api/api-reference/presets/create-a-preset-from-a-responses-request-body.md)
+  * [`POST /responses`](api/api-reference/responses/create-a-response.md)
+* `DecisionsResponse`: new property `usage.input_tokens_details`
+  * Used by [`POST /api/alpha/decisions`](api/api-reference/alphadecisions/submit-a-decisions-request.md), [`POST /systemone`](api/api-reference/systemone/submit-a-system-one-request.md)
+* `ResponseIncludesEnum`: enum property\_added
+  * Used by [`POST /presets/{slug}/responses`](api/api-reference/presets/create-a-preset-from-a-responses-request-body.md), [`POST /responses`](api/api-reference/responses/create-a-response.md)
+* `BYOKProviderSlug`: enum property\_added
+
+  **4 endpoints using this schema**
+
+  * [`GET /byok`](api/api-reference/byok/list-byok-provider-credentials.md)
+  * [`GET /byok/{id}`](api/api-reference/byok/get-a-byok-provider-credential.md)
+  * [`PATCH /byok/{id}`](api/api-reference/byok/update-a-byok-provider-credential.md)
+  * [`POST /byok`](api/api-reference/byok/create-a-byok-provider-credential.md)
+* `MessagesStartEvent`: property `provider` updated
+  * Used by [`POST /messages`](api/api-reference/anthropic-messages/create-a-message.md)
+* `ProviderName`: enum property\_added
+
+  **15 endpoints using this schema**
+
+  * [`GET /endpoints/zdr`](api/api-reference/endpoints/preview-the-impact-of-zdr-on-the-available-endpoints.md)
+  * [`GET /models/{author}/{slug}/endpoints`](api/api-reference/endpoints/list-all-endpoints-for-a-model.md)
+  * [`POST /api/alpha/decisions`](api/api-reference/alphadecisions/submit-a-decisions-request.md)
+  * [`POST /api/alpha/extractions`](api/api-reference/alphaextractions/submit-an-extractions-request.md)
+  * [`POST /batches`](api/api-reference/batch/create-a-batch.md)
+  * [`POST /chat/completions`](api/api-reference/chat/create-a-chat-completion.md)
+  * [`POST /embeddings`](api/api-reference/embeddings/submit-an-embedding-request.md)
+  * [`POST /images`](api/api-reference/images/generate-an-image.md)
+  * [`POST /messages`](api/api-reference/anthropic-messages/create-a-message.md)
+  * [`POST /presets/{slug}/chat/completions`](api/api-reference/presets/create-a-preset-from-a-chat-completions-request-body.md)
+  * [`POST /presets/{slug}/messages`](api/api-reference/presets/create-a-preset-from-a-messages-request-body.md)
+  * [`POST /presets/{slug}/responses`](api/api-reference/presets/create-a-preset-from-a-responses-request-body.md)
+  * [`POST /rerank`](api/api-reference/rerank/submit-a-rerank-request.md)
+  * [`POST /responses`](api/api-reference/responses/create-a-response.md)
+  * [`POST /systemone`](api/api-reference/systemone/submit-a-system-one-request.md)
+* `ProviderOptions`: new property `pearl-research`
+
+  **15 endpoints using this schema**
+
+  * [`POST /api/alpha/decisions`](api/api-reference/alphadecisions/submit-a-decisions-request.md)
+  * [`POST /api/alpha/extractions`](api/api-reference/alphaextractions/submit-an-extractions-request.md)
+  * [`POST /audio/speech`](api/api-reference/tts/create-speech.md)
+  * [`POST /audio/transcriptions`](api/api-reference/stt/create-transcription.md)
+  * [`POST /chat/completions`](api/api-reference/chat/create-a-chat-completion.md)
+  * [`POST /embeddings`](api/api-reference/embeddings/submit-an-embedding-request.md)
+  * [`POST /images`](api/api-reference/images/generate-an-image.md)
+  * [`POST /messages`](api/api-reference/anthropic-messages/create-a-message.md)
+  * [`POST /presets/{slug}/chat/completions`](api/api-reference/presets/create-a-preset-from-a-chat-completions-request-body.md)
+  * [`POST /presets/{slug}/messages`](api/api-reference/presets/create-a-preset-from-a-messages-request-body.md)
+  * [`POST /presets/{slug}/responses`](api/api-reference/presets/create-a-preset-from-a-responses-request-body.md)
+  * [`POST /rerank`](api/api-reference/rerank/submit-a-rerank-request.md)
+  * [`POST /responses`](api/api-reference/responses/create-a-response.md)
+  * [`POST /systemone`](api/api-reference/systemone/submit-a-system-one-request.md)
+  * [`POST /videos`](api/api-reference/video-generation/submit-a-video-generation-request.md)
+* `ProviderResponse`: enum property\_added
+  * Used by [`GET /generation`](api/api-reference/generations/get-request-&-usage-metadata-for-a-generation.md)
+* `ProviderOptions`: new property `antdigital`
+
+  **15 endpoints using this schema**
+
+  * [`POST /api/alpha/decisions`](api/api-reference/alphadecisions/submit-a-decisions-request.md)
+  * [`POST /api/alpha/extractions`](api/api-reference/alphaextractions/submit-an-extractions-request.md)
+  * [`POST /audio/speech`](api/api-reference/tts/create-speech.md)
+  * [`POST /audio/transcriptions`](api/api-reference/stt/create-transcription.md)
+  * [`POST /chat/completions`](api/api-reference/chat/create-a-chat-completion.md)
+  * [`POST /embeddings`](api/api-reference/embeddings/submit-an-embedding-request.md)
+  * [`POST /images`](api/api-reference/images/generate-an-image.md)
+  * [`POST /messages`](api/api-reference/anthropic-messages/create-a-message.md)
+  * [`POST /presets/{slug}/chat/completions`](api/api-reference/presets/create-a-preset-from-a-chat-completions-request-body.md)
+  * [`POST /presets/{slug}/messages`](api/api-reference/presets/create-a-preset-from-a-messages-request-body.md)
+  * [`POST /presets/{slug}/responses`](api/api-reference/presets/create-a-preset-from-a-responses-request-body.md)
+  * [`POST /rerank`](api/api-reference/rerank/submit-a-rerank-request.md)
+  * [`POST /responses`](api/api-reference/responses/create-a-response.md)
+  * [`POST /systemone`](api/api-reference/systemone/submit-a-system-one-request.md)
+  * [`POST /videos`](api/api-reference/video-generation/submit-a-video-generation-request.md)
+
+**November 2, 2026**
+
+## Modified schemas
+
+* `CreateGuardrailRequest`: description updated
+  * Used by [`POST /guardrails`](api/api-reference/guardrails/create-a-guardrail.md)
+* `Guardrail`: description updated
+
+  **4 endpoints using this schema**
+
+  * [`GET /guardrails`](api/api-reference/guardrails/list-guardrails.md)
+  * [`GET /guardrails/{id}`](api/api-reference/guardrails/get-a-guardrail.md)
+  * [`PATCH /guardrails/{id}`](api/api-reference/guardrails/update-a-guardrail.md)
+  * [`POST /guardrails`](api/api-reference/guardrails/create-a-guardrail.md)
+* `UpdateGuardrailRequest`: description updated
+  * Used by [`PATCH /guardrails/{id}`](api/api-reference/guardrails/update-a-guardrail.md)
+
+**October 31, 2026**
+
+## Breaking changes
+
+* `PrivateProviderDataPolicy`: schema object removedAction required
+  * **Migration: remove references to `PrivateProviderDataPolicy` and `data_policy`.** Private providers no longer accept or return a configurable `data_policy`; newly created private providers automatically apply a permissive policy (no prompt retention, training, or publication) so their endpoints pass account and guardrail data-policy filters.
+* `CreatePrivateProviderRequest`: properties `data_policy` object removedAction required
+  * Used by [`POST /private-providers`](api/api-reference/private-providers/create-a-private-provider.md)
+  * **Migration: omit `data_policy` when creating a private provider.** Generated SDKs and Terraform configurations remove `data_policy` from `POST /private-providers` (raw HTTP `POST` requests that still include `data_policy` succeed and ignore the field). Newly created private providers are automatically recorded as not retaining, training on, or publishing prompts.
+* `PrivateProvider`: properties `data_policy` object removedAction required
+
+  * **Migration: stop reading `data_policy` from private provider responses.** `GET /private-providers`, `GET /private-providers/{slug}`, `POST /private-providers`, and `PATCH /private-providers/{slug}` no longer include `data_policy` on `PrivateProvider` objects. Existing private providers retain the routing policy they were created with.
+
+  **4 endpoints using this schema**
+
+  * [`GET /private-providers`](api/api-reference/private-providers/list-private-providers.md)
+  * [`GET /private-providers/{slug}`](api/api-reference/private-providers/get-a-private-provider.md)
+  * [`PATCH /private-providers/{slug}`](api/api-reference/private-providers/update-a-private-provider.md)
+  * [`POST /private-providers`](api/api-reference/private-providers/create-a-private-provider.md)
+* `PrivateProvider`: required `data_policy` property removedNo action needed
+
+  * Companion to the `PrivateProvider` `data_policy` removal above.
+
+  **4 endpoints using this schema**
+
+  * [`GET /private-providers`](api/api-reference/private-providers/list-private-providers.md)
+  * [`GET /private-providers/{slug}`](api/api-reference/private-providers/get-a-private-provider.md)
+  * [`PATCH /private-providers/{slug}`](api/api-reference/private-providers/update-a-private-provider.md)
+  * [`POST /private-providers`](api/api-reference/private-providers/create-a-private-provider.md)
+* `UpdatePrivateProviderRequest`: properties `data_policy` object removedAction required
+  * Used by [`PATCH /private-providers/{slug}`](api/api-reference/private-providers/update-a-private-provider.md)
+  * **Migration: remove `data_policy` from `PATCH /private-providers/{slug}` requests.** `data_policy` is ignored on updates, and a `PATCH` body containing only `data_policy` now returns 400 (`Provide at least one field to update`) instead of 200. Remove `PATCH` calls that only updated `data_policy`, or include another updatable field such as `display_name` or `base_url`.
+
+## Modified endpoints
+
+* [`PATCH /private-providers/{slug}`](api/api-reference/private-providers/update-a-private-provider.md): description updated
+
+## Modified schemas
+
+* `CreatePrivateProviderRequest`: description updated; example property\_added
+  * Used by [`POST /private-providers`](api/api-reference/private-providers/create-a-private-provider.md)
+* `PrivateProvider`: example modified
+
+  **4 endpoints using this schema**
+
+  * [`GET /private-providers`](api/api-reference/private-providers/list-private-providers.md)
+  * [`GET /private-providers/{slug}`](api/api-reference/private-providers/get-a-private-provider.md)
+  * [`PATCH /private-providers/{slug}`](api/api-reference/private-providers/update-a-private-provider.md)
+  * [`POST /private-providers`](api/api-reference/private-providers/create-a-private-provider.md)
+
+**October 30, 2026**
+
+## Breaking changes
+
+* `CreateExternalUserRequest.user`: pattern `^[^\u0000]+$` modifiedNo action needed
+  * Used by [`POST /external-users`](api/api-reference/external-users/register-an-external-user.md)
+* `ExternalUser.user`: pattern `^[^\u0000]+$` modifiedNo action needed
+
+  **4 endpoints using this schema**
+
+  * [`GET /external-users`](api/api-reference/external-users/list-registered-external-users.md)
+  * [`GET /external-users/{user}`](api/api-reference/external-users/get-a-registered-external-user.md)
+  * [`PATCH /external-users/{user}`](api/api-reference/external-users/update-a-registered-external-user.md)
+  * [`POST /external-users`](api/api-reference/external-users/register-an-external-user.md)
+* `VaultSecretWriteRequest.value`: maxLength `65536` modifiedNo action needed
+  * Used by [`PUT /vault/interns/{internId}/secrets/{name}`](api/api-reference/vault/store-an-intern-secret.md), [`PUT /vault/secrets/{name}`](api/api-reference/vault/store-a-workspace-secret.md)
+* [`GET /external-users`](api/api-reference/external-users/list-registered-external-users.md): pattern `^[^\u0000]+$` modifiedNo action needed
+* [`DELETE /external-users/{user}`](api/api-reference/external-users/deactivate-a-registered-external-user.md): pattern `^[^\u0000]+$` modifiedNo action needed
+* [`GET /external-users/{user}`](api/api-reference/external-users/get-a-registered-external-user.md): pattern `^[^\u0000]+$` modifiedNo action needed
+* [`PATCH /external-users/{user}`](api/api-reference/external-users/update-a-registered-external-user.md): pattern `^[^\u0000]+$` modifiedNo action needed
+* `ExtractionDateField`: additionalProperties `false` object addedAction required
+  * Used by [`POST /api/alpha/extractions`](api/api-reference/alphaextractions/submit-an-extractions-request.md)
+  * **Migration: remove keys that are not in the field schema.** Each entry in `fields` now rejects unknown keys instead of dropping them silently. Before this release a per-field key such as `top_n`, `threshold`, or a misspelled `descripton` returned 200 and had no effect; it now returns 400 with a validation error naming the key. The accepted keys per field type are unchanged, so a request that already validated against the documented schema needs no change.
+* `ExtractionDatetimeField`: additionalProperties `false` object addedAction required
+  * Used by [`POST /api/alpha/extractions`](api/api-reference/alphaextractions/submit-an-extractions-request.md)
+  * **Migration: remove keys that are not in the field schema.** Each entry in `fields` now rejects unknown keys instead of dropping them silently. Before this release a per-field key such as `top_n`, `threshold`, or a misspelled `descripton` returned 200 and had no effect; it now returns 400 with a validation error naming the key. The accepted keys per field type are unchanged, so a request that already validated against the documented schema needs no change.
+* `ExtractionDurationField`: additionalProperties `false` object addedAction required
+  * Used by [`POST /api/alpha/extractions`](api/api-reference/alphaextractions/submit-an-extractions-request.md)
+  * **Migration: remove keys that are not in the field schema.** Each entry in `fields` now rejects unknown keys instead of dropping them silently. Before this release a per-field key such as `top_n`, `threshold`, or a misspelled `descripton` returned 200 and had no effect; it now returns 400 with a validation error naming the key. The accepted keys per field type are unchanged, so a request that already validated against the documented schema needs no change.
+* `ExtractionEstimateField`: additionalProperties `false` object addedAction required
+  * Used by [`POST /api/alpha/extractions`](api/api-reference/alphaextractions/submit-an-extractions-request.md)
+  * **Migration: remove keys that are not in the field schema.** Each entry in `fields` now rejects unknown keys instead of dropping them silently. Before this release a per-field key such as `top_n`, `threshold`, or a misspelled `descripton` returned 200 and had no effect; it now returns 400 with a validation error naming the key. The accepted keys per field type are unchanged, so a request that already validated against the documented schema needs no change.
+* `ExtractionForecastField`: additionalProperties `false` object addedAction required
+  * Used by [`POST /api/alpha/extractions`](api/api-reference/alphaextractions/submit-an-extractions-request.md)
+  * **Migration: remove keys that are not in the field schema.** Each entry in `fields` now rejects unknown keys instead of dropping them silently. Before this release a per-field key such as `top_n`, `threshold`, or a misspelled `descripton` returned 200 and had no effect; it now returns 400 with a validation error naming the key. The accepted keys per field type are unchanged, so a request that already validated against the documented schema needs no change.
+* `ExtractionListField`: additionalProperties `false` object addedAction required
+  * Used by [`POST /api/alpha/extractions`](api/api-reference/alphaextractions/submit-an-extractions-request.md)
+  * **Migration: remove keys that are not in the field schema.** Each entry in `fields` now rejects unknown keys instead of dropping them silently. Before this release a per-field key such as `top_n`, `threshold`, or a misspelled `descripton` returned 200 and had no effect; it now returns 400 with a validation error naming the key. The accepted keys per field type are unchanged, so a request that already validated against the documented schema needs no change.
+* `ExtractionNumberField`: additionalProperties `false` object addedAction required
+  * Used by [`POST /api/alpha/extractions`](api/api-reference/alphaextractions/submit-an-extractions-request.md)
+  * **Migration: remove keys that are not in the field schema.** Each entry in `fields` now rejects unknown keys instead of dropping them silently. Before this release a per-field key such as `top_n`, `threshold`, or a misspelled `descripton` returned 200 and had no effect; it now returns 400 with a validation error naming the key. The accepted keys per field type are unchanged, so a request that already validated against the documented schema needs no change.
+* `ExtractionTextField`: additionalProperties `false` object addedAction required
+  * Used by [`POST /api/alpha/extractions`](api/api-reference/alphaextractions/submit-an-extractions-request.md)
+  * **Migration: remove keys that are not in the field schema.** Each entry in `fields` now rejects unknown keys instead of dropping them silently. Before this release a per-field key such as `top_n`, `threshold`, or a misspelled `descripton` returned 200 and had no effect; it now returns 400 with a validation error naming the key. The accepted keys per field type are unchanged, so a request that already validated against the documented schema needs no change.
+* `ExtractionTimeField`: additionalProperties `false` object addedAction required
+  * Used by [`POST /api/alpha/extractions`](api/api-reference/alphaextractions/submit-an-extractions-request.md)
+  * **Migration: remove keys that are not in the field schema.** Each entry in `fields` now rejects unknown keys instead of dropping them silently. Before this release a per-field key such as `top_n`, `threshold`, or a misspelled `descripton` returned 200 and had no effect; it now returns 400 with a validation error naming the key. The accepted keys per field type are unchanged, so a request that already validated against the documented schema needs no change.
+* `ExtractionsRequest`: additionalProperties `false` object addedAction required
+  * Used by [`POST /api/alpha/extractions`](api/api-reference/alphaextractions/submit-an-extractions-request.md)
+  * **Migration: remove keys that are not in the request schema.** The top level of the request body now rejects unknown keys instead of dropping them silently; such a request returns 400 with a validation error naming the key. Also removed in this release: `provider.options.scaledown.context_chars`, which was accepted but never changed the response (`context` is not returned); delete it from ScaleDown requests. Additive changes you may opt into: list answers now carry a per-item `confidences` array, ScaleDown accepts `format: "pdf"` assets and answers read from them report `source: "document"`, and Inception Mercury can extract every text field in one upstream question with `provider.options.inception.group_fields: true` (default stays one question per field).
+
+## New endpoints
+
+* [`POST /api/alpha/extractions`](api/api-reference/alphaextractions/submit-an-extractions-request.md): Submit an Extractions request
+
+## Modified endpoints
+
+* [`POST /analytics/query`](api/api-reference/analytics/query-analytics-data.md): request schema updated
+* [`POST /audio/transcriptions`](api/api-reference/stt/create-transcription.md): request schema updated
+* [`POST /vault/interns/{internId}/secrets/copy`](api/api-reference/vault/copy-workspace-secrets-to-an-intern.md): description updated
+* [`DELETE /vault/interns/{internId}/secrets/{name}`](api/api-reference/vault/delete-an-intern-secret.md): description updated; parameter `name` updated
+* [`PUT /vault/interns/{internId}/secrets/{name}`](api/api-reference/vault/store-an-intern-secret.md): description updated
+* [`DELETE /vault/secrets/{name}`](api/api-reference/vault/delete-a-workspace-secret.md): description updated; parameter `name` updated
+* [`PUT /vault/secrets/{name}`](api/api-reference/vault/store-a-workspace-secret.md): description updated
+* [`GET /models/user`](api/api-reference/models/list-models-filtered-by-user-provider-preferences-privacy-settings-and-guardrails.md): new parameter `client`
+* [`GET /embeddings/models`](api/api-reference/embeddings/list-all-embeddings-models.md): response schema updated
+* [`GET /model/{author}/{slug}`](api/api-reference/models/get-a-model-by-its-slug.md): response schema updated
+* [`GET /models`](api/api-reference/models/list-all-models-and-their-properties.md): response schema updated
+* [`GET /models/user`](api/api-reference/models/list-models-filtered-by-user-provider-preferences-privacy-settings-and-guardrails.md): description updated; response schema updated
+* [`GET /keys`](api/api-reference/api-keys/list-api-keys.md): description updated
+* [`POST /keys`](api/api-reference/api-keys/create-a-new-api-key.md): description updated
+
+## New response codes
+
+* [`GET /keys`](api/api-reference/api-keys/list-api-keys.md): now returns `403`
+* [`DELETE /keys/{hash}`](api/api-reference/api-keys/delete-an-api-key.md): now returns `403`
+* [`GET /keys/{hash}`](api/api-reference/api-keys/get-a-single-api-key.md): now returns `403`
+
+## New schemas
+
+* `ClassifierFiltersFilter`
+  * Used by [`POST /analytics/query`](api/api-reference/analytics/query-analytics-data.md)
+* `ClassifierScalarFilter`
+  * Used by [`POST /analytics/query`](api/api-reference/analytics/query-analytics-data.md)
+* `ClassifierScalarFilterOperator`
+  * Used by [`POST /analytics/query`](api/api-reference/analytics/query-analytics-data.md)
+* `ClassifierSetFilter`
+  * Used by [`POST /analytics/query`](api/api-reference/analytics/query-analytics-data.md)
+* `ClassifierSetFilterOperator`
+  * Used by [`POST /analytics/query`](api/api-reference/analytics/query-analytics-data.md)
+* `Filter`
+  * Used by [`POST /analytics/query`](api/api-reference/analytics/query-analytics-data.md)
+* `Operator`
+  * Used by [`GET /analytics/meta`](api/api-reference/analytics/get-available-analytics-metrics-and-dimensions.md)
+* `ScalarFilter`
+  * Used by [`POST /analytics/query`](api/api-reference/analytics/query-analytics-data.md)
+* `ScalarFilterOperator`
+  * Used by [`POST /analytics/query`](api/api-reference/analytics/query-analytics-data.md)
+* `SetFilter`
+  * Used by [`POST /analytics/query`](api/api-reference/analytics/query-analytics-data.md)
+* `SetFilterOperator`
+  * Used by [`POST /analytics/query`](api/api-reference/analytics/query-analytics-data.md)
+* `ExtractionDateAnswer`
+  * Used by [`POST /api/alpha/extractions`](api/api-reference/alphaextractions/submit-an-extractions-request.md)
+* `ExtractionDateField`
+  * Used by [`POST /api/alpha/extractions`](api/api-reference/alphaextractions/submit-an-extractions-request.md)
+* `ExtractionDatetimeAnswer`
+  * Used by [`POST /api/alpha/extractions`](api/api-reference/alphaextractions/submit-an-extractions-request.md)
+* `ExtractionDatetimeField`
+  * Used by [`POST /api/alpha/extractions`](api/api-reference/alphaextractions/submit-an-extractions-request.md)
+* `ExtractionDurationAnswer`
+  * Used by [`POST /api/alpha/extractions`](api/api-reference/alphaextractions/submit-an-extractions-request.md)
+* `ExtractionDurationField`
+  * Used by [`POST /api/alpha/extractions`](api/api-reference/alphaextractions/submit-an-extractions-request.md)
+* `ExtractionEstimateAnswer`
+  * Used by [`POST /api/alpha/extractions`](api/api-reference/alphaextractions/submit-an-extractions-request.md)
+* `ExtractionEstimateField`
+  * Used by [`POST /api/alpha/extractions`](api/api-reference/alphaextractions/submit-an-extractions-request.md)
+* `ExtractionForecastAnswer`
+  * Used by [`POST /api/alpha/extractions`](api/api-reference/alphaextractions/submit-an-extractions-request.md)
+* `ExtractionForecastField`
+  * Used by [`POST /api/alpha/extractions`](api/api-reference/alphaextractions/submit-an-extractions-request.md)
+* `ExtractionForecastStep`
+  * Used by [`POST /api/alpha/extractions`](api/api-reference/alphaextractions/submit-an-extractions-request.md)
+* `ExtractionListAnswer`
+  * Used by [`POST /api/alpha/extractions`](api/api-reference/alphaextractions/submit-an-extractions-request.md)
+* `ExtractionListField`
+  * Used by [`POST /api/alpha/extractions`](api/api-reference/alphaextractions/submit-an-extractions-request.md)
+* `ExtractionNumberAnswer`
+  * Used by [`POST /api/alpha/extractions`](api/api-reference/alphaextractions/submit-an-extractions-request.md)
+* `ExtractionNumberField`
+  * Used by [`POST /api/alpha/extractions`](api/api-reference/alphaextractions/submit-an-extractions-request.md)
+* `ExtractionTextAnswer`
+  * Used by [`POST /api/alpha/extractions`](api/api-reference/alphaextractions/submit-an-extractions-request.md)
+* `ExtractionTextField`
+  * Used by [`POST /api/alpha/extractions`](api/api-reference/alphaextractions/submit-an-extractions-request.md)
+* `ExtractionTimeAnswer`
+  * Used by [`POST /api/alpha/extractions`](api/api-reference/alphaextractions/submit-an-extractions-request.md)
+* `ExtractionTimeField`
+  * Used by [`POST /api/alpha/extractions`](api/api-reference/alphaextractions/submit-an-extractions-request.md)
+* `ExtractionsRequest`
+  * Used by [`POST /api/alpha/extractions`](api/api-reference/alphaextractions/submit-an-extractions-request.md)
+* `ExtractionsResponse`
+  * Used by [`POST /api/alpha/extractions`](api/api-reference/alphaextractions/submit-an-extractions-request.md)
+* `ExtractionsUsage`
+  * Used by [`POST /api/alpha/extractions`](api/api-reference/alphaextractions/submit-an-extractions-request.md)
+* `ExtractionAsset`
+  * Used by [`POST /api/alpha/extractions`](api/api-reference/alphaextractions/submit-an-extractions-request.md)
+
+## Modified schemas
+
+* `ImageGenerationRequest`: description updated
+  * Used by [`POST /images`](api/api-reference/images/generate-an-image.md)
+* `VaultSecretWriteRequest`: description updated
+  * Used by [`PUT /vault/interns/{internId}/secrets/{name}`](api/api-reference/vault/store-an-intern-secret.md), [`PUT /vault/secrets/{name}`](api/api-reference/vault/store-a-workspace-secret.md)
+* `GenerationResponse`: property `api_type` updated
+  * Used by [`GET /generation`](api/api-reference/generations/get-request-&-usage-metadata-for-a-generation.md)
+* `ProviderOptions`: description updated
+
+  **15 endpoints using this schema**
+
+  * [`POST /api/alpha/decisions`](api/api-reference/alphadecisions/submit-a-decisions-request.md)
+  * [`POST /api/alpha/extractions`](api/api-reference/alphaextractions/submit-an-extractions-request.md)
+  * [`POST /audio/speech`](api/api-reference/tts/create-speech.md)
+  * [`POST /audio/transcriptions`](api/api-reference/stt/create-transcription.md)
+  * [`POST /chat/completions`](api/api-reference/chat/create-a-chat-completion.md)
+  * [`POST /embeddings`](api/api-reference/embeddings/submit-an-embedding-request.md)
+  * [`POST /images`](api/api-reference/images/generate-an-image.md)
+  * [`POST /messages`](api/api-reference/anthropic-messages/create-a-message.md)
+  * [`POST /presets/{slug}/chat/completions`](api/api-reference/presets/create-a-preset-from-a-chat-completions-request-body.md)
+  * [`POST /presets/{slug}/messages`](api/api-reference/presets/create-a-preset-from-a-messages-request-body.md)
+  * [`POST /presets/{slug}/responses`](api/api-reference/presets/create-a-preset-from-a-responses-request-body.md)
+  * [`POST /rerank`](api/api-reference/rerank/submit-a-rerank-request.md)
+  * [`POST /responses`](api/api-reference/responses/create-a-response.md)
+  * [`POST /systemone`](api/api-reference/systemone/submit-a-system-one-request.md)
+  * [`POST /videos`](api/api-reference/video-generation/submit-a-video-generation-request.md)
+* `ResponsesRequest`: new property `access_programs`
+  * Used by [`POST /presets/{slug}/responses`](api/api-reference/presets/create-a-preset-from-a-responses-request-body.md), [`POST /responses`](api/api-reference/responses/create-a-response.md)
+* `ExtractionDateAnswer`: description updated; enum property\_added
+  * Used by [`POST /api/alpha/extractions`](api/api-reference/alphaextractions/submit-an-extractions-request.md)
+* `ExtractionDatetimeAnswer`: description updated; enum property\_added
+  * Used by [`POST /api/alpha/extractions`](api/api-reference/alphaextractions/submit-an-extractions-request.md)
+* `ExtractionDurationAnswer`: description updated; enum property\_added
+  * Used by [`POST /api/alpha/extractions`](api/api-reference/alphaextractions/submit-an-extractions-request.md)
+* `ExtractionEstimateAnswer`: description updated; enum property\_added
+  * Used by [`POST /api/alpha/extractions`](api/api-reference/alphaextractions/submit-an-extractions-request.md)
+* `ExtractionForecastAnswer`: description updated; enum property\_added
+  * Used by [`POST /api/alpha/extractions`](api/api-reference/alphaextractions/submit-an-extractions-request.md)
+* `ExtractionListAnswer`: new property `confidences`; description updated; enum property\_added
+  * Used by [`POST /api/alpha/extractions`](api/api-reference/alphaextractions/submit-an-extractions-request.md)
+* `ExtractionNumberAnswer`: description updated; enum property\_added
+  * Used by [`POST /api/alpha/extractions`](api/api-reference/alphaextractions/submit-an-extractions-request.md)
+* `ExtractionTextAnswer`: description updated; enum property\_added
+  * Used by [`POST /api/alpha/extractions`](api/api-reference/alphaextractions/submit-an-extractions-request.md)
+* `ExtractionTimeAnswer`: description updated; enum property\_added
+  * Used by [`POST /api/alpha/extractions`](api/api-reference/alphaextractions/submit-an-extractions-request.md)
+* `ExtractionsRequest`: description updated; \$ref modified
+  * Used by [`POST /api/alpha/extractions`](api/api-reference/alphaextractions/submit-an-extractions-request.md)
+* `Model`: new property `endpoints` (always present)
+
+  **4 endpoints using this schema**
+
+  * [`GET /embeddings/models`](api/api-reference/embeddings/list-all-embeddings-models.md)
+  * [`GET /model/{author}/{slug}`](api/api-reference/models/get-a-model-by-its-slug.md)
+  * [`GET /models`](api/api-reference/models/list-all-models-and-their-properties.md)
+  * [`GET /models/user`](api/api-reference/models/list-models-filtered-by-user-provider-preferences-privacy-settings-and-guardrails.md)
+* `ModelResponse`: example modified
+  * Used by [`GET /model/{author}/{slug}`](api/api-reference/models/get-a-model-by-its-slug.md)
+
 **October 29, 2026**
 
 ## Breaking changes

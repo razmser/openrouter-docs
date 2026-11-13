@@ -852,10 +852,11 @@ components:
           description: Custom regex content filters applied to request messages
           example:
             - action: redact
+              is_enforced: true
               label: '[API_KEY]'
               pattern: \b(sk-[a-zA-Z0-9]{48})\b
           items:
-            $ref: '#/components/schemas/ContentFilterEntry'
+            $ref: '#/components/schemas/ContentFilterReadEntry'
           type:
             - array
             - 'null'
@@ -1201,6 +1202,26 @@ components:
         - slug
         - action
       type: object
+    ContentFilterReadEntry:
+      allOf:
+        - $ref: '#/components/schemas/ContentFilterEntry'
+        - properties:
+            is_enforced:
+              description: >-
+                Whether inference applies this pattern. False for a pattern
+                saved before pattern validation that is too complex to run
+                safely; it is kept but skipped until replaced.
+              example: true
+              type: boolean
+          required:
+            - is_enforced
+          type: object
+      description: A custom regex content filter, with whether inference enforces it.
+      example:
+        action: redact
+        is_enforced: true
+        label: '[API_KEY]'
+        pattern: \b(sk-[a-zA-Z0-9]{48})\b
   securitySchemes:
     apiKey:
       description: API key as bearer token in Authorization header

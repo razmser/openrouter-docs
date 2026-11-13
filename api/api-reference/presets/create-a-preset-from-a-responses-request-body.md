@@ -966,6 +966,8 @@ components:
         - reasoning.encrypted_content
         - output.encrypted_content
         - code_interpreter_call.outputs
+        - web_search_call.results
+        - web_search_call.action.sources
       example: file_search_call.results
       type: string
     Inputs:
@@ -4290,6 +4292,10 @@ components:
           type: integer
         id:
           type: string
+        retrieved_at:
+          description: The time the content was fetched, as an ISO 8601 timestamp.
+          example: '2026-11-12T05:27:43.000Z'
+          type: string
         status:
           $ref: '#/components/schemas/ToolCallStatus'
         title:
@@ -4341,6 +4347,15 @@ components:
             Deferred tools, found with tool_search and called with tool_exec:
             Sources: mcp__sentry (12).
           type: string
+        catalog_index_note:
+          description: >-
+            Whether the model read, after the catalog index, that the listed
+            sources are those connected so far. Replaying the item shows that
+            note only when this is true. Its wording follows the replaying
+            request: it names `WaitForMcpServers` only while that request
+            carries the tool.
+          example: true
+          type: boolean
         error:
           description: >-
             The error message when the tool call failed before producing a

@@ -280,6 +280,8 @@ components:
           enum:
             - batch
           type: string
+        output:
+          $ref: '#/components/schemas/BatchOutputReference'
         provider:
           description: >-
             Provider OpenRouter assigned to run the batch, using the same name
@@ -1407,6 +1409,8 @@ components:
           enum:
             - batch
           type: string
+        output:
+          $ref: '#/components/schemas/BatchOutputReference'
         provider:
           description: >-
             Provider OpenRouter assigned to run the batch, using the same name
@@ -1585,6 +1589,26 @@ components:
         - usage
         - results
         - error
+      type: object
+    BatchOutputReference:
+      description: >-
+        The output location of a batch submitted with `input`, whose `results`
+        are `null`. Returned only by `GET /batches/{id}`, once the batch has
+        ended and the provider reported an output folder or table. Batch lists
+        and responses for a batch with an unpaid charge leave it out.
+      properties:
+        uri:
+          description: >-
+            URI of the batch output in your own storage. For a Cloud Storage
+            input file it is the output folder, in the form
+            `gs://bucket/folder`, and the files are in the provider batch output
+            format. For a BigQuery input table it is the output table, in the
+            form `bq://project.dataset.table`.
+          example: >-
+            gs://my-bucket/openrouter-batch/output/org_abc/batch_123/batch_123/prediction-model-2026-01-01T00:00:00.000000Z
+          type: string
+      required:
+        - uri
       type: object
     ApiErrorType:
       description: Canonical OpenRouter error type, stable across all API formats
@@ -6363,6 +6387,15 @@ components:
             Deferred tools, found with tool_search and called with tool_exec:
             Sources: mcp__sentry (12).
           type: string
+        catalog_index_note:
+          description: >-
+            Whether the model read, after the catalog index, that the listed
+            sources are those connected so far. Replaying the item shows that
+            note only when this is true. Its wording follows the replaying
+            request: it names `WaitForMcpServers` only while that request
+            carries the tool.
+          example: true
+          type: boolean
         error:
           description: >-
             The error message when the tool call failed before producing a
@@ -6458,6 +6491,10 @@ components:
           description: The HTTP status code returned by the upstream URL fetch.
           type: integer
         id:
+          type: string
+        retrieved_at:
+          description: The time the content was fetched, as an ISO 8601 timestamp.
+          example: '2026-11-12T05:27:43.000Z'
           type: string
         status:
           $ref: '#/components/schemas/ToolCallStatus'

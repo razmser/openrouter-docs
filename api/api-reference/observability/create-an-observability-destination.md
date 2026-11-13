@@ -2192,6 +2192,17 @@ components:
                 {"Authorization": "Bearer xaat-xxx", "X-Axiom-Dataset":
                 "your-dataset"}
               type: object
+            metricsEndpoint:
+              description: >-
+                OTLP/HTTP metrics URL. Required when `shouldSendMetrics` (Send
+                OTLP metrics) is true; ignored otherwise.
+              type: string
+            shouldSendMetrics:
+              default: false
+              description: >-
+                Also send OTLP metrics for each delivered generation to the
+                metrics endpoint, with the same headers.
+              type: boolean
           required:
             - endpoint
           type: object

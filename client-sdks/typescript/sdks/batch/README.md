@@ -118,20 +118,6 @@ async function run() {
     batchSubmitBody: {
       endpoint: "/v1/chat/completions",
       model: "openai/gpt-4o",
-      requests: [
-        {
-          body: {
-            "messages": [
-              {
-                "content": "Summarize ...",
-                "role": "user",
-              },
-            ],
-            "model": "openai/gpt-4o",
-          },
-          customId: "req-0001",
-        },
-      ],
     },
   });
 
@@ -163,20 +149,6 @@ async function run() {
     batchSubmitBody: {
       endpoint: "/v1/chat/completions",
       model: "openai/gpt-4o",
-      requests: [
-        {
-          body: {
-            "messages": [
-              {
-                "content": "Summarize ...",
-                "role": "user",
-              },
-            ],
-            "model": "openai/gpt-4o",
-          },
-          customId: "req-0001",
-        },
-      ],
     },
   });
   if (res.ok) {
@@ -207,21 +179,6 @@ async function run() {
     batchSubmitBody: {
       endpoint: "/v1/messages",
       model: "openai/gpt-5-nano",
-      requests: [
-        {
-          body: {
-            "max_tokens": 1024,
-            "messages": [
-              {
-                "content": "Summarize ...",
-                "role": "user",
-              },
-            ],
-            "model": "openai/gpt-5-nano",
-          },
-          customId: "req-0001",
-        },
-      ],
     },
   });
 
@@ -253,21 +210,6 @@ async function run() {
     batchSubmitBody: {
       endpoint: "/v1/messages",
       model: "openai/gpt-5-nano",
-      requests: [
-        {
-          body: {
-            "max_tokens": 1024,
-            "messages": [
-              {
-                "content": "Summarize ...",
-                "role": "user",
-              },
-            ],
-            "model": "openai/gpt-5-nano",
-          },
-          customId: "req-0001",
-        },
-      ],
     },
   });
   if (res.ok) {
@@ -298,20 +240,6 @@ async function run() {
     batchSubmitBody: {
       endpoint: "/v1/chat/completions",
       model: "google/gemini-3.6-flash",
-      requests: [
-        {
-          body: {
-            "messages": [
-              {
-                "content": "Summarize ...",
-                "role": "user",
-              },
-            ],
-            "model": "google/gemini-3.6-flash",
-          },
-          customId: "req-0001",
-        },
-      ],
     },
   });
 
@@ -343,20 +271,6 @@ async function run() {
     batchSubmitBody: {
       endpoint: "/v1/chat/completions",
       model: "google/gemini-3.6-flash",
-      requests: [
-        {
-          body: {
-            "messages": [
-              {
-                "content": "Summarize ...",
-                "role": "user",
-              },
-            ],
-            "model": "google/gemini-3.6-flash",
-          },
-          customId: "req-0001",
-        },
-      ],
     },
   });
   if (res.ok) {
@@ -387,25 +301,6 @@ async function run() {
     batchSubmitBody: {
       endpoint: "/v1/responses",
       model: "openai/gpt-4o",
-      requests: [
-        {
-          body: {
-            "input": [
-              {
-                "content": [
-                  {
-                    "text": "Summarize ...",
-                    "type": "input_text",
-                  },
-                ],
-                "role": "user",
-              },
-            ],
-            "model": "openai/gpt-4o",
-          },
-          customId: "req-0001",
-        },
-      ],
     },
   });
 
@@ -437,25 +332,6 @@ async function run() {
     batchSubmitBody: {
       endpoint: "/v1/responses",
       model: "openai/gpt-4o",
-      requests: [
-        {
-          body: {
-            "input": [
-              {
-                "content": [
-                  {
-                    "text": "Summarize ...",
-                    "type": "input_text",
-                  },
-                ],
-                "role": "user",
-              },
-            ],
-            "model": "openai/gpt-4o",
-          },
-          customId: "req-0001",
-        },
-      ],
     },
   });
   if (res.ok) {

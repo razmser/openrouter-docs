@@ -45,6 +45,7 @@ The following destinations are currently available:
 * [S3 / S3-Compatible](broadcast/s3.md)
 * [Sentry](broadcast/sentry.md)
 * [Snowflake](broadcast/snowflake.md)
+* [Vantage](broadcast/vantage.md) (beta)
 * [W\&B Weave](broadcast/weave.md)
 * [Webhook](broadcast/webhook.md)
 
@@ -364,6 +365,7 @@ Each observability platform may recognize different metadata keys. See the desti
 * [Raindrop](broadcast/raindrop.md#custom-metadata) - Supports custom event properties for AI observability
 * [Ramp](broadcast/ramp.md#custom-metadata) - Supports OTLP span attributes for AI cost tracking
 * [Snowflake](broadcast/snowflake.md#custom-metadata) - Queryable via VARIANT column functions
+* [Vantage](broadcast/vantage.md#custom-metadata) - Supports OTLP span attributes for LLM cost allocation
 * [ClickHouse](broadcast/clickhouse.md#custom-metadata) - Queryable via JSONExtract functions
 * [Google BigQuery](broadcast/bigquery.md#custom-metadata) - Queryable via JSON functions
 * [S3](broadcast/s3.md#custom-metadata) - Stored in trace JSON files
@@ -404,6 +406,7 @@ Some field names appear at both the top level of the trace and inside each `obse
 > | S3 / S3-Compatible | | | | | |
 > | Sentry | | | | — | — |
 > | Snowflake | | | | | — |
+> | Vantage (beta) | | | | | |
 > | W\&B Weave | | | | | |
 > | Webhook | | | | | |
 
@@ -428,6 +431,7 @@ Some field names appear at both the top level of the trace and inside each `obse
 > | S3 / S3-Compatible | | | |
 > | Sentry | — | — | — |
 > | Snowflake | | | |
+> | Vantage (beta) | | | |
 > | W\&B Weave | | | |
 > | Webhook | | | |
 
@@ -452,6 +456,7 @@ Some field names appear at both the top level of the trace and inside each `obse
 > | S3 / S3-Compatible | | | |
 > | Sentry | | — | |
 > | Snowflake | | | — |
+> | Vantage (beta) | | — | |
 > | W\&B Weave | — | — | — |
 > | Webhook | | — | |
 
@@ -478,6 +483,7 @@ Some field names appear at both the top level of the trace and inside each `obse
 > | S3 / S3-Compatible | | | | | |
 > | Sentry | — | | | — | — |
 > | Snowflake | | | | | — |
+> | Vantage (beta) | — | | | | — |
 > | W\&B Weave | | — | | | — |
 > | Webhook | — | | | | — |
 
@@ -510,6 +516,7 @@ Some field names appear at both the top level of the trace and inside each `obse
 > | S3 / S3-Compatible | | |
 > | Sentry | | |
 > | Snowflake | | |
+> | Vantage (beta) | | |
 > | W\&B Weave | | |
 > | Webhook | | |
 >
@@ -536,6 +543,7 @@ Some field names appear at both the top level of the trace and inside each `obse
 > | S3 / S3-Compatible | | | | |
 > | Sentry | — | — | | |
 > | Snowflake | — | — | | |
+> | Vantage (beta) | | | | |
 > | W\&B Weave | — | — | | |
 > | Webhook | | | | |
 
@@ -560,6 +568,7 @@ Some field names appear at both the top level of the trace and inside each `obse
 > | S3 / S3-Compatible | | | | |
 > | Sentry | | | — | — |
 > | Snowflake | | | | |
+> | Vantage (beta) | | | | |
 > | W\&B Weave | | | | |
 > | Webhook | | | | |
 
@@ -584,6 +593,7 @@ Some field names appear at both the top level of the trace and inside each `obse
 > | S3 / S3-Compatible | | | |
 > | Sentry | | | |
 > | Snowflake | | | |
+> | Vantage (beta) | | | |
 > | W\&B Weave | | | |
 > | Webhook | | | |
 
@@ -608,6 +618,7 @@ Some field names appear at both the top level of the trace and inside each `obse
 > | S3 / S3-Compatible | | | |
 > | Sentry | | | |
 > | Snowflake | | — | — |
+> | Vantage (beta) | | | |
 > | W\&B Weave | | | |
 > | Webhook | | | |
 
@@ -632,6 +643,7 @@ Some field names appear at both the top level of the trace and inside each `obse
 > | S3 / S3-Compatible | | |
 > | Sentry | | |
 > | Snowflake | | — |
+> | Vantage (beta) | | |
 > | W\&B Weave | | |
 > | Webhook | | |
 
@@ -656,6 +668,7 @@ Some field names appear at both the top level of the trace and inside each `obse
 > | S3 / S3-Compatible | | | |
 > | Sentry | | | |
 > | Snowflake | | | |
+> | Vantage (beta) | | | |
 > | W\&B Weave | | | |
 > | Webhook | | | |
 
@@ -680,6 +693,7 @@ Some field names appear at both the top level of the trace and inside each `obse
 > | S3 / S3-Compatible | | |
 > | Sentry | — | — |
 > | Snowflake | | |
+> | Vantage (beta) | | |
 > | W\&B Weave | | |
 > | Webhook | | |
 
@@ -704,6 +718,7 @@ Some field names appear at both the top level of the trace and inside each `obse
 > | S3 / S3-Compatible | | | |
 > | Sentry | — | — | |
 > | Snowflake | | — | — |
+> | Vantage (beta) | | — | |
 > | W\&B Weave | — | — | — |
 > | Webhook | | — | |
 
@@ -728,6 +743,7 @@ Some field names appear at both the top level of the trace and inside each `obse
 > | S3 / S3-Compatible | | |
 > | Sentry | — | |
 > | Snowflake | — | |
+> | Vantage (beta) | | |
 > | W\&B Weave | | |
 > | Webhook | | |
 
@@ -754,6 +770,7 @@ Some field names appear at both the top level of the trace and inside each `obse
 > | S3 / S3-Compatible | | |
 > | Sentry | — | — |
 > | Snowflake | — | |
+> | Vantage (beta) | | |
 > | W\&B Weave | | — |
 > | Webhook | | |
 
@@ -778,12 +795,13 @@ Some field names appear at both the top level of the trace and inside each `obse
 > | S3 / S3-Compatible | | | | | |
 > | Sentry | — | — | — | — | — |
 > | Snowflake | — | | | | — |
+> | Vantage (beta) | | | | | — |
 > | W\&B Weave | | — | — | — | — |
 > | Webhook | | | | | — |
 
 ## Additional generation metadata
 
-Each destination has four **Additional generation metadata** toggles. They're off by default, and each adds a different set of fields to the trace's metadata, so turn on only what your destination needs. Set them under **Additional generation metadata** when you add or edit a destination, or with the matching field in the [destinations API](../../api/api-reference/observability/create-an-observability-destination.md).
+Each destination has four **Additional generation metadata** toggles. They're off by default (a new [Vantage](broadcast/vantage.md) destination starts with **Cost** and **Cost allocation** on), and each adds a different set of fields to the trace's metadata, so turn on only what your destination needs. Set them under **Additional generation metadata** when you add or edit a destination, or with the matching field in the [destinations API](../../api/api-reference/observability/create-an-observability-destination.md).
 
 | Toggle | API field | What it adds | Where it appears |
 | - | - | - | - |
@@ -1002,7 +1020,7 @@ Counts and per-kind costs are emitted only when OpenRouter can show they match w
 }
 ```
 
-This field is in beta: its shape may change before a dedicated cost-allocation destination ships.
+This field is in beta: its shape may change. The [Vantage](broadcast/vantage.md) destination, also in beta, reads it and turns it on by default.
 
 ## API Key Filtering
 
@@ -1075,5 +1093,6 @@ Step-by-step guides for configuring specific observability destinations:
 * [S3 / S3-Compatible](broadcast/s3.md) - Store traces in S3, R2, or compatible storage
 * [Sentry](broadcast/sentry.md) - Application monitoring and error tracking
 * [Snowflake](broadcast/snowflake.md) - Cloud data warehouse for analytics
+* [Vantage](broadcast/vantage.md) - LLM cost allocation (beta)
 * [W\&B Weave](broadcast/weave.md) - LLM observability and tracking
 * [Webhook](broadcast/webhook.md) - Send traces to any HTTP endpoint

@@ -520,6 +520,8 @@ components:
               b64_json:
                 description: Base64-encoded image bytes
                 type: string
+              layer:
+                $ref: '#/components/schemas/ImageGenerationLayer'
               media_type:
                 description: >-
                   Media type (MIME type) of the image, e.g. `image/png`,
@@ -909,6 +911,54 @@ components:
           type: string
         trace_name:
           type: string
+      type: object
+    ImageGenerationLayer:
+      description: >-
+        Layer metadata, present when the request asked the provider to split the
+        image into layers (Seedream: `provider.options.seed.layer_decomposition:
+        true` with the required `layer_decomposition_options.max_images`, 2 to
+        16). Decomposition requires `n` to be 1 or omitted; the response returns
+        up to `max_images` images (the base image plus its layers).
+      example:
+        background: transparent
+        bounding_box:
+          absolute:
+            - 238
+            - 124
+            - 786
+            - 673
+          normalized:
+            - 232
+            - 121
+            - 768
+            - 657
+        description: A solid red circle
+        name: Red circle
+        z_index: 1
+      properties:
+        background:
+          description: Whether the layer image has a transparent background
+          enum:
+            - opaque
+            - transparent
+          type: string
+        bounding_box:
+          $ref: '#/components/schemas/ImageGenerationLayerBoundingBox'
+        description:
+          description: Provider description of the layer
+          type: string
+        name:
+          description: Short provider-assigned layer name
+          type: string
+        text_recognition:
+          $ref: '#/components/schemas/ImageGenerationLayerTextRecognition'
+        z_index:
+          description: >-
+            Stacking order; 0 is the opaque base image and higher values sit on
+            top
+          type: integer
+      required:
+        - z_index
       type: object
     ImageGenerationUsage:
       description: Token and cost usage for the image generation request, when available
@@ -2037,6 +2087,80 @@ components:
             - string
             - 'null'
       type: object
+    ImageGenerationLayerBoundingBox:
+      description: Where a layer sits on the base image
+      example:
+        absolute:
+          - 238
+          - 124
+          - 786
+          - 673
+        normalized:
+          - 232
+          - 121
+          - 768
+          - 657
+      properties:
+        absolute:
+          description: >-
+            Layer box in pixels of the base image, as `[x_min, y_min, x_max,
+            y_max]`
+          items:
+            type: integer
+          maxItems: 4
+          minItems: 4
+          type: array
+        normalized:
+          description: >-
+            Layer box scaled to 0-1000 on each axis, as `[x_min, y_min, x_max,
+            y_max]`
+          items:
+            type: integer
+          maxItems: 4
+          minItems: 4
+          type: array
+      required:
+        - absolute
+        - normalized
+      type: object
+    ImageGenerationLayerTextRecognition:
+      description: Text found in the layer, present when the provider ran text recognition
+      example:
+        lines:
+          - bounding_box:
+              absolute:
+                - 238
+                - 124
+                - 786
+                - 673
+              normalized:
+                - 232
+                - 121
+                - 768
+                - 657
+            runs:
+              - text: SALE
+        text: SALE
+      properties:
+        lines:
+          items:
+            properties:
+              bounding_box:
+                $ref: '#/components/schemas/ImageGenerationLayerBoundingBox'
+              runs:
+                items:
+                  $ref: '#/components/schemas/ImageGenerationLayerTextRun'
+                type: array
+            required:
+              - runs
+            type: object
+          type: array
+        text:
+          description: Full text recognized in the layer
+          type: string
+      required:
+        - text
+      type: object
     AnthropicCacheCreation:
       example:
         ephemeral_1h_input_tokens: 0
@@ -2108,6 +2232,30 @@ components:
       type:
         - string
         - 'null'
+    ImageGenerationLayerTextRun:
+      description: A run of text that shares one style
+      example:
+        style:
+          bold: true
+          similar_font_family: Menlo
+        text: SALE
+      properties:
+        style:
+          additionalProperties:
+            anyOf:
+              - type: string
+              - type: boolean
+              - format: double
+                type: number
+          description: >-
+            Font and style the provider recognized for this run, e.g.
+            `similar_font_family`, `foreground_color`, `bold`
+          type: object
+        text:
+          type: string
+      required:
+        - text
+      type: object
     AnthropicCompactionUsageIteration:
       allOf:
         - $ref: '#/components/schemas/AnthropicBaseUsageIteration'

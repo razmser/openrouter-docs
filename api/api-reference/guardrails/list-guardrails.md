@@ -503,10 +503,11 @@ components:
           description: Custom regex content filters applied to request messages
           example:
             - action: redact
+              is_enforced: true
               label: '[API_KEY]'
               pattern: \b(sk-[a-zA-Z0-9]{48})\b
           items:
-            $ref: '#/components/schemas/ContentFilterEntry'
+            $ref: '#/components/schemas/ContentFilterReadEntry'
           type:
             - array
             - 'null'
@@ -785,33 +786,26 @@ components:
         - slug
         - action
       type: object
-    ContentFilterEntry:
-      description: >-
-        A custom regex content filter that scans request messages for matching
-        patterns.
+    ContentFilterReadEntry:
+      allOf:
+        - $ref: '#/components/schemas/ContentFilterEntry'
+        - properties:
+            is_enforced:
+              description: >-
+                Whether inference applies this pattern. False for a pattern
+                saved before pattern validation that is too complex to run
+                safely; it is kept but skipped until replaced.
+              example: true
+              type: boolean
+          required:
+            - is_enforced
+          type: object
+      description: A custom regex content filter, with whether inference enforces it.
       example:
         action: redact
+        is_enforced: true
         label: '[API_KEY]'
         pattern: \b(sk-[a-zA-Z0-9]{48})\b
-      properties:
-        action:
-          $ref: '#/components/schemas/ContentFilterAction'
-        label:
-          description: Optional label used in redaction placeholders or error messages
-          example: '[API_KEY]'
-          maxLength: 100
-          type:
-            - string
-            - 'null'
-        pattern:
-          description: A regex pattern to match against request content
-          example: \b(sk-[a-zA-Z0-9]{48})\b
-          minLength: 1
-          type: string
-      required:
-        - pattern
-        - action
-      type: object
     GuardrailInterval:
       description: Interval at which the limit resets (daily, weekly, monthly)
       enum:
@@ -854,6 +848,33 @@ components:
         - regex-prompt-injection
       example: regex-prompt-injection
       type: string
+    ContentFilterEntry:
+      description: >-
+        A custom regex content filter that scans request messages for matching
+        patterns.
+      example:
+        action: redact
+        label: '[API_KEY]'
+        pattern: \b(sk-[a-zA-Z0-9]{48})\b
+      properties:
+        action:
+          $ref: '#/components/schemas/ContentFilterAction'
+        label:
+          description: Optional label used in redaction placeholders or error messages
+          example: '[API_KEY]'
+          maxLength: 100
+          type:
+            - string
+            - 'null'
+        pattern:
+          description: A regex pattern to match against request content
+          example: \b(sk-[a-zA-Z0-9]{48})\b
+          minLength: 1
+          type: string
+      required:
+        - pattern
+        - action
+      type: object
     ContentFilterAction:
       description: Action taken when the pattern matches
       enum:

@@ -50,7 +50,6 @@ Each request picks an endpoint at random, weighted by these shares. If it fails,
 ## Limits on top of the shares
 
 * **Breaker.** If a degradation signal like reliability, quality or 429s is far worse than your peers', routing pauses your traffic until it recovers.
-* **Traffic cap.** Routing learns how much load you can take before you start returning 429s. If your share would push you past that, your share is capped and the extra goes to other endpoints. The cap rises once the 429s stop.
 * **Short-term backoff.** A burst of 429s or a sudden jump in latency briefly lowers your share while it lasts.
 
 ## The inputs
@@ -113,21 +112,7 @@ A 429 makes the user wait for the rejection and then send a full request somewhe
 
 A 429 makes the user wait for the rejection and then send a full request elsewhere. Example: a $2.50 wait plus penalty times a 0.4% 429 rate adds $0.01 to adjusted price.
 
-429s matter more through the limits: repeated 429s at high load set your **traffic cap**, a burst of them triggers short-term backoff, and a rate far above your peers' trips the **breaker**.
-
-### Learned capacity
-
-Routing watches how your 429 rate changes as your load goes up, and learns the load you can handle while keeping 429s low. That becomes your traffic cap. If you add capacity, the cap rises on its own once the 429s stop. You don't need to tell us.
-
-A big spike of 429s sets a traffic cap; a small steady 429 rate then holds the endpoint at its capacity. When the provider adds capacity the 429s stop and the cap rises, until it reaches the new capacity and the small steady 429 rate returns.
-
-Traffic you receive
-
-Traffic cap
-
-Your real capacity
-
-429 rate
+429s matter more through the limits: a burst of them triggers short-term backoff, and a rate far above your peers' trips the **breaker**.
 
 ## Excluded traffic
 

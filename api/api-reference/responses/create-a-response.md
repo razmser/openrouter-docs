@@ -227,13 +227,28 @@ paths:
         '400':
           content:
             application/json:
-              example:
-                error:
-                  code: 400
-                  message: Invalid request parameters
+              examples:
+                invalid-parameters:
+                  summary: Invalid request parameters
+                  value:
+                    error:
+                      code: 400
+                      message: Invalid request parameters
+                invalid-request-body:
+                  summary: Request body failed Responses API validation
+                  value:
+                    error:
+                      code: invalid_prompt
+                      message: Invalid Responses API request
+                    metadata:
+                      raw: '[{"code":"invalid_value","path":["input",0,"type"]}]'
               schema:
-                $ref: '#/components/schemas/BadRequestResponse'
-          description: Bad Request - Invalid request parameters or malformed input
+                $ref: '#/components/schemas/ResponsesBadRequestResponse'
+          description: >-
+            Bad Request - Invalid request parameters or malformed input.
+            Request-shape validation failures carry a Responses API string code
+            (e.g. `invalid_prompt`) with details in the top-level `metadata`;
+            all other failures carry the integer HTTP status.
         '401':
           content:
             application/json:
@@ -880,15 +895,32 @@ components:
       required:
         - data
       type: object
-    BadRequestResponse:
-      description: Bad Request - Invalid request parameters or malformed input
+    ResponsesBadRequestResponse:
+      description: >-
+        Bad Request - Invalid request parameters or malformed input.
+        Request-shape validation failures carry a Responses API string code
+        (e.g. `invalid_prompt`) with details in the top-level `metadata`; all
+        other failures carry the integer HTTP status.
       example:
         error:
-          code: 400
-          message: Invalid request parameters
+          code: invalid_prompt
+          message: Invalid Responses API request
+        metadata:
+          raw: '[{"code":"invalid_value","path":["input",0,"type"]}]'
       properties:
         error:
-          $ref: '#/components/schemas/BadRequestResponseErrorData'
+          $ref: '#/components/schemas/ResponsesBadRequestResponseErrorData'
+        metadata:
+          additionalProperties:
+            type: string
+          description: >-
+            Validation details for string-coded errors; `raw` holds the
+            serialized schema issues
+          example:
+            raw: '[{"code":"invalid_value","path":["input",0,"type"]}]'
+          type:
+            - object
+            - 'null'
         openrouter_metadata:
           additionalProperties: {}
           type:
@@ -1350,6 +1382,8 @@ components:
         - reasoning.encrypted_content
         - output.encrypted_content
         - code_interpreter_call.outputs
+        - web_search_call.results
+        - web_search_call.action.sources
       example: file_search_call.results
       type: string
     Inputs:
@@ -4326,14 +4360,20 @@ components:
         - $ref: '#/components/schemas/McpCallCompletedEvent'
         - $ref: '#/components/schemas/McpCallFailedEvent'
         - $ref: '#/components/schemas/DebugEvent'
-    BadRequestResponseErrorData:
-      description: Error data for BadRequestResponse
+    ResponsesBadRequestResponseErrorData:
+      description: Error data for ResponsesBadRequestResponse
       example:
-        code: 400
-        message: Invalid request parameters
+        code: invalid_prompt
+        message: Invalid Responses API request
       properties:
         code:
-          type: integer
+          anyOf:
+            - type: integer
+            - type: string
+          description: >-
+            Integer HTTP status, or a Responses API error code string (e.g.
+            `invalid_prompt`) when the request body fails validation
+          example: invalid_prompt
         message:
           type: string
         metadata:
@@ -5575,6 +5615,10 @@ components:
           type: integer
         id:
           type: string
+        retrieved_at:
+          description: The time the content was fetched, as an ISO 8601 timestamp.
+          example: '2026-11-12T05:27:43.000Z'
+          type: string
         status:
           $ref: '#/components/schemas/ToolCallStatus'
         title:
@@ -5626,6 +5670,15 @@ components:
             Deferred tools, found with tool_search and called with tool_exec:
             Sources: mcp__sentry (12).
           type: string
+        catalog_index_note:
+          description: >-
+            Whether the model read, after the catalog index, that the listed
+            sources are those connected so far. Replaying the item shows that
+            note only when this is true. Its wording follows the replaying
+            request: it names `WaitForMcpServers` only while that request
+            carries the tool.
+          example: true
+          type: boolean
         error:
           description: >-
             The error message when the tool call failed before producing a
