@@ -527,6 +527,7 @@ components:
         - deepseek
         - dekallm
         - digitalocean
+        - doubleword
         - elevenlabs
         - featherless
         - fireworks

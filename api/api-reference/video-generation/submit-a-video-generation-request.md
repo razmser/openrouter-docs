@@ -363,9 +363,31 @@ components:
           type: string
         provider:
           description: >-
-            Provider routing preferences (order, only, ignore) and
-            provider-specific passthrough configuration
+            Provider routing preferences (order, only, ignore), request-level
+            data policy (zdr, data_collection) and provider-specific passthrough
+            configuration. No video endpoint currently offers Zero Data
+            Retention, so `zdr: true` fails routing.
           properties:
+            data_collection:
+              description: >-
+                Data collection setting. If no available model provider meets
+                the requirement, your request will return an error.
+
+                - allow: (default) allow providers that may train on user data
+
+
+                - deny: use only providers that do not train on user data.
+                Providers may still retain prompts; set `zdr: true` to exclude
+                retention.
+              enum:
+                - deny
+                - allow
+                - null
+              example: allow
+              title: VideoGenerationRequestDataCollection
+              type:
+                - string
+                - 'null'
             ignore:
               description: >-
                 List of provider slugs to ignore. If provided, this list is
@@ -419,6 +441,15 @@ components:
                   - type: string
               type:
                 - array
+                - 'null'
+            zdr:
+              description: >-
+                Whether to restrict routing to only ZDR (Zero Data Retention)
+                endpoints. When true, only endpoints that do not retain prompts
+                will be used.
+              example: true
+              type:
+                - boolean
                 - 'null'
           type: object
         resolution:
@@ -831,6 +862,7 @@ components:
         - DeepSeek
         - DekaLLM
         - DigitalOcean
+        - Doubleword
         - ElevenLabs
         - Featherless
         - Fireworks
@@ -1059,6 +1091,9 @@ components:
           additionalProperties: {}
           type: object
         digitalocean:
+          additionalProperties: {}
+          type: object
+        doubleword:
           additionalProperties: {}
           type: object
         elevenlabs:

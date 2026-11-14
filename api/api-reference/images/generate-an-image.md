@@ -828,6 +828,25 @@ components:
           type:
             - boolean
             - 'null'
+        data_collection:
+          description: >-
+            Data collection setting. If no available model provider meets the
+            requirement, your request will return an error.
+
+            - allow: (default) allow providers that may train on user data
+
+
+            - deny: use only providers that do not train on user data. Providers
+            may still retain prompts; set `zdr: true` to exclude retention.
+          enum:
+            - deny
+            - allow
+            - null
+          example: allow
+          title: ImageGenerationRequestDataCollection
+          type:
+            - string
+            - 'null'
         ignore:
           description: >-
             List of provider slugs to ignore. If provided, this list is merged
@@ -889,6 +908,15 @@ components:
             The sorting strategy to use for this request, if "order" is not
             specified. When set, no load balancing is performed.
           example: price
+        zdr:
+          description: >-
+            Whether to restrict routing to only ZDR (Zero Data Retention)
+            endpoints. When true, only endpoints that do not retain prompts will
+            be used.
+          example: true
+          type:
+            - boolean
+            - 'null'
       type: object
     TraceConfig:
       additionalProperties: {}
@@ -1479,6 +1507,7 @@ components:
         - DeepSeek
         - DekaLLM
         - DigitalOcean
+        - Doubleword
         - ElevenLabs
         - Featherless
         - Fireworks
@@ -1707,6 +1736,9 @@ components:
           additionalProperties: {}
           type: object
         digitalocean:
+          additionalProperties: {}
+          type: object
+        doubleword:
           additionalProperties: {}
           type: object
         elevenlabs:

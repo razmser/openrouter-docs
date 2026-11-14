@@ -243,6 +243,7 @@ paths:
               - deepseek
               - dekallm
               - digitalocean
+              - doubleword
               - elevenlabs
               - featherless
               - fireworks
@@ -815,6 +816,7 @@ components:
         - deepseek
         - dekallm
         - digitalocean
+        - doubleword
         - elevenlabs
         - featherless
         - fireworks

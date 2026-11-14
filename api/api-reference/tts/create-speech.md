@@ -802,6 +802,7 @@ components:
         - DeepSeek
         - DekaLLM
         - DigitalOcean
+        - Doubleword
         - ElevenLabs
         - Featherless
         - Fireworks
@@ -1030,6 +1031,9 @@ components:
           additionalProperties: {}
           type: object
         digitalocean:
+          additionalProperties: {}
+          type: object
+        doubleword:
           additionalProperties: {}
           type: object
         elevenlabs:

@@ -7497,6 +7497,7 @@ components:
         - DeepSeek
         - DekaLLM
         - DigitalOcean
+        - Doubleword
         - ElevenLabs
         - Featherless
         - Fireworks
@@ -7725,6 +7726,9 @@ components:
           additionalProperties: {}
           type: object
         digitalocean:
+          additionalProperties: {}
+          type: object
+        doubleword:
           additionalProperties: {}
           type: object
         elevenlabs:
@@ -14258,6 +14262,9 @@ components:
           enum:
             - url_citation
           type: string
+        uncited:
+          const: true
+          type: boolean
         url:
           type: string
       required:

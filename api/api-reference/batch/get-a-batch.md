@@ -506,6 +506,9 @@ components:
                                                     type: integer
                                                   title:
                                                     type: string
+                                                  uncited:
+                                                    const: true
+                                                    type: boolean
                                                   url:
                                                     type: string
                                                 required:
@@ -9386,6 +9389,9 @@ components:
           enum:
             - url_citation
           type: string
+        uncited:
+          const: true
+          type: boolean
         url:
           type: string
       required:

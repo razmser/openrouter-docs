@@ -648,6 +648,9 @@ components:
                                                     type: integer
                                                   title:
                                                     type: string
+                                                  uncited:
+                                                    const: true
+                                                    type: boolean
                                                   url:
                                                     type: string
                                                 required:
@@ -2287,6 +2290,7 @@ components:
         - DeepSeek
         - DekaLLM
         - DigitalOcean
+        - Doubleword
         - ElevenLabs
         - Featherless
         - Fireworks
@@ -9485,6 +9489,9 @@ components:
           enum:
             - url_citation
           type: string
+        uncited:
+          const: true
+          type: boolean
         url:
           type: string
       required:

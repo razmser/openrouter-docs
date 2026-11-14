@@ -2,7 +2,7 @@
 
 Markdown mirror of [OpenRouter's documentation](https://openrouter.ai/docs/quickstart).
 
-Contains **553 pages**, discovered from the [page index](https://openrouter.ai/docs/llms.txt) and [supplementary index](https://openrouter.ai/docs/sitemap.xml).
+Contains **557 pages**, discovered from the [page index](https://openrouter.ai/docs/llms.txt) and [supplementary index](https://openrouter.ai/docs/sitemap.xml).
 
 Links to mirrored pages point to local files; external links and images remain online. Code examples and OpenAPI blocks are preserved.
 
@@ -204,6 +204,7 @@ Generated files are replaced by the next successful sync. Original content belon
 - [Embeddings](api_reference/embeddings.md)
 - [Errors and Debugging](api_reference/errors-and-debugging.md)
 - [Limits](api_reference/limits.md)
+- [Models API](api_reference/models.md)
 - [API Reference](api_reference/overview.md)
 - [Parameters](api_reference/parameters.md)
 - [Basic Usage](api_reference/responses/basic-usage.md)
@@ -214,6 +215,7 @@ Generated files are replaced by the next successful sync. Original content belon
 - [Web Search](api_reference/responses/web-search.md)
 - [Streaming](api_reference/streaming.md)
 - [API Versioning](api_reference/versioning.md)
+- [Video Generation API](api_reference/videos.md)
 - [App Attribution](app-attribution.md)
 - [Batch API Quickstart](batch-quickstart.md)
 - [API Changelog](changelog.md)
@@ -462,7 +464,9 @@ Generated files are replaced by the next successful sync. Original content belon
 - [W&B Weave](guides/features/broadcast/weave.md)
 - [Webhook](guides/features/broadcast/webhook.md)
 - [Custom Classifiers](guides/features/classifiers.md)
+- [OpenAI Compatibility](guides/features/compatibility.md)
 - [Containers](guides/features/containers.md)
+- [Decisions API](guides/features/decisions.md)
 - [Files API](guides/features/files-api.md)
 - [Guardrails](guides/features/guardrails.md)
 - [Migrating to Guardrail Policies](guides/features/guardrails/policies-migration.md)
