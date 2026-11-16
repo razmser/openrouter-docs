@@ -240,6 +240,16 @@ paths:
               schema:
                 $ref: '#/components/schemas/BadGatewayResponse'
           description: Bad Gateway - Provider/upstream API failure
+        '503':
+          content:
+            application/json:
+              example:
+                error:
+                  code: 503
+                  message: Service temporarily unavailable
+              schema:
+                $ref: '#/components/schemas/ServiceUnavailableResponse'
+          description: Service Unavailable - Service temporarily unavailable
         '524':
           content:
             application/json:
@@ -415,6 +425,27 @@ components:
       properties:
         error:
           $ref: '#/components/schemas/BadGatewayResponseErrorData'
+        openrouter_metadata:
+          additionalProperties: {}
+          type:
+            - object
+            - 'null'
+        user_id:
+          type:
+            - string
+            - 'null'
+      required:
+        - error
+      type: object
+    ServiceUnavailableResponse:
+      description: Service Unavailable - Service temporarily unavailable
+      example:
+        error:
+          code: 503
+          message: Service temporarily unavailable
+      properties:
+        error:
+          $ref: '#/components/schemas/ServiceUnavailableResponseErrorData'
         openrouter_metadata:
           additionalProperties: {}
           type:
@@ -650,6 +681,25 @@ components:
       example:
         code: 502
         message: Provider returned error
+      properties:
+        code:
+          type: integer
+        message:
+          type: string
+        metadata:
+          additionalProperties: {}
+          type:
+            - object
+            - 'null'
+      required:
+        - code
+        - message
+      type: object
+    ServiceUnavailableResponseErrorData:
+      description: Error data for ServiceUnavailableResponse
+      example:
+        code: 503
+        message: Service temporarily unavailable
       properties:
         code:
           type: integer

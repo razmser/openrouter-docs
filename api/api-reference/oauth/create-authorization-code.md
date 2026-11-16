@@ -169,7 +169,10 @@ paths:
                   format: uri
                   type: string
                 code_challenge:
-                  description: PKCE code challenge for enhanced security
+                  description: >-
+                    PKCE code challenge: the base64url-encoded SHA-256 hash of
+                    your `code_verifier`. Send it with `code_challenge_method`
+                    set to `S256`.
                   example: E9Melhoa2OwvFrEMTJguCHaoeK1t8URWbuGJSstw-cM
                   type: string
                 code_challenge_method:

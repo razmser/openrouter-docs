@@ -16,35 +16,29 @@ Here's a step-by-step guide:
 
 ### Step 1: Send your user to OpenRouter
 
-To start the PKCE flow, send your user to OpenRouter's `/auth` URL with a `callback_url` parameter pointing back to your site:
+To start the PKCE flow, generate a random `code_verifier`, derive a `code_challenge` from it, and send your user to OpenRouter's `/auth` URL with a `callback_url` parameter pointing back to your site:
 
-```txt title="With S256 Code Challenge (Recommended)" wrap lines theme={null}
+```txt title="Authorization URL" wrap lines theme={null}
 https://openrouter.ai/auth?callback_url=<YOUR_SITE_URL>&code_challenge=<CODE_CHALLENGE>&code_challenge_method=S256
 ```
 
-```txt title="With Plain Code Challenge" wrap lines theme={null}
-https://openrouter.ai/auth?callback_url=<YOUR_SITE_URL>&code_challenge=<CODE_CHALLENGE>&code_challenge_method=plain
-```
+The `code_challenge` and `code_challenge_method` parameters are required. Set `code_challenge_method` to `S256` and `code_challenge` to the base64url encoding of the SHA-256 hash of `code_verifier` ([Auth0's PKCE docs](https://auth0.com/docs/get-started/authentication-and-authorization-flow/call-your-api-using-the-authorization-code-flow-with-pkce#parameters)).
 
-```txt title="Without Code Challenge" wrap lines theme={null}
-https://openrouter.ai/auth?callback_url=<YOUR_SITE_URL>
-```
-
-The `code_challenge` parameter is optional but recommended.
+> [!WARNING]
+>
+> **Why PKCE is mandatory**
+>
+> The authorization code in the callback URL can be exchanged for an API key on your user's account. Without PKCE, anyone who obtains the code before your app exchanges it gets that key. Codes leak through browser history and sync, extensions that can read URLs, proxy and server logs, and other apps registered for the same custom scheme. An attacker with the key can spend your user's credits until the user notices and revokes it.
+>
+> With PKCE, the code is useless on its own. Only your app holds the `code_verifier`, and OpenRouter refuses to exchange the code without it.
 
 Your user will be prompted to log in to OpenRouter and authorize your app. After authorization, they will be redirected back to your site with a `code` parameter in the URL:
 
 ![Alt text](https://mintcdn.com/openrouter-d02e98a0/PSwwwiCqAD_BNeni/assets/guides/overview/auth/oauth/auth-request.png?fit=max\&auto=format\&n=PSwwwiCqAD_BNeni\&q=85\&s=15dba3246f0072ad883418114aeec7a1)
 
-> [!TIP]
->
-> **Use SHA-256 for Maximum Security**
->
-> For maximum security, set `code_challenge_method` to `S256`, and set `code_challenge` to the base64 encoding of the sha256 hash of `code_verifier`.
->
-> For more info, [visit Auth0's docs](https://auth0.com/docs/get-started/authentication-and-authorization-flow/call-your-api-using-the-authorization-code-flow-with-pkce#parameters).
-
 #### How to Generate a Code Challenge
+
+Generate a new `code_verifier` for every authorization request and keep it until the user returns to your callback, for example in `sessionStorage` or your server-side session. Never put it in a URL.
 
 The following example uses the Web Crypto API and the Buffer API to generate a code challenge for the S256 method. You will need a bundler to use the Buffer API in the web browser:
 
@@ -58,9 +52,13 @@ async function createSHA256CodeChallenge(input: string) {
   return Buffer.from(hash).toString('base64url');
 }
 
-const codeVerifier = 'your-random-string';
+const codeVerifier = Buffer.from(crypto.getRandomValues(new Uint8Array(32))).toString('base64url');
 const generatedCodeChallenge = await createSHA256CodeChallenge(codeVerifier);
 ```
+
+> [!NOTE]
+>
+> Use an `https://` callback URL for hosted apps. PKCE stops a stolen code from being exchanged, but it cannot protect a page served over plain HTTP.
 
 #### Localhost Apps
 
@@ -82,7 +80,7 @@ https://openrouter.ai/auth?code_challenge=<CODE_CHALLENGE>&code_challenge_method
 
 After the user authorizes, the page displays the authorization code on screen instead of redirecting. The user copies it and pastes it into your app (e.g. at a terminal prompt), and you exchange it in Step 2 exactly as usual.
 
-A `code_challenge` is **required** in this mode: because the code is displayed on screen, PKCE ensures it is useless to anyone without your app's `code_verifier`. The code is single-use and expires after 10 minutes.
+The code is single-use and expires after 10 minutes.
 
 #### Optional Parameters
 
@@ -120,8 +118,8 @@ const response = await fetch('https://openrouter.ai/api/v1/auth/keys', {
   },
   body: JSON.stringify({
     code: '<CODE_FROM_QUERY_PARAM>',
-    code_verifier: '<CODE_VERIFIER>', // If code_challenge was used
-    code_challenge_method: '<CODE_CHALLENGE_METHOD>', // If code_challenge was used
+    code_verifier: '<CODE_VERIFIER>', // The verifier from Step 1
+    code_challenge_method: 'S256',
   }),
 });
 
@@ -152,7 +150,7 @@ And that's it for the PKCE flow!
 
 ### Step 3: Use the API key
 
-Store the API key securely within the user's browser or in your own database, and use it to [make OpenRouter requests](../../../api_reference/overview.md).
+Use the API key to [make OpenRouter requests](../../../api_reference/overview.md). It is a secret that can spend the user's credits until they revoke it. Store it encrypted in a server-side database, or in the OS keychain on desktop and mobile. Never persist it in browser-side storage such as `localStorage`, `sessionStorage`, IndexedDB, or cookies readable by JavaScript: any script running on your origin can read them. Keep it out of URLs and logs.
 
 ```typescript title="TypeScript SDK" lines theme={null}
 import { OpenRouter } from '@openrouter/sdk';

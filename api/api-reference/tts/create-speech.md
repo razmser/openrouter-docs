@@ -473,7 +473,10 @@ components:
           maxLength: 256
           type: string
         voice:
-          description: Voice identifier (provider-specific).
+          description: >-
+            Voice identifier (provider-specific). Required by most providers;
+            only Seed Audio, HeyGen, Fish Audio, AssemblyAI, Speechify accept
+            requests without it.
           example: en_paul_neutral
           minLength: 1
           type: string
