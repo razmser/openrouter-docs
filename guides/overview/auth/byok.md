@@ -441,6 +441,33 @@ Example IAM policy:
 
 For enhanced security, we recommend creating dedicated IAM users with limited permissions specifically for use with OpenRouter.
 
+#### Choosing a Cross-Region Inference Profile
+
+Many Bedrock models are invoked through a [cross-region inference profile](https://docs.aws.amazon.com/bedrock/latest/userguide/cross-region-inference.html), whose model ID starts with a prefix such as `global.`, `us.`, `eu.`, or `apac.`. A `global.` profile can process a request in any supported AWS commercial region; a geographic profile keeps it within that geography. If your AWS organization only allows some profiles, for example a service control policy that denies global cross-region inference, set the profile on your key.
+
+On the Amazon Bedrock provider page, both the **API Key** and **IAM Credentials** tabs have a **Cross-region inference profile** setting and an **Add override** button for per-model overrides. When you send the key as JSON (for example through the [BYOK management API](https://openrouter.ai/docs/api/api-reference/byok)), use the `crisScope` and `crisScopeOverrides` fields:
+
+```json lines theme={null}
+{
+  "accessKeyId": "your-aws-access-key-id",
+  "secretAccessKey": "your-aws-secret-access-key",
+  "region": "us-east-1",
+  "crisScope": "us",
+  "crisScopeOverrides": [{ "modelSlug": "anthropic/claude-sonnet-4.6", "scope": "global" }]
+}
+```
+
+A Bedrock API key takes the same fields: `{"apiKey": "your-bedrock-api-key", "region": "us-east-1", "crisScope": "us"}`.
+
+* **`crisScope`**: one of `global`, `us`, `eu`, or `apac`, in lowercase. OpenRouter replaces the profile prefix of every model this key serves with this one, so `global.anthropic.claude-haiku-4-5-20251001-v1:0` is sent as `us.anthropic.claude-haiku-4-5-20251001-v1:0`. Models invoked by foundation model ID, without a prefix, are unchanged.
+* **`crisScopeOverrides`**: per-model exceptions to `crisScope`. `modelSlug` is the OpenRouter model ID, and each model can have one override.
+* A geographic scope must match the key's `region`: `us` needs a `us-` region, `eu` an `eu-` region, and `apac` an `ap-` region. `global` works with any region. The provider page rejects an incompatible pair. If one is stored anyway, OpenRouter uses the geographic profile for the key's region instead.
+* Without `crisScope`, requests on `openrouter.ai` keep `global.` profiles and match geographic profiles to the key's region. On `us.openrouter.ai` and `eu.openrouter.ai`, your key always uses the US or EU geographic profile, whatever `crisScope` says.
+* The profile must exist in your AWS account for that model. Some models only have a `global.` profile. Choosing a geographic scope for one of them makes AWS reject the request on your key, and OpenRouter moves on to the next endpoint as described in [Key Priority and Fallback](#key-priority-and-fallback). On `openrouter.ai`, use `crisScopeOverrides` to keep such a model on `global`. On `us.openrouter.ai` and `eu.openrouter.ai` the override is ignored, so a model with only a `global.` profile cannot be served on your key there.
+* `region` is optional for a Bedrock API key. Without it, requests on `openrouter.ai` go to the AWS region configured for the OpenRouter endpoint, and without `crisScope` the profile is sent unchanged. To control both, set `region` on the key.
+* OpenAI models served through the Bedrock Runtime OpenAI-compatible API ignore both settings: OpenRouter sends the profile configured for that endpoint unchanged.
+* The settings are stored with the encrypted key and are not shown after saving. To change them, enter the credential again with the new settings.
+
 Learn more in the [AWS Bedrock Getting Started with the API](https://docs.aws.amazon.com/bedrock/latest/userguide/getting-started-api.html) documentation, [IAM Permissions Setup](https://docs.aws.amazon.com/bedrock/latest/userguide/security-iam.html) guide, or the [AWS Bedrock API Reference](https://docs.aws.amazon.com/bedrock/latest/APIReference/welcome.html).
 
 ### Google Vertex API Keys
@@ -469,6 +496,33 @@ You can find these values in your Google Cloud Console:
 1. **Service Account Key**: Navigate to the Google Cloud Console, go to "IAM & Admin" > "Service Accounts", select your service account, and create/download a JSON key.
 
 2. **region** (optional): Specify the region for your Vertex AI deployment. Use `"global"` to allow requests to run in any available region, or specify a specific region like `"us-central1"` or `"europe-west1"`. A `"global"` or empty region doesn't pin the key: when a request is routed to a regional endpoint, such as one on `us.openrouter.ai`, OpenRouter uses that endpoint's region instead. A specific region always takes precedence.
+
+#### Private Cloud Storage inputs
+
+On a Vertex BYOK request to a Gemini model, an image or PDF in a user message can be a `gs://bucket/object` reference instead of a URL or base64 data. OpenRouter forwards the reference to Vertex as-is and never downloads the object, so a private bucket works as long as Google can read it. Vertex reads the object as your project's Vertex AI service agent (`service-<PROJECT_NUMBER>@gcp-sa-aiplatform.iam.gserviceaccount.com`), not as the service account in your key, so grant that agent `roles/storage.objectViewer` on the bucket; if the agent doesn't exist yet, create it with `gcloud beta services identity create --service=aiplatform.googleapis.com --project=YOUR_PROJECT`. A request whose object the agent can't read fails with Google's own 403. The media type comes from the object name: images need a `.png`, `.jpg`, `.jpeg`, `.webp`, `.heic` or `.heif` suffix and files need `.pdf`. Pass the object name as-is, not percent-encoded; a reference with whitespace, `?` or `#` in it isn't recognized as a `gs://` reference.
+
+Because OpenRouter never sees the bytes, a few things follow:
+
+* The request has to run on your Vertex key. Pin the provider with `only` as below, and make sure the key is **Prioritized** with shared capacity disabled for the model (see [Key Priority and Fallback](#key-priority-and-fallback)); a `gs://` reference that reaches an OpenRouter-funded Vertex endpoint, or any other provider, is rejected with a 400 by OpenRouter or fails at the provider.
+* A `gs://` PDF is handed to Gemini directly, so the [file parser](../multimodal/pdfs.md) does not run on it. Leave `pdf.engine` unset or set it to `native`; selecting an OCR engine such as `mistral-ocr` with a `gs://` file returns a 400. The engine applies to the whole request, so when a `gs://` PDF is present every other PDF in the request is also handed to Gemini natively instead of being parsed. To OCR the document, send it as a base64 data URL or a public `https://` URL instead.
+* Only user messages can carry a `gs://` reference; one in a system or tool message returns a 400 rather than being dropped from the prompt.
+* Accounts under a forced content-screening restriction can't use `gs://` references, since there is nothing for OpenRouter to screen; those requests return a 400 and should send a base64 data URL.
+
+```json lines theme={null}
+{
+  "model": "google/gemini-2.5-flash",
+  "provider": { "only": ["google-vertex"] },
+  "messages": [
+    {
+      "role": "user",
+      "content": [
+        { "type": "text", "text": "Describe this product photo." },
+        { "type": "image_url", "image_url": { "url": "gs://my-bucket/catalog/shoe.jpg" } }
+      ]
+    }
+  ]
+}
+```
 
 ### Vertex Batch storage
 

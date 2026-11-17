@@ -296,6 +296,8 @@ components:
             - '2:3'
             - '21:9'
             - '9:21'
+            - '2:1'
+            - '5:2'
           example: '16:9'
           type: string
         callback_url:
@@ -330,7 +332,10 @@ components:
         generate_audio:
           description: >-
             Whether to generate audio alongside the video. Defaults to the
-            endpoint's generate_audio capability flag, false if not set.
+            endpoint's generate_audio capability flag, false if not set. When
+            neither is set, some providers (such as xAI) apply their own default
+            and generate audio, so send false to request a silent video. Some
+            models always include audio and ignore false.
           example: true
           type: boolean
         input_references:

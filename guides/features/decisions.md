@@ -38,7 +38,7 @@ Popular Decisions models include:
 * `typesafe/jev-1.14` (and `~typesafe/jev-latest`): High-accuracy System One model supporting text and images across all question types including bounding-box localization (`box`).
 * `cloudflare/clef-flash`: Fast, low-latency decision model for high-throughput routing and filtering.
 * `inception/mercury-decide`: Fast classification model optimized for high-volume text decision pipelines.
-* `liquid/d1`: High-throughput decision model for automated triage and gating.
+* `liquid/d1.2` (and `liquid/d1.2-ultra` for harder decisions): High-throughput decision model for automated triage and gating, reading text and images.
 
 ## Quickstart
 
@@ -411,6 +411,8 @@ For detailed per-provider adapter compatibility tables and media size limits, se
 | `provider` | object | No | Provider routing preferences (`order`, `only`, `ignore`, `options`). |
 | `session_id` | string | No | Grouping identifier for observability in Broadcast and logs. |
 | `user` | string | No | End-user identifier for analytics and rate limits. |
+
+`state`, each question's `instructions`, and each value in a question's `criteria` can nest objects and arrays at most 64 levels deep. A request that nests any of them deeper fails with a `400` that names the field.
 
 ## Handling provider refusals
 
