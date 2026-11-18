@@ -643,7 +643,17 @@ components:
         artificial_analysis:
           agentic_index: 55.8
           coding_index: 63.2
+          cyber_index: 36.4
+          decision_index: 75.7
+          economics_index: 57.2
+          engineering_index: 60.4
+          finance_and_accounting_index: 58.1
+          healthcare_and_medical_index: 56.9
           intelligence_index: 71.4
+          legal_index: 52.3
+          multilingual_index: 0.82
+          openness_index: 33.3
+          strategy_and_ops_index: 61.7
         design_arena:
           - arena: models
             category: website
@@ -1009,29 +1019,181 @@ components:
       example: GPT
       type: string
     AABenchmarkEntry:
-      description: Artificial Analysis benchmark index scores.
+      description: >-
+        Benchmark index scores published by Artificial Analysis
+        (artificialanalysis.ai), one field per index. Each score is the model's
+        best on that index across the configurations Artificial Analysis
+        evaluated (for example reasoning levels), so two indexes of one model
+        can come from different configurations. The deprecated Coding and
+        Agentic Index scores are the exception: both come from one
+        configuration, the model's strongest by Intelligence Index, then Coding
+        Index, then Agentic Index. Attribute Artificial Analysis when you
+        republish them. Omitted when Artificial Analysis has scored the model on
+        none of them.
       example:
         agentic_index: 55.8
         coding_index: 63.2
+        cyber_index: 36.4
+        decision_index: 75.7
+        economics_index: 57.2
+        engineering_index: 60.4
+        finance_and_accounting_index: 58.1
+        healthcare_and_medical_index: 56.9
         intelligence_index: 71.4
+        legal_index: 52.3
+        multilingual_index: 0.82
+        openness_index: 33.3
+        strategy_and_ops_index: 61.7
       properties:
         agentic_index:
-          description: Artificial Analysis Agentic Index score
+          deprecated: true
+          description: >-
+            Deprecated: Artificial Analysis has retired its Agentic Index and no
+            longer publishes it. Holds the last score Artificial Analysis
+            published for the model, on a 0-100 scale, or null; it will be null
+            for every model once those stored scores are removed.
           example: 55.8
           format: double
           type:
             - number
             - 'null'
         coding_index:
-          description: Artificial Analysis Coding Index score
+          deprecated: true
+          description: >-
+            Deprecated: Artificial Analysis has retired its Coding Index and no
+            longer publishes it. Holds the last score Artificial Analysis
+            published for the model, on a 0-100 scale, or null; it will be null
+            for every model once those stored scores are removed.
           example: 63.2
           format: double
           type:
             - number
             - 'null'
+        cyber_index:
+          description: >-
+            Artificial Analysis Cyber Index score, on a 0-100 scale: the model's
+            best across the configurations Artificial Analysis evaluated. Higher
+            is better. Null when Artificial Analysis has not published a score
+            for the model.
+          example: 36.4
+          format: double
+          type:
+            - number
+            - 'null'
+        decision_index:
+          description: >-
+            Artificial Analysis Decision Index score, on a 0-100 scale: the
+            model's best across the configurations Artificial Analysis
+            evaluated. Higher is better. Published for decision models and for
+            the language models Artificial Analysis evaluates on decision tasks.
+            Null when Artificial Analysis has not published a score for the
+            model.
+          example: 75.7
+          format: double
+          type:
+            - number
+            - 'null'
+        economics_index:
+          description: >-
+            Artificial Analysis Economics Index score, on a 0-100 scale: the
+            model's best across the configurations Artificial Analysis
+            evaluated. Higher is better. One of the six Artificial Analysis
+            Capability Indexes. Null when Artificial Analysis has not published
+            a score for the model.
+          example: 57.2
+          format: double
+          type:
+            - number
+            - 'null'
+        engineering_index:
+          description: >-
+            Artificial Analysis Engineering Index score, on a 0-100 scale: the
+            model's best across the configurations Artificial Analysis
+            evaluated. Higher is better. One of the six Artificial Analysis
+            Capability Indexes. Null when Artificial Analysis has not published
+            a score for the model.
+          example: 60.4
+          format: double
+          type:
+            - number
+            - 'null'
+        finance_and_accounting_index:
+          description: >-
+            Artificial Analysis Finance & Accounting Index score, on a 0-100
+            scale: the model's best across the configurations Artificial
+            Analysis evaluated. Higher is better. One of the six Artificial
+            Analysis Capability Indexes. Null when Artificial Analysis has not
+            published a score for the model.
+          example: 58.1
+          format: double
+          type:
+            - number
+            - 'null'
+        healthcare_and_medical_index:
+          description: >-
+            Artificial Analysis Healthcare & Medical Index score, on a 0-100
+            scale: the model's best across the configurations Artificial
+            Analysis evaluated. Higher is better. One of the six Artificial
+            Analysis Capability Indexes. Null when Artificial Analysis has not
+            published a score for the model.
+          example: 56.9
+          format: double
+          type:
+            - number
+            - 'null'
         intelligence_index:
-          description: Artificial Analysis Intelligence Index score
+          description: >-
+            Artificial Analysis Intelligence Index score, on a 0-100 scale: the
+            model's best across the configurations Artificial Analysis
+            evaluated. Higher is better. Null when Artificial Analysis has not
+            published a score for the model.
           example: 71.4
+          format: double
+          type:
+            - number
+            - 'null'
+        legal_index:
+          description: >-
+            Artificial Analysis Legal Index score, on a 0-100 scale: the model's
+            best across the configurations Artificial Analysis evaluated. Higher
+            is better. One of the six Artificial Analysis Capability Indexes.
+            Null when Artificial Analysis has not published a score for the
+            model.
+          example: 52.3
+          format: double
+          type:
+            - number
+            - 'null'
+        multilingual_index:
+          description: >-
+            Artificial Analysis Multilingual Index score, as a fraction from 0
+            to 1: the model's best across the configurations Artificial Analysis
+            evaluated. Higher is better. Null when Artificial Analysis has not
+            published a score for the model.
+          example: 0.82
+          format: double
+          type:
+            - number
+            - 'null'
+        openness_index:
+          description: >-
+            Artificial Analysis Openness Index score, on a 0-100 scale: the
+            model's best across the configurations Artificial Analysis
+            evaluated. Higher is better. Null when Artificial Analysis has not
+            published a score for the model.
+          example: 33.3
+          format: double
+          type:
+            - number
+            - 'null'
+        strategy_and_ops_index:
+          description: >-
+            Artificial Analysis Strategy & Ops Index score, on a 0-100 scale:
+            the model's best across the configurations Artificial Analysis
+            evaluated. Higher is better. One of the six Artificial Analysis
+            Capability Indexes. Null when Artificial Analysis has not published
+            a score for the model.
+          example: 61.7
           format: double
           type:
             - number
@@ -1040,6 +1202,16 @@ components:
         - intelligence_index
         - coding_index
         - agentic_index
+        - finance_and_accounting_index
+        - strategy_and_ops_index
+        - legal_index
+        - healthcare_and_medical_index
+        - engineering_index
+        - economics_index
+        - cyber_index
+        - openness_index
+        - multilingual_index
+        - decision_index
       type: object
     DABenchmarkEntry:
       description: A single Design Arena benchmark entry for a specific arena+category

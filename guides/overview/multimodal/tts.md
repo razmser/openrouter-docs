@@ -31,6 +31,8 @@ Send a `POST` request to `/api/v1/audio/speech` with the text you want to synthe
 
 ### Basic Example
 
+These examples use Voxtral Mini TTS with its `en_paul_neutral` voice. When choosing another model, check both its `endpoints` and `supported_voices` in the [speech catalog](https://openrouter.ai/api/v1/models?output_modalities=speech); voice identifiers are model-specific.
+
 ```typescript title="TypeScript SDK" expandable lines theme={null}
 import { OpenRouter } from '@openrouter/sdk';
 import fs from 'fs';
@@ -40,10 +42,12 @@ const openRouter = new OpenRouter({
 });
 
 const stream = await openRouter.tts.createSpeech({
-  model: 'openai/gpt-4o-mini-tts-2025-12-15',
-  input: 'Hello! This is a text-to-speech test.',
-  voice: 'alloy',
-  responseFormat: 'mp3',
+  speechRequest: {
+    model: 'mistralai/voxtral-mini-tts-2603',
+    input: 'Hello! This is a text-to-speech test.',
+    voice: 'en_paul_neutral',
+    responseFormat: 'mp3',
+  },
 });
 
 // Collect the audio stream and save to a file
@@ -74,9 +78,9 @@ client = OpenAI(
 )
 
 with client.audio.speech.with_streaming_response.create(
-  model="openai/gpt-4o-mini-tts-2025-12-15",
+  model="mistralai/voxtral-mini-tts-2603",
   input="Hello! This is a text-to-speech test.",
-  voice="alloy",
+  voice="en_paul_neutral",
   response_format="mp3"
 ) as response:
   response.stream_to_file("output.mp3")
@@ -92,9 +96,9 @@ response = requests.post(
     "Content-Type": "application/json"
   },
   json={
-    "model": "openai/gpt-4o-mini-tts-2025-12-15",
+    "model": "mistralai/voxtral-mini-tts-2603",
     "input": "Hello! This is a text-to-speech test.",
-    "voice": "alloy",
+    "voice": "en_paul_neutral",
     "response_format": "mp3"
   }
 )
@@ -115,9 +119,9 @@ const response = await fetch('https://openrouter.ai/api/v1/audio/speech', {
     'Content-Type': 'application/json',
   },
   body: JSON.stringify({
-    model: 'openai/gpt-4o-mini-tts-2025-12-15',
+    model: 'mistralai/voxtral-mini-tts-2603',
     input: 'Hello! This is a text-to-speech test.',
-    voice: 'alloy',
+    voice: 'en_paul_neutral',
     response_format: 'mp3',
   }),
 });
@@ -139,9 +143,9 @@ curl https://openrouter.ai/api/v1/audio/speech \
   -H "Authorization: Bearer $OPENROUTER_API_KEY" \
   --output output.mp3 \
   -d '{
-    "model": "openai/gpt-4o-mini-tts-2025-12-15",
+    "model": "mistralai/voxtral-mini-tts-2603",
     "input": "Hello! This is a text-to-speech test.",
-    "voice": "alloy",
+    "voice": "en_paul_neutral",
     "response_format": "mp3"
   }'
 ```
@@ -150,7 +154,7 @@ curl https://openrouter.ai/api/v1/audio/speech \
 
 | Parameter | Type | Required | Description |
 | - | - | - | - |
-| `model` | string | Yes | The TTS model to use (e.g., `openai/gpt-4o-mini-tts-2025-12-15`, `mistralai/voxtral-mini-tts-2603`) |
+| `model` | string | Yes | The TTS model to use (e.g., `mistralai/voxtral-mini-tts-2603`) |
 | `input` | string or array | Yes | The text to synthesize into speech, or a list of turns for multi-speaker input. See [Multi-Speaker Input](#multi-speaker-input) below. Some models treat a string input as a prompt that can also describe non-speech audio; see [Non-Speech Prompts](#non-speech-prompts) below |
 | `voice` | string | Provider-dependent | Voice identifier. Available voices vary by model, so check each model's page on the [Models page](../models.md) for supported voices. Omit this parameter only when the selected provider documents a default voice; otherwise an explicit voice is required. |
 | `instructions` | string | No | Delivery instructions such as tone, pacing, or emotion, for example `Speak in a warm and friendly tone.` Supported by OpenAI `gpt-4o-mini-tts`, Gemini TTS, and Fish Audio models. Ignored by other providers |
@@ -306,13 +310,14 @@ You can pass provider-specific options using the `provider` parameter. Options a
 
 ```json lines theme={null}
 {
-  "model": "openai/gpt-4o-mini-tts-2025-12-15",
+  "model": "google/gemini-3.8-flash-lite-tts",
   "input": "Hello world",
-  "voice": "alloy",
+  "voice": "Kore",
+  "response_format": "pcm",
   "provider": {
     "options": {
-      "openai": {
-        "stream_format": "audio"
+      "google-ai-studio": {
+        "temperature": 0.7
       }
     }
   }
@@ -343,6 +348,28 @@ Azure serves `microsoft/mai-voice-2`, `microsoft/mai-voice-2.1`, and `microsoft/
 #### Fish Audio
 
 Fish Audio models take delivery directions in square brackets inside the text, for example `[whispering] Nobody answered.` OpenRouter adds `instructions` to the text the same way, at the start of the input or of each turn. For [multi-speaker input](#multi-speaker-input), OpenRouter sends Fish one `reference_id` for each distinct turn voice and starts each turn with a `<|speaker:N|>` tag. Fish bills these added characters along with the input. Fish Audio S1 returns a 400 error for multi-speaker input, and reference audio cannot be combined with it.
+
+#### HeyGen Voice
+
+HeyGen serves `heygen/heygen-voice-1`, `heygen/heygen-voice-1-turbo`, and `heygen/heygen-voice-1-turbo:free`. Audio is `pcm` only (44.1 kHz mono), with no speed control: `response_format: "mp3"` or a `speed` other than `1` returns a 400. `input` is limited to 10,000 characters. The default voices for each model are in the `supported_voices` field of the [models API](https://openrouter.ai/api/v1/models?output_modalities=speech).
+
+HeyGen Voice models perform audio tags with the default voices and with cloned voices: a tag from HeyGen's list, in square brackets inside `input`, that changes how the following text is spoken (`[sad]`, `[whispers]`, `[slowly]`) or adds a sound at that spot (`[laughs]`, `[sighs]`). OpenRouter sends `input` to HeyGen unchanged, so tags need no extra parameter. The `instructions` parameter has no effect on HeyGen Voice; use tags instead.
+
+```json lines theme={null}
+{
+  "model": "heygen/heygen-voice-1",
+  "input": "[sad] I walked past our old house today. [sighs] The garden is gone.",
+  "voice": "nadine",
+  "response_format": "pcm"
+}
+```
+
+* Write each tag in lowercase English exactly as HeyGen lists it, even when the rest of `input` is in another language. A phrase of your own, such as `[very sad]`, is not a tag.
+* A tag is not spoken. A professional voice from your own HeyGen account does not perform tags. Other bracketed text, such as `[Section 4]`, is usually not spoken either; remove the brackets to have it read.
+* A tag that changes delivery, such as `[sad]`, lasts for up to about 233 characters of text after it, or until the next such tag. Repeat it in a later sentence to keep the effect going. A sound tag, such as `[laughs]`, plays once.
+* Tags count toward the `input` character limit and are billed as input characters.
+
+The full tag list is in [HeyGen's audio tag reference](https://developers.heygen.com/docs/voices/heygen-voice-audio-tags).
 
 #### Google (Gemini TTS)
 
@@ -401,18 +428,18 @@ client = OpenAI(
 
 # Non-streaming: get the full audio response
 response = client.audio.speech.create(
-  model="openai/gpt-4o-mini-tts-2025-12-15",
+  model="mistralai/voxtral-mini-tts-2603",
   input="The quick brown fox jumps over the lazy dog.",
-  voice="nova",
+  voice="en_paul_neutral",
   response_format="mp3"
 )
 response.write_to_file("output.mp3")
 
 # Streaming: process audio chunks as they arrive
 with client.audio.speech.with_streaming_response.create(
-  model="openai/gpt-4o-mini-tts-2025-12-15",
+  model="mistralai/voxtral-mini-tts-2603",
   input="The quick brown fox jumps over the lazy dog.",
-  voice="nova",
+  voice="en_paul_neutral",
   response_format="mp3"
 ) as response:
   response.stream_to_file("output.mp3")
@@ -428,9 +455,9 @@ const client = new OpenAI({
 });
 
 const response = await client.audio.speech.create({
-  model: 'openai/gpt-4o-mini-tts-2025-12-15',
+  model: 'mistralai/voxtral-mini-tts-2603',
   input: 'The quick brown fox jumps over the lazy dog.',
-  voice: 'nova',
+  voice: 'en_paul_neutral',
   response_format: 'mp3',
 });
 
@@ -456,7 +483,7 @@ console.log('Audio saved to output.mp3');
 **Model not found?**
 
 * Use the [Models page](../models.md) to find available TTS models
-* Verify the model slug is correct (e.g., `openai/gpt-4o-mini-tts-2025-12-15`, not `gpt-4o-mini-tts`)
+* Verify the model slug is correct (e.g., `mistralai/voxtral-mini-tts-2603`, not `voxtral-mini-tts-2603`)
 
 **Voice not available?**
 

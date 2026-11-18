@@ -28,7 +28,7 @@ Auto Router and Auto Code run on the same routing engine. A fast decision model 
 | Router | Slug | Use it when |
 | - | - | - |
 | [Free Models Router](free-router.md) | `openrouter/free` | You want zero-cost inference for experiments and low-volume use. |
-| [Pareto Router](pareto-router.md) | `openrouter/pareto-code` | You want a coding model selected by benchmark score, above a minimum coding score you set. |
+| [Pareto Router](pareto-router.md) | `openrouter/pareto-code` | You want a coding model selected by benchmark score, with `min_coding_score` selecting one of three coding-score tiers. |
 | [Fusion Router](fusion-router.md) | `openrouter/fusion` | You want deep research, with a panel of models deliberating on one answer. |
 
 ### Routing technologies

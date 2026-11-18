@@ -818,6 +818,15 @@ components:
               $ref: '#/components/schemas/OpenResponsesErrorField'
             error_type:
               $ref: '#/components/schemas/ApiErrorType'
+            input_transformations:
+              description: >-
+                Input items the upstream provider changed before inference
+                (OpenAI `input_transformations`). Present only when the provider
+                reported the field; empty when it changed nothing.
+              example: []
+              items:
+                $ref: '#/components/schemas/ResponsesInputTransformation'
+              type: array
             openrouter_metadata:
               $ref: '#/components/schemas/OpenRouterMetadata'
             output:
@@ -2146,13 +2155,13 @@ components:
           type: number
         min_coding_score:
           description: >-
-            Minimum coding quality score between 0 and 1. Maps to internal
-            quality tiers: >= 0.66 → high (top coding models), >= 0.33 → medium
-            (strong modern flagships), < 0.33 → low (capable coders above the
-            median). Omit to default to the highest tier (equivalent to >=
-            0.66). Not used when max_price is set (price-based selection takes
-            over).
-          example: 0.8
+            Selects one of three tiers of coding models with a number between 0
+            and 1. It is not a threshold on a model score: the tiers are groups
+            of the current shortlist of top coding models. >= 0.66 → high (the
+            strongest group), >= 0.33 → medium (the two strongest groups), <
+            0.33 → low (the whole shortlist). Omit to use the high tier. Not
+            used when max_price is set (price-based selection takes over).
+          example: 0.4
           format: double
           maximum: 1
           minimum: 0
@@ -3941,6 +3950,31 @@ components:
         - unmapped
       example: rate_limit_exceeded
       type: string
+    ResponsesInputTransformation:
+      description: >-
+        One input item the upstream provider changed before inference, e.g. a
+        replayed reasoning item removed because the conversation before it was
+        edited.
+      example:
+        action: removed
+        id: rs_0ca73592c5f68037016afcc009779887
+        reason: prefix_mismatch
+        type: reasoning
+      properties:
+        action:
+          type: string
+        id:
+          type: string
+        reason:
+          type: string
+        type:
+          type: string
+      required:
+        - id
+        - type
+        - action
+        - reason
+      type: object
     OpenRouterMetadata:
       example:
         attempt: 1

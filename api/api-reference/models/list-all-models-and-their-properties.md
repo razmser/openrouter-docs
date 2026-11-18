@@ -224,11 +224,13 @@ paths:
             context-high-to-low (context length), throughput-high-to-low,
             latency-low-to-high (recent median performance), most-popular,
             top-weekly (tokens processed in the last week), newest (creation
-            date), intelligence-high-to-low, coding-high-to-low,
-            agentic-high-to-low (Artificial Analysis indices),
-            design-arena-elo-high-to-low (best Design Arena ELO across arenas).
-            Models without a score for the chosen benchmark are placed last.
-            When omitted, the existing default ordering is preserved.
+            date), <index>-high-to-low for each Artificial Analysis index (the
+            coding and agentic sorts are deprecated: Artificial Analysis has
+            retired those indexes), design-arena-elo-high-to-low (best Design
+            Arena ELO across arenas). Models without a score for the chosen
+            benchmark are placed last. The decision sort ranks decision models,
+            so pass output_modalities=decisions or all with it. When omitted,
+            the existing default ordering is preserved.
           in: query
           name: sort
           required: false
@@ -240,12 +242,14 @@ paths:
               prompt/completion price), context-high-to-low (context length),
               throughput-high-to-low, latency-low-to-high (recent median
               performance), most-popular, top-weekly (tokens processed in the
-              last week), newest (creation date), intelligence-high-to-low,
-              coding-high-to-low, agentic-high-to-low (Artificial Analysis
-              indices), design-arena-elo-high-to-low (best Design Arena ELO
-              across arenas). Models without a score for the chosen benchmark
-              are placed last. When omitted, the existing default ordering is
-              preserved.
+              last week), newest (creation date), <index>-high-to-low for each
+              Artificial Analysis index (the coding and agentic sorts are
+              deprecated: Artificial Analysis has retired those indexes),
+              design-arena-elo-high-to-low (best Design Arena ELO across
+              arenas). Models without a score for the chosen benchmark are
+              placed last. The decision sort ranks decision models, so pass
+              output_modalities=decisions or all with it. When omitted, the
+              existing default ordering is preserved.
             enum:
               - most-popular
               - newest
@@ -258,6 +262,16 @@ paths:
               - intelligence-high-to-low
               - coding-high-to-low
               - agentic-high-to-low
+              - finance-and-accounting-high-to-low
+              - strategy-and-ops-high-to-low
+              - legal-high-to-low
+              - healthcare-and-medical-high-to-low
+              - engineering-high-to-low
+              - economics-high-to-low
+              - cyber-high-to-low
+              - openness-high-to-low
+              - multilingual-high-to-low
+              - decision-high-to-low
               - design-arena-elo-high-to-low
             example: newest
             type: string
@@ -484,67 +498,397 @@ paths:
             type:
               - integer
               - 'null'
-        - description: Minimum Artificial Analysis intelligence index.
+        - description: >-
+            Minimum Artificial Analysis Intelligence Index score (0-100);
+            unscored models are excluded.
           in: query
           name: min_intelligence_index
           required: false
           schema:
-            description: Minimum Artificial Analysis intelligence index.
+            description: >-
+              Minimum Artificial Analysis Intelligence Index score (0-100);
+              unscored models are excluded.
             example: 50
             minimum: 0
             type:
               - number
               - 'null'
-        - description: Maximum Artificial Analysis intelligence index.
+        - description: >-
+            Maximum Artificial Analysis Intelligence Index score (0-100);
+            unscored models are excluded.
           in: query
           name: max_intelligence_index
           required: false
           schema:
-            description: Maximum Artificial Analysis intelligence index.
+            description: >-
+              Maximum Artificial Analysis Intelligence Index score (0-100);
+              unscored models are excluded.
             example: 100
             minimum: 0
             type:
               - number
               - 'null'
-        - description: Minimum Artificial Analysis coding index.
+        - deprecated: true
+          description: >-
+            Deprecated: Artificial Analysis has retired its Coding Index.
+            Minimum score (0-100); unscored models are excluded.
           in: query
           name: min_coding_index
           required: false
           schema:
-            description: Minimum Artificial Analysis coding index.
+            description: >-
+              Deprecated: Artificial Analysis has retired its Coding Index.
+              Minimum score (0-100); unscored models are excluded.
             example: 50
             minimum: 0
             type:
               - number
               - 'null'
-        - description: Maximum Artificial Analysis coding index.
+        - deprecated: true
+          description: >-
+            Deprecated: Artificial Analysis has retired its Coding Index.
+            Maximum score (0-100); unscored models are excluded.
           in: query
           name: max_coding_index
           required: false
           schema:
-            description: Maximum Artificial Analysis coding index.
+            description: >-
+              Deprecated: Artificial Analysis has retired its Coding Index.
+              Maximum score (0-100); unscored models are excluded.
             example: 100
             minimum: 0
             type:
               - number
               - 'null'
-        - description: Minimum Artificial Analysis agentic index.
+        - deprecated: true
+          description: >-
+            Deprecated: Artificial Analysis has retired its Agentic Index.
+            Minimum score (0-100); unscored models are excluded.
           in: query
           name: min_agentic_index
           required: false
           schema:
-            description: Minimum Artificial Analysis agentic index.
+            description: >-
+              Deprecated: Artificial Analysis has retired its Agentic Index.
+              Minimum score (0-100); unscored models are excluded.
             example: 50
             minimum: 0
             type:
               - number
               - 'null'
-        - description: Maximum Artificial Analysis agentic index.
+        - deprecated: true
+          description: >-
+            Deprecated: Artificial Analysis has retired its Agentic Index.
+            Maximum score (0-100); unscored models are excluded.
           in: query
           name: max_agentic_index
           required: false
           schema:
-            description: Maximum Artificial Analysis agentic index.
+            description: >-
+              Deprecated: Artificial Analysis has retired its Agentic Index.
+              Maximum score (0-100); unscored models are excluded.
+            example: 100
+            minimum: 0
+            type:
+              - number
+              - 'null'
+        - description: >-
+            Minimum Artificial Analysis Finance & Accounting Index score
+            (0-100); unscored models are excluded.
+          in: query
+          name: min_finance_and_accounting_index
+          required: false
+          schema:
+            description: >-
+              Minimum Artificial Analysis Finance & Accounting Index score
+              (0-100); unscored models are excluded.
+            example: 50
+            minimum: 0
+            type:
+              - number
+              - 'null'
+        - description: >-
+            Maximum Artificial Analysis Finance & Accounting Index score
+            (0-100); unscored models are excluded.
+          in: query
+          name: max_finance_and_accounting_index
+          required: false
+          schema:
+            description: >-
+              Maximum Artificial Analysis Finance & Accounting Index score
+              (0-100); unscored models are excluded.
+            example: 100
+            minimum: 0
+            type:
+              - number
+              - 'null'
+        - description: >-
+            Minimum Artificial Analysis Strategy & Ops Index score (0-100);
+            unscored models are excluded.
+          in: query
+          name: min_strategy_and_ops_index
+          required: false
+          schema:
+            description: >-
+              Minimum Artificial Analysis Strategy & Ops Index score (0-100);
+              unscored models are excluded.
+            example: 50
+            minimum: 0
+            type:
+              - number
+              - 'null'
+        - description: >-
+            Maximum Artificial Analysis Strategy & Ops Index score (0-100);
+            unscored models are excluded.
+          in: query
+          name: max_strategy_and_ops_index
+          required: false
+          schema:
+            description: >-
+              Maximum Artificial Analysis Strategy & Ops Index score (0-100);
+              unscored models are excluded.
+            example: 100
+            minimum: 0
+            type:
+              - number
+              - 'null'
+        - description: >-
+            Minimum Artificial Analysis Legal Index score (0-100); unscored
+            models are excluded.
+          in: query
+          name: min_legal_index
+          required: false
+          schema:
+            description: >-
+              Minimum Artificial Analysis Legal Index score (0-100); unscored
+              models are excluded.
+            example: 50
+            minimum: 0
+            type:
+              - number
+              - 'null'
+        - description: >-
+            Maximum Artificial Analysis Legal Index score (0-100); unscored
+            models are excluded.
+          in: query
+          name: max_legal_index
+          required: false
+          schema:
+            description: >-
+              Maximum Artificial Analysis Legal Index score (0-100); unscored
+              models are excluded.
+            example: 100
+            minimum: 0
+            type:
+              - number
+              - 'null'
+        - description: >-
+            Minimum Artificial Analysis Healthcare & Medical Index score
+            (0-100); unscored models are excluded.
+          in: query
+          name: min_healthcare_and_medical_index
+          required: false
+          schema:
+            description: >-
+              Minimum Artificial Analysis Healthcare & Medical Index score
+              (0-100); unscored models are excluded.
+            example: 50
+            minimum: 0
+            type:
+              - number
+              - 'null'
+        - description: >-
+            Maximum Artificial Analysis Healthcare & Medical Index score
+            (0-100); unscored models are excluded.
+          in: query
+          name: max_healthcare_and_medical_index
+          required: false
+          schema:
+            description: >-
+              Maximum Artificial Analysis Healthcare & Medical Index score
+              (0-100); unscored models are excluded.
+            example: 100
+            minimum: 0
+            type:
+              - number
+              - 'null'
+        - description: >-
+            Minimum Artificial Analysis Engineering Index score (0-100);
+            unscored models are excluded.
+          in: query
+          name: min_engineering_index
+          required: false
+          schema:
+            description: >-
+              Minimum Artificial Analysis Engineering Index score (0-100);
+              unscored models are excluded.
+            example: 50
+            minimum: 0
+            type:
+              - number
+              - 'null'
+        - description: >-
+            Maximum Artificial Analysis Engineering Index score (0-100);
+            unscored models are excluded.
+          in: query
+          name: max_engineering_index
+          required: false
+          schema:
+            description: >-
+              Maximum Artificial Analysis Engineering Index score (0-100);
+              unscored models are excluded.
+            example: 100
+            minimum: 0
+            type:
+              - number
+              - 'null'
+        - description: >-
+            Minimum Artificial Analysis Economics Index score (0-100); unscored
+            models are excluded.
+          in: query
+          name: min_economics_index
+          required: false
+          schema:
+            description: >-
+              Minimum Artificial Analysis Economics Index score (0-100);
+              unscored models are excluded.
+            example: 50
+            minimum: 0
+            type:
+              - number
+              - 'null'
+        - description: >-
+            Maximum Artificial Analysis Economics Index score (0-100); unscored
+            models are excluded.
+          in: query
+          name: max_economics_index
+          required: false
+          schema:
+            description: >-
+              Maximum Artificial Analysis Economics Index score (0-100);
+              unscored models are excluded.
+            example: 100
+            minimum: 0
+            type:
+              - number
+              - 'null'
+        - description: >-
+            Minimum Artificial Analysis Cyber Index score (0-100); unscored
+            models are excluded.
+          in: query
+          name: min_cyber_index
+          required: false
+          schema:
+            description: >-
+              Minimum Artificial Analysis Cyber Index score (0-100); unscored
+              models are excluded.
+            example: 50
+            minimum: 0
+            type:
+              - number
+              - 'null'
+        - description: >-
+            Maximum Artificial Analysis Cyber Index score (0-100); unscored
+            models are excluded.
+          in: query
+          name: max_cyber_index
+          required: false
+          schema:
+            description: >-
+              Maximum Artificial Analysis Cyber Index score (0-100); unscored
+              models are excluded.
+            example: 100
+            minimum: 0
+            type:
+              - number
+              - 'null'
+        - description: >-
+            Minimum Artificial Analysis Openness Index score (0-100); unscored
+            models are excluded.
+          in: query
+          name: min_openness_index
+          required: false
+          schema:
+            description: >-
+              Minimum Artificial Analysis Openness Index score (0-100); unscored
+              models are excluded.
+            example: 50
+            minimum: 0
+            type:
+              - number
+              - 'null'
+        - description: >-
+            Maximum Artificial Analysis Openness Index score (0-100); unscored
+            models are excluded.
+          in: query
+          name: max_openness_index
+          required: false
+          schema:
+            description: >-
+              Maximum Artificial Analysis Openness Index score (0-100); unscored
+              models are excluded.
+            example: 100
+            minimum: 0
+            type:
+              - number
+              - 'null'
+        - description: >-
+            Minimum Artificial Analysis Multilingual Index score (0-1); unscored
+            models are excluded.
+          in: query
+          name: min_multilingual_index
+          required: false
+          schema:
+            description: >-
+              Minimum Artificial Analysis Multilingual Index score (0-1);
+              unscored models are excluded.
+            example: 0.5
+            maximum: 1
+            minimum: 0
+            type:
+              - number
+              - 'null'
+        - description: >-
+            Maximum Artificial Analysis Multilingual Index score (0-1); unscored
+            models are excluded.
+          in: query
+          name: max_multilingual_index
+          required: false
+          schema:
+            description: >-
+              Maximum Artificial Analysis Multilingual Index score (0-1);
+              unscored models are excluded.
+            example: 1
+            maximum: 1
+            minimum: 0
+            type:
+              - number
+              - 'null'
+        - description: >-
+            Minimum Artificial Analysis Decision Index score (0-100); unscored
+            models are excluded.
+          in: query
+          name: min_decision_index
+          required: false
+          schema:
+            description: >-
+              Minimum Artificial Analysis Decision Index score (0-100); unscored
+              models are excluded.
+            example: 50
+            minimum: 0
+            type:
+              - number
+              - 'null'
+        - description: >-
+            Maximum Artificial Analysis Decision Index score (0-100); unscored
+            models are excluded.
+          in: query
+          name: max_decision_index
+          required: false
+          schema:
+            description: >-
+              Maximum Artificial Analysis Decision Index score (0-100); unscored
+              models are excluded.
             example: 100
             minimum: 0
             type:
@@ -1421,7 +1765,17 @@ components:
         artificial_analysis:
           agentic_index: 55.8
           coding_index: 63.2
+          cyber_index: 36.4
+          decision_index: 75.7
+          economics_index: 57.2
+          engineering_index: 60.4
+          finance_and_accounting_index: 58.1
+          healthcare_and_medical_index: 56.9
           intelligence_index: 71.4
+          legal_index: 52.3
+          multilingual_index: 0.82
+          openness_index: 33.3
+          strategy_and_ops_index: 61.7
         design_arena:
           - arena: models
             category: website
@@ -1787,29 +2141,181 @@ components:
       example: GPT
       type: string
     AABenchmarkEntry:
-      description: Artificial Analysis benchmark index scores.
+      description: >-
+        Benchmark index scores published by Artificial Analysis
+        (artificialanalysis.ai), one field per index. Each score is the model's
+        best on that index across the configurations Artificial Analysis
+        evaluated (for example reasoning levels), so two indexes of one model
+        can come from different configurations. The deprecated Coding and
+        Agentic Index scores are the exception: both come from one
+        configuration, the model's strongest by Intelligence Index, then Coding
+        Index, then Agentic Index. Attribute Artificial Analysis when you
+        republish them. Omitted when Artificial Analysis has scored the model on
+        none of them.
       example:
         agentic_index: 55.8
         coding_index: 63.2
+        cyber_index: 36.4
+        decision_index: 75.7
+        economics_index: 57.2
+        engineering_index: 60.4
+        finance_and_accounting_index: 58.1
+        healthcare_and_medical_index: 56.9
         intelligence_index: 71.4
+        legal_index: 52.3
+        multilingual_index: 0.82
+        openness_index: 33.3
+        strategy_and_ops_index: 61.7
       properties:
         agentic_index:
-          description: Artificial Analysis Agentic Index score
+          deprecated: true
+          description: >-
+            Deprecated: Artificial Analysis has retired its Agentic Index and no
+            longer publishes it. Holds the last score Artificial Analysis
+            published for the model, on a 0-100 scale, or null; it will be null
+            for every model once those stored scores are removed.
           example: 55.8
           format: double
           type:
             - number
             - 'null'
         coding_index:
-          description: Artificial Analysis Coding Index score
+          deprecated: true
+          description: >-
+            Deprecated: Artificial Analysis has retired its Coding Index and no
+            longer publishes it. Holds the last score Artificial Analysis
+            published for the model, on a 0-100 scale, or null; it will be null
+            for every model once those stored scores are removed.
           example: 63.2
           format: double
           type:
             - number
             - 'null'
+        cyber_index:
+          description: >-
+            Artificial Analysis Cyber Index score, on a 0-100 scale: the model's
+            best across the configurations Artificial Analysis evaluated. Higher
+            is better. Null when Artificial Analysis has not published a score
+            for the model.
+          example: 36.4
+          format: double
+          type:
+            - number
+            - 'null'
+        decision_index:
+          description: >-
+            Artificial Analysis Decision Index score, on a 0-100 scale: the
+            model's best across the configurations Artificial Analysis
+            evaluated. Higher is better. Published for decision models and for
+            the language models Artificial Analysis evaluates on decision tasks.
+            Null when Artificial Analysis has not published a score for the
+            model.
+          example: 75.7
+          format: double
+          type:
+            - number
+            - 'null'
+        economics_index:
+          description: >-
+            Artificial Analysis Economics Index score, on a 0-100 scale: the
+            model's best across the configurations Artificial Analysis
+            evaluated. Higher is better. One of the six Artificial Analysis
+            Capability Indexes. Null when Artificial Analysis has not published
+            a score for the model.
+          example: 57.2
+          format: double
+          type:
+            - number
+            - 'null'
+        engineering_index:
+          description: >-
+            Artificial Analysis Engineering Index score, on a 0-100 scale: the
+            model's best across the configurations Artificial Analysis
+            evaluated. Higher is better. One of the six Artificial Analysis
+            Capability Indexes. Null when Artificial Analysis has not published
+            a score for the model.
+          example: 60.4
+          format: double
+          type:
+            - number
+            - 'null'
+        finance_and_accounting_index:
+          description: >-
+            Artificial Analysis Finance & Accounting Index score, on a 0-100
+            scale: the model's best across the configurations Artificial
+            Analysis evaluated. Higher is better. One of the six Artificial
+            Analysis Capability Indexes. Null when Artificial Analysis has not
+            published a score for the model.
+          example: 58.1
+          format: double
+          type:
+            - number
+            - 'null'
+        healthcare_and_medical_index:
+          description: >-
+            Artificial Analysis Healthcare & Medical Index score, on a 0-100
+            scale: the model's best across the configurations Artificial
+            Analysis evaluated. Higher is better. One of the six Artificial
+            Analysis Capability Indexes. Null when Artificial Analysis has not
+            published a score for the model.
+          example: 56.9
+          format: double
+          type:
+            - number
+            - 'null'
         intelligence_index:
-          description: Artificial Analysis Intelligence Index score
+          description: >-
+            Artificial Analysis Intelligence Index score, on a 0-100 scale: the
+            model's best across the configurations Artificial Analysis
+            evaluated. Higher is better. Null when Artificial Analysis has not
+            published a score for the model.
           example: 71.4
+          format: double
+          type:
+            - number
+            - 'null'
+        legal_index:
+          description: >-
+            Artificial Analysis Legal Index score, on a 0-100 scale: the model's
+            best across the configurations Artificial Analysis evaluated. Higher
+            is better. One of the six Artificial Analysis Capability Indexes.
+            Null when Artificial Analysis has not published a score for the
+            model.
+          example: 52.3
+          format: double
+          type:
+            - number
+            - 'null'
+        multilingual_index:
+          description: >-
+            Artificial Analysis Multilingual Index score, as a fraction from 0
+            to 1: the model's best across the configurations Artificial Analysis
+            evaluated. Higher is better. Null when Artificial Analysis has not
+            published a score for the model.
+          example: 0.82
+          format: double
+          type:
+            - number
+            - 'null'
+        openness_index:
+          description: >-
+            Artificial Analysis Openness Index score, on a 0-100 scale: the
+            model's best across the configurations Artificial Analysis
+            evaluated. Higher is better. Null when Artificial Analysis has not
+            published a score for the model.
+          example: 33.3
+          format: double
+          type:
+            - number
+            - 'null'
+        strategy_and_ops_index:
+          description: >-
+            Artificial Analysis Strategy & Ops Index score, on a 0-100 scale:
+            the model's best across the configurations Artificial Analysis
+            evaluated. Higher is better. One of the six Artificial Analysis
+            Capability Indexes. Null when Artificial Analysis has not published
+            a score for the model.
+          example: 61.7
           format: double
           type:
             - number
@@ -1818,6 +2324,16 @@ components:
         - intelligence_index
         - coding_index
         - agentic_index
+        - finance_and_accounting_index
+        - strategy_and_ops_index
+        - legal_index
+        - healthcare_and_medical_index
+        - engineering_index
+        - economics_index
+        - cyber_index
+        - openness_index
+        - multilingual_index
+        - decision_index
       type: object
     DABenchmarkEntry:
       description: A single Design Arena benchmark entry for a specific arena+category

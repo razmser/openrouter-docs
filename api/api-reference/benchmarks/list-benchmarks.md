@@ -4,7 +4,7 @@
 
 # List Benchmarks
 
-> Unified benchmark endpoint that aggregates scores from multiple benchmark sources (Artificial Analysis, Design Arena, and OpenRouter's own tau-bench, GPQA, and web-search evals). Filter by source to reproduce the exact shapes from the legacy per-source endpoints, or use task_type to find models suited for specific workloads. Use task_type=search (or a search_* benchmark_type) for OpenRouter's search benchmarks, which publish each model's highest-scoring eligible evaluation configuration with same-configuration runs combined by task-weighted mean. Authenticate with any valid OpenRouter API key. Rate-limited to 30 requests/minute per key and 500 requests/day per account.
+> Unified benchmark endpoint that aggregates scores from multiple benchmark sources (Artificial Analysis, Design Arena, and OpenRouter's own tau-bench, GPQA, and web-search evals). Filter by source to reproduce the exact shapes from the legacy per-source endpoints, or use task_type to find models suited for specific workloads. Artificial Analysis items carry one score per Artificial Analysis index (Intelligence Index, Finance & Accounting Index, Strategy & Ops Index, Legal Index, Healthcare & Medical Index, Engineering Index, Economics Index, Cyber Index, Openness Index, Multilingual Index, Decision Index); attribute Artificial Analysis when you republish them. A response whose items all come from one source carries that source's citation in meta; in a mixed response, attribute each item by its source. Use task_type=search (or a search_* benchmark_type) for OpenRouter's search benchmarks, which publish each model's highest-scoring eligible evaluation configuration with same-configuration runs combined by task-weighted mean. Authenticate with any valid OpenRouter API key. Rate-limited to 30 requests/minute per key and 500 requests/day per account.
 
 
 
@@ -146,7 +146,14 @@ paths:
         benchmark sources (Artificial Analysis, Design Arena, and OpenRouter's
         own tau-bench, GPQA, and web-search evals). Filter by source to
         reproduce the exact shapes from the legacy per-source endpoints, or use
-        task_type to find models suited for specific workloads. Use
+        task_type to find models suited for specific workloads. Artificial
+        Analysis items carry one score per Artificial Analysis index
+        (Intelligence Index, Finance & Accounting Index, Strategy & Ops Index,
+        Legal Index, Healthcare & Medical Index, Engineering Index, Economics
+        Index, Cyber Index, Openness Index, Multilingual Index, Decision Index);
+        attribute Artificial Analysis when you republish them. A response whose
+        items all come from one source carries that source's citation in meta;
+        in a mixed response, attribute each item by its source. Use
         task_type=search (or a search_* benchmark_type) for OpenRouter's search
         benchmarks, which publish each model's highest-scoring eligible
         evaluation configuration with same-configuration runs combined by
@@ -172,22 +179,38 @@ paths:
             example: artificial-analysis
             type: string
         - description: >-
-            Filter results by task type. For Artificial Analysis, maps to the
-            corresponding index. For Design Arena, maps to the matching
-            category. `search` returns OpenRouter search benchmark results only.
+            Filter results by task type. Every value except `search` names the
+            Artificial Analysis index of the same name and returns only models
+            scored on it, best first (`coding` and `agentic` are deprecated:
+            Artificial Analysis has retired those indexes). Design Arena answers
+            only `coding`, `intelligence` and `agentic`, and OpenRouter's own
+            evals only `intelligence` and `agentic`. `search` returns OpenRouter
+            search benchmark results only.
           in: query
           name: task_type
           required: false
           schema:
             description: >-
-              Filter results by task type. For Artificial Analysis, maps to the
-              corresponding index. For Design Arena, maps to the matching
-              category. `search` returns OpenRouter search benchmark results
-              only.
+              Filter results by task type. Every value except `search` names the
+              Artificial Analysis index of the same name and returns only models
+              scored on it, best first (`coding` and `agentic` are deprecated:
+              Artificial Analysis has retired those indexes). Design Arena
+              answers only `coding`, `intelligence` and `agentic`, and
+              OpenRouter's own evals only `intelligence` and `agentic`. `search`
+              returns OpenRouter search benchmark results only.
             enum:
-              - coding
               - intelligence
+              - coding
               - agentic
+              - finance-and-accounting
+              - strategy-and-ops
+              - legal
+              - healthcare-and-medical
+              - engineering
+              - economics
+              - cyber
+              - multilingual
+              - decision
               - search
             example: coding
             type: string
@@ -307,15 +330,25 @@ paths:
             application/json:
               example:
                 data:
-                  - agentic_index: 58.3
-                    coding_index: 65.8
+                  - agentic_index: 55.8
+                    coding_index: 63.2
+                    cyber_index: 36.4
+                    decision_index: 75.7
                     display_name: GPT-4o
-                    intelligence_index: 71.2
+                    economics_index: 57.2
+                    engineering_index: 60.4
+                    finance_and_accounting_index: 58.1
+                    healthcare_and_medical_index: 56.9
+                    intelligence_index: 71.4
+                    legal_index: 52.3
                     model_permaslug: openai/gpt-4o
+                    multilingual_index: 0.82
+                    openness_index: 33.3
                     pricing:
                       completion: '0.00001'
                       prompt: '0.0000025'
                     source: artificial-analysis
+                    strategy_and_ops_index: 61.7
                   - accuracy: 0.72
                     accuracy_stddev: 0.03
                     avg_cost_per_task: 0.002
@@ -383,15 +416,25 @@ components:
     UnifiedBenchmarksResponse:
       example:
         data:
-          - agentic_index: 58.3
-            coding_index: 65.8
+          - agentic_index: 55.8
+            coding_index: 63.2
+            cyber_index: 36.4
+            decision_index: 75.7
             display_name: GPT-4o
-            intelligence_index: 71.2
+            economics_index: 57.2
+            engineering_index: 60.4
+            finance_and_accounting_index: 58.1
+            healthcare_and_medical_index: 56.9
+            intelligence_index: 71.4
+            legal_index: 52.3
             model_permaslug: openai/gpt-4o
+            multilingual_index: 0.82
+            openness_index: 33.3
             pricing:
               completion: '0.00001'
               prompt: '0.0000025'
             source: artificial-analysis
+            strategy_and_ops_index: 61.7
           - accuracy: 0.72
             accuracy_stddev: 0.03
             avg_cost_per_task: 0.002
@@ -509,27 +552,81 @@ components:
         - error
       type: object
     UnifiedBenchmarksAAItem:
+      description: >-
+        One model's Artificial Analysis index scores. Each score is the model's
+        best on that index across the configurations Artificial Analysis
+        evaluated (for example reasoning levels), so two indexes of one model
+        can come from different configurations. The deprecated Coding and
+        Agentic Index scores are the exception: both come from one
+        configuration, the model's strongest by Intelligence Index, then Coding
+        Index, then Agentic Index. With `task_type` set to `intelligence`,
+        `coding` or `agentic`, those three indexes all come from the
+        configuration that scores best on the one named.
       example:
-        agentic_index: 58.3
-        coding_index: 65.8
+        agentic_index: 55.8
+        coding_index: 63.2
+        cyber_index: 36.4
+        decision_index: 75.7
         display_name: GPT-4o
-        intelligence_index: 71.2
+        economics_index: 57.2
+        engineering_index: 60.4
+        finance_and_accounting_index: 58.1
+        healthcare_and_medical_index: 56.9
+        intelligence_index: 71.4
+        legal_index: 52.3
         model_permaslug: openai/gpt-4o
+        multilingual_index: 0.82
+        openness_index: 33.3
         pricing:
           completion: '0.00001'
           prompt: '0.0000025'
         source: artificial-analysis
+        strategy_and_ops_index: 61.7
       properties:
         agentic_index:
-          description: Artificial Analysis Agentic Index composite score. Higher is better.
-          example: 58.3
+          deprecated: true
+          description: >-
+            Deprecated: Artificial Analysis has retired its Agentic Index and no
+            longer publishes it. Holds the last score Artificial Analysis
+            published for the model, on a 0-100 scale, or null; it will be null
+            for every model once those stored scores are removed.
+          example: 55.8
           format: double
           type:
             - number
             - 'null'
         coding_index:
-          description: Artificial Analysis Coding Index composite score. Higher is better.
-          example: 65.8
+          deprecated: true
+          description: >-
+            Deprecated: Artificial Analysis has retired its Coding Index and no
+            longer publishes it. Holds the last score Artificial Analysis
+            published for the model, on a 0-100 scale, or null; it will be null
+            for every model once those stored scores are removed.
+          example: 63.2
+          format: double
+          type:
+            - number
+            - 'null'
+        cyber_index:
+          description: >-
+            Artificial Analysis Cyber Index score, on a 0-100 scale: the model's
+            best across the configurations Artificial Analysis evaluated. Higher
+            is better. Null when Artificial Analysis has not published a score
+            for the model.
+          example: 36.4
+          format: double
+          type:
+            - number
+            - 'null'
+        decision_index:
+          description: >-
+            Artificial Analysis Decision Index score, on a 0-100 scale: the
+            model's best across the configurations Artificial Analysis
+            evaluated. Higher is better. Published for decision models and for
+            the language models Artificial Analysis evaluates on decision tasks.
+            Null when Artificial Analysis has not published a score for the
+            model.
+          example: 75.7
           format: double
           type:
             - number
@@ -538,11 +635,73 @@ components:
           description: Model name as listed on Artificial Analysis.
           example: GPT-4o
           type: string
+        economics_index:
+          description: >-
+            Artificial Analysis Economics Index score, on a 0-100 scale: the
+            model's best across the configurations Artificial Analysis
+            evaluated. Higher is better. One of the six Artificial Analysis
+            Capability Indexes. Null when Artificial Analysis has not published
+            a score for the model.
+          example: 57.2
+          format: double
+          type:
+            - number
+            - 'null'
+        engineering_index:
+          description: >-
+            Artificial Analysis Engineering Index score, on a 0-100 scale: the
+            model's best across the configurations Artificial Analysis
+            evaluated. Higher is better. One of the six Artificial Analysis
+            Capability Indexes. Null when Artificial Analysis has not published
+            a score for the model.
+          example: 60.4
+          format: double
+          type:
+            - number
+            - 'null'
+        finance_and_accounting_index:
+          description: >-
+            Artificial Analysis Finance & Accounting Index score, on a 0-100
+            scale: the model's best across the configurations Artificial
+            Analysis evaluated. Higher is better. One of the six Artificial
+            Analysis Capability Indexes. Null when Artificial Analysis has not
+            published a score for the model.
+          example: 58.1
+          format: double
+          type:
+            - number
+            - 'null'
+        healthcare_and_medical_index:
+          description: >-
+            Artificial Analysis Healthcare & Medical Index score, on a 0-100
+            scale: the model's best across the configurations Artificial
+            Analysis evaluated. Higher is better. One of the six Artificial
+            Analysis Capability Indexes. Null when Artificial Analysis has not
+            published a score for the model.
+          example: 56.9
+          format: double
+          type:
+            - number
+            - 'null'
         intelligence_index:
           description: >-
-            Artificial Analysis Intelligence Index composite score. Higher is
-            better.
-          example: 71.2
+            Artificial Analysis Intelligence Index score, on a 0-100 scale: the
+            model's best across the configurations Artificial Analysis
+            evaluated. Higher is better. Null when Artificial Analysis has not
+            published a score for the model.
+          example: 71.4
+          format: double
+          type:
+            - number
+            - 'null'
+        legal_index:
+          description: >-
+            Artificial Analysis Legal Index score, on a 0-100 scale: the model's
+            best across the configurations Artificial Analysis evaluated. Higher
+            is better. One of the six Artificial Analysis Capability Indexes.
+            Null when Artificial Analysis has not published a score for the
+            model.
+          example: 52.3
           format: double
           type:
             - number
@@ -551,6 +710,28 @@ components:
           description: Stable OpenRouter model identifier.
           example: openai/gpt-4o
           type: string
+        multilingual_index:
+          description: >-
+            Artificial Analysis Multilingual Index score, as a fraction from 0
+            to 1: the model's best across the configurations Artificial Analysis
+            evaluated. Higher is better. Null when Artificial Analysis has not
+            published a score for the model.
+          example: 0.82
+          format: double
+          type:
+            - number
+            - 'null'
+        openness_index:
+          description: >-
+            Artificial Analysis Openness Index score, on a 0-100 scale: the
+            model's best across the configurations Artificial Analysis
+            evaluated. Higher is better. Null when Artificial Analysis has not
+            published a score for the model.
+          example: 33.3
+          format: double
+          type:
+            - number
+            - 'null'
         pricing:
           $ref: '#/components/schemas/UnifiedBenchmarkPricing'
         source:
@@ -558,6 +739,18 @@ components:
           enum:
             - artificial-analysis
           type: string
+        strategy_and_ops_index:
+          description: >-
+            Artificial Analysis Strategy & Ops Index score, on a 0-100 scale:
+            the model's best across the configurations Artificial Analysis
+            evaluated. Higher is better. One of the six Artificial Analysis
+            Capability Indexes. Null when Artificial Analysis has not published
+            a score for the model.
+          example: 61.7
+          format: double
+          type:
+            - number
+            - 'null'
       required:
         - source
         - model_permaslug
@@ -565,6 +758,16 @@ components:
         - intelligence_index
         - coding_index
         - agentic_index
+        - finance_and_accounting_index
+        - strategy_and_ops_index
+        - legal_index
+        - healthcare_and_medical_index
+        - engineering_index
+        - economics_index
+        - cyber_index
+        - openness_index
+        - multilingual_index
+        - decision_index
         - pricing
       type: object
     UnifiedBenchmarksDAItem:
@@ -853,9 +1056,10 @@ components:
           type: string
         citation:
           description: >-
-            Required attribution when republishing this data, or null when
-            results span multiple sources (attribute each item individually by
-            its `source` discriminator).
+            Required attribution when republishing this data. Always set when
+            `source` is set. When `source` is null, set if every returned item
+            comes from one source, and null if the items span sources (attribute
+            each item by its `source` discriminator) or there are none.
           example: >-
             Source: Artificial Analysis (artificialanalysis.ai) via OpenRouter
             (openrouter.ai/rankings).
@@ -866,7 +1070,10 @@ components:
           description: Number of unique models in the response.
           type: integer
         source:
-          description: The source filter applied, or null when all sources are returned.
+          description: >-
+            The one source the response is limited to: the `source` filter, or
+            Artificial Analysis for a `task_type` only it answers. Null when the
+            response draws on every source.
           enum:
             - artificial-analysis
             - design-arena
@@ -878,8 +1085,9 @@ components:
             - 'null'
         source_url:
           description: >-
-            URL of the upstream data source, or null when results span multiple
-            sources.
+            URL of the upstream data source. Always set when `source` is set.
+            When `source` is null, set if every returned item comes from one
+            source, and null if the items span sources or there are none.
           example: https://artificialanalysis.ai
           type:
             - string
