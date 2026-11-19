@@ -4,7 +4,7 @@
 
 # Create a SCIM group mapping
 
-> Create a SCIM group-to-workspace role mapping. Creating a mapping that already exists with the same role succeeds and re-applies the mapping to the group members. Requesting a different role for an existing mapping returns 409. [Management key](../../../guides/overview/auth/management-api-keys.md) required.
+> Create a SCIM group-to-workspace role mapping. Disabled: no API key can perform this write, including management keys. Use the organization settings in the dashboard, which require step-up verification. A valid management key for an organization with SCIM access receives 403; an invalid key still receives 401 and an organization without SCIM access receives 404.
 
 
 
@@ -142,11 +142,12 @@ paths:
         - SCIM
       summary: Create a SCIM group mapping
       description: >-
-        Create a SCIM group-to-workspace role mapping. Creating a mapping that
-        already exists with the same role succeeds and re-applies the mapping to
-        the group members. Requesting a different role for an existing mapping
-        returns 409. [Management
-        key](/docs/guides/overview/auth/management-api-keys) required.
+        Create a SCIM group-to-workspace role mapping. Disabled: no API key can
+        perform this write, including management keys. Use the organization
+        settings in the dashboard, which require step-up verification. A valid
+        management key for an organization with SCIM access receives 403; an
+        invalid key still receives 401 and an organization without SCIM access
+        receives 404.
       operationId: createScimGroupMapping
       requestBody:
         content:
@@ -160,7 +161,9 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/CreateScimGroupMappingResponse'
-          description: SCIM group mapping created
+          description: >-
+            SCIM group mapping created. Not returned: this operation is
+            disabled. The schema is kept for SDK compatibility.
         '400':
           content:
             application/json:
@@ -187,10 +190,12 @@ paths:
               example:
                 error:
                   code: 403
-                  message: Only management keys can perform this operation
+                  message: >-
+                    Management keys cannot change SCIM group mappings or start
+                    syncs. Use the organization settings in the dashboard.
               schema:
                 $ref: '#/components/schemas/ForbiddenResponse'
-          description: Forbidden - Authentication successful but insufficient permissions
+          description: Forbidden - SCIM writes are dashboard-only
         '404':
           content:
             application/json:
@@ -221,6 +226,7 @@ paths:
               schema:
                 $ref: '#/components/schemas/InternalServerResponse'
           description: Internal Server Error - Unexpected server error
+      deprecated: true
 components:
   schemas:
     CreateScimGroupMappingRequest:

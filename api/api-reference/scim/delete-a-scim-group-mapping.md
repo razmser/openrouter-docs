@@ -4,7 +4,7 @@
 
 # Delete a SCIM group mapping
 
-> Delete a SCIM group-to-workspace mapping. [Management key](../../../guides/overview/auth/management-api-keys.md) required.
+> Delete a SCIM group-to-workspace mapping. Disabled: no API key can perform this write, including management keys. Use the organization settings in the dashboard, which require step-up verification. A valid management key for an organization with SCIM access receives 403; an invalid key still receives 401 and an organization without SCIM access receives 404.
 
 
 
@@ -142,8 +142,12 @@ paths:
         - SCIM
       summary: Delete a SCIM group mapping
       description: >-
-        Delete a SCIM group-to-workspace mapping. [Management
-        key](/docs/guides/overview/auth/management-api-keys) required.
+        Delete a SCIM group-to-workspace mapping. Disabled: no API key can
+        perform this write, including management keys. Use the organization
+        settings in the dashboard, which require step-up verification. A valid
+        management key for an organization with SCIM access receives 403; an
+        invalid key still receives 401 and an organization without SCIM access
+        receives 404.
       operationId: deleteScimGroupMapping
       parameters:
         - in: path
@@ -185,7 +189,9 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/DeleteScimGroupMappingResponse'
-          description: SCIM group mapping deleted
+          description: >-
+            SCIM group mapping deleted. Not returned: this operation is
+            disabled. The schema is kept for SDK compatibility.
         '400':
           content:
             application/json:
@@ -212,10 +218,12 @@ paths:
               example:
                 error:
                   code: 403
-                  message: Only management keys can perform this operation
+                  message: >-
+                    Management keys cannot change SCIM group mappings or start
+                    syncs. Use the organization settings in the dashboard.
               schema:
                 $ref: '#/components/schemas/ForbiddenResponse'
-          description: Forbidden - Authentication successful but insufficient permissions
+          description: Forbidden - SCIM writes are dashboard-only
         '404':
           content:
             application/json:
@@ -236,6 +244,7 @@ paths:
               schema:
                 $ref: '#/components/schemas/InternalServerResponse'
           description: Internal Server Error - Unexpected server error
+      deprecated: true
 components:
   schemas:
     DeleteScimGroupMappingResponse:

@@ -2408,7 +2408,8 @@ components:
         - bedrock-xai-responses-v1
         - xai-responses-v1
         - meta-responses-v1
-        - google-vertex-responses-v1
+        - google-vertex-meta-responses-v1
+        - google-vertex-xai-responses-v1
         - openrouter-stealth-v1
         - anthropic-claude-v1
         - google-gemini-v1

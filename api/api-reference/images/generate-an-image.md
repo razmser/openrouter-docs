@@ -444,6 +444,22 @@ components:
             - 4K
           example: 2K
           type: string
+        response_format:
+          description: >-
+            `b64_json` (default) returns the image bytes inline. `url` stores
+            each output in OpenRouter storage and returns a signed download URL
+            in place of the bytes. The URL is a bearer link: anyone holding it
+            can download the image until it expires, up to 24 hours after the
+            image was stored (use `expires_at`); the stored copy is deleted by
+            the storage lifecycle within the following day. The response falls
+            back to `b64_json` when a URL cannot be issued: streaming responses,
+            zero-data-retention requests (account settings, guardrails or
+            `provider.zdr`) or endpoints, or storage being unavailable.
+          enum:
+            - b64_json
+            - url
+          example: b64_json
+          type: string
         seed:
           description: >-
             If specified, the generation will sample deterministically, such
@@ -518,7 +534,9 @@ components:
           items:
             properties:
               b64_json:
-                description: Base64-encoded image bytes
+                description: >-
+                  Base64-encoded image bytes. Present unless the request asked
+                  for `response_format: "url"` and `url` was issued.
                 type: string
               layer:
                 $ref: '#/components/schemas/ImageGenerationLayer'
@@ -529,10 +547,23 @@ components:
                   the format could not be determined.
                 example: image/png
                 type: string
-            required:
-              - b64_json
+              url:
+                description: >-
+                  Signed download URL for the image bytes, issued for
+                  `response_format: "url"` requests. Valid until `expires_at`.
+                  Absent when the response fell back to `b64_json`.
+                example: >-
+                  https://storage.googleapis.com/openrouter-generated-media-us/v1/...
+                type: string
             type: object
           type: array
+        expires_at:
+          description: >-
+            Unix timestamp (seconds) of the earliest expiry among the `url`s in
+            `data`; treat every URL as expired after it. Present only when URLs
+            were issued.
+          example: 1748458800
+          type: integer
         usage:
           $ref: '#/components/schemas/ImageGenerationUsage'
       required:

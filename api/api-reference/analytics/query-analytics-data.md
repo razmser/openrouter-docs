@@ -228,11 +228,14 @@ paths:
                 dimensions:
                   items:
                     description: >-
-                      Dimension to group by (up to 2). Use the /meta endpoint
-                      for available dimensions.
+                      Dimension to group by (up to 3). More than 2 requires
+                      every metric, dimension and filter to be available from
+                      the activity rollups, or for token-kind metrics from their
+                      daily rollup; otherwise the request fails with 400. Use
+                      the /meta endpoint for available dimensions.
                     example: model
                     type: string
-                  maxItems: 2
+                  maxItems: 3
                   type: array
                 filters:
                   items:
@@ -609,9 +612,10 @@ components:
             grouping by the account default workspace also covers activity
             recorded before workspace resolution existed, which is attributed to
             that default workspace); `app` — numeric app ID, not the app title;
-            `model` — permaslug (e.g. "openai/gpt-4o"), not the display name.
-            Other dimensions (provider, origin, country, etc.) are not enriched
-            and accept the value as returned.
+            `model` — permaslug (e.g. "openai/gpt-4o"), not the display name;
+            `endpoint` — endpoint UUID, returned as is (the same `endpoint_id`
+            /activity reports). Other dimensions (provider, origin, country,
+            etc.) are not enriched and accept the value as returned.
       required:
         - field
         - operator
@@ -649,8 +653,10 @@ components:
               recorded before workspace resolution existed, which is attributed
               to that default workspace); `app` — numeric app ID, not the app
               title; `model` — permaslug (e.g. "openai/gpt-4o"), not the display
-              name. Other dimensions (provider, origin, country, etc.) are not
-              enriched and accept the value as returned.
+              name; `endpoint` — endpoint UUID, returned as is (the same
+              `endpoint_id` /activity reports). Other dimensions (provider,
+              origin, country, etc.) are not enriched and accept the value as
+              returned.
           type: array
       required:
         - field

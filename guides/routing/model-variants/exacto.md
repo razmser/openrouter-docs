@@ -105,7 +105,3 @@ In practice, Exacto is most useful on models that:
 * Support tool calling
 * Have multiple providers available on OpenRouter
 * Show meaningful provider variance in tool-use reliability
-
-> [!NOTE]
->
-> If you have feedback on the Exacto variant, please fill out this form: [https://openrouter.notion.site/2932fd57c4dc8097ba74ffb6d27f39d1?pvs=105](https://openrouter.notion.site/2932fd57c4dc8097ba74ffb6d27f39d1?pvs=105)

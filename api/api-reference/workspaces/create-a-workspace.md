@@ -291,7 +291,10 @@ components:
             - array
             - 'null'
         io_logging_api_key_ids:
-          description: Optional array of API key IDs to filter I/O logging
+          description: >-
+            Optional array of API key IDs to filter I/O logging. Read-only for
+            management keys: any value other than the default returns 403.
+            Change it in the OpenRouter dashboard.
           example: null
           items:
             type: integer
@@ -299,23 +302,29 @@ components:
             - array
             - 'null'
         io_logging_sampling_rate:
-          description: Sampling rate for I/O logging (0.0001-1)
+          description: >-
+            Sampling rate for I/O logging (0.0001-1). Read-only for management
+            keys: any value other than the default returns 403. Change it in the
+            OpenRouter dashboard.
           example: 1
           format: double
           type: number
         is_data_discount_logging_enabled:
           description: >-
-            Whether data discount logging is enabled. Enabling it requires the
-            account to allow workspace data-discount logging; otherwise the
-            request returns 403.
-          example: true
+            Whether data discount logging is enabled. Read-only for management
+            keys: any value other than the default returns 403. Change it in the
+            OpenRouter dashboard.
+          example: false
           type: boolean
         is_observability_broadcast_enabled:
           description: Whether broadcast is enabled
           example: false
           type: boolean
         is_observability_io_logging_enabled:
-          description: Whether private logging is enabled
+          description: >-
+            Whether private logging is enabled. Read-only for management keys:
+            any value other than the default returns 403. Change it in the
+            OpenRouter dashboard.
           example: false
           type: boolean
         name:

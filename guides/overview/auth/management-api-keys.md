@@ -513,12 +513,8 @@ The following documented routes reject regular API keys and must be called with 
 | Method | Route | Reference |
 | - | - | - |
 | `GET` | `/api/v1/scim/group-mappings` | [List SCIM group mappings](../../../api/api-reference/scim/list-scim-group-mappings.md) |
-| `POST` | `/api/v1/scim/group-mappings` | [Create a SCIM group mapping](../../../api/api-reference/scim/create-a-scim-group-mapping.md) |
 | `GET` | `/api/v1/scim/group-mappings/{id}` | [Get a SCIM group mapping](../../../api/api-reference/scim/get-a-scim-group-mapping.md) |
-| `DELETE` | `/api/v1/scim/group-mappings/{id}` | [Delete a SCIM group mapping](../../../api/api-reference/scim/delete-a-scim-group-mapping.md) |
-| `PATCH` | `/api/v1/scim/group-mappings/{id}` | [Update a SCIM group mapping](../../../api/api-reference/scim/update-a-scim-group-mapping.md) |
 | `GET` | `/api/v1/scim/groups` | [List SCIM groups](../../../api/api-reference/scim/list-scim-groups.md) |
-| `POST` | `/api/v1/scim/sync-jobs` | [Start a SCIM directory sync](../../../api/api-reference/scim/start-a-scim-directory-sync.md) |
 | `GET` | `/api/v1/scim/sync-jobs/{id}` | [Get SCIM directory sync status](../../../api/api-reference/scim/get-scim-directory-sync-status.md) |
 
 ### Workspaces

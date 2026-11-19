@@ -63,6 +63,7 @@ func main() {
 
 | Error Type | Status Code | Content Type |
 | - | - | - |
+| sdkerrors.UnauthorizedResponseError | 401 | application/json |
 | sdkerrors.ForbiddenResponseError | 403 | application/json |
 | sdkerrors.InternalServerResponseError | 500 | application/json |
 | sdkerrors.ServiceUnavailableResponseError | 503 | application/json |
@@ -118,6 +119,7 @@ func main() {
 
 | Error Type | Status Code | Content Type |
 | - | - | - |
+| sdkerrors.UnauthorizedResponseError | 401 | application/json |
 | sdkerrors.ForbiddenResponseError | 403 | application/json |
 | sdkerrors.NotFoundResponseError | 404 | application/json |
 | sdkerrors.InternalServerResponseError | 500 | application/json |

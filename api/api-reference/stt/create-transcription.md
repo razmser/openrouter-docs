@@ -199,6 +199,12 @@ paths:
                 model:
                   description: The model to use for transcription.
                   type: string
+                prompt:
+                  description: >-
+                    Context to guide transcription on providers that support
+                    contextual prompting. Takes precedence over
+                    provider-specific prompt options, including when empty.
+                  type: string
                 provider:
                   description: >-
                     JSON-encoded provider preferences object, the same shape as
@@ -469,6 +475,17 @@ components:
         model:
           description: STT model identifier
           example: openai/whisper-large-v3
+          type: string
+        prompt:
+          description: >-
+            Context to guide transcription, such as domain vocabulary or a
+            previous segment. Honored by OpenAI (except
+            gpt-4o-transcribe-diarize), Azure OpenAI, Groq, Together, Alibaba,
+            and AssemblyAI endpoints with prompted pricing configured. Other
+            providers ignore it; use keyterms for supported keyword boosting.
+            Takes precedence over provider-specific prompt options, including
+            when empty.
+          example: A discussion about OpenRouter and speech recognition.
           type: string
         provider:
           description: >-

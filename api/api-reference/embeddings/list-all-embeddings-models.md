@@ -653,8 +653,8 @@ components:
         data is available.
       example:
         artificial_analysis:
-          agentic_index: 55.8
-          coding_index: 63.2
+          agentic_index: null
+          coding_index: null
           cyber_index: 36.4
           decision_index: 75.7
           economics_index: 57.2
@@ -1036,15 +1036,14 @@ components:
         (artificialanalysis.ai), one field per index. Each score is the model's
         best on that index across the configurations Artificial Analysis
         evaluated (for example reasoning levels), so two indexes of one model
-        can come from different configurations. The deprecated Coding and
-        Agentic Index scores are the exception: both come from one
-        configuration, the model's strongest by Intelligence Index, then Coding
-        Index, then Agentic Index. Attribute Artificial Analysis when you
-        republish them. Omitted when Artificial Analysis has scored the model on
-        none of them.
+        can come from different configurations. The deprecated Coding Index and
+        Agentic Index fields are null for every model: Artificial Analysis has
+        retired those indexes. Attribute Artificial Analysis when you republish
+        them. Omitted when Artificial Analysis has scored the model on none of
+        them.
       example:
-        agentic_index: 55.8
-        coding_index: 63.2
+        agentic_index: null
+        coding_index: null
         cyber_index: 36.4
         decision_index: 75.7
         economics_index: 57.2
@@ -1061,10 +1060,8 @@ components:
           deprecated: true
           description: >-
             Deprecated: Artificial Analysis has retired its Agentic Index and no
-            longer publishes it. Holds the last score Artificial Analysis
-            published for the model, on a 0-100 scale, or null; it will be null
-            for every model once those stored scores are removed.
-          example: 55.8
+            longer publishes it. Always null.
+          example: null
           format: double
           type:
             - number
@@ -1073,10 +1070,8 @@ components:
           deprecated: true
           description: >-
             Deprecated: Artificial Analysis has retired its Coding Index and no
-            longer publishes it. Holds the last score Artificial Analysis
-            published for the model, on a 0-100 scale, or null; it will be null
-            for every model once those stored scores are removed.
-          example: 63.2
+            longer publishes it. Always null.
+          example: null
           format: double
           type:
             - number

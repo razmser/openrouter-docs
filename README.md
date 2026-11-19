@@ -2,7 +2,7 @@
 
 Markdown mirror of [OpenRouter's documentation](https://openrouter.ai/docs/quickstart).
 
-Contains **557 pages**, discovered from the [page index](https://openrouter.ai/docs/llms.txt) and [supplementary index](https://openrouter.ai/docs/sitemap.xml).
+Contains **558 pages**, discovered from the [page index](https://openrouter.ai/docs/llms.txt) and [supplementary index](https://openrouter.ai/docs/sitemap.xml).
 
 Links to mirrored pages point to local files; external links and images remain online. Code examples and OpenAPI blocks are preserved.
 
@@ -240,6 +240,7 @@ Generated files are replaced by the next successful sync. Original content belon
 - [Alpha.Extractions](client-sdks/go/sdks/extractions/README.md)
 - [Files](client-sdks/go/sdks/files/README.md)
 - [Generations](client-sdks/go/sdks/generations/README.md)
+- [Guardrail Policies](client-sdks/go/sdks/guardrailpolicies/README.md)
 - [Guardrails](client-sdks/go/sdks/guardrails/README.md)
 - [Images](client-sdks/go/sdks/images/README.md)
 - [Models](client-sdks/go/sdks/models/README.md)

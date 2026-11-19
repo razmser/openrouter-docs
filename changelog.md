@@ -8,6 +8,339 @@
 
 Entries on this page are generated automatically from [OpenAPI specification](api_reference/overview.md) diffs when releases ship. Breaking changes are reviewed by a human before publication. See [API Versioning](api_reference/versioning.md) for what counts as a breaking change and how deprecations are announced. Endpoint paths are shown relative to the API base URL (`https://openrouter.ai/api/v1`).
 
+**November 19, 2026**
+
+## Breaking changes
+
+* `ImageGenerationResponse.data`: required `b64_json` property removedAction required
+  * Used by [`POST /images`](api/api-reference/images/generate-an-image.md)
+
+## Modified endpoints
+
+* [`POST /scim/group-mappings`](api/api-reference/scim/create-a-scim-group-mapping.md): deprecated property\_added; description updated; response schema updated
+* [`DELETE /scim/group-mappings/{id}`](api/api-reference/scim/delete-a-scim-group-mapping.md): deprecated property\_added; description updated; response schema updated
+* [`PATCH /scim/group-mappings/{id}`](api/api-reference/scim/update-a-scim-group-mapping.md): deprecated property\_added; description updated; response schema updated
+* [`POST /scim/sync-jobs`](api/api-reference/scim/start-a-scim-directory-sync.md): deprecated property\_added; description updated; response schema updated
+* [`POST /credits/purchases`](https://openrouter.ai/docs/api/api-reference/credits/buy-credits-with-a-machine-payment): extension `x-payment-info` added; description updated
+* [`POST /audio/transcriptions`](api/api-reference/stt/create-transcription.md): request schema updated
+
+## Modified schemas
+
+* `CreateWorkspaceRequest`: description updated; example modified
+  * Used by [`POST /workspaces`](api/api-reference/workspaces/create-a-workspace.md)
+* `ImageGenerationRequest`: new property `response_format`
+  * Used by [`POST /images`](api/api-reference/images/generate-an-image.md)
+* `ImageGenerationResponse`: new property `expires_at`; new property `data.url`; property `b64_json` updated
+  * Used by [`POST /images`](api/api-reference/images/generate-an-image.md)
+* `UpdateWorkspaceRequest`: description updated; example modified
+  * Used by [`PATCH /workspaces/{id}`](api/api-reference/workspaces/update-a-workspace.md)
+* `STTRequest`: new property `prompt`
+  * Used by [`POST /audio/transcriptions`](api/api-reference/stt/create-transcription.md)
+
+**November 18, 2026**
+
+## Breaking changes
+
+* `ReasoningFormat`: enum `google-vertex-responses-v1` property removedAction required
+
+  * Migration: the value was renamed to `google-vertex-meta-responses-v1`. It identifies encrypted reasoning minted by Meta models served on Google Vertex, and the new name says so; the behavior is unchanged. `reasoning_details[].format` in responses now carries the new value. Requests that replay stored `reasoning_details` with the old value keep working: the API accepts `google-vertex-responses-v1` on input and treats it as `google-vertex-meta-responses-v1`. Update any client code or generated SDK enum that compares against the old string, and accept both values while stored reasoning from before this release is still being replayed.
+
+  **6 endpoints using this schema**
+
+  * [`GET /batches/{id}`](api/api-reference/batch/get-a-batch.md)
+  * [`POST /batches`](api/api-reference/batch/create-a-batch.md)
+  * [`POST /chat/completions`](api/api-reference/chat/create-a-chat-completion.md)
+  * [`POST /presets/{slug}/chat/completions`](api/api-reference/presets/create-a-preset-from-a-chat-completions-request-body.md)
+  * [`POST /presets/{slug}/responses`](api/api-reference/presets/create-a-preset-from-a-responses-request-body.md)
+  * [`POST /responses`](api/api-reference/responses/create-a-response.md)
+* [`POST /analytics/query`](api/api-reference/analytics/query-analytics-data.md): maxItems changed from `2` to `3`No action needed
+  * Migration: none. `group_by` now accepts up to 3 dimensions; requests with 1 or 2 behave as before. A third dimension works only when every metric, dimension and filter in the request is available from the activity rollups (or, for token-kind metrics, their daily rollup); otherwise the request returns 400.
+
+## Modified endpoints
+
+* [`POST /analytics/query`](api/api-reference/analytics/query-analytics-data.md): description updated
+
+## New schemas
+
+* `PrivateEndpointPromptCaching`
+  * Used by [`GET /private-endpoints/{id}`](api/api-reference/private-endpoints/get-a-private-endpoint.md), [`PATCH /private-endpoints/{id}`](api/api-reference/private-endpoints/update-a-private-endpoint.md)
+* `UpdatePrivateEndpointPromptCaching`
+  * Used by [`PATCH /private-endpoints/{id}`](api/api-reference/private-endpoints/update-a-private-endpoint.md), [`POST /private-endpoints`](api/api-reference/private-endpoints/create-a-private-endpoint.md)
+
+## Modified schemas
+
+* `ReasoningFormat`: enum property\_added
+
+  **6 endpoints using this schema**
+
+  * [`GET /batches/{id}`](api/api-reference/batch/get-a-batch.md)
+  * [`POST /batches`](api/api-reference/batch/create-a-batch.md)
+  * [`POST /chat/completions`](api/api-reference/chat/create-a-chat-completion.md)
+  * [`POST /presets/{slug}/chat/completions`](api/api-reference/presets/create-a-preset-from-a-chat-completions-request-body.md)
+  * [`POST /presets/{slug}/responses`](api/api-reference/presets/create-a-preset-from-a-responses-request-body.md)
+  * [`POST /responses`](api/api-reference/responses/create-a-response.md)
+* `ScalarFilter`: description updated
+  * Used by [`POST /analytics/query`](api/api-reference/analytics/query-analytics-data.md)
+* `SetFilter`: description updated
+  * Used by [`POST /analytics/query`](api/api-reference/analytics/query-analytics-data.md)
+* `PrivateEndpoint`: example modified
+  * Used by [`GET /private-endpoints/{id}`](api/api-reference/private-endpoints/get-a-private-endpoint.md), [`PATCH /private-endpoints/{id}`](api/api-reference/private-endpoints/update-a-private-endpoint.md)
+* `PrivateEndpointSettings`: example modified; new property `prompt_caching`
+  * Used by [`GET /private-endpoints/{id}`](api/api-reference/private-endpoints/get-a-private-endpoint.md), [`PATCH /private-endpoints/{id}`](api/api-reference/private-endpoints/update-a-private-endpoint.md)
+* `UpdatePrivateEndpointSettingsRequest`: new property `prompt_caching`
+  * Used by [`PATCH /private-endpoints/{id}`](api/api-reference/private-endpoints/update-a-private-endpoint.md), [`POST /private-endpoints`](api/api-reference/private-endpoints/create-a-private-endpoint.md)
+
+**November 17, 2026**
+
+## Modified endpoints
+
+* [`POST /auth/keys/code`](api/api-reference/oauth/create-authorization-code.md): description updated
+* [`GET /keys`](api/api-reference/api-keys/list-api-keys.md): extension `x-speakeasy-max-method-params` added
+* [`GET /benchmarks`](api/api-reference/benchmarks/list-benchmarks.md): description updated; parameter `task_type` updated; response schema updated
+* [`GET /models`](api/api-reference/models/list-all-models-and-their-properties.md):
+  * new parameter `max_cyber_index`
+  * new parameter `max_decision_index`
+  * new parameter `max_economics_index`
+  * new parameter `max_engineering_index`
+  * new parameter `max_finance_and_accounting_index`
+  * new parameter `max_healthcare_and_medical_index`
+  * new parameter `max_legal_index`
+  * new parameter `max_multilingual_index`
+  * new parameter `max_openness_index`
+  * new parameter `max_strategy_and_ops_index`
+  * new parameter `min_cyber_index`
+  * new parameter `min_decision_index`
+  * new parameter `min_economics_index`
+  * new parameter `min_engineering_index`
+  * new parameter `min_finance_and_accounting_index`
+  * new parameter `min_healthcare_and_medical_index`
+  * new parameter `min_legal_index`
+  * new parameter `min_multilingual_index`
+  * new parameter `min_openness_index`
+  * new parameter `min_strategy_and_ops_index`
+  * parameter `max_agentic_index` updated
+  * description updated
+  * parameter `max_coding_index` updated
+  * parameter `min_agentic_index` updated
+  * parameter `min_coding_index` updated
+  * parameter `sort` updated
+* [`GET /models/user`](api/api-reference/models/list-models-filtered-by-user-provider-preferences-privacy-settings-and-guardrails.md): description updated; parameter `sort` updated
+
+## New schemas
+
+* `ResponsesInputTransformation`
+  * Used by [`GET /batches/{id}`](api/api-reference/batch/get-a-batch.md), [`POST /batches`](api/api-reference/batch/create-a-batch.md), [`POST /responses`](api/api-reference/responses/create-a-response.md)
+
+## Modified schemas
+
+* `AABenchmarkEntry`:
+
+  * description updated
+  * example modified
+  * new property `cyber_index` (always present)
+  * new property `decision_index` (always present)
+  * new property `economics_index` (always present)
+  * new property `engineering_index` (always present)
+  * new property `finance_and_accounting_index` (always present)
+  * new property `healthcare_and_medical_index` (always present)
+  * new property `legal_index` (always present)
+  * new property `multilingual_index` (always present)
+  * new property `openness_index` (always present)
+  * new property `strategy_and_ops_index` (always present)
+  * deprecated property\_added
+
+  **4 endpoints using this schema**
+
+  * [`GET /embeddings/models`](api/api-reference/embeddings/list-all-embeddings-models.md)
+  * [`GET /model/{author}/{slug}`](api/api-reference/models/get-a-model-by-its-slug.md)
+  * [`GET /models`](api/api-reference/models/list-all-models-and-their-properties.md)
+  * [`GET /models/user`](api/api-reference/models/list-models-filtered-by-user-provider-preferences-privacy-settings-and-guardrails.md)
+* `ModelBenchmarks`: example modified
+
+  **4 endpoints using this schema**
+
+  * [`GET /embeddings/models`](api/api-reference/embeddings/list-all-embeddings-models.md)
+  * [`GET /model/{author}/{slug}`](api/api-reference/models/get-a-model-by-its-slug.md)
+  * [`GET /models`](api/api-reference/models/list-all-models-and-their-properties.md)
+  * [`GET /models/user`](api/api-reference/models/list-models-filtered-by-user-provider-preferences-privacy-settings-and-guardrails.md)
+* `ParetoRouterPlugin`: description updated; example modified
+
+  **6 endpoints using this schema**
+
+  * [`POST /chat/completions`](api/api-reference/chat/create-a-chat-completion.md)
+  * [`POST /messages`](api/api-reference/anthropic-messages/create-a-message.md)
+  * [`POST /presets/{slug}/chat/completions`](api/api-reference/presets/create-a-preset-from-a-chat-completions-request-body.md)
+  * [`POST /presets/{slug}/messages`](api/api-reference/presets/create-a-preset-from-a-messages-request-body.md)
+  * [`POST /presets/{slug}/responses`](api/api-reference/presets/create-a-preset-from-a-responses-request-body.md)
+  * [`POST /responses`](api/api-reference/responses/create-a-response.md)
+* `UnifiedBenchmarksAAItem`:
+  * description updated
+  * example modified
+  * new property `cyber_index` (always present)
+  * new property `decision_index` (always present)
+  * new property `economics_index` (always present)
+  * new property `engineering_index` (always present)
+  * new property `finance_and_accounting_index` (always present)
+  * new property `healthcare_and_medical_index` (always present)
+  * new property `legal_index` (always present)
+  * new property `multilingual_index` (always present)
+  * new property `openness_index` (always present)
+  * new property `strategy_and_ops_index` (always present)
+  * deprecated property\_added
+  * Used by [`GET /benchmarks`](api/api-reference/benchmarks/list-benchmarks.md)
+* `UnifiedBenchmarksMeta`: description updated
+  * Used by [`GET /benchmarks`](api/api-reference/benchmarks/list-benchmarks.md)
+* `UnifiedBenchmarksResponse`: example modified
+  * Used by [`GET /benchmarks`](api/api-reference/benchmarks/list-benchmarks.md)
+
+**November 16, 2026**
+
+## Modified endpoints
+
+* [`POST /auth/keys`](api/api-reference/oauth/exchange-authorization-code-for-api-key.md): description updated
+* [`POST /auth/keys/code`](api/api-reference/oauth/create-authorization-code.md): description updated
+
+## New response codes
+
+* [`GET /generation/content`](api/api-reference/generations/get-stored-prompt-completion-and-error-content-for-a-generation.md): now returns `503`
+
+## Modified schemas
+
+* `SpeechRequest`: description updated
+  * Used by [`POST /audio/speech`](api/api-reference/tts/create-speech.md)
+* `VideoGenerationRequest`: enum property\_added; description updated
+  * Used by [`POST /videos`](api/api-reference/video-generation/submit-a-video-generation-request.md)
+* `VideoModel`: enum property\_added
+  * Used by [`GET /videos/models`](api/api-reference/video-generation/list-all-video-generation-models.md)
+* `AutoRouterPlugin`: description updated
+
+  **6 endpoints using this schema**
+
+  * [`POST /chat/completions`](api/api-reference/chat/create-a-chat-completion.md)
+  * [`POST /messages`](api/api-reference/anthropic-messages/create-a-message.md)
+  * [`POST /presets/{slug}/chat/completions`](api/api-reference/presets/create-a-preset-from-a-chat-completions-request-body.md)
+  * [`POST /presets/{slug}/messages`](api/api-reference/presets/create-a-preset-from-a-messages-request-body.md)
+  * [`POST /presets/{slug}/responses`](api/api-reference/presets/create-a-preset-from-a-responses-request-body.md)
+  * [`POST /responses`](api/api-reference/responses/create-a-response.md)
+* `JevRouterPlugin`: description updated
+
+  **6 endpoints using this schema**
+
+  * [`POST /chat/completions`](api/api-reference/chat/create-a-chat-completion.md)
+  * [`POST /messages`](api/api-reference/anthropic-messages/create-a-message.md)
+  * [`POST /presets/{slug}/chat/completions`](api/api-reference/presets/create-a-preset-from-a-chat-completions-request-body.md)
+  * [`POST /presets/{slug}/messages`](api/api-reference/presets/create-a-preset-from-a-messages-request-body.md)
+  * [`POST /presets/{slug}/responses`](api/api-reference/presets/create-a-preset-from-a-responses-request-body.md)
+  * [`POST /responses`](api/api-reference/responses/create-a-response.md)
+
+**November 13, 2026**
+
+## Breaking changes
+
+* `BatchSubmitBody`: required `requests` property removedAction required
+  * Used by [`POST /batches`](api/api-reference/batch/create-a-batch.md)
+
+## Modified endpoints
+
+* [`GET /byok`](api/api-reference/byok/list-byok-provider-credentials.md): parameter `provider` updated
+
+## New schemas
+
+* `BatchInputReference`
+  * Used by [`POST /batches`](api/api-reference/batch/create-a-batch.md)
+* `BatchOutputReference`
+  * Used by [`GET /batches`](api/api-reference/batch/list-batches.md), [`GET /batches/{id}`](api/api-reference/batch/get-a-batch.md), [`POST /batches`](api/api-reference/batch/create-a-batch.md)
+* `ImageGenerationLayer`
+  * Used by [`POST /images`](api/api-reference/images/generate-an-image.md)
+* `ImageGenerationLayerBoundingBox`
+  * Used by [`POST /images`](api/api-reference/images/generate-an-image.md)
+* `ImageGenerationLayerTextRecognition`
+  * Used by [`POST /images`](api/api-reference/images/generate-an-image.md)
+* `ImageGenerationLayerTextRun`
+  * Used by [`POST /images`](api/api-reference/images/generate-an-image.md)
+
+## Modified schemas
+
+* `BatchListItem`: new property `output`
+  * Used by [`GET /batches`](api/api-reference/batch/list-batches.md)
+* `BatchObject`: new property `output`
+  * Used by [`GET /batches/{id}`](api/api-reference/batch/get-a-batch.md), [`POST /batches`](api/api-reference/batch/create-a-batch.md)
+* `BatchPaymentRequiredResponse`: new property `output`
+  * Used by [`GET /batches/{id}`](api/api-reference/batch/get-a-batch.md)
+* `BatchSubmitBody`: new property `input`; description updated
+  * Used by [`POST /batches`](api/api-reference/batch/create-a-batch.md)
+* `ImageGenerationResponse`: new property `data.layer`
+  * Used by [`POST /images`](api/api-reference/images/generate-an-image.md)
+* `BatchInputReference`: description updated
+  * Used by [`POST /batches`](api/api-reference/batch/create-a-batch.md)
+* `BatchOutputReference`: description updated
+  * Used by [`GET /batches`](api/api-reference/batch/list-batches.md), [`GET /batches/{id}`](api/api-reference/batch/get-a-batch.md), [`POST /batches`](api/api-reference/batch/create-a-batch.md)
+* `BYOKProviderSlug`: enum property\_added
+
+  **4 endpoints using this schema**
+
+  * [`GET /byok`](api/api-reference/byok/list-byok-provider-credentials.md)
+  * [`GET /byok/{id}`](api/api-reference/byok/get-a-byok-provider-credential.md)
+  * [`PATCH /byok/{id}`](api/api-reference/byok/update-a-byok-provider-credential.md)
+  * [`POST /byok`](api/api-reference/byok/create-a-byok-provider-credential.md)
+* `MessagesStartEvent`: property `provider` updated
+  * Used by [`POST /messages`](api/api-reference/anthropic-messages/create-a-message.md)
+* `ProviderName`: enum property\_added
+
+  **18 endpoints using this schema**
+
+  * [`GET /endpoints/zdr`](api/api-reference/endpoints/preview-the-impact-of-zdr-on-the-available-endpoints.md)
+  * [`GET /models/{author}/{slug}/endpoints`](api/api-reference/endpoints/list-all-endpoints-for-a-model.md)
+  * [`POST /api/alpha/decisions`](api/api-reference/alphadecisions/submit-a-decisions-request.md)
+  * [`POST /api/alpha/extractions`](api/api-reference/alphaextractions/submit-an-extractions-request.md)
+  * [`POST /audio/speech`](api/api-reference/tts/create-speech.md)
+  * [`POST /audio/transcriptions`](api/api-reference/stt/create-transcription.md)
+  * [`POST /batches`](api/api-reference/batch/create-a-batch.md)
+  * [`POST /chat/completions`](api/api-reference/chat/create-a-chat-completion.md)
+  * [`POST /embeddings`](api/api-reference/embeddings/submit-an-embedding-request.md)
+  * [`POST /images`](api/api-reference/images/generate-an-image.md)
+  * [`POST /messages`](api/api-reference/anthropic-messages/create-a-message.md)
+  * [`POST /presets/{slug}/chat/completions`](api/api-reference/presets/create-a-preset-from-a-chat-completions-request-body.md)
+  * [`POST /presets/{slug}/messages`](api/api-reference/presets/create-a-preset-from-a-messages-request-body.md)
+  * [`POST /presets/{slug}/responses`](api/api-reference/presets/create-a-preset-from-a-responses-request-body.md)
+  * [`POST /rerank`](api/api-reference/rerank/submit-a-rerank-request.md)
+  * [`POST /responses`](api/api-reference/responses/create-a-response.md)
+  * [`POST /systemone`](api/api-reference/systemone/submit-a-system-one-request.md)
+  * [`POST /videos`](api/api-reference/video-generation/submit-a-video-generation-request.md)
+* `ProviderOptions`: new property `doubleword`
+
+  **15 endpoints using this schema**
+
+  * [`POST /api/alpha/decisions`](api/api-reference/alphadecisions/submit-a-decisions-request.md)
+  * [`POST /api/alpha/extractions`](api/api-reference/alphaextractions/submit-an-extractions-request.md)
+  * [`POST /audio/speech`](api/api-reference/tts/create-speech.md)
+  * [`POST /audio/transcriptions`](api/api-reference/stt/create-transcription.md)
+  * [`POST /chat/completions`](api/api-reference/chat/create-a-chat-completion.md)
+  * [`POST /embeddings`](api/api-reference/embeddings/submit-an-embedding-request.md)
+  * [`POST /images`](api/api-reference/images/generate-an-image.md)
+  * [`POST /messages`](api/api-reference/anthropic-messages/create-a-message.md)
+  * [`POST /presets/{slug}/chat/completions`](api/api-reference/presets/create-a-preset-from-a-chat-completions-request-body.md)
+  * [`POST /presets/{slug}/messages`](api/api-reference/presets/create-a-preset-from-a-messages-request-body.md)
+  * [`POST /presets/{slug}/responses`](api/api-reference/presets/create-a-preset-from-a-responses-request-body.md)
+  * [`POST /rerank`](api/api-reference/rerank/submit-a-rerank-request.md)
+  * [`POST /responses`](api/api-reference/responses/create-a-response.md)
+  * [`POST /systemone`](api/api-reference/systemone/submit-a-system-one-request.md)
+  * [`POST /videos`](api/api-reference/video-generation/submit-a-video-generation-request.md)
+* `ProviderResponse`: enum property\_added
+  * Used by [`GET /generation`](api/api-reference/generations/get-request-&-usage-metadata-for-a-generation.md)
+* `URLCitation`: new property `uncited`
+
+  **4 endpoints using this schema**
+
+  * [`GET /batches/{id}`](api/api-reference/batch/get-a-batch.md)
+  * [`POST /batches`](api/api-reference/batch/create-a-batch.md)
+  * [`POST /presets/{slug}/responses`](api/api-reference/presets/create-a-preset-from-a-responses-request-body.md)
+  * [`POST /responses`](api/api-reference/responses/create-a-response.md)
+* `ImageGenerationProviderPreferences`: new property `data_collection`; new property `zdr`
+  * Used by [`POST /images`](api/api-reference/images/generate-an-image.md)
+* `VideoGenerationRequest`: description updated; new property `provider.data_collection`; new property `provider.zdr`
+  * Used by [`POST /videos`](api/api-reference/video-generation/submit-a-video-generation-request.md)
+
 **November 12, 2026**
 
 ## Modified endpoints
@@ -2202,9 +2535,9 @@ Entries on this page are generated automatically from [OpenAPI specification](ap
 * `UpdateEndUserRequest`: schema object removedAction required
   * Renamed to `UpdateExternalUserRequest`; the shape is unchanged, so HTTP callers need no change. The Python SDK (`openrouter` 1.3.70 and later) and TypeScript SDK (`@openrouter/sdk` 1.5.0 and later) replace the `UpdateEndUserRequest` model with `UpdateExternalUserRequest`.
 * `/end-users`: endpoint object removedAction required
-  * Requests to `/end-users` continue to work and are forwarded to [`/external-users`](api/api-reference/external-users/list-registered-external-users.md), so HTTP callers need no change. In the Python SDK (`openrouter` 1.3.70 and later), switch `client.end_users` to `client.external_users`; the old namespace was removed. In the TypeScript SDK (`@openrouter/sdk` 1.5.0 and later), use `externalUsers` for new code; `endUsers` remains available as a compatibility alias. Method names (`list`, `create`, `get`, `update`, `delete`) are unchanged.
+  * Renamed to [`/external-users`](api/api-reference/external-users/list-registered-external-users.md). Requests to `/end-users` are not forwarded. In the Python SDK (`openrouter` 1.3.70 and later), switch `client.end_users` to `client.external_users`; the old namespace was removed. In the TypeScript SDK (`@openrouter/sdk` 1.5.0 and later), use `externalUsers` for new code; `endUsers` remains available as a compatibility alias. Method names (`list`, `create`, `get`, `update`, `delete`) are unchanged.
 * `/end-users/{user}`: endpoint object removedAction required
-  * Requests to `/end-users/{user}` continue to work and are forwarded to [`/external-users/{user}`](api/api-reference/external-users/get-a-registered-external-user.md), so HTTP callers need no change. Python SDK users switch to `external_users`; TypeScript SDK users can migrate to `externalUsers` while `endUsers` remains available as a compatibility alias, as described on the `/end-users` entry above.
+  * Renamed to [`/external-users/{user}`](api/api-reference/external-users/get-a-registered-external-user.md). Requests to `/end-users/{user}` are not forwarded. Python SDK users switch to `external_users`; TypeScript SDK users can migrate to `externalUsers` while `endUsers` remains available as a compatibility alias, as described on the `/end-users` entry above.
 * `GET /interns/{internId}/icon`: content `image/jpeg` object removedNo action needed
   * The response is now declared as `image/*`. The bytes served and their `Content-Type` headers are unchanged.
 * `GET /interns/{internId}/icon`: content `image/png` object removedNo action needed

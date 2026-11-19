@@ -738,6 +738,8 @@ components:
           type:
             - integer
             - 'null'
+        prompt_caching:
+          $ref: '#/components/schemas/UpdatePrivateEndpointPromptCaching'
         quantization:
           $ref: '#/components/schemas/PrivateEndpointQuantization'
         reasoning:
@@ -800,6 +802,9 @@ components:
             image_urls: true
           max_completion_tokens: 16384
           max_prompt_tokens: null
+          prompt_caching:
+            cache_control: false
+            prompt_cache_key: false
           quantization: bf16
           reasoning:
             return_mechanism: reasoning
@@ -1099,6 +1104,31 @@ components:
         - code
         - message
       type: object
+    UpdatePrivateEndpointPromptCaching:
+      description: >-
+        Change only the named prompt-caching flags; omitted flags keep their
+        stored value.
+      example:
+        cache_control: true
+      properties:
+        cache_control:
+          description: >-
+            Forward top-level, message, and tool cache_control markers. Defaults
+            on after endpoint validation accepts these fields; otherwise off.
+            Set false to opt out, or true to declare support explicitly.
+          example: false
+          type: boolean
+        prompt_cache_key:
+          description: >-
+            Send an OpenRouter-derived, customer-isolated prompt_cache_key, not
+            the caller-supplied key. Defaults on after endpoint validation
+            accepts the field; otherwise off. Set false to opt out, or true to
+            declare support explicitly. HIPAA and unknown workspace posture
+            withhold OpenRouter caching directives and the derived key; this
+            does not control upstream retention.
+          example: false
+          type: boolean
+      type: object
     PrivateEndpointQuantization:
       description: Weight precision the deployment runs at; `unknown` when not stated.
       enum:
@@ -1167,6 +1197,9 @@ components:
           image_urls: true
         max_completion_tokens: 16384
         max_prompt_tokens: null
+        prompt_caching:
+          cache_control: false
+          prompt_cache_key: false
         quantization: bf16
         reasoning:
           return_mechanism: reasoning
@@ -1292,6 +1325,8 @@ components:
           type:
             - integer
             - 'null'
+        prompt_caching:
+          $ref: '#/components/schemas/PrivateEndpointPromptCaching'
         quantization:
           $ref: '#/components/schemas/PrivateEndpointQuantization'
         reasoning:
@@ -1348,6 +1383,36 @@ components:
         - disabled
       example: active
       type: string
+    PrivateEndpointPromptCaching:
+      description: >-
+        Prompt-caching controls for an OpenAI-compatible private endpoint.
+        Accepted fields default on after validation; explicit owner settings
+        override the defaults.
+      example:
+        cache_control: false
+        prompt_cache_key: false
+      properties:
+        cache_control:
+          description: >-
+            Forward top-level, message, and tool cache_control markers. Defaults
+            on after endpoint validation accepts these fields; otherwise off.
+            Set false to opt out, or true to declare support explicitly.
+          example: false
+          type: boolean
+        prompt_cache_key:
+          description: >-
+            Send an OpenRouter-derived, customer-isolated prompt_cache_key, not
+            the caller-supplied key. Defaults on after endpoint validation
+            accepts the field; otherwise off. Set false to opt out, or true to
+            declare support explicitly. HIPAA and unknown workspace posture
+            withhold OpenRouter caching directives and the derived key; this
+            does not control upstream retention.
+          example: false
+          type: boolean
+      required:
+        - cache_control
+        - prompt_cache_key
+      type: object
   securitySchemes:
     apiKey:
       description: API key as bearer token in Authorization header

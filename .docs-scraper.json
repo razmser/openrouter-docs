@@ -230,6 +230,7 @@
     "client-sdks/go/sdks/extractions/README.md": "https://openrouter.ai/docs/client-sdks/go/sdks/extractions/README.md",
     "client-sdks/go/sdks/files/README.md": "https://openrouter.ai/docs/client-sdks/go/sdks/files/README.md",
     "client-sdks/go/sdks/generations/README.md": "https://openrouter.ai/docs/client-sdks/go/sdks/generations/README.md",
+    "client-sdks/go/sdks/guardrailpolicies/README.md": "https://openrouter.ai/docs/client-sdks/go/sdks/guardrailpolicies/README.md",
     "client-sdks/go/sdks/guardrails/README.md": "https://openrouter.ai/docs/client-sdks/go/sdks/guardrails/README.md",
     "client-sdks/go/sdks/images/README.md": "https://openrouter.ai/docs/client-sdks/go/sdks/images/README.md",
     "client-sdks/go/sdks/models/README.md": "https://openrouter.ai/docs/client-sdks/go/sdks/models/README.md",

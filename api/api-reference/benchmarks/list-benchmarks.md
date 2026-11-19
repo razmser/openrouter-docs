@@ -182,10 +182,11 @@ paths:
             Filter results by task type. Every value except `search` names the
             Artificial Analysis index of the same name and returns only models
             scored on it, best first (`coding` and `agentic` are deprecated:
-            Artificial Analysis has retired those indexes). Design Arena answers
-            only `coding`, `intelligence` and `agentic`, and OpenRouter's own
-            evals only `intelligence` and `agentic`. `search` returns OpenRouter
-            search benchmark results only.
+            Artificial Analysis has retired those indexes and returns no item
+            for them). Design Arena answers only `coding`, `intelligence` and
+            `agentic`, and OpenRouter's own evals only `intelligence` and
+            `agentic`. `search` returns OpenRouter search benchmark results
+            only.
           in: query
           name: task_type
           required: false
@@ -194,10 +195,11 @@ paths:
               Filter results by task type. Every value except `search` names the
               Artificial Analysis index of the same name and returns only models
               scored on it, best first (`coding` and `agentic` are deprecated:
-              Artificial Analysis has retired those indexes). Design Arena
-              answers only `coding`, `intelligence` and `agentic`, and
-              OpenRouter's own evals only `intelligence` and `agentic`. `search`
-              returns OpenRouter search benchmark results only.
+              Artificial Analysis has retired those indexes and returns no item
+              for them). Design Arena answers only `coding`, `intelligence` and
+              `agentic`, and OpenRouter's own evals only `intelligence` and
+              `agentic`. `search` returns OpenRouter search benchmark results
+              only.
             enum:
               - intelligence
               - coding
@@ -212,7 +214,7 @@ paths:
               - multilingual
               - decision
               - search
-            example: coding
+            example: intelligence
             type: string
         - description: >-
             Return results for one exact OpenRouter benchmark. A `search_*`
@@ -330,8 +332,8 @@ paths:
             application/json:
               example:
                 data:
-                  - agentic_index: 55.8
-                    coding_index: 63.2
+                  - agentic_index: null
+                    coding_index: null
                     cyber_index: 36.4
                     decision_index: 75.7
                     display_name: GPT-4o
@@ -416,8 +418,8 @@ components:
     UnifiedBenchmarksResponse:
       example:
         data:
-          - agentic_index: 55.8
-            coding_index: 63.2
+          - agentic_index: null
+            coding_index: null
             cyber_index: 36.4
             decision_index: 75.7
             display_name: GPT-4o
@@ -556,15 +558,12 @@ components:
         One model's Artificial Analysis index scores. Each score is the model's
         best on that index across the configurations Artificial Analysis
         evaluated (for example reasoning levels), so two indexes of one model
-        can come from different configurations. The deprecated Coding and
-        Agentic Index scores are the exception: both come from one
-        configuration, the model's strongest by Intelligence Index, then Coding
-        Index, then Agentic Index. With `task_type` set to `intelligence`,
-        `coding` or `agentic`, those three indexes all come from the
-        configuration that scores best on the one named.
+        can come from different configurations. The deprecated Coding Index and
+        Agentic Index fields are null for every model: Artificial Analysis has
+        retired those indexes.
       example:
-        agentic_index: 55.8
-        coding_index: 63.2
+        agentic_index: null
+        coding_index: null
         cyber_index: 36.4
         decision_index: 75.7
         display_name: GPT-4o
@@ -587,10 +586,8 @@ components:
           deprecated: true
           description: >-
             Deprecated: Artificial Analysis has retired its Agentic Index and no
-            longer publishes it. Holds the last score Artificial Analysis
-            published for the model, on a 0-100 scale, or null; it will be null
-            for every model once those stored scores are removed.
-          example: 55.8
+            longer publishes it. Always null.
+          example: null
           format: double
           type:
             - number
@@ -599,10 +596,8 @@ components:
           deprecated: true
           description: >-
             Deprecated: Artificial Analysis has retired its Coding Index and no
-            longer publishes it. Holds the last score Artificial Analysis
-            published for the model, on a 0-100 scale, or null; it will be null
-            for every model once those stored scores are removed.
-          example: 63.2
+            longer publishes it. Always null.
+          example: null
           format: double
           type:
             - number
