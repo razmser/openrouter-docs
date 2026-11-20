@@ -49,3 +49,9 @@ program.pipe(
   Effect.runPromise
 )
 ```
+
+```text title="Output" theme={null}
+Why do cows have hooves instead of feet?
+
+Because they lactose!
+```

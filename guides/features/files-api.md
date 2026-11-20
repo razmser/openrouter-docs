@@ -104,6 +104,40 @@ curl "https://openrouter.ai/api/v1/files?limit=100" \
   -H "Authorization: Bearer <OPENROUTER_API_KEY>"
 ```
 
+```typescript title="TypeScript" lines theme={null}
+const response = await fetch('https://openrouter.ai/api/v1/files?limit=100', {
+  headers: {
+    Authorization: `Bearer ${process.env.OPENROUTER_API_KEY}`,
+  },
+});
+const files = await response.json();
+```
+
+```python title="Python" lines theme={null}
+import os
+
+import requests
+
+response = requests.get(
+    "https://openrouter.ai/api/v1/files",
+    params={"limit": 100},
+    headers={"Authorization": f"Bearer {os.environ['OPENROUTER_API_KEY']}"},
+)
+files = response.json()
+```
+
+```go title="Go" lines theme={null}
+req, _ := http.NewRequest("GET", "https://openrouter.ai/api/v1/files?limit=100", nil)
+req.Header.Set("Authorization", "Bearer "+os.Getenv("OPENROUTER_API_KEY"))
+
+resp, err := http.DefaultClient.Do(req)
+if err != nil {
+	log.Fatal(err)
+}
+defer resp.Body.Close()
+body, _ := io.ReadAll(resp.Body)
+```
+
 * `limit` sets the page size, from 1 to 1000. The default is 100.
 * The response contains `data`, `has_more`, and a `cursor`. Send the `cursor` value in the next request to get the next page.
 * You can also use the OpenAI-style `after` parameter with a file id. Do not mix `cursor` and `after` in one request.

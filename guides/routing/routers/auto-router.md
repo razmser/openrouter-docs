@@ -26,6 +26,40 @@ const response = await openRouter.responses.send({
 });
 ```
 
+```python title="Python" lines theme={null}
+response = open_router.responses.send(
+    model="openrouter/auto-beta",
+    input="Summarize this paragraph",
+    plugins=[{"id": "auto-beta-router", "cost_tier": "medium"}],
+    stream=False,
+)
+```
+
+```go title="Go" lines theme={null}
+body, _ := json.Marshal(map[string]any{
+	"model": "openrouter/auto-beta",
+	"input": "Summarize this paragraph",
+	"plugins": []map[string]any{
+		{"id": "auto-beta-router", "cost_tier": "medium"},
+	},
+})
+req, _ := http.NewRequest("POST", "https://openrouter.ai/api/v1/responses", bytes.NewReader(body))
+req.Header.Set("Authorization", "Bearer "+os.Getenv("OPENROUTER_API_KEY"))
+req.Header.Set("Content-Type", "application/json")
+response, err := http.DefaultClient.Do(req)
+```
+
+```bash title="cURL" lines theme={null}
+curl https://openrouter.ai/api/v1/responses \
+  -H "Authorization: Bearer $OPENROUTER_API_KEY" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "model": "openrouter/auto-beta",
+    "input": "Summarize this paragraph",
+    "plugins": [{ "id": "auto-beta-router", "cost_tier": "medium" }]
+  }'
+```
+
 > [!WARNING]
 >
 > Each slug only reads settings sent under its own plugin id. Settings sent under the other slug's plugin id are accepted but silently ignored: `allowed_models`, `excluded_models`, and `cost_tier` will have no effect on the request.
@@ -109,6 +143,86 @@ message = next(item for item in reversed(data['output']) if item['type'] == 'mes
 print(next(part['text'] for part in message['content'] if part['type'] == 'output_text'))
 # Check which model was selected
 print('Model used:', data['model'])
+```
+
+```go title="Go" lines theme={null}
+package main
+
+import (
+	"bytes"
+	"encoding/json"
+	"fmt"
+	"log"
+	"net/http"
+	"os"
+)
+
+func main() {
+	body, _ := json.Marshal(map[string]any{
+		"model": "openrouter/auto",
+		"input": "Explain quantum entanglement in simple terms",
+	})
+	req, _ := http.NewRequest("POST", "https://openrouter.ai/api/v1/responses", bytes.NewReader(body))
+	req.Header.Set("Authorization", "Bearer "+os.Getenv("OPENROUTER_API_KEY"))
+	req.Header.Set("Content-Type", "application/json")
+	res, err := http.DefaultClient.Do(req)
+	if err != nil {
+		log.Fatal(err)
+	}
+	defer res.Body.Close()
+
+	var response struct {
+		Model  string `json:"model"`
+		Output []struct {
+			Type    string `json:"type"`
+			Content []struct {
+				Type string `json:"type"`
+				Text string `json:"text"`
+			} `json:"content"`
+		} `json:"output"`
+	}
+	if err := json.NewDecoder(res.Body).Decode(&response); err != nil {
+		log.Fatal(err)
+	}
+
+	for i := len(response.Output) - 1; i >= 0; i-- {
+		if response.Output[i].Type != "message" {
+			continue
+		}
+		for _, part := range response.Output[i].Content {
+			if part.Type == "output_text" {
+				fmt.Println(part.Text)
+				break
+			}
+		}
+		break
+	}
+	// Check which model was selected
+	fmt.Println("Model used:", response.Model)
+}
+
+```
+
+```bash title="cURL" lines theme={null}
+curl -s https://openrouter.ai/api/v1/responses \
+  -H "Authorization: Bearer $OPENROUTER_API_KEY" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "model": "openrouter/auto",
+    "input": "Explain quantum entanglement in simple terms"
+  }' | jq -r '
+    ([.output[] | select(.type == "message")] | last | .content[] | select(.type == "output_text") | .text),
+    "Model used: \(.model)"'
+
+```
+
+```text title="Output" theme={null}
+Quantum entanglement is when two particles are linked in a way that makes their measurement results strongly connected—even if they’re far apart.
+
+For example, imagine measuring one particle and getting “up.” If the particles are entangled, measuring its partner may always give “down.” Before measurement, quantum physics doesn’t treat each particle as simply carrying a fixed answer that we haven’t discovered yet; the pair is described together.
+
+This connection doesn’t let anyone send messages faster than light. It means the results are unusually correlated, not that one particle can control the other on demand.
+Model used: openai/gpt-6-luna
 ```
 
 ## Response
@@ -223,6 +337,100 @@ response = requests.post(
 )
 ```
 
+```go title="Go" lines theme={null}
+send := func(payload map[string]any) map[string]any {
+	body, _ := json.Marshal(payload)
+	req, _ := http.NewRequest("POST", "https://openrouter.ai/api/v1/responses", bytes.NewReader(body))
+	req.Header.Set("Authorization", "Bearer "+os.Getenv("OPENROUTER_API_KEY"))
+	req.Header.Set("Content-Type", "application/json")
+	res, err := http.DefaultClient.Do(req)
+	if err != nil {
+		log.Fatal(err)
+	}
+	defer res.Body.Close()
+	var data map[string]any
+	if err := json.NewDecoder(res.Body).Decode(&data); err != nil {
+		log.Fatal(err)
+	}
+	return data
+}
+
+response := send(map[string]any{
+	"model":      "openrouter/auto",
+	"session_id": "my-conversation-123",
+	"input":      "Explain quantum entanglement",
+})
+if response["status"] != "completed" {
+	log.Fatalf("Response ended as %v: %v", response["status"], response["error"])
+}
+
+input := []any{map[string]any{"role": "user", "content": "Explain quantum entanglement"}}
+for _, raw := range response["output"].([]any) {
+	item := raw.(map[string]any)
+	switch item["type"] {
+	case "reasoning":
+	case "message":
+		for _, part := range item["content"].([]any) {
+			if t := part.(map[string]any)["type"]; t != "output_text" && t != "refusal" {
+				log.Fatalf("Received an unsupported message content type: %v", t)
+			}
+		}
+	default:
+		log.Fatalf("Unexpected output item: %v", item["type"])
+	}
+	input = append(input, item)
+}
+input = append(input, map[string]any{"role": "user", "content": "Now explain it to a 5-year-old"})
+
+// Subsequent requests with this session reuse the cached provider and may reuse the model
+followUp := send(map[string]any{
+	"model":      "openrouter/auto",
+	"session_id": "my-conversation-123",
+	"input":      input,
+})
+```
+
+```bash title="cURL" lines theme={null}
+RESPONSE=$(curl -s https://openrouter.ai/api/v1/responses \
+  -H "Authorization: Bearer $OPENROUTER_API_KEY" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "model": "openrouter/auto",
+    "session_id": "my-conversation-123",
+    "input": "Explain quantum entanglement"
+  }')
+
+PREVIOUS_OUTPUT=$(echo "$RESPONSE" | jq -c '
+  if .status != "completed" then error(.error.message // "Response ended as \(.status)") else . end
+  | [.output[] | select(.type == "reasoning" or .type == "message")]')
+echo "First model used: $(echo "$RESPONSE" | jq -r '.model')"
+
+# Subsequent requests with this session reuse the cached provider and may reuse the model
+FOLLOW_UP=$(curl -s https://openrouter.ai/api/v1/responses \
+  -H "Authorization: Bearer $OPENROUTER_API_KEY" \
+  -H "Content-Type: application/json" \
+  -d "$(jq -n --argjson prev "$PREVIOUS_OUTPUT" '{
+    model: "openrouter/auto",
+    session_id: "my-conversation-123",
+    input: ([{role: "user", content: "Explain quantum entanglement"}] + $prev
+      + [{role: "user", content: "Now explain it to a 5-year-old"}])
+  }')")
+
+echo "$FOLLOW_UP" | jq -r '
+  if .output == null then error("Follow-up failed: \(.)") else . end
+  | ([.output[] | select(.type == "message")] | last | .content[] | select(.type == "output_text") | .text),
+    "Follow-up model used: \(.model)"'
+
+```
+
+```text title="Output" theme={null}
+First model used: openai/gpt-6-luna
+Imagine two magic coins that are best friends. When you look at one and it lands on **sun**, the other will always be **moon**—even if it’s very far away.
+
+You can’t know what either coin will show before you look. And the coins can’t send messages to each other. They just have a special connection that scientists call **entanglement**.
+Follow-up model used: openai/gpt-6-luna
+```
+
 ## Allowed models
 
 Use `allowed_models` to restrict which models the Auto Router can select. The list is a hard restriction: the router routes only to models it matches, including older models it wouldn't otherwise consider. Auto Code applies the same list.
@@ -286,6 +494,47 @@ response = requests.post(
 )
 ```
 
+```go title="Go" lines theme={null}
+body, _ := json.Marshal(map[string]any{
+	"model": "openrouter/auto",
+	"input": "Explain quantum entanglement",
+	"plugins": []map[string]any{
+		{
+			"id":             "auto-router",
+			"allowed_models": []string{"anthropic/*", "openai/gpt-5.1"},
+		},
+	},
+})
+req, _ := http.NewRequest("POST", "https://openrouter.ai/api/v1/responses", bytes.NewReader(body))
+req.Header.Set("Authorization", "Bearer "+os.Getenv("OPENROUTER_API_KEY"))
+req.Header.Set("Content-Type", "application/json")
+res, err := http.DefaultClient.Do(req)
+if err != nil {
+	log.Fatal(err)
+}
+defer res.Body.Close()
+var response map[string]any
+if err := json.NewDecoder(res.Body).Decode(&response); err != nil {
+	log.Fatal(err)
+}
+```
+
+```bash title="cURL" lines theme={null}
+RESPONSE=$(curl -s https://openrouter.ai/api/v1/responses \
+  -H "Authorization: Bearer $OPENROUTER_API_KEY" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "model": "openrouter/auto",
+    "input": "Explain quantum entanglement",
+    "plugins": [
+      {
+        "id": "auto-router",
+        "allowed_models": ["anthropic/*", "openai/gpt-5.1"]
+      }
+    ]
+  }')
+```
+
 ### Pattern syntax
 
 | Pattern | Matches |
@@ -312,6 +561,36 @@ plugins: [
 ]
 ```
 
+```python title="Python" lines theme={null}
+"plugins": [
+  {
+    "id": "auto-router",
+    "allowed_models": ["anthropic/*", "openai/*"],
+    "excluded_models": ["openai/gpt-4o"]
+  }
+]
+```
+
+```go title="Go" lines theme={null}
+"plugins": []map[string]any{
+	{
+		"id":              "auto-router",
+		"allowed_models":  []string{"anthropic/*", "openai/*"},
+		"excluded_models": []string{"openai/gpt-4o"},
+	},
+},
+```
+
+```bash title="cURL" lines theme={null}
+"plugins": [
+  {
+    "id": "auto-router",
+    "allowed_models": ["anthropic/*", "openai/*"],
+    "excluded_models": ["openai/gpt-4o"]
+  }
+]
+```
+
 Use exclusions for compliance restrictions, cost ceilings, or models that underperform for your task. If your restrictions leave no eligible model, the request fails with `404`, and the error names the fields to change, such as `widen allowed_models` or `remove excluded_models`.
 
 ## Cost tier
@@ -322,6 +601,20 @@ The default policy costs more per task than the previous generation of the Auto 
 
 ```typescript theme={null}
 plugins: [{ id: 'auto-router', cost_tier: 'medium' }]
+```
+
+```python title="Python" lines theme={null}
+"plugins": [{"id": "auto-router", "cost_tier": "medium"}]
+```
+
+```go title="Go" lines theme={null}
+"plugins": []map[string]any{
+	{"id": "auto-router", "cost_tier": "medium"},
+},
+```
+
+```bash title="cURL" lines theme={null}
+"plugins": [{ "id": "auto-router", "cost_tier": "medium" }]
 ```
 
 `cost_tier` selects the routing policy, not the model's reasoning effort. Your model and provider restrictions still apply, and changing tiers can change the selected model within a conversation.
@@ -381,6 +674,47 @@ response = requests.post(
     ]
   })
 )
+```
+
+```go title="Go" lines theme={null}
+body, _ := json.Marshal(map[string]any{
+	"model": "openrouter/auto",
+	"input": "Summarize this paragraph",
+	"plugins": []map[string]any{
+		{
+			"id":        "auto-router",
+			"cost_tier": "high",
+		},
+	},
+})
+req, _ := http.NewRequest("POST", "https://openrouter.ai/api/v1/responses", bytes.NewReader(body))
+req.Header.Set("Authorization", "Bearer "+os.Getenv("OPENROUTER_API_KEY"))
+req.Header.Set("Content-Type", "application/json")
+res, err := http.DefaultClient.Do(req)
+if err != nil {
+	log.Fatal(err)
+}
+defer res.Body.Close()
+var response map[string]any
+if err := json.NewDecoder(res.Body).Decode(&response); err != nil {
+	log.Fatal(err)
+}
+```
+
+```bash title="cURL" lines theme={null}
+RESPONSE=$(curl -s https://openrouter.ai/api/v1/responses \
+  -H "Authorization: Bearer $OPENROUTER_API_KEY" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "model": "openrouter/auto",
+    "input": "Summarize this paragraph",
+    "plugins": [
+      {
+        "id": "auto-router",
+        "cost_tier": "high"
+      }
+    ]
+  }')
 ```
 
 ### Deprecated settings

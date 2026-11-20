@@ -900,6 +900,7 @@ components:
         - seed
         - response_format
         - structured_outputs
+        - strict_tool_schemas
         - stop
         - tools
         - tool_choice

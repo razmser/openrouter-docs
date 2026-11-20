@@ -253,6 +253,19 @@ The `status` field on `GET /api/v1/videos/{jobId}` reflects the current state of
 | `cancelled` | Terminal | The job was cancelled before rendering completed | Terminal state |
 | `expired` | Terminal | The job exceeded maximum allowed time-to-live before settlement | Terminal state |
 
+While a job is in flight, the response can also carry `status_detail`, the step within `status`, and `progress`:
+
+| `status` | `status_detail` | Meaning |
+| - | - | - |
+| `pending` | `submitting` | OpenRouter is submitting the job to the provider |
+| `pending` | `queued_at_provider` | The provider accepted the job and reports it as queued |
+| `in_progress` | `generating` | The provider reports the job as generating |
+| `in_progress` | `finalizing` | The provider finished, and OpenRouter is storing the video |
+
+A job becomes pollable once the provider accepts it, so most polls start at `queued_at_provider`. `status_detail` only moves forward when present, and a fast job can skip steps between polls. It is absent once the job is finished and can be absent mid-job when the step is unknown, so use `status` to tell whether the job is finished.
+
+`progress` is the percent complete, from 0 to 100, while `status_detail` is `generating`. Only providers that report a percent send it.
+
 ## Downloading outputs: `urls` vs `unsigned_urls`
 
 When a job reaches `status: "completed"`, the response payload provides two distinct ways to access the generated video:
@@ -365,6 +378,30 @@ Query the dedicated Video Models endpoint to retrieve supported parameters, reso
 
 ```bash theme={null}
 curl -fsS "https://openrouter.ai/api/v1/videos/models"
+```
+
+```typescript title="TypeScript" lines theme={null}
+const response = await fetch('https://openrouter.ai/api/v1/videos/models');
+const models = await response.json();
+```
+
+```python title="Python" lines theme={null}
+response = requests.get("https://openrouter.ai/api/v1/videos/models")
+response.raise_for_status()
+models = response.json()
+```
+
+```go title="Go" lines theme={null}
+resp, err := http.Get("https://openrouter.ai/api/v1/videos/models")
+if err != nil {
+	log.Fatal(err)
+}
+defer resp.Body.Close()
+body, err := io.ReadAll(resp.Body)
+if err != nil {
+	log.Fatal(err)
+}
+fmt.Println(string(body))
 ```
 
 Each model entry includes capability matrices and pricing units:
@@ -481,6 +518,82 @@ function verifyWebhook(rawBody: string, signatureHeader: string, secret: string)
   }
 
   return crypto.timingSafeEqual(expectedBuf, receivedBuf);
+}
+```
+
+```python title="Python" lines theme={null}
+import hashlib
+import hmac
+import math
+import time
+
+
+def verify_webhook(raw_body: str, signature_header: str, secret: str) -> bool:
+    # An empty secret produces an HMAC anyone can compute, so treat it as misconfiguration.
+    if not secret:
+        return False
+
+    parts = signature_header.split(",")
+    timestamp = next((p[2:] for p in parts if p.startswith("t=")), None)
+    received = next((p[3:] for p in parts if p.startswith("v1=")), None)
+
+    if not timestamp or not received:
+        return False
+
+    try:
+        ts_seconds = float(timestamp)
+    except ValueError:
+        return False
+    if not math.isfinite(ts_seconds):
+        return False
+
+    # Reject replay attempts older than 5 minutes
+    if abs(int(time.time()) - ts_seconds) > 300:
+        return False
+
+    expected = hmac.new(
+        secret.encode(), f"{timestamp},{raw_body}".encode(), hashlib.sha256
+    ).hexdigest()
+
+    return hmac.compare_digest(expected.encode(), received.encode())
+
+```
+
+```go title="Go" lines theme={null}
+func verifyWebhook(rawBody, signatureHeader, secret string) bool {
+	// An empty secret produces an HMAC anyone can compute, so treat it as misconfiguration.
+	if secret == "" {
+		return false
+	}
+
+	var timestamp, hash string
+	for _, p := range strings.Split(signatureHeader, ",") {
+		if timestamp == "" && strings.HasPrefix(p, "t=") {
+			timestamp = p[2:]
+		} else if hash == "" && strings.HasPrefix(p, "v1=") {
+			hash = p[3:]
+		}
+	}
+
+	if timestamp == "" || hash == "" {
+		return false
+	}
+
+	tsSeconds, err := strconv.ParseFloat(timestamp, 64)
+	if err != nil || math.IsInf(tsSeconds, 0) || math.IsNaN(tsSeconds) {
+		return false
+	}
+
+	// Reject replay attempts older than 5 minutes
+	if math.Abs(float64(time.Now().Unix())-tsSeconds) > 300 {
+		return false
+	}
+
+	mac := hmac.New(sha256.New, []byte(secret))
+	mac.Write([]byte(timestamp + "," + rawBody))
+	expectedSignature := hex.EncodeToString(mac.Sum(nil))
+
+	return hmac.Equal([]byte(expectedSignature), []byte(hash))
 }
 ```
 

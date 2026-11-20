@@ -289,6 +289,125 @@ curl https://openrouter.ai/api/v1/chat/completions \
   -d '{"model": "openai/gpt-4o", "messages": [{"role": "user", "content": "Hi"}]}'
 ```
 
+```typescript title="TypeScript" lines theme={null}
+const response = await fetch('https://openrouter.ai/api/v1/chat/completions', {
+  method: 'POST',
+  headers: {
+    Authorization: `Bearer ${process.env.OPENROUTER_API_KEY}`,
+    'Content-Type': 'application/json',
+    'x-openrouter-trace-project': 'atlas',
+    'x-openrouter-trace-customer-id': 'acme',
+    'x-openrouter-trace': JSON.stringify({ environment: 'production' }),
+  },
+  body: JSON.stringify({
+    model: 'openai/gpt-4o',
+    messages: [{ role: 'user', content: 'Hi' }],
+  }),
+});
+
+console.log(await response.json());
+
+```
+
+```python title="Python" lines theme={null}
+import os
+import requests
+
+response = requests.post(
+    "https://openrouter.ai/api/v1/chat/completions",
+    headers={
+        "Authorization": f"Bearer {os.environ['OPENROUTER_API_KEY']}",
+        "Content-Type": "application/json",
+        "x-openrouter-trace-project": "atlas",
+        "x-openrouter-trace-customer-id": "acme",
+        "x-openrouter-trace": '{"environment":"production"}',
+    },
+    json={
+        "model": "openai/gpt-4o",
+        "messages": [{"role": "user", "content": "Hi"}],
+    },
+)
+print(response.json())
+
+```
+
+```go title="Go" lines theme={null}
+package main
+
+import (
+	"fmt"
+	"io"
+	"net/http"
+	"os"
+	"strings"
+)
+
+func main() {
+	body := `{"model": "openai/gpt-4o", "messages": [{"role": "user", "content": "Hi"}]}`
+	req, err := http.NewRequest("POST", "https://openrouter.ai/api/v1/chat/completions", strings.NewReader(body))
+	if err != nil {
+		panic(err)
+	}
+	req.Header.Set("Authorization", "Bearer "+os.Getenv("OPENROUTER_API_KEY"))
+	req.Header.Set("Content-Type", "application/json")
+	req.Header.Set("x-openrouter-trace-project", "atlas")
+	req.Header.Set("x-openrouter-trace-customer-id", "acme")
+	req.Header.Set("x-openrouter-trace", `{"environment":"production"}`)
+
+	resp, err := http.DefaultClient.Do(req)
+	if err != nil {
+		panic(err)
+	}
+	defer resp.Body.Close()
+	out, _ := io.ReadAll(resp.Body)
+	fmt.Println(string(out))
+}
+
+```
+
+```text title="Output" theme={null}
+{
+  id: "gen-1794949656-yQQBTgKs4se5vgutLDYm",
+  object: "chat.completion",
+  created: 1794949656,
+  model: "openai/gpt-4o",
+  provider: "OpenAI",
+  system_fingerprint: null,
+  service_tier: "default",
+  choices: [
+    {
+      index: 0,
+      logprobs: null,
+      finish_reason: "stop",
+      native_finish_reason: "completed",
+      message: [Object ...],
+    }
+  ],
+  usage: {
+    prompt_tokens: 8,
+    completion_tokens: 10,
+    total_tokens: 18,
+    cost: 0.00012,
+    is_byok: false,
+    prompt_tokens_details: {
+      cached_tokens: 0,
+      cache_write_tokens: 0,
+      audio_tokens: 0,
+      video_tokens: 0,
+    },
+    cost_details: {
+      upstream_inference_cost: 0.00012,
+      upstream_inference_prompt_cost: 0.00002,
+      upstream_inference_completions_cost: 0.0001,
+    },
+    completion_tokens_details: {
+      reasoning_tokens: 0,
+      image_tokens: 0,
+      audio_tokens: 0,
+    },
+  },
+```
+
 When the same key appears in more than one place, the request body `trace` wins, then the per-key header, then the JSON header. Each source is capped at 16 keys, and per-key header values over 1,024 characters are dropped. A malformed JSON header is ignored rather than failing the request.
 
 Both header forms work from browser requests on another origin: CORS preflight allows the JSON `x-openrouter-trace` header and any per-key `x-openrouter-trace-<key>` header.

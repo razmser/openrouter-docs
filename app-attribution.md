@@ -131,6 +131,9 @@ response = client.responses.create(
   model="openai/gpt-5.2",
   input="Hello, world!",
 )
+
+print(response.output_text)
+
 ```
 
 ```typescript title="TypeScript (OpenAI SDK)" expandable lines theme={null}
@@ -176,10 +179,13 @@ response = requests.post(
     "input": "Hello, world!"
   })
 )
+
+print(json.dumps(response.json(), indent=2))
+
 ```
 
 ```typescript title="TypeScript (fetch)" lines theme={null}
-fetch('https://openrouter.ai/api/v1/responses', {
+const response = await fetch('https://openrouter.ai/api/v1/responses', {
   method: 'POST',
   headers: {
     Authorization: 'Bearer <OPENROUTER_API_KEY>',
@@ -193,6 +199,9 @@ fetch('https://openrouter.ai/api/v1/responses', {
     input: 'Hello, world!',
   }),
 });
+
+const data = await response.json();
+console.log(JSON.stringify(data, null, 2));
 ```
 
 ```shell title="cURL" lines theme={null}
@@ -206,6 +215,73 @@ curl https://openrouter.ai/api/v1/responses \
   "model": "openai/gpt-5.2",
   "input": "Hello, world!"
 }'
+```
+
+```go title="Go" lines theme={null}
+package main
+
+import (
+	"bytes"
+	"encoding/json"
+	"fmt"
+	"log"
+	"net/http"
+	"os"
+)
+
+func main() {
+	body, _ := json.Marshal(map[string]any{
+		"model":  "openai/gpt-5.2",
+		"input":  "Hello, world!",
+		"stream": false,
+	})
+
+	req, _ := http.NewRequest("POST", "https://openrouter.ai/api/v1/responses", bytes.NewReader(body))
+	req.Header.Set("Authorization", "Bearer "+os.Getenv("OPENROUTER_API_KEY"))
+	req.Header.Set("Content-Type", "application/json")
+	req.Header.Set("HTTP-Referer", "https://myapp.com")                     // Your app's URL
+	req.Header.Set("X-Title", "My AI Assistant")                            // Your app's display name
+	req.Header.Set("X-OpenRouter-Categories", "cli-agent,cloud-agent") // Optional categories
+
+	res, err := http.DefaultClient.Do(req)
+	if err != nil {
+		log.Fatal(err)
+	}
+	defer res.Body.Close()
+
+	var response struct {
+		Output []map[string]any `json:"output"`
+	}
+	if err := json.NewDecoder(res.Body).Decode(&response); err != nil {
+		log.Fatal(err)
+	}
+
+	for _, item := range response.Output {
+		if item["type"] == "message" {
+			out, _ := json.MarshalIndent(item, "", "  ")
+			fmt.Println(string(out))
+			break
+		}
+	}
+}
+
+```
+
+```text title="Output" theme={null}
+{
+  content: [
+    {
+      annotations: [],
+      logprobs: [],
+      text: "Hello, world! How can I help you today?",
+      type: "output_text",
+    }
+  ],
+  id: "msg_tmp_z0mi0eyge8d",
+  role: "assistant",
+  status: "completed",
+  type: "message",
+}
 ```
 
 ## Where your app appears

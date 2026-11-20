@@ -133,6 +133,46 @@ curl "https://openrouter.ai/api/v1/containers/sess_abc123/files" \
   -H "Authorization: Bearer <OPENROUTER_API_KEY>"
 ```
 
+```typescript title="TypeScript" lines theme={null}
+const response = await fetch('https://openrouter.ai/api/v1/containers/sess_abc123/files', {
+  headers: { Authorization: `Bearer ${process.env.OPENROUTER_API_KEY}` },
+});
+const files = await response.json();
+```
+
+```python title="Python" lines theme={null}
+import os
+
+import requests
+
+response = requests.get(
+    "https://openrouter.ai/api/v1/containers/sess_abc123/files",
+    headers={"Authorization": f"Bearer {os.environ['OPENROUTER_API_KEY']}"},
+)
+print(response.json())
+
+```
+
+```go title="Go" lines theme={null}
+req, err := http.NewRequest("GET", "https://openrouter.ai/api/v1/containers/sess_abc123/files", nil)
+if err != nil {
+	log.Fatal(err)
+}
+req.Header.Set("Authorization", "Bearer "+os.Getenv("OPENROUTER_API_KEY"))
+
+resp, err := http.DefaultClient.Do(req)
+if err != nil {
+	log.Fatal(err)
+}
+defer resp.Body.Close()
+
+body, err := io.ReadAll(resp.Body)
+if err != nil {
+	log.Fatal(err)
+}
+fmt.Println(string(body))
+```
+
 ```json lines theme={null}
 {
   "object": "list",

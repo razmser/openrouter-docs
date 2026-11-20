@@ -40,6 +40,12 @@ import os
 os.environ["OPENAI_API_KEY"] = "<OPENROUTER_API_KEY>"
 ```
 
+```bash title="cURL" lines theme={null}
+# Environment Setup
+# Set your OpenRouter API key
+export OPENAI_API_KEY="$OPENROUTER_API_KEY"
+```
+
 ### Simple LLM Call
 
 Initialize Arize AX and instrument your OpenAI client to automatically trace OpenRouter calls:
@@ -77,6 +83,12 @@ response = client.responses.create(
 
 # Print the assistant's reply
 print(response.output_text)
+```
+
+```text title="Output" theme={null}
+Data flows like streams,  
+Insights bloom in silent depths,  
+Truth revealed in light.
 ```
 
 ### What Gets Traced

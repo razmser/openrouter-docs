@@ -28,6 +28,40 @@ Install the CLI, then sign in with your OpenRouter account. For interactive use 
 > ```sh theme={null}
 > curl -fsSL https://openrouter.ai/labs/ori/install.sh | bash
 > ```
+>
+> ```typescript title="TypeScript" lines theme={null}
+> const script = await fetch("https://openrouter.ai/labs/ori/install.sh").then((r) => r.text());
+> Bun.spawnSync(["bash", "-c", script], { stdout: "inherit", stderr: "inherit" });
+> ```
+>
+> ```python title="Python" lines theme={null}
+> import subprocess
+> import requests
+>
+> script = requests.get("https://openrouter.ai/labs/ori/install.sh", timeout=60)
+> script.raise_for_status()
+> subprocess.run(["bash"], input=script.text, text=True, check=True)
+>
+> ```
+>
+> ```go title="Go" lines theme={null}
+> resp, err := http.Get("https://openrouter.ai/labs/ori/install.sh")
+> if err != nil {
+> 	log.Fatal(err)
+> }
+> defer resp.Body.Close()
+> if resp.StatusCode != http.StatusOK {
+> 	log.Fatalf("download failed: %s", resp.Status)
+> }
+>
+> cmd := exec.Command("bash")
+> cmd.Stdin = resp.Body
+> cmd.Stdout = os.Stdout
+> cmd.Stderr = os.Stderr
+> if err := cmd.Run(); err != nil {
+> 	log.Fatal(err)
+> }
+> ```
 
 > [tab] Windows PowerShell
 >

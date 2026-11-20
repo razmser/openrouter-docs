@@ -113,6 +113,102 @@ async function main() {
 main();
 ```
 
+```python title="Python" lines theme={null}
+import os
+from openrouter import OpenRouter
+
+with OpenRouter(api_key=os.environ["OPENROUTER_API_KEY"]) as open_router:
+    response = open_router.responses.send(
+        model="openai/gpt-4o-mini",
+        input='Say "Hello from OpenRouter!" and nothing else.',
+        stream=False,
+    )
+
+    message = next(item for item in response.output if getattr(item, "type", None) == "message")
+    print(next(part.text for part in message.content if getattr(part, "type", None) == "output_text"))
+
+```
+
+```go title="Go" lines theme={null}
+package main
+
+import (
+	"bytes"
+	"encoding/json"
+	"fmt"
+	"io"
+	"log"
+	"net/http"
+	"os"
+)
+
+func main() {
+	body, _ := json.Marshal(map[string]any{
+		"model":  "openai/gpt-4o-mini",
+		"input":  `Say "Hello from OpenRouter!" and nothing else.`,
+		"stream": false,
+	})
+
+	req, _ := http.NewRequest("POST", "https://openrouter.ai/api/v1/responses", bytes.NewReader(body))
+	req.Header.Set("Authorization", "Bearer "+os.Getenv("OPENROUTER_API_KEY"))
+	req.Header.Set("Content-Type", "application/json")
+
+	resp, err := http.DefaultClient.Do(req)
+	if err != nil {
+		log.Fatal(err)
+	}
+	defer resp.Body.Close()
+
+	if resp.StatusCode < 200 || resp.StatusCode > 299 {
+		errBody, _ := io.ReadAll(resp.Body)
+		log.Fatalf("request failed: %s: %s", resp.Status, errBody)
+	}
+
+	var result struct {
+		Output []struct {
+			Type    string `json:"type"`
+			Content []struct {
+				Type string `json:"type"`
+				Text string `json:"text"`
+			} `json:"content"`
+		} `json:"output"`
+	}
+	if err := json.NewDecoder(resp.Body).Decode(&result); err != nil {
+		log.Fatal(err)
+	}
+
+	for _, item := range result.Output {
+		if item.Type != "message" {
+			continue
+		}
+		for _, part := range item.Content {
+			if part.Type == "output_text" {
+				fmt.Println(part.Text)
+				return
+			}
+		}
+	}
+}
+
+```
+
+```bash title="cURL" lines theme={null}
+# Requires jq. Without it, drop the "| jq ..." filter to print the raw response.
+curl -s https://openrouter.ai/api/v1/responses \
+  -H "Authorization: Bearer $OPENROUTER_API_KEY" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "model": "openai/gpt-4o-mini",
+    "input": "Say \"Hello from OpenRouter!\" and nothing else.",
+    "stream": false
+  }' | jq -r '.output[] | select(.type == "message") | .content[] | select(.type == "output_text") | .text'
+
+```
+
+```text title="Output" theme={null}
+Hello from OpenRouter!
+```
+
 **Python - create `test_openrouter.py`:**
 
 ```python lines theme={null}
@@ -128,6 +224,106 @@ response = client.responses.send(
 
 message = next(item for item in response.output if item.type == "message")
 print(next(part.text for part in message.content if part.type == "output_text"))
+```
+
+```typescript title="TypeScript" lines theme={null}
+import { OpenRouter } from '@openrouter/sdk';
+
+const client = new OpenRouter({ apiKey: process.env.OPENROUTER_API_KEY });
+
+const response = await client.responses.send({
+  responsesRequest: {
+    model: 'openai/gpt-4o-mini',
+    input: "Say 'Hello from OpenRouter!' and nothing else.",
+    stream: false,
+  },
+});
+
+if (!('output' in response)) {
+  throw new Error('Expected a non-streaming response');
+}
+
+const message = response.output.find((item) => item.type === 'message');
+console.log(message?.content.find((part) => part.type === 'output_text')?.text);
+
+```
+
+```go title="Go" lines theme={null}
+package main
+
+import (
+	"bytes"
+	"encoding/json"
+	"fmt"
+	"io"
+	"log"
+	"net/http"
+	"os"
+)
+
+func main() {
+	body, _ := json.Marshal(map[string]any{
+		"model": "openai/gpt-4o-mini",
+		"input": "Say 'Hello from OpenRouter!' and nothing else.",
+	})
+
+	req, _ := http.NewRequest("POST", "https://openrouter.ai/api/v1/responses", bytes.NewReader(body))
+	req.Header.Set("Authorization", "Bearer "+os.Getenv("OPENROUTER_API_KEY"))
+	req.Header.Set("Content-Type", "application/json")
+
+	resp, err := http.DefaultClient.Do(req)
+	if err != nil {
+		log.Fatal(err)
+	}
+	defer resp.Body.Close()
+
+	if resp.StatusCode < 200 || resp.StatusCode > 299 {
+		errBody, _ := io.ReadAll(resp.Body)
+		log.Fatalf("request failed: %s: %s", resp.Status, errBody)
+	}
+
+	var result struct {
+		Output []struct {
+			Type    string `json:"type"`
+			Content []struct {
+				Type string `json:"type"`
+				Text string `json:"text"`
+			} `json:"content"`
+		} `json:"output"`
+	}
+	if err := json.NewDecoder(resp.Body).Decode(&result); err != nil {
+		log.Fatal(err)
+	}
+
+	for _, item := range result.Output {
+		if item.Type != "message" {
+			continue
+		}
+		for _, part := range item.Content {
+			if part.Type == "output_text" {
+				fmt.Println(part.Text)
+				return
+			}
+		}
+	}
+}
+
+```
+
+```bash title="cURL" lines theme={null}
+# Requires jq. Without it, drop the "| jq ..." filter to print the raw response.
+curl -s https://openrouter.ai/api/v1/responses \
+  -H "Authorization: Bearer $OPENROUTER_API_KEY" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "model": "openai/gpt-4o-mini",
+    "input": "Say '\''Hello from OpenRouter!'\'' and nothing else."
+  }' | jq -r '.output[] | select(.type == "message") | .content[] | select(.type == "output_text") | .text'
+
+```
+
+```text title="Output" theme={null}
+Hello from OpenRouter!
 ```
 
 ## Run the test
@@ -158,6 +354,8 @@ If you prefer to use the OpenAI SDK with OpenRouter, you can configure it to use
 npm install openai
 ```
 
+The Python tab needs `pip install openai` instead. The Go and cURL tabs call the API directly and need no SDK.
+
 ```typescript expandable lines theme={null}
 import OpenAI from 'openai';
 
@@ -178,11 +376,111 @@ async function main() {
 main();
 ```
 
+```python title="Python" lines theme={null}
+import os
+from openai import OpenAI
+
+client = OpenAI(
+    base_url="https://openrouter.ai/api/v1",
+    api_key=os.environ["OPENROUTER_API_KEY"],
+)
+
+response = client.responses.create(
+    model="openai/gpt-4o-mini",
+    input='Say "Hello from OpenRouter!" and nothing else.',
+)
+
+print(response.output_text)
+
+```
+
+```go title="Go" lines theme={null}
+package main
+
+import (
+	"bytes"
+	"encoding/json"
+	"fmt"
+	"io"
+	"log"
+	"net/http"
+	"os"
+)
+
+func main() {
+	baseURL := "https://openrouter.ai/api/v1"
+
+	body, _ := json.Marshal(map[string]any{
+		"model": "openai/gpt-4o-mini",
+		"input": `Say "Hello from OpenRouter!" and nothing else.`,
+	})
+
+	req, _ := http.NewRequest("POST", baseURL+"/responses", bytes.NewReader(body))
+	req.Header.Set("Authorization", "Bearer "+os.Getenv("OPENROUTER_API_KEY"))
+	req.Header.Set("Content-Type", "application/json")
+
+	resp, err := http.DefaultClient.Do(req)
+	if err != nil {
+		log.Fatal(err)
+	}
+	defer resp.Body.Close()
+
+	if resp.StatusCode < 200 || resp.StatusCode > 299 {
+		errBody, _ := io.ReadAll(resp.Body)
+		log.Fatalf("request failed: %s: %s", resp.Status, errBody)
+	}
+
+	var result struct {
+		Output []struct {
+			Type    string `json:"type"`
+			Content []struct {
+				Type string `json:"type"`
+				Text string `json:"text"`
+			} `json:"content"`
+		} `json:"output"`
+	}
+	if err := json.NewDecoder(resp.Body).Decode(&result); err != nil {
+		log.Fatal(err)
+	}
+
+	for _, item := range result.Output {
+		if item.Type != "message" {
+			continue
+		}
+		for _, part := range item.Content {
+			if part.Type == "output_text" {
+				fmt.Println(part.Text)
+				return
+			}
+		}
+	}
+}
+
+```
+
+```bash title="cURL" lines theme={null}
+# Requires jq. Without it, drop the "| jq ..." filter to print the raw response.
+curl -s https://openrouter.ai/api/v1/responses \
+  -H "Authorization: Bearer $OPENROUTER_API_KEY" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "model": "openai/gpt-4o-mini",
+    "input": "Say \"Hello from OpenRouter!\" and nothing else."
+  }' | jq -r '.output[] | select(.type == "message") | .content[] | select(.type == "output_text") | .text'
+
+```
+
+```text title="Output" theme={null}
+Hello from OpenRouter!
+```
+
 **Python - install and use OpenAI SDK:**
 
 ```bash lines theme={null}
 pip install openai
 ```
+
+The TypeScript tab needs `npm install openai` instead. The Go and cURL tabs call the API directly and need no SDK.
 
 ```python lines theme={null}
 import os
@@ -201,9 +499,105 @@ response = client.responses.create(
 print(response.output_text)
 ```
 
+```typescript title="TypeScript" lines theme={null}
+import OpenAI from 'openai';
+
+const openai = new OpenAI({
+  baseURL: 'https://openrouter.ai/api/v1',
+  apiKey: process.env.OPENROUTER_API_KEY,
+});
+
+const response = await openai.responses.create({
+  model: 'openai/gpt-4o-mini',
+  input: "Say 'Hello from OpenRouter!' and nothing else.",
+});
+
+console.log(response.output_text);
+
+```
+
+```go title="Go" lines theme={null}
+package main
+
+import (
+	"bytes"
+	"encoding/json"
+	"fmt"
+	"io"
+	"log"
+	"net/http"
+	"os"
+)
+
+func main() {
+	baseURL := "https://openrouter.ai/api/v1"
+
+	body, _ := json.Marshal(map[string]any{
+		"model": "openai/gpt-4o-mini",
+		"input": "Say 'Hello from OpenRouter!' and nothing else.",
+	})
+
+	req, _ := http.NewRequest("POST", baseURL+"/responses", bytes.NewReader(body))
+	req.Header.Set("Authorization", "Bearer "+os.Getenv("OPENROUTER_API_KEY"))
+	req.Header.Set("Content-Type", "application/json")
+
+	resp, err := http.DefaultClient.Do(req)
+	if err != nil {
+		log.Fatal(err)
+	}
+	defer resp.Body.Close()
+
+	if resp.StatusCode < 200 || resp.StatusCode > 299 {
+		errBody, _ := io.ReadAll(resp.Body)
+		log.Fatalf("request failed: %s: %s", resp.Status, errBody)
+	}
+
+	var result struct {
+		Output []struct {
+			Type    string `json:"type"`
+			Content []struct {
+				Type string `json:"type"`
+				Text string `json:"text"`
+			} `json:"content"`
+		} `json:"output"`
+	}
+	if err := json.NewDecoder(resp.Body).Decode(&result); err != nil {
+		log.Fatal(err)
+	}
+
+	for _, item := range result.Output {
+		if item.Type != "message" {
+			continue
+		}
+		for _, part := range item.Content {
+			if part.Type == "output_text" {
+				fmt.Println(part.Text)
+				return
+			}
+		}
+	}
+}
+
+```
+
+```bash title="cURL" lines theme={null}
+# Requires jq. Without it, drop the "| jq ..." filter to print the raw response.
+curl -s https://openrouter.ai/api/v1/responses \
+  -H "Authorization: Bearer $OPENROUTER_API_KEY" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "model": "openai/gpt-4o-mini",
+    "input": "Say '\''Hello from OpenRouter!'\'' and nothing else."
+  }' | jq -r '.output[] | select(.type == "message") | .content[] | select(.type == "output_text") | .text'
+```
+
+```text title="Output" theme={null}
+Hello from OpenRouter!
+```
+
 ## Alternative: Using curl
 
-You can also test the API directly with curl:
+You can also test the API directly with curl. Each tab prints the raw response body. The Python tab uses the `requests` package, which you install with `pip install requests`.
 
 ```bash lines theme={null}
 curl https://openrouter.ai/api/v1/responses \
@@ -213,6 +607,81 @@ curl https://openrouter.ai/api/v1/responses \
   "model": "openai/gpt-4o-mini",
   "input": "Say Hello from OpenRouter! and nothing else."
 }'
+```
+
+```typescript title="TypeScript" lines theme={null}
+const response = await fetch('https://openrouter.ai/api/v1/responses', {
+  method: 'POST',
+  headers: {
+    'Content-Type': 'application/json',
+    Authorization: `Bearer ${process.env.OPENROUTER_API_KEY}`,
+  },
+  body: JSON.stringify({
+    model: 'openai/gpt-4o-mini',
+    input: 'Say Hello from OpenRouter! and nothing else.',
+  }),
+});
+
+console.log(await response.text());
+```
+
+```python title="Python" lines theme={null}
+import os
+
+import requests
+
+response = requests.post(
+    "https://openrouter.ai/api/v1/responses",
+    headers={
+        "Content-Type": "application/json",
+        "Authorization": f"Bearer {os.environ['OPENROUTER_API_KEY']}",
+    },
+    json={
+        "model": "openai/gpt-4o-mini",
+        "input": "Say Hello from OpenRouter! and nothing else.",
+    },
+)
+
+print(response.text)
+```
+
+```go title="Go" lines theme={null}
+package main
+
+import (
+	"bytes"
+	"fmt"
+	"io"
+	"log"
+	"net/http"
+	"os"
+)
+
+func main() {
+	body := []byte(`{
+  "model": "openai/gpt-4o-mini",
+  "input": "Say Hello from OpenRouter! and nothing else."
+}`)
+
+	req, err := http.NewRequest("POST", "https://openrouter.ai/api/v1/responses", bytes.NewReader(body))
+	if err != nil {
+		log.Fatal(err)
+	}
+	req.Header.Set("Content-Type", "application/json")
+	req.Header.Set("Authorization", "Bearer "+os.Getenv("OPENROUTER_API_KEY"))
+
+	resp, err := http.DefaultClient.Do(req)
+	if err != nil {
+		log.Fatal(err)
+	}
+	defer resp.Body.Close()
+
+	out, err := io.ReadAll(resp.Body)
+	if err != nil {
+		log.Fatal(err)
+	}
+	fmt.Println(string(out))
+}
 ```
 
 ## Next steps

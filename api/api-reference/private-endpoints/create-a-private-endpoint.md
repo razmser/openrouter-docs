@@ -327,7 +327,7 @@ components:
             - seed
           items:
             $ref: '#/components/schemas/PrivateEndpointDeclaredParameter'
-          maxItems: 25
+          maxItems: 26
           type: array
         declared_region:
           description: Attest where this deployment processes data.
@@ -629,6 +629,7 @@ components:
         - seed
         - response_format
         - structured_outputs
+        - strict_tool_schemas
         - stop
         - tools
         - tool_choice
@@ -741,6 +742,7 @@ components:
               - seed
               - response_format
               - structured_outputs
+              - strict_tool_schemas
               - stop
               - tools
               - tool_choice

@@ -90,6 +90,22 @@ const client = new OpenAI({
 });
 ```
 
+```python title="Python" lines theme={null}
+# INSECURE: If OPENROUTER_API_KEY is unset, the SDK silently falls back to OPENAI_API_KEY!
+client = OpenAI(
+    base_url="https://openrouter.ai/api/v1",
+    api_key=os.environ.get("OPENROUTER_API_KEY"),
+)
+```
+
+```go title="Go" lines theme={null}
+// INSECURE: If OPENROUTER_API_KEY is unset, os.Getenv silently returns "" and the client is built without a usable key!
+s := openrouter.New(
+	openrouter.WithServerURL("https://openrouter.ai/api/v1"),
+	openrouter.WithSecurity(os.Getenv("OPENROUTER_API_KEY")),
+)
+```
+
 In both the TypeScript and Python `openai` SDKs, passing `undefined` or `None` to `apiKey` causes the constructor to read `process.env.OPENAI_API_KEY` from the environment. If your `.env` file still contains an old OpenAI API key, the SDK will send that OpenAI key (`sk-proj-...`) to `openrouter.ai`, and OpenRouter rejects it with `401 Unauthorized` and the message `Invalid API key: this is not an OpenRouter API key`. See [Troubleshooting 401 errors](../../api_reference/authentication.md#troubleshooting-401-errors) for the other 401 messages. Alternatively, if no key is found, the SDK throws `"The OPENAI_API_KEY environment variable is missing"`, misleadingly naming OpenAI instead of OpenRouter.
 
 **Best practice**: Always validate `OPENROUTER_API_KEY` explicitly before instantiating the client:
@@ -100,6 +116,33 @@ if (!apiKey) {
   throw new Error('OPENROUTER_API_KEY environment variable is missing or empty');
 }
 const client = new OpenAI({ baseURL: 'https://openrouter.ai/api/v1', apiKey });
+```
+
+```python title="Python" lines theme={null}
+api_key = os.environ.get("OPENROUTER_API_KEY")
+if not api_key:
+    raise RuntimeError("OPENROUTER_API_KEY environment variable is missing or empty")
+client = OpenAI(base_url="https://openrouter.ai/api/v1", api_key=api_key)
+
+```
+
+```go title="Go" lines theme={null}
+apiKey := os.Getenv("OPENROUTER_API_KEY")
+if apiKey == "" {
+	log.Fatal("OPENROUTER_API_KEY environment variable is missing or empty")
+}
+s := openrouter.New(
+	openrouter.WithServerURL("https://openrouter.ai/api/v1"),
+	openrouter.WithSecurity(apiKey),
+)
+```
+
+```bash title="cURL" lines theme={null}
+if [ -z "$OPENROUTER_API_KEY" ]; then
+  echo "OPENROUTER_API_KEY environment variable is missing or empty" >&2
+  exit 1
+fi
+BASE_URL="https://openrouter.ai/api/v1"
 ```
 
 ## Endpoint compatibility matrix
@@ -182,6 +225,66 @@ response = client.chat.completions.create(
 )
 ```
 
+```go title="Go" lines theme={null}
+body, _ := json.Marshal(map[string]any{
+	"model":    "meta-llama/llama-3.3-70b-instruct",
+	"messages": []map[string]string{{"role": "user", "content": "Extract invoice total as JSON."}},
+	"response_format": map[string]any{
+		"type": "json_schema",
+		"json_schema": map[string]any{
+			"name":   "invoice",
+			"strict": true,
+			"schema": map[string]any{
+				"type":       "object",
+				"properties": map[string]any{"total": map[string]any{"type": "number"}},
+				"required":   []string{"total"},
+			},
+		},
+	},
+	// provider is an OpenRouter routing extension
+	"provider": map[string]any{
+		"require_parameters": true,      // Only route to providers that support json_schema
+		"sort":               "latency", // Prioritize lowest latency providers
+	},
+})
+req, _ := http.NewRequest("POST", "https://openrouter.ai/api/v1/chat/completions", bytes.NewReader(body))
+req.Header.Set("Authorization", "Bearer "+apiKey)
+req.Header.Set("Content-Type", "application/json")
+resp, err := http.DefaultClient.Do(req)
+if err != nil {
+	log.Fatal(err)
+}
+defer resp.Body.Close()
+var response map[string]any
+json.NewDecoder(resp.Body).Decode(&response)
+```
+
+```bash title="cURL" lines theme={null}
+curl -s "$BASE_URL/chat/completions" \
+  -H "Authorization: Bearer $OPENROUTER_API_KEY" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "model": "meta-llama/llama-3.3-70b-instruct",
+    "messages": [{ "role": "user", "content": "Extract invoice total as JSON." }],
+    "response_format": {
+      "type": "json_schema",
+      "json_schema": {
+        "name": "invoice",
+        "strict": true,
+        "schema": {
+          "type": "object",
+          "properties": { "total": { "type": "number" } },
+          "required": ["total"]
+        }
+      }
+    },
+    "provider": {
+      "require_parameters": true,
+      "sort": "latency"
+    }
+  }' | jq -r '.choices[0].message.content'
+```
+
 Setting `provider: { require_parameters: true }` ensures OpenRouter never routes requests with `json_schema` or `tools` to backend providers that don't support those parameters: if no endpoint supports them, the request fails instead of falling back to one that would drop them. It doesn't guarantee that the selected provider enforces `strict: true` exactly. Some providers translate the schema into their own format or treat it as a strong hint, so validate the parsed object against your schema before you use it. See [Structured Outputs](structured-outputs.md) for details.
 
 ### 3. Streaming keepalive comments and mid-stream errors
@@ -213,6 +316,45 @@ const response = await client.chat.completions.create({
   // @ts-expect-error provider is an OpenRouter routing extension
   provider: { zdr: true },
 });
+```
+
+```python title="Python" lines theme={null}
+response = client.chat.completions.create(
+    model="openai/gpt-4o",
+    messages=[{"role": "user", "content": "Sensitive enterprise data"}],
+    extra_body={"provider": {"zdr": True}},
+)
+
+```
+
+```go title="Go" lines theme={null}
+body, _ := json.Marshal(map[string]any{
+	"model":    "openai/gpt-4o",
+	"messages": []map[string]string{{"role": "user", "content": "Sensitive enterprise data"}},
+	// provider is an OpenRouter routing extension
+	"provider": map[string]any{"zdr": true},
+})
+req, _ := http.NewRequest("POST", "https://openrouter.ai/api/v1/chat/completions", bytes.NewReader(body))
+req.Header.Set("Authorization", "Bearer "+apiKey)
+req.Header.Set("Content-Type", "application/json")
+resp, err := http.DefaultClient.Do(req)
+if err != nil {
+	log.Fatal(err)
+}
+defer resp.Body.Close()
+var response map[string]any
+json.NewDecoder(resp.Body).Decode(&response)
+```
+
+```bash title="cURL" lines theme={null}
+curl -s "$BASE_URL/chat/completions" \
+  -H "Authorization: Bearer $OPENROUTER_API_KEY" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "model": "openai/gpt-4o",
+    "messages": [{ "role": "user", "content": "Sensitive enterprise data" }],
+    "provider": { "zdr": true }
+  }' | jq -r '.choices[0].message.content'
 ```
 
 See the [Zero Data Retention guide](zdr.md) for eligible models and workspace-level defaults.

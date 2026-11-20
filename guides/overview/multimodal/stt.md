@@ -21,6 +21,36 @@ Use the `output_modalities` query parameter on the [Models API](../../../api/api
 curl "https://openrouter.ai/api/v1/models?output_modalities=transcription"
 ```
 
+```typescript title="TypeScript" lines theme={null}
+// List only STT models
+const response = await fetch(
+  'https://openrouter.ai/api/v1/models?output_modalities=transcription',
+);
+const models = await response.json();
+```
+
+```python title="Python" lines theme={null}
+import requests
+
+# List only STT models
+response = requests.get(
+    "https://openrouter.ai/api/v1/models",
+    params={"output_modalities": "transcription"},
+)
+```
+
+```go title="Go" lines theme={null}
+// List only STT models
+resp, err := http.Get("https://openrouter.ai/api/v1/models?output_modalities=transcription")
+if err != nil {
+	log.Fatal(err)
+}
+defer resp.Body.Close()
+
+body, _ := io.ReadAll(resp.Body)
+fmt.Println(string(body))
+```
+
 ### On the Models Page
 
 Visit the [Models page](../models.md) and filter by output modalities to find models capable of audio transcription. You can also browse the [Speech-to-Text collection](https://openrouter.ai/collections/speech-to-text-models) for a curated list.
@@ -123,6 +153,61 @@ curl https://openrouter.ai/api/v1/audio/transcriptions \
   }'
 ```
 
+```go title="Go" lines theme={null}
+package main
+
+import (
+	"bytes"
+	"encoding/base64"
+	"encoding/json"
+	"fmt"
+	"log"
+	"net/http"
+	"os"
+)
+
+func main() {
+	audio, err := os.ReadFile("audio.wav")
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	body, _ := json.Marshal(map[string]any{
+		"model": "openai/whisper-1",
+		"input_audio": map[string]string{
+			"data":   base64.StdEncoding.EncodeToString(audio),
+			"format": "wav",
+		},
+	})
+
+	req, _ := http.NewRequest("POST", "https://openrouter.ai/api/v1/audio/transcriptions", bytes.NewReader(body))
+	req.Header.Set("Authorization", "Bearer "+os.Getenv("OPENROUTER_API_KEY"))
+	req.Header.Set("Content-Type", "application/json")
+
+	resp, err := http.DefaultClient.Do(req)
+	if err != nil {
+		log.Fatal(err)
+	}
+	defer resp.Body.Close()
+	if resp.StatusCode != http.StatusOK {
+		log.Fatalf("API error: %s", resp.Status)
+	}
+
+	var result struct {
+		Text string `json:"text"`
+	}
+	if err := json.NewDecoder(resp.Body).Decode(&result); err != nil {
+		log.Fatal(err)
+	}
+	fmt.Println(result.Text)
+}
+
+```
+
+```text title="Output" theme={null}
+Oh
+```
+
 ### Request Parameters
 
 | Parameter | Type | Required | Description |
@@ -164,6 +249,90 @@ curl https://openrouter.ai/api/v1/audio/transcriptions \
   -H "Authorization: Bearer $OPENROUTER_API_KEY" \
   -F file="@audio.wav" \
   -F model="openai/whisper-large-v3"
+```
+
+```typescript title="TypeScript" lines theme={null}
+import OpenAI from 'openai';
+import fs from 'fs';
+
+const client = new OpenAI({
+  baseURL: 'https://openrouter.ai/api/v1',
+  apiKey: '<OPENROUTER_API_KEY>',
+});
+
+const result = await client.audio.transcriptions.create({
+  model: 'openai/whisper-large-v3',
+  file: fs.createReadStream('audio.wav'),
+});
+
+console.log('Transcript:', JSON.stringify(result.text));
+console.log('Full response:', JSON.stringify(result, null, 2));
+
+```
+
+```go title="Go" lines theme={null}
+package main
+
+import (
+	"bytes"
+	"encoding/json"
+	"fmt"
+	"io"
+	"log"
+	"mime/multipart"
+	"net/http"
+	"os"
+)
+
+func main() {
+	f, err := os.Open("audio.wav")
+	if err != nil {
+		log.Fatal(err)
+	}
+	defer f.Close()
+
+	var buf bytes.Buffer
+	w := multipart.NewWriter(&buf)
+	w.WriteField("model", "openai/whisper-large-v3")
+	part, _ := w.CreateFormFile("file", "audio.wav")
+	if _, err := io.Copy(part, f); err != nil {
+		log.Fatal(err)
+	}
+	w.Close()
+
+	req, _ := http.NewRequest("POST", "https://openrouter.ai/api/v1/audio/transcriptions", &buf)
+	req.Header.Set("Authorization", "Bearer "+os.Getenv("OPENROUTER_API_KEY"))
+	req.Header.Set("Content-Type", w.FormDataContentType())
+
+	resp, err := http.DefaultClient.Do(req)
+	if err != nil {
+		log.Fatal(err)
+	}
+	defer resp.Body.Close()
+	if resp.StatusCode != http.StatusOK {
+		log.Fatalf("API error: %s", resp.Status)
+	}
+
+	var result struct {
+		Text string `json:"text"`
+	}
+	if err := json.NewDecoder(resp.Body).Decode(&result); err != nil {
+		log.Fatal(err)
+	}
+	fmt.Println(result.Text)
+}
+
+```
+
+```text title="Output" theme={null}
+Transcript: " ."
+Full response: {
+  "text": " .",
+  "usage": {
+    "seconds": 1,
+    "cost": 0.0000075
+  }
+}
 ```
 
 The `file`, `model`, `language`, `prompt`, `temperature`, `response_format`, and `timestamp_granularities` fields are supported. `response_format` may be `json` (the default) or `verbose_json` (see [Verbose Transcripts](#verbose-transcripts-timestamps-and-speakers)). `text`, `srt`, and `vtt` are rejected with a 400. With `verbose_json`, pass `timestamp_granularities[]=word` to also receive word-level timestamps in the `words` array.
@@ -208,6 +377,30 @@ To find the slug for each provider serving a model, call the [endpoints API](../
 
 ```bash lines theme={null}
 curl https://openrouter.ai/api/v1/models/openai/whisper-large-v3/endpoints
+```
+
+```typescript title="TypeScript" lines theme={null}
+const response = await fetch('https://openrouter.ai/api/v1/models/openai/whisper-large-v3/endpoints');
+const endpoints = await response.json();
+```
+
+```python title="Python" lines theme={null}
+import requests
+
+response = requests.get("https://openrouter.ai/api/v1/models/openai/whisper-large-v3/endpoints")
+
+```
+
+```go title="Go" lines theme={null}
+resp, err := http.Get("https://openrouter.ai/api/v1/models/openai/whisper-large-v3/endpoints")
+if err != nil {
+	log.Fatal(err)
+}
+defer resp.Body.Close()
+
+// Each endpoint record in the response body carries its `tag`
+body, _ := io.ReadAll(resp.Body)
+fmt.Println(string(body))
 ```
 
 Features a provider exposes only through its own options, such as speaker diarization, vocabulary or keyword hints, and output style controls, are passed this way. Provider integrations differ in which fields they forward and how they handle unsupported fields. Some forward only an allowlist and drop the rest without an error (for example Deepgram accepts `punctuate`, `diarize`, `smart_format`, and `detect_language`), while others such as Azure forward most fields as-is, so an invalid option usually surfaces as a provider error. Use the options shown in this guide, or test an option before relying on it.

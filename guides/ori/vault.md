@@ -96,6 +96,40 @@ curl "https://openrouter.ai/api/v1/vault/secrets?limit=50&offset=0" \
   -H "Authorization: Bearer $OPENROUTER_API_KEY"
 ```
 
+```typescript title="TypeScript" lines theme={null}
+const response = await fetch("https://openrouter.ai/api/v1/vault/secrets?limit=50&offset=0", {
+  headers: { Authorization: `Bearer ${process.env.OPENROUTER_API_KEY}` },
+});
+const secrets = await response.json();
+```
+
+```python title="Python" lines theme={null}
+import os
+
+import requests
+
+response = requests.get(
+    "https://openrouter.ai/api/v1/vault/secrets",
+    params={"limit": 50, "offset": 0},
+    headers={"Authorization": f"Bearer {os.environ['OPENROUTER_API_KEY']}"},
+)
+
+```
+
+```go title="Go" lines theme={null}
+req, _ := http.NewRequest("GET", "https://openrouter.ai/api/v1/vault/secrets?limit=50&offset=0", nil)
+req.Header.Set("Authorization", "Bearer "+os.Getenv("OPENROUTER_API_KEY"))
+
+resp, err := http.DefaultClient.Do(req)
+if err != nil {
+	log.Fatal(err)
+}
+defer resp.Body.Close()
+
+body, _ := io.ReadAll(resp.Body)
+fmt.Println(string(body))
+```
+
 ```json theme={null}
 {
   "data": [
@@ -129,6 +163,23 @@ An intern can receive a secret from three places: its own secrets, a vault attac
 ```bash theme={null}
 curl "https://openrouter.ai/api/v1/vault/interns/7c9e6679-7425-40de-944b-e07fc1f90ae7/effective-secrets" \
   -H "Authorization: Bearer $OPENROUTER_API_KEY"
+```
+
+```go title="Go" lines theme={null}
+req, _ := http.NewRequest("GET", "https://openrouter.ai/api/v1/vault/interns/"+internID+"/effective-secrets", nil)
+req.Header.Set("Authorization", "Bearer "+os.Getenv("OPENROUTER_API_KEY"))
+
+resp, err := http.DefaultClient.Do(req)
+if err != nil {
+	log.Fatal(err)
+}
+defer resp.Body.Close()
+
+body, _ := io.ReadAll(resp.Body)
+if resp.StatusCode != http.StatusOK {
+	log.Fatalf("request failed: %s: %s", resp.Status, body)
+}
+fmt.Println(string(body))
 ```
 
 ```json theme={null}

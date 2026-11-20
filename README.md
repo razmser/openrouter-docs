@@ -2,7 +2,7 @@
 
 Markdown mirror of [OpenRouter's documentation](https://openrouter.ai/docs/quickstart).
 
-Contains **558 pages**, discovered from the [page index](https://openrouter.ai/docs/llms.txt) and [supplementary index](https://openrouter.ai/docs/sitemap.xml).
+Contains **560 pages**, discovered from the [page index](https://openrouter.ai/docs/llms.txt) and [supplementary index](https://openrouter.ai/docs/sitemap.xml).
 
 Links to mirrored pages point to local files; external links and images remain online. Code examples and OpenAPI blocks are preserved.
 
@@ -175,6 +175,8 @@ Generated files are replaced by the next successful sync. Original content belon
 - [Get a server tool](api/api-reference/tools/get-a-server-tool.md)
 - [List server tools](api/api-reference/tools/list-server-tools.md)
 - [Create speech](api/api-reference/tts/create-speech.md)
+- [Get a text-to-speech model](api/api-reference/tts/get-a-text-to-speech-model.md)
+- [List text-to-speech models](api/api-reference/tts/list-text-to-speech-models.md)
 - [Copy workspace secrets to an intern](api/api-reference/vault/copy-workspace-secrets-to-an-intern.md)
 - [Delete a workspace secret](api/api-reference/vault/delete-a-workspace-secret.md)
 - [Delete an intern secret](api/api-reference/vault/delete-an-intern-secret.md)

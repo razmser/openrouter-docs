@@ -54,6 +54,108 @@ curl https://openrouter.ai/api/v1/batches \
   }'
 ```
 
+```typescript title="TypeScript" lines theme={null}
+const response = await fetch('https://openrouter.ai/api/v1/batches', {
+  method: 'POST',
+  headers: {
+    Authorization: `Bearer ${process.env.OPENROUTER_API_KEY}`,
+    'Content-Type': 'application/json',
+  },
+  body: JSON.stringify({
+    endpoint: '/v1/responses',
+    model: 'anthropic/claude-haiku-5.5',
+    requests: [
+      {
+        custom_id: 'review-1',
+        body: { input: 'Classify: The fit is perfect.' },
+      },
+    ],
+  }),
+});
+const batch = await response.json();
+```
+
+```python title="Python" lines theme={null}
+import json
+import os
+
+import requests
+
+print("Creating batch...")
+response = requests.post(
+    "https://openrouter.ai/api/v1/batches",
+    headers={"Authorization": f"Bearer {os.environ['OPENROUTER_API_KEY']}"},
+    json={
+        "endpoint": "/v1/responses",
+        "model": "anthropic/claude-haiku-5.5",
+        "requests": [
+            {
+                "custom_id": "review-1",
+                "body": {"input": "Classify: The fit is perfect."},
+            }
+        ],
+    },
+)
+response.raise_for_status()
+batch = response.json()
+print(json.dumps(batch))
+
+```
+
+```go title="Go" lines theme={null}
+package main
+
+import (
+	"bytes"
+	"fmt"
+	"io"
+	"log"
+	"net/http"
+	"os"
+)
+
+func main() {
+	payload := []byte(`{
+  "endpoint": "/v1/responses",
+  "model": "anthropic/claude-haiku-5.5",
+  "requests": [
+    {
+      "custom_id": "review-1",
+      "body": {
+        "input": "Classify: The fit is perfect."
+      }
+    }
+  ]
+}`)
+	fmt.Println("Creating batch...")
+	req, err := http.NewRequest("POST", "https://openrouter.ai/api/v1/batches", bytes.NewReader(payload))
+	if err != nil {
+		log.Fatal(err)
+	}
+	req.Header.Set("Authorization", "Bearer "+os.Getenv("OPENROUTER_API_KEY"))
+	req.Header.Set("Content-Type", "application/json")
+	res, err := http.DefaultClient.Do(req)
+	if err != nil {
+		log.Fatal(err)
+	}
+	defer res.Body.Close()
+	body, err := io.ReadAll(res.Body)
+	if err != nil {
+		log.Fatal(err)
+	}
+	if res.StatusCode < 200 || res.StatusCode > 299 {
+		log.Fatalf("batch creation failed (%s): %s", res.Status, body)
+	}
+	// The printed batch includes the id you poll with
+	fmt.Println(string(body))
+}
+```
+
+```text title="Output" theme={null}
+Creating batch...
+{"id": "batch-1794949632-xDGJGOegxjgSVABzTiky", "object": "batch", "endpoint": "/v1/responses", "model": "anthropic/claude-haiku-5.5-20261007", "completion_window": "24h", "status": "validating", "created_at": 1794949632, "finalized_at": null, "provider": "Anthropic", "expires_at": 1795036032, "request_counts": {"total": 1, "completed": 0, "failed": 0}, "usage": null, "results": null, "error": null}
+```
+
 > [!WARNING]
 >
 > A `202` means OpenRouter stored the batch, not that the batch is valid. OpenRouter checks each request after it accepts the batch. If a check fails, the batch moves to `failed` and `error.message` says why.

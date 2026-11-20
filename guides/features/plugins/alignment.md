@@ -34,12 +34,13 @@ npm install @openrouter/sdk
 Send the rules as an `alignment` entry in `plugins`. The request below uses `audit` mode, so OpenRouter delivers the message whatever its outcome, and calls [`openai/gpt-4.1-mini`](https://openrouter.ai/openai/gpt-4.1-mini). Its system message says that damaged items are refunded, and its first rule forbids saying that a refund is approved. The model follows the system message, so the message breaks the rule in most runs.
 
 ```typescript title="TypeScript" theme={null}
-import { OpenRouter } from '@openrouter/sdk';
-
-const client = new OpenRouter({ apiKey: process.env.OPENROUTER_API_KEY });
-
-const response = await client.responses.send({
-  responsesRequest: {
+const res = await fetch('https://openrouter.ai/api/v1/responses', {
+  method: 'POST',
+  headers: {
+    Authorization: `Bearer ${process.env.OPENROUTER_API_KEY}`,
+    'Content-Type': 'application/json',
+  },
+  body: JSON.stringify({
     model: 'openai/gpt-4.1-mini',
     instructions: 'You are Northwind support. Damaged items are refunded in full. Keep replies under 15 words.',
     input: 'My mug arrived broken. Will I get my money back?',
@@ -53,16 +54,25 @@ const response = await client.responses.send({
         ],
       },
     ],
-  },
+  }),
 });
 
-if (!('output' in response)) {
-  throw new Error('Expected a non-streaming response');
+const response = await res.json();
+if (!res.ok || response.error) {
+  throw new Error(JSON.stringify(response.error ?? response));
 }
-if (response.error) {
-  throw new Error(response.error.message);
-}
-console.log(response.alignment?.calls.map((call) => call.outcome));
+
+const text = (response.output ?? [])
+  .filter((item: any) => item.type === 'message')
+  .flatMap((item: any) => item.content ?? [])
+  .filter((part: any) => part.type === 'output_text')
+  .map((part: any) => part.text)
+  .join('');
+
+console.log('Message:', text);
+console.log('Alignment outcomes:', response.alignment?.calls?.map((call: any) => call.outcome));
+console.log(JSON.stringify(response.alignment, null, 2));
+
 ```
 
 ```bash title="cURL" theme={null}
@@ -84,6 +94,167 @@ curl https://openrouter.ai/api/v1/responses \
       }
     ]
   }'
+```
+
+```python title="Python" lines theme={null}
+import json
+import os
+
+import requests
+
+res = requests.post(
+    "https://openrouter.ai/api/v1/responses",
+    headers={
+        "Authorization": f"Bearer {os.environ['OPENROUTER_API_KEY']}",
+        "Content-Type": "application/json",
+    },
+    json={
+        "model": "openai/gpt-4.1-mini",
+        "instructions": "You are Northwind support. Damaged items are refunded in full. Keep replies under 15 words.",
+        "input": "My mug arrived broken. Will I get my money back?",
+        "plugins": [
+            {
+                "id": "alignment",
+                "mode": "audit",
+                "rules": [
+                    {"rule": "Do not say a refund is issued or approved.", "watch": ["content"]},
+                    {"rule": "Do not ask for payment card details.", "watch": ["content"]},
+                ],
+            },
+        ],
+    },
+)
+
+response = res.json()
+if not res.ok or response.get("error"):
+    raise RuntimeError(json.dumps(response.get("error") or response))
+
+text = "".join(
+    part["text"]
+    for item in response.get("output") or []
+    if item.get("type") == "message"
+    for part in item.get("content") or []
+    if part.get("type") == "output_text"
+)
+
+alignment = response.get("alignment")
+print("Message:", text)
+print("Alignment outcomes:", [call["outcome"] for call in (alignment or {}).get("calls", [])])
+print(json.dumps(alignment, indent=2))
+
+```
+
+```go title="Go" lines theme={null}
+package main
+
+import (
+	"bytes"
+	"encoding/json"
+	"fmt"
+	"io"
+	"log"
+	"net/http"
+	"os"
+	"strings"
+)
+
+func main() {
+	body, _ := json.Marshal(map[string]any{
+		"model":        "openai/gpt-4.1-mini",
+		"instructions": "You are Northwind support. Damaged items are refunded in full. Keep replies under 15 words.",
+		"input":        "My mug arrived broken. Will I get my money back?",
+		"plugins": []any{
+			map[string]any{
+				"id":   "alignment",
+				"mode": "audit",
+				"rules": []any{
+					map[string]any{"rule": "Do not say a refund is issued or approved.", "watch": []string{"content"}},
+					map[string]any{"rule": "Do not ask for payment card details.", "watch": []string{"content"}},
+				},
+			},
+		},
+	})
+
+	req, _ := http.NewRequest("POST", "https://openrouter.ai/api/v1/responses", bytes.NewReader(body))
+	req.Header.Set("Authorization", "Bearer "+os.Getenv("OPENROUTER_API_KEY"))
+	req.Header.Set("Content-Type", "application/json")
+
+	res, err := http.DefaultClient.Do(req)
+	if err != nil {
+		log.Fatal(err)
+	}
+	defer res.Body.Close()
+	raw, _ := io.ReadAll(res.Body)
+
+	var response struct {
+		Output []struct {
+			Type    string
+			Content []struct{ Type, Text string }
+		}
+		Alignment json.RawMessage
+		Error     json.RawMessage
+	}
+	if err := json.Unmarshal(raw, &response); err != nil || res.StatusCode >= 300 ||
+		(len(response.Error) > 0 && string(response.Error) != "null") {
+		log.Fatalf("request failed: %s", raw)
+	}
+
+	var text strings.Builder
+	for _, item := range response.Output {
+		if item.Type != "message" {
+			continue
+		}
+		for _, part := range item.Content {
+			if part.Type == "output_text" {
+				text.WriteString(part.Text)
+			}
+		}
+	}
+
+	var alignment struct {
+		Calls []struct{ Outcome string }
+	}
+	json.Unmarshal(response.Alignment, &alignment)
+	outcomes := []string{}
+	for _, call := range alignment.Calls {
+		outcomes = append(outcomes, call.Outcome)
+	}
+
+	fmt.Println("Message:", text.String())
+	fmt.Println("Alignment outcomes:", outcomes)
+	var pretty bytes.Buffer
+	if json.Indent(&pretty, response.Alignment, "", "  ") == nil {
+		fmt.Println(pretty.String())
+	} else {
+		fmt.Println("null")
+	}
+}
+
+```
+
+```text title="Output" theme={null}
+Message: Damaged items are refunded in full. Please provide your order details.
+Alignment outcomes: [ "blocked" ]
+{
+  "calls": [
+    {
+      "call": 1,
+      "outcome": "blocked",
+      "rules": [
+        {
+          "applicable": true,
+          "probability": 0.78,
+          "broken": true
+        },
+        {
+          "applicable": true,
+          "probability": 0.03,
+          "broken": false
+        }
+      ]
+    }
+  ]
+}
 ```
 
 The TypeScript example prints the outcome of each message, `blocked` in the run below. The cURL example prints the response body: `output` holds the message, and `alignment` holds the outcome. The evaluator gave the first rule a probability of `0.9`, at or above the default `threshold` of `0.7`, so the rule is `broken: true` and the message is `blocked`. The second rule has a probability of `0.02` and is `broken: false`:

@@ -28,6 +28,9 @@ const response = await model.invoke([
   { role: "system", content: "You are a helpful assistant." },
   { role: "user", content: "Hello, how are you?" },
 ]);
+
+console.log(response.content);
+
 ```
 
 ```python title="Python" lines theme={null}
@@ -41,6 +44,10 @@ model = ChatOpenRouter(
 # Example usage
 response = model.invoke("What NFL team won the Super Bowl in the year Justin Bieber was born?")
 print(response.content)
+```
+
+```text title="Output" theme={null}
+Hello! I'm doing well, thanks for asking! How are you doing today? Is there something I can help you with? 😊
 ```
 
 For full documentation (including streaming, tool calling, structured output, reasoning, multimodal inputs, provider routing, and more), see the LangChain integration guides:

@@ -540,8 +540,10 @@ components:
         supports_diarization:
           description: >-
             Whether this STT endpoint can label each transcript segment with a
-            speaker (speaker diarization). False when the endpoint has not
-            declared support.
+            speaker (speaker diarization). For transcription endpoints, derived
+            from the serving STT adapter: true when that adapter supports
+            `diarize: true` for this model. Diarized requests also need
+            `response_format: verbose_json`.
           type: boolean
         supports_image_reference:
           default: false
@@ -1045,6 +1047,7 @@ components:
         - seed
         - response_format
         - structured_outputs
+        - strict_tool_schemas
         - stop
         - tools
         - tool_choice

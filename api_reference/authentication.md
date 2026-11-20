@@ -98,6 +98,8 @@ response = client.responses.create(
 )
 
 reply = response.output_text
+print(reply)
+
 ```
 
 ```typescript title="TypeScript (OpenAI SDK)" expandable lines theme={null}
@@ -125,7 +127,7 @@ main();
 ```
 
 ```typescript title="TypeScript (Raw API)" lines theme={null}
-fetch('https://openrouter.ai/api/v1/responses', {
+const response = await fetch('https://openrouter.ai/api/v1/responses', {
   method: 'POST',
   headers: {
     Authorization: 'Bearer <OPENROUTER_API_KEY>',
@@ -138,6 +140,9 @@ fetch('https://openrouter.ai/api/v1/responses', {
     input: 'What is the meaning of life?',
   }),
 });
+
+const data = await response.json();
+console.log(JSON.stringify(data, null, 2));
 ```
 
 ```shell title="cURL" lines theme={null}
@@ -149,6 +154,75 @@ curl https://openrouter.ai/api/v1/responses \
   "instructions": "You are a helpful assistant.",
   "input": "Hello!"
 }'
+```
+
+```go title="Go" lines theme={null}
+package main
+
+import (
+	"bytes"
+	"encoding/json"
+	"fmt"
+	"log"
+	"net/http"
+	"os"
+)
+
+func main() {
+	body, _ := json.Marshal(map[string]any{
+		"model":  "openai/gpt-5.2",
+		"input":  "Say this is a test",
+		"stream": false,
+	})
+
+	req, _ := http.NewRequest("POST", "https://openrouter.ai/api/v1/responses", bytes.NewReader(body))
+	req.Header.Set("Authorization", "Bearer "+os.Getenv("OPENROUTER_API_KEY"))
+	req.Header.Set("HTTP-Referer", "<YOUR_SITE_URL>") // Optional. Site URL for rankings on openrouter.ai.
+	req.Header.Set("X-Title", "<YOUR_SITE_NAME>")     // Optional. Site title for rankings on openrouter.ai.
+	req.Header.Set("Content-Type", "application/json")
+
+	resp, err := http.DefaultClient.Do(req)
+	if err != nil {
+		log.Fatal(err)
+	}
+	defer resp.Body.Close()
+	if resp.StatusCode != http.StatusOK {
+		log.Fatalf("request failed: %s", resp.Status)
+	}
+
+	var result struct {
+		Output []map[string]any `json:"output"`
+	}
+	if err := json.NewDecoder(resp.Body).Decode(&result); err != nil {
+		log.Fatal(err)
+	}
+
+	for i := len(result.Output) - 1; i >= 0; i-- {
+		if result.Output[i]["type"] == "message" {
+			out, _ := json.MarshalIndent(result.Output[i], "", "  ")
+			fmt.Println(string(out))
+			break
+		}
+	}
+}
+
+```
+
+```text title="Output" theme={null}
+{
+  content: [
+    {
+      annotations: [],
+      logprobs: [],
+      text: "This is a test.",
+      type: "output_text",
+    }
+  ],
+  id: "msg_tmp_j086jcdp5p",
+  role: "assistant",
+  status: "completed",
+  type: "message",
+}
 ```
 
 To stream responses, see [Streaming](streaming.md).

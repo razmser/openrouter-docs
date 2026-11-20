@@ -30,6 +30,14 @@ Tool call `arguments` are validated against the corresponding `tools[].function.
 new Validator(parameters, '7')
 ```
 
+```python title="Python" lines theme={null}
+Draft7Validator(parameters)
+```
+
+```go title="Go" lines theme={null}
+validator := NewValidator(parameters, "7")
+```
+
 Tools whose `parameters` schema is absent or fails to compile are treated as having no schema and are always considered valid, so the metric is conservative when caller-side schemas are malformed.
 
 Some malformed schemas compile but make the validator throw when it evaluates a call, for example a `pattern` that is not a valid JavaScript regular expression or `"required": null`. Such a call is recorded as `unvalidatable-schema` and counts as neither valid nor errored, because the arguments were never judged.

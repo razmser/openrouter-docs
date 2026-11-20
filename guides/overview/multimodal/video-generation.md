@@ -41,6 +41,29 @@ Use the dedicated video models endpoint to list all available video generation m
 curl "https://openrouter.ai/api/v1/videos/models"
 ```
 
+```typescript title="TypeScript" lines theme={null}
+const response = await fetch('https://openrouter.ai/api/v1/videos/models');
+const models = await response.json();
+```
+
+```python title="Python" lines theme={null}
+import requests
+
+response = requests.get("https://openrouter.ai/api/v1/videos/models")
+models = response.json()
+```
+
+```go title="Go" lines theme={null}
+res, err := http.Get("https://openrouter.ai/api/v1/videos/models")
+if err != nil {
+	log.Fatal(err)
+}
+defer res.Body.Close()
+
+body, _ := io.ReadAll(res.Body)
+fmt.Println(string(body))
+```
+
 The response returns a `data` array where each model includes:
 
 ```json lines theme={null}
@@ -90,6 +113,35 @@ You can also use the `output_modalities` query parameter on the [Models API](../
 ```bash lines theme={null}
 # List only video generation models
 curl "https://openrouter.ai/api/v1/models?output_modalities=video"
+```
+
+```typescript title="TypeScript" lines theme={null}
+// List only video generation models
+const response = await fetch('https://openrouter.ai/api/v1/models?output_modalities=video');
+const models = await response.json();
+```
+
+```python title="Python" lines theme={null}
+import requests
+
+# List only video generation models
+response = requests.get(
+    "https://openrouter.ai/api/v1/models",
+    params={"output_modalities": "video"},
+)
+models = response.json()
+```
+
+```go title="Go" lines theme={null}
+// List only video generation models
+res, err := http.Get("https://openrouter.ai/api/v1/models?output_modalities=video")
+if err != nil {
+	log.Fatal(err)
+}
+defer res.Body.Close()
+
+body, _ := io.ReadAll(res.Body)
+fmt.Println(string(body))
 ```
 
 ### On the Models Page
@@ -493,7 +545,7 @@ When a job reaches a terminal state, OpenRouter sends a POST request to the call
 
 ### Signing Secret
 
-You can configure a signing secret in your [workspace settings](../../features/workspaces.md) to verify that webhook payloads are authentically from OpenRouter. When a signing secret is configured, each webhook delivery includes an `X-OpenRouter-Signature` header.
+You can configure a signing secret in your [workspace settings](../../features/workspaces.md) to verify that webhook payloads are authentically from OpenRouter. When a signing secret is configured, each webhook delivery includes an `X-OpenRouter-Signature` header. Without a signing secret, deliveries are unsigned and any client can imitate them, so a receiver that expects signed webhooks must reject requests when it has no secret to verify against.
 
 The signature includes a timestamp and an HMAC hash:
 
@@ -520,6 +572,11 @@ function verifyWebhookSignature(
   signatureHeader: string,
   secret: string,
 ): boolean {
+  // An empty secret produces an HMAC anyone can compute, so treat it as misconfiguration.
+  if (!secret) {
+    return false;
+  }
+
   const parts = signatureHeader.split(',');
   const timestamp = parts.find((p) => p.startsWith('t='))?.slice(2);
   const hash = parts.find((p) => p.startsWith('v1='))?.slice(3);
@@ -540,7 +597,9 @@ function verifyWebhookSignature(
     .update(signedPayload)
     .digest('hex');
 
-  if (expected.length !== hash.length) {
+  // The v1 value must be a 64-character hex digest. Reject anything else before
+  // comparing, because timingSafeEqual throws when the byte lengths differ.
+  if (!/^[0-9a-f]{64}$/.test(hash)) {
     return false;
   }
 
@@ -549,6 +608,153 @@ function verifyWebhookSignature(
     Buffer.from(hash),
   );
 }
+
+// Example: verify a sample webhook delivery
+const secret = 'your_signing_secret';
+const rawBody = JSON.stringify({
+  type: 'video.generation.completed',
+  data: { id: 'abc123', status: 'completed' },
+});
+const timestamp = Math.floor(Date.now() / 1000);
+const signature = crypto
+  .createHmac('sha256', secret)
+  .update(`${timestamp},${rawBody}`)
+  .digest('hex');
+const signatureHeader = `t=${timestamp},v1=${signature}`;
+
+console.log('Valid signature:', verifyWebhookSignature(rawBody, signatureHeader, secret));
+console.log('Tampered body:', verifyWebhookSignature(rawBody + ' ', signatureHeader, secret));
+
+```
+
+```python title="Python" lines theme={null}
+import hashlib
+import hmac
+import json
+import time
+
+FIVE_MINUTES_IN_SECONDS = 300
+
+
+def verify_webhook_signature(raw_body: str, signature_header: str, secret: str) -> bool:
+    # An empty secret produces an HMAC anyone can compute, so treat it as misconfiguration.
+    if not secret:
+        return False
+
+    parts = signature_header.split(",")
+    timestamp = next((p[2:] for p in parts if p.startswith("t=")), None)
+    hash_ = next((p[3:] for p in parts if p.startswith("v1=")), None)
+
+    if not timestamp or not hash_:
+        return False
+
+    # Reject timestamps older than 5 minutes to prevent replay attacks
+    try:
+        age = int(time.time()) - int(timestamp)
+    except ValueError:
+        return False
+    if age > FIVE_MINUTES_IN_SECONDS:
+        return False
+
+    signed_payload = f"{timestamp},{raw_body}"
+    expected = hmac.new(
+        secret.encode(), signed_payload.encode(), hashlib.sha256
+    ).hexdigest()
+
+    # The v1 value must be a 64-character hex digest. Reject anything else before
+    # comparing, because compare_digest raises on non-ASCII input.
+    if len(hash_) != 64 or any(c not in "0123456789abcdef" for c in hash_):
+        return False
+
+    return hmac.compare_digest(expected, hash_)
+
+
+# Example: verify a sample webhook delivery
+secret = "your_signing_secret"
+raw_body = json.dumps(
+    {"type": "video.generation.completed", "data": {"id": "abc123", "status": "completed"}},
+    separators=(",", ":"),
+)
+timestamp = int(time.time())
+signature = hmac.new(
+    secret.encode(), f"{timestamp},{raw_body}".encode(), hashlib.sha256
+).hexdigest()
+signature_header = f"t={timestamp},v1={signature}"
+
+print("Valid signature:", str(verify_webhook_signature(raw_body, signature_header, secret)).lower())
+print("Tampered body:", str(verify_webhook_signature(raw_body + " ", signature_header, secret)).lower())
+
+```
+
+```go title="Go" lines theme={null}
+package main
+
+import (
+	"crypto/hmac"
+	"crypto/sha256"
+	"encoding/hex"
+	"fmt"
+	"strconv"
+	"strings"
+	"time"
+)
+
+const fiveMinutesInSeconds = 300
+
+func sign(secret, payload string) string {
+	mac := hmac.New(sha256.New, []byte(secret))
+	mac.Write([]byte(payload))
+	return hex.EncodeToString(mac.Sum(nil))
+}
+
+func verifyWebhookSignature(rawBody, signatureHeader, secret string) bool {
+	// An empty secret produces an HMAC anyone can compute, so treat it as misconfiguration.
+	if secret == "" {
+		return false
+	}
+
+	var timestamp, hash string
+	for _, p := range strings.Split(signatureHeader, ",") {
+		if v, ok := strings.CutPrefix(p, "t="); ok && timestamp == "" {
+			timestamp = v
+		} else if v, ok := strings.CutPrefix(p, "v1="); ok && hash == "" {
+			hash = v
+		}
+	}
+
+	if timestamp == "" || hash == "" {
+		return false
+	}
+
+	// Reject timestamps older than 5 minutes to prevent replay attacks
+	ts, err := strconv.ParseInt(timestamp, 10, 64)
+	if err != nil || time.Now().Unix()-ts > fiveMinutesInSeconds {
+		return false
+	}
+
+	expected := sign(secret, timestamp+","+rawBody)
+
+	// hmac.Equal is a constant-time comparison
+	return hmac.Equal([]byte(expected), []byte(hash))
+}
+
+func main() {
+	// Example: verify a sample webhook delivery
+	secret := "your_signing_secret"
+	rawBody := `{"type":"video.generation.completed","data":{"id":"abc123","status":"completed"}}`
+	timestamp := strconv.FormatInt(time.Now().Unix(), 10)
+	signature := sign(secret, timestamp+","+rawBody)
+	signatureHeader := "t=" + timestamp + ",v1=" + signature
+
+	fmt.Println("Valid signature:", verifyWebhookSignature(rawBody, signatureHeader, secret))
+	fmt.Println("Tampered body:", verifyWebhookSignature(rawBody+" ", signatureHeader, secret))
+}
+
+```
+
+```text title="Output" theme={null}
+Valid signature: true
+Tampered body: false
 ```
 
 > [!WARNING]

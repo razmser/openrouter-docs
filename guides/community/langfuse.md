@@ -39,6 +39,19 @@ LANGFUSE_HOST="https://cloud.langfuse.com"
 os.environ["OPENAI_API_KEY"] = "<OPENROUTER_API_KEY>"
 ```
 
+```bash title="cURL" lines theme={null}
+# Set your Langfuse API keys
+export LANGFUSE_SECRET_KEY="sk-lf-..."
+export LANGFUSE_PUBLIC_KEY="pk-lf-..."
+# EU region
+export LANGFUSE_HOST="https://cloud.langfuse.com"
+# US region
+# export LANGFUSE_HOST="https://us.cloud.langfuse.com"
+
+# Set your OpenRouter API key
+export OPENAI_API_KEY="$OPENROUTER_API_KEY"
+```
+
 ### Simple LLM Call
 
 Since OpenRouter provides an OpenAI-compatible API, you can use the Langfuse OpenAI SDK wrapper to automatically log OpenRouter calls as generations in Langfuse:
@@ -66,6 +79,16 @@ response = client.responses.create(
 
 # Print the assistant's reply
 print(response.output_text)
+```
+
+```text title="Output" theme={null}
+Here's a fun fact about space:
+
+**A day on Venus is longer than a year on Venus!** 🪐
+
+Venus rotates so slowly on its axis that it takes about **243 Earth days** to complete one full rotation. But it only takes about **225 Earth days** to orbit the Sun. So a single day on Venus is actually longer than its entire year!
+
+As a bonus, Venus also rotates *backwards* compared to most planets, so if you could see the Sun from Venus's surface, it would rise in the west and set in the east. 🌅
 ```
 
 ### Advanced Tracing with Nested Calls
@@ -118,6 +141,13 @@ def analyze_sentiment(summary: str):
 text_to_analyze = "OpenRouter's unified API has significantly advanced the field of AI development, setting new standards for model accessibility."
 result = analyze_text(text_to_analyze)
 print(result)
+```
+
+```text title="Output" theme={null}
+{
+  summary: "OpenRouter's unified API has improved AI development by enhancing model accessibility and establishing new industry standards.",
+  sentiment: "The sentiment of the summary is positive. It highlights the improvements brought about by OpenRouter's unified API, specifically in the areas of AI development, model accessibility, and the establishment of new industry standards. The language suggests progress and beneficial changes, reflecting an optimistic view of the impact of OpenRouter's initiatives.",
+}
 ```
 
 ### Learn More

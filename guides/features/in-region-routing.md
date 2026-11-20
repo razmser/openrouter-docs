@@ -34,10 +34,13 @@ const response = await openRouter.responses.send({
     stream: false,
   },
 });
+
+console.log(JSON.stringify(response, null, 2));
+
 ```
 
 ```typescript title="TypeScript (fetch)" lines theme={null}
-fetch('https://eu.openrouter.ai/api/v1/responses', {
+const response = await fetch('https://eu.openrouter.ai/api/v1/responses', {
   method: 'POST',
   headers: {
     'Authorization': 'Bearer <OPENROUTER_API_KEY>',
@@ -48,6 +51,10 @@ fetch('https://eu.openrouter.ai/api/v1/responses', {
     input: 'Hello',
   }),
 });
+
+const data = await response.json();
+console.log(JSON.stringify(data, null, 2));
+
 ```
 
 ```python title="Python" lines theme={null}
@@ -62,6 +69,9 @@ response = requests.post('https://eu.openrouter.ai/api/v1/responses', headers=he
   'model': 'anthropic/claude-sonnet-5',
   'input': 'Hello',
 })
+
+print(response.json())
+
 ```
 
 ```bash title="cURL" lines theme={null}
@@ -73,6 +83,102 @@ curl https://eu.openrouter.ai/api/v1/responses \
     "input": "Hello"
   }'
 ```
+
+```go title="Go" lines theme={null}
+package main
+
+import (
+	"bytes"
+	"encoding/json"
+	"fmt"
+	"io"
+	"log"
+	"net/http"
+	"os"
+)
+
+func main() {
+	body, _ := json.Marshal(map[string]any{
+		"model":  "anthropic/claude-sonnet-5",
+		"input":  "Hello",
+		"stream": false,
+	})
+
+	req, err := http.NewRequest("POST", "https://eu.openrouter.ai/api/v1/responses", bytes.NewReader(body))
+	if err != nil {
+		log.Fatal(err)
+	}
+	req.Header.Set("Authorization", "Bearer "+os.Getenv("OPENROUTER_API_KEY"))
+	req.Header.Set("Content-Type", "application/json")
+
+	resp, err := http.DefaultClient.Do(req)
+	if err != nil {
+		log.Fatal(err)
+	}
+	defer resp.Body.Close()
+
+	data, err := io.ReadAll(resp.Body)
+	if err != nil {
+		log.Fatal(err)
+	}
+	if resp.StatusCode != http.StatusOK {
+		log.Fatalf("HTTP %d: %s", resp.StatusCode, data)
+	}
+
+	var out bytes.Buffer
+	if err := json.Indent(&out, data, "", "  "); err != nil {
+		log.Fatal(err)
+	}
+	fmt.Println(out.String())
+}
+
+```
+
+```text title="Output" theme={null}
+{
+  "background": false,
+  "completedAt": 1794949763,
+  "createdAt": 1794949762,
+  "error": null,
+  "frequencyPenalty": 0,
+  "id": "gen-1794949762-baVyTiNTGmDBTu0WJ7v9",
+  "incompleteDetails": null,
+  "instructions": null,
+  "maxOutputTokens": null,
+  "maxToolCalls": null,
+  "metadata": {},
+  "model": "anthropic/claude-sonnet-5",
+  "object": "response",
+  "output": [
+    {
+      "content": [
+        {
+          "annotations": [],
+          "logprobs": [],
+          "text": "Hi there! How can I help you today?",
+          "type": "output_text"
+        }
+      ],
+      "id": "msg_tmp_ait7yr1q3z",
+      "role": "assistant",
+      "status": "completed",
+      "type": "message"
+    }
+  ],
+  "parallelToolCalls": true,
+  "presencePenalty": 0,
+  "previousResponseId": null,
+  "promptCacheKey": null,
+  "promptCacheOptions": null,
+  "reasoning": {
+    "effort": "high"
+  },
+  "safetyIdentifier": null,
+  "serviceTier": "default",
+  ...
+```
+
+This output is a truncated excerpt from the TypeScript SDK tab, which returns camelCase field names. The fetch, Python, cURL, and Go tabs print the same response with the snake\_case names the API returns, such as `service_tier` and `created_at`.
 
 ## How Requests Are Routed
 

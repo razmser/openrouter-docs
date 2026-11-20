@@ -15,6 +15,11 @@ Entries on this page are generated automatically from [OpenAPI specification](ap
 * `ImageGenerationResponse.data`: required `b64_json` property removedAction required
   * Used by [`POST /images`](api/api-reference/images/generate-an-image.md)
 
+## New endpoints
+
+* [`GET /audio/speech/models`](api/api-reference/tts/list-text-to-speech-models.md): List text-to-speech models
+* [`GET /audio/speech/models/{author}/{slug}`](api/api-reference/tts/get-a-text-to-speech-model.md): Get a text-to-speech model
+
 ## Modified endpoints
 
 * [`POST /scim/group-mappings`](api/api-reference/scim/create-a-scim-group-mapping.md): deprecated property\_added; description updated; response schema updated
@@ -23,6 +28,31 @@ Entries on this page are generated automatically from [OpenAPI specification](ap
 * [`POST /scim/sync-jobs`](api/api-reference/scim/start-a-scim-directory-sync.md): deprecated property\_added; description updated; response schema updated
 * [`POST /credits/purchases`](https://openrouter.ai/docs/api/api-reference/credits/buy-credits-with-a-machine-payment): extension `x-payment-info` added; description updated
 * [`POST /audio/transcriptions`](api/api-reference/stt/create-transcription.md): request schema updated
+
+## New schemas
+
+* `SpeechEnumParameter`
+  * Used by [`GET /audio/speech/models`](api/api-reference/tts/list-text-to-speech-models.md), [`GET /audio/speech/models/{author}/{slug}`](api/api-reference/tts/get-a-text-to-speech-model.md)
+* `SpeechInputModality`
+  * Used by [`GET /audio/speech/models`](api/api-reference/tts/list-text-to-speech-models.md), [`GET /audio/speech/models/{author}/{slug}`](api/api-reference/tts/get-a-text-to-speech-model.md)
+* `SpeechModelEndpoint`
+  * Used by [`GET /audio/speech/models`](api/api-reference/tts/list-text-to-speech-models.md), [`GET /audio/speech/models/{author}/{slug}`](api/api-reference/tts/get-a-text-to-speech-model.md)
+* `SpeechModelResponse`
+  * Used by [`GET /audio/speech/models`](api/api-reference/tts/list-text-to-speech-models.md), [`GET /audio/speech/models/{author}/{slug}`](api/api-reference/tts/get-a-text-to-speech-model.md)
+* `SpeechModelsListResponse`
+  * Used by [`GET /audio/speech/models`](api/api-reference/tts/list-text-to-speech-models.md)
+* `SpeechOutputModality`
+  * Used by [`GET /audio/speech/models`](api/api-reference/tts/list-text-to-speech-models.md), [`GET /audio/speech/models/{author}/{slug}`](api/api-reference/tts/get-a-text-to-speech-model.md)
+* `SpeechRangeParameter`
+  * Used by [`GET /audio/speech/models`](api/api-reference/tts/list-text-to-speech-models.md), [`GET /audio/speech/models/{author}/{slug}`](api/api-reference/tts/get-a-text-to-speech-model.md)
+* `SpeechReferenceCount`
+  * Used by [`GET /audio/speech/models`](api/api-reference/tts/list-text-to-speech-models.md), [`GET /audio/speech/models/{author}/{slug}`](api/api-reference/tts/get-a-text-to-speech-model.md)
+* `SpeechSupportedParameters`
+  * Used by [`GET /audio/speech/models`](api/api-reference/tts/list-text-to-speech-models.md), [`GET /audio/speech/models/{author}/{slug}`](api/api-reference/tts/get-a-text-to-speech-model.md)
+* `SpeechUnknownParameter`
+  * Used by [`GET /audio/speech/models`](api/api-reference/tts/list-text-to-speech-models.md), [`GET /audio/speech/models/{author}/{slug}`](api/api-reference/tts/get-a-text-to-speech-model.md)
+* `SpeechVoiceParameter`
+  * Used by [`GET /audio/speech/models`](api/api-reference/tts/list-text-to-speech-models.md), [`GET /audio/speech/models/{author}/{slug}`](api/api-reference/tts/get-a-text-to-speech-model.md)
 
 ## Modified schemas
 
@@ -36,6 +66,8 @@ Entries on this page are generated automatically from [OpenAPI specification](ap
   * Used by [`PATCH /workspaces/{id}`](api/api-reference/workspaces/update-a-workspace.md)
 * `STTRequest`: new property `prompt`
   * Used by [`POST /audio/transcriptions`](api/api-reference/stt/create-transcription.md)
+* `VideoGenerationResponse`: example modified; new property `progress`; new property `status_detail`
+  * Used by [`GET /videos/{jobId}`](api/api-reference/video-generation/poll-video-generation-status.md), [`POST /videos`](api/api-reference/video-generation/submit-a-video-generation-request.md)
 
 **November 18, 2026**
 

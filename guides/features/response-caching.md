@@ -46,6 +46,21 @@ response = requests.post(
         "input": "What is the meaning of life?",
     },
 )
+response.raise_for_status()
+
+# Cache-related response headers show whether this was a cache hit or miss
+for name, value in response.headers.items():
+    if "cache" in name.lower():
+        print(f"{name}: {value}")
+
+data = response.json()
+print("usage:", data.get("usage"))
+for item in data["output"]:
+    if item.get("type") == "message":
+        for part in item["content"]:
+            if part.get("type") == "output_text":
+                print(part["text"])
+
 ```
 
 ```typescript title="TypeScript (fetch)" lines theme={null}
@@ -61,6 +76,8 @@ const response = await fetch('https://openrouter.ai/api/v1/responses', {
     input: 'What is the meaning of life?',
   }),
 });
+
+console.log(await response.json());
 ```
 
 ```python title="Python (OpenAI SDK)" lines theme={null}
@@ -78,6 +95,9 @@ response = client.responses.create(
   model="google/gemini-2.5-flash",
   input="What is the meaning of life?",
 )
+
+print(response.model_dump_json(indent=2))
+
 ```
 
 ```typescript title="TypeScript (OpenAI SDK)" lines theme={null}
@@ -95,6 +115,52 @@ const response = await openai.responses.create({
   model: 'google/gemini-2.5-flash',
   input: 'What is the meaning of life?',
 });
+
+console.log(JSON.stringify(response, null, 2));
+
+```
+
+```text title="Output" theme={null}
+{
+  id: "gen-1794949914-l6iMDjqDOF9JmwSUZk11",
+  object: "response",
+  created_at: 1794949914,
+  model: "google/gemini-2.5-flash",
+  status: "completed",
+  completed_at: 1794949919,
+  output: [
+    {
+      id: "msg_tmp_3qrxe7b9xh",
+      type: "message",
+      role: "assistant",
+      status: "completed",
+      content: [Array ...],
+    }
+  ],
+  error: null,
+  incomplete_details: null,
+  access_programs: null,
+  tools: [],
+  tool_choice: "auto",
+  parallel_tool_calls: true,
+  max_output_tokens: null,
+  temperature: 1,
+  top_p: 1,
+  presence_penalty: 0,
+  frequency_penalty: 0,
+  top_logprobs: 0,
+  max_tool_calls: null,
+  metadata: {},
+  background: false,
+  previous_response_id: null,
+  service_tier: "default",
+  truncation: "disabled",
+  store: false,
+  instructions: null,
+  text: {
+    format: {
+      type: "text",
+    },
 ```
 
 The first request results in a cache `MISS`. The response is stored and billed normally:

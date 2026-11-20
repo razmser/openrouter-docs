@@ -11,9 +11,36 @@ To help with prompts that exceed the maximum context size of a model, OpenRouter
 ```typescript lines theme={null}
 {
   plugins: [{ id: "context-compression" }], // Compress prompts that are > context size.
-  messages: [...],
-  model // Works with any model
+  messages, // Your chat messages, e.g. [{ role: "user", content: "..." }]
+  model, // Works with any model
 }
+```
+
+```python title="Python" lines theme={null}
+{
+    "plugins": [{"id": "context-compression"}],  # Compress prompts that are > context size.
+    "messages": messages,  # Your chat messages, e.g. [{"role": "user", "content": "..."}]
+    "model": model,  # Works with any model
+}
+```
+
+```go title="Go" lines theme={null}
+body := map[string]any{
+	"plugins":  []map[string]any{{"id": "context-compression"}}, // Compress prompts that are > context size.
+	"messages": messages, // Your chat messages, e.g. []map[string]string{{"role": "user", "content": "..."}}
+	"model":    model,    // Works with any model
+}
+```
+
+```bash title="cURL" lines theme={null}
+curl https://openrouter.ai/api/v1/chat/completions \
+  -H "Authorization: Bearer $OPENROUTER_API_KEY" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "plugins": [{ "id": "context-compression" }],
+    "messages": [{ "role": "user", "content": "Explain context compression in one sentence." }],
+    "model": "openai/gpt-4o-mini"
+  }'
 ```
 
 This can be useful for situations where perfect recall is not required. The plugin works by removing or truncating messages from the middle of the prompt, until the prompt fits within the model's context window.

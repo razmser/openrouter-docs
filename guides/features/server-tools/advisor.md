@@ -71,6 +71,130 @@ message = next(item for item in reversed(data["output"]) if item["type"] == "mes
 print(next(part["text"] for part in message["content"] if part["type"] == "output_text"))
 ```
 
+```go title="Go" lines theme={null}
+package main
+
+import (
+	"bytes"
+	"encoding/json"
+	"fmt"
+	"log"
+	"net/http"
+	"os"
+)
+
+func main() {
+	body, _ := json.Marshal(map[string]any{
+		"model": "openai/gpt-4o-mini",
+		"input": "Build a concurrent worker pool in Go with graceful shutdown.",
+		"tools": []map[string]any{
+			{
+				"type":       "openrouter:advisor",
+				"parameters": map[string]any{"model": "~anthropic/claude-opus-latest"},
+			},
+		},
+	})
+
+	req, _ := http.NewRequest("POST", "https://openrouter.ai/api/v1/responses", bytes.NewReader(body))
+	req.Header.Set("Authorization", "Bearer "+os.Getenv("OPENROUTER_API_KEY"))
+	req.Header.Set("Content-Type", "application/json")
+
+	resp, err := http.DefaultClient.Do(req)
+	if err != nil {
+		log.Fatal(err)
+	}
+	defer resp.Body.Close()
+
+	var data struct {
+		Output []struct {
+			Type    string          `json:"type"`
+			Content json.RawMessage `json:"content"`
+		} `json:"output"`
+	}
+	if err := json.NewDecoder(resp.Body).Decode(&data); err != nil {
+		log.Fatal(err)
+	}
+
+	for i := len(data.Output) - 1; i >= 0; i-- {
+		if data.Output[i].Type != "message" {
+			continue
+		}
+		var parts []struct {
+			Type string `json:"type"`
+			Text string `json:"text"`
+		}
+		json.Unmarshal(data.Output[i].Content, &parts)
+		for _, p := range parts {
+			if p.Type == "output_text" {
+				fmt.Println(p.Text)
+				break
+			}
+		}
+		break
+	}
+}
+
+```
+
+```bash title="cURL" lines theme={null}
+curl -s https://openrouter.ai/api/v1/responses \
+  -H "Authorization: Bearer $OPENROUTER_API_KEY" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "model": "openai/gpt-4o-mini",
+    "input": "Build a concurrent worker pool in Go with graceful shutdown.",
+    "tools": [
+      {
+        "type": "openrouter:advisor",
+        "parameters": { "model": "~anthropic/claude-opus-latest" }
+      }
+    ]
+  }' | jq -r '[.output[] | select(.type == "message")] | last | .content[] | select(.type == "output_text") | .text'
+
+```
+
+````text title="Output" theme={null}
+To build a concurrent worker pool in Go with graceful shutdown, you can follow these steps:
+
+1. **Define the Worker Pool Structure**:
+   Create a struct that will manage the pool of workers, jobs, and signals for shutdown.
+
+2. **Worker Functionality**:
+   Each worker should process jobs from a shared channel, which the main routine provides.
+
+3. **Job Handling**:
+   The jobs should also come from a channel, allowing workers to take tasks as they become available.
+
+4. **Graceful Shutdown**:
+   Use signals to listen for termination requests and ensure that all workers finish processing current jobs before shutting down.
+
+Here's an example implementation:
+
+```go
+package main
+
+import (
+    "fmt"
+    "os"
+    "os/signal"
+    "sync"
+    "syscall"
+    "time"
+)
+
+// Job represents a task to be processed
+type Job struct {
+    ID int
+}
+
+// Worker is a struct that processes jobs
+type Worker struct {
+    WorkerPool chan chan Job
+    JobChannel chan Job
+    Quit       chan bool
+}
+````
+
 ## Choosing the advisor model
 
 The advisor model is resolved with the following precedence:
@@ -175,7 +299,7 @@ This works on all three APIs; the only requirement is that you **replay the advi
 * **Chat Completions**: include the assistant message's advisor `tool_calls` and the paired `role: "tool"` result messages from prior turns.
 * **Anthropic Messages API**: include the assistant message's advisor `server_tool_use` and `advisor_tool_result` content blocks from prior turns.
 
-Memory is **per advisor**: in a multi-advisor setup, each advisor recalls only its own prior exchanges. A "reviewer" advisor never sees what the "architect" was told. There is no fixed limit on the number of replayed exchanges; if the history exceeds the advisor model's context window, it is compressed with the [middle-out transform](../message-transforms.md), which trims the middle of the conversation and keeps the oldest and newest exchanges.
+Memory is **per advisor**: in a multi-advisor setup, each advisor recalls only its own prior exchanges. A "reviewer" advisor never sees what the "architect" was told. There is no fixed limit on the number of replayed exchanges; if the history exceeds the advisor model's context window, it is compressed with the [middle-out transform](https://openrouter.ai/guides/features/message-transforms), which trims the middle of the conversation and keeps the oldest and newest exchanges.
 
 Memory applies to prompt-mode consultations. With `forward_transcript: true` the advisor already sees the full parent conversation, so prior exchanges are not separately replayed.
 

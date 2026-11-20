@@ -165,6 +165,8 @@
     "api/api-reference/tools/get-a-server-tool.md": "https://openrouter.ai/docs/api/api-reference/tools/get-a-server-tool.md",
     "api/api-reference/tools/list-server-tools.md": "https://openrouter.ai/docs/api/api-reference/tools/list-server-tools.md",
     "api/api-reference/tts/create-speech.md": "https://openrouter.ai/docs/api/api-reference/tts/create-speech.md",
+    "api/api-reference/tts/get-a-text-to-speech-model.md": "https://openrouter.ai/docs/api/api-reference/tts/get-a-text-to-speech-model.md",
+    "api/api-reference/tts/list-text-to-speech-models.md": "https://openrouter.ai/docs/api/api-reference/tts/list-text-to-speech-models.md",
     "api/api-reference/vault/copy-workspace-secrets-to-an-intern.md": "https://openrouter.ai/docs/api/api-reference/vault/copy-workspace-secrets-to-an-intern.md",
     "api/api-reference/vault/delete-a-workspace-secret.md": "https://openrouter.ai/docs/api/api-reference/vault/delete-a-workspace-secret.md",
     "api/api-reference/vault/delete-an-intern-secret.md": "https://openrouter.ai/docs/api/api-reference/vault/delete-an-intern-secret.md",
