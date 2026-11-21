@@ -163,9 +163,9 @@ Configure web search behavior:
 
 See the [Web Search plugin docs](../../guides/features/plugins/web-search.md) for full details on engine selection, domain filter compatibility, and pricing.
 
-## X Search (SpaceXAI only)
+## X Search (SpaceXSI only)
 
-On SpaceXAI models (e.g. `x-ai/grok-4.3`), web search sends only SpaceXAI's `web_search` tool. Add an `x_search` object to the plugin to also search X/Twitter. An empty object enables it with no filters:
+On SpaceXSI models (e.g. `x-ai/grok-4.3`), web search sends only SpaceXSI's `web_search` tool. Add an `x_search` object to the plugin to also search X/Twitter. An empty object enables it with no filters:
 
 ```json lines theme={null}
 {
@@ -184,7 +184,7 @@ On SpaceXAI models (e.g. `x-ai/grok-4.3`), web search sends only SpaceXAI's `web
 }
 ```
 
-The same object is accepted as `parameters.x_search` on the [`openrouter:web_search` server tool](../../guides/features/server-tools/web-search.md#x-search-spacexai). The legacy top-level `x_search_filter` request field still enables X search for backward compatibility. X search is opt-in because SpaceXAI bills it per item returned starting September 21, 2026 at 12:00 PM PT ($5 per 1,000 posts fetched and $10 per 1,000 user profiles fetched, replacing \$5 per 1,000 tool calls).
+The same object is accepted as `parameters.x_search` on the [`openrouter:web_search` server tool](../../guides/features/server-tools/web-search.md#x-search-spacexsi). The legacy top-level `x_search_filter` request field still enables X search for backward compatibility. X search is opt-in because SpaceXSI bills it per item returned starting September 21, 2026 at 12:00 PM PT ($5 per 1,000 posts fetched and $10 per 1,000 user profiles fetched, replacing \$5 per 1,000 tool calls).
 
 | Parameter | Type | Description |
 | - | - | - |
@@ -197,7 +197,7 @@ The same object is accepted as `parameters.x_search` on the [`openrouter:web_sea
 
 > [!WARNING]
 >
-> `allowed_x_handles` and `excluded_x_handles` are mutually exclusive. See the [Web Search plugin docs](../../guides/features/plugins/web-search.md#x-search-spacexai-only) for full details.
+> `allowed_x_handles` and `excluded_x_handles` are mutually exclusive. See the [Web Search plugin docs](../../guides/features/plugins/web-search.md#x-search-spacexsi-only) for full details.
 
 ## Structured Message with Web Search
 

@@ -221,7 +221,7 @@ For full details on how requests are routed, which features are available on reg
 
 When [Zero Data Retention](zdr.md) is enforced, OpenRouter routes model inference only to provider endpoints that have a Zero Data Retention policy. ZDR enforcement does not apply to plugins, server tools, or their backends, which follow their own retention policies. See [Privacy and regional availability](server-tools.md#privacy-and-regional-availability) for each server tool's execution path and backend policy.
 
-ZDR can be enforced per model group (Anthropic, OpenAI, Google, SpaceXAI, and all other models) in your [privacy settings](https://openrouter.ai/settings/privacy), via [guardrails](guardrails.md), or per-request:
+ZDR can be enforced per model group (Anthropic, OpenAI, Google, SpaceXSI, and all other models) in your [privacy settings](https://openrouter.ai/settings/privacy), via [guardrails](guardrails.md), or per-request:
 
 ```json lines theme={null}
 {

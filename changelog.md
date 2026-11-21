@@ -8,12 +8,131 @@
 
 Entries on this page are generated automatically from [OpenAPI specification](api_reference/overview.md) diffs when releases ship. Breaking changes are reviewed by a human before publication. See [API Versioning](api_reference/versioning.md) for what counts as a breaking change and how deprecations are announced. Endpoint paths are shown relative to the API base URL (`https://openrouter.ai/api/v1`).
 
+**November 20, 2026**
+
+## Breaking changes
+
+* `Workspace`: required `default_image_model` property removedAction required
+
+  **4 endpoints using this schema**
+
+  * [`GET /workspaces`](api/api-reference/workspaces/list-workspaces.md)
+  * [`GET /workspaces/{id}`](api/api-reference/workspaces/get-a-workspace.md)
+  * [`PATCH /workspaces/{id}`](api/api-reference/workspaces/update-a-workspace.md)
+  * [`POST /workspaces`](api/api-reference/workspaces/create-a-workspace.md)
+* `Workspace`: required `default_provider_sort` property removedAction required
+
+  **4 endpoints using this schema**
+
+  * [`GET /workspaces`](api/api-reference/workspaces/list-workspaces.md)
+  * [`GET /workspaces/{id}`](api/api-reference/workspaces/get-a-workspace.md)
+  * [`PATCH /workspaces/{id}`](api/api-reference/workspaces/update-a-workspace.md)
+  * [`POST /workspaces`](api/api-reference/workspaces/create-a-workspace.md)
+* `Workspace`: required `default_text_model` property removedAction required
+
+  **4 endpoints using this schema**
+
+  * [`GET /workspaces`](api/api-reference/workspaces/list-workspaces.md)
+  * [`GET /workspaces/{id}`](api/api-reference/workspaces/get-a-workspace.md)
+  * [`PATCH /workspaces/{id}`](api/api-reference/workspaces/update-a-workspace.md)
+  * [`POST /workspaces`](api/api-reference/workspaces/create-a-workspace.md)
+* `Workspace`: required `io_logging_api_key_ids` property removedAction required
+
+  **4 endpoints using this schema**
+
+  * [`GET /workspaces`](api/api-reference/workspaces/list-workspaces.md)
+  * [`GET /workspaces/{id}`](api/api-reference/workspaces/get-a-workspace.md)
+  * [`PATCH /workspaces/{id}`](api/api-reference/workspaces/update-a-workspace.md)
+  * [`POST /workspaces`](api/api-reference/workspaces/create-a-workspace.md)
+* `Workspace`: required `io_logging_sampling_rate` property removedAction required
+
+  **4 endpoints using this schema**
+
+  * [`GET /workspaces`](api/api-reference/workspaces/list-workspaces.md)
+  * [`GET /workspaces/{id}`](api/api-reference/workspaces/get-a-workspace.md)
+  * [`PATCH /workspaces/{id}`](api/api-reference/workspaces/update-a-workspace.md)
+  * [`POST /workspaces`](api/api-reference/workspaces/create-a-workspace.md)
+* `Workspace`: required `is_data_discount_logging_enabled` property removedAction required
+
+  **4 endpoints using this schema**
+
+  * [`GET /workspaces`](api/api-reference/workspaces/list-workspaces.md)
+  * [`GET /workspaces/{id}`](api/api-reference/workspaces/get-a-workspace.md)
+  * [`PATCH /workspaces/{id}`](api/api-reference/workspaces/update-a-workspace.md)
+  * [`POST /workspaces`](api/api-reference/workspaces/create-a-workspace.md)
+* `Workspace`: required `is_observability_broadcast_enabled` property removedAction required
+
+  **4 endpoints using this schema**
+
+  * [`GET /workspaces`](api/api-reference/workspaces/list-workspaces.md)
+  * [`GET /workspaces/{id}`](api/api-reference/workspaces/get-a-workspace.md)
+  * [`PATCH /workspaces/{id}`](api/api-reference/workspaces/update-a-workspace.md)
+  * [`POST /workspaces`](api/api-reference/workspaces/create-a-workspace.md)
+* `Workspace`: required `is_observability_io_logging_enabled` property removedAction required
+
+  **4 endpoints using this schema**
+
+  * [`GET /workspaces`](api/api-reference/workspaces/list-workspaces.md)
+  * [`GET /workspaces/{id}`](api/api-reference/workspaces/get-a-workspace.md)
+  * [`PATCH /workspaces/{id}`](api/api-reference/workspaces/update-a-workspace.md)
+  * [`POST /workspaces`](api/api-reference/workspaces/create-a-workspace.md)
+
+## Modified endpoints
+
+* [`PUT /workspaces/{workspace_ref}/budgets/{interval}`](api/api-reference/workspaces/create-or-update-a-workspace-budget.md): description updated
+* [`GET /activity`](api/api-reference/analytics/get-user-activity-grouped-by-endpoint.md): description updated
+* [`GET /analytics/meta`](api/api-reference/analytics/get-available-analytics-metrics-and-dimensions.md): description updated
+* [`POST /analytics/query`](api/api-reference/analytics/query-analytics-data.md): description updated
+* [`POST /observability/destinations`](api/api-reference/observability/create-an-observability-destination.md): description updated
+* [`PATCH /observability/destinations/{id}`](api/api-reference/observability/update-an-observability-destination.md): description updated
+
+## Modified schemas
+
+* `PublicEndpoint`: description updated
+  * Used by [`GET /endpoints/zdr`](api/api-reference/endpoints/preview-the-impact-of-zdr-on-the-available-endpoints.md), [`GET /models/{author}/{slug}/endpoints`](api/api-reference/endpoints/list-all-endpoints-for-a-model.md)
+* `ChatWebSearchShorthand`: description updated
+  * Used by [`POST /chat/completions`](api/api-reference/chat/create-a-chat-completion.md), [`POST /presets/{slug}/chat/completions`](api/api-reference/presets/create-a-preset-from-a-chat-completions-request-body.md)
+* `WebSearchConfig`: description updated
+
+  **4 endpoints using this schema**
+
+  * [`POST /chat/completions`](api/api-reference/chat/create-a-chat-completion.md)
+  * [`POST /messages`](api/api-reference/anthropic-messages/create-a-message.md)
+  * [`POST /presets/{slug}/chat/completions`](api/api-reference/presets/create-a-preset-from-a-chat-completions-request-body.md)
+  * [`POST /presets/{slug}/messages`](api/api-reference/presets/create-a-preset-from-a-messages-request-body.md)
+* `WebSearchServerToolConfig`: description updated
+  * Used by [`POST /presets/{slug}/responses`](api/api-reference/presets/create-a-preset-from-a-responses-request-body.md), [`POST /responses`](api/api-reference/responses/create-a-response.md)
+* `XSearchOptions`: description updated
+
+  **8 endpoints using this schema**
+
+  * [`GET /batches/{id}`](api/api-reference/batch/get-a-batch.md)
+  * [`POST /batches`](api/api-reference/batch/create-a-batch.md)
+  * [`POST /chat/completions`](api/api-reference/chat/create-a-chat-completion.md)
+  * [`POST /messages`](api/api-reference/anthropic-messages/create-a-message.md)
+  * [`POST /presets/{slug}/chat/completions`](api/api-reference/presets/create-a-preset-from-a-chat-completions-request-body.md)
+  * [`POST /presets/{slug}/messages`](api/api-reference/presets/create-a-preset-from-a-messages-request-body.md)
+  * [`POST /presets/{slug}/responses`](api/api-reference/presets/create-a-preset-from-a-responses-request-body.md)
+  * [`POST /responses`](api/api-reference/responses/create-a-response.md)
+* `Workspace`: description updated
+
+  **4 endpoints using this schema**
+
+  * [`GET /workspaces`](api/api-reference/workspaces/list-workspaces.md)
+  * [`GET /workspaces/{id}`](api/api-reference/workspaces/get-a-workspace.md)
+  * [`PATCH /workspaces/{id}`](api/api-reference/workspaces/update-a-workspace.md)
+  * [`POST /workspaces`](api/api-reference/workspaces/create-a-workspace.md)
+
 **November 19, 2026**
 
 ## Breaking changes
 
 * `ImageGenerationResponse.data`: required `b64_json` property removedAction required
   * Used by [`POST /images`](api/api-reference/images/generate-an-image.md)
+* `CreatePrivateEndpointRequest.declared_parameters`: maxItems changed from `25` to `26`No action needed
+  * Used by [`POST /private-endpoints`](api/api-reference/private-endpoints/create-a-private-endpoint.md)
+* `UpdatePrivateEndpointRequest.declared_parameters`: maxItems changed from `25` to `26`No action needed
+  * Used by [`PATCH /private-endpoints/{id}`](api/api-reference/private-endpoints/update-a-private-endpoint.md)
 
 ## New endpoints
 
@@ -68,6 +187,22 @@ Entries on this page are generated automatically from [OpenAPI specification](ap
   * Used by [`POST /audio/transcriptions`](api/api-reference/stt/create-transcription.md)
 * `VideoGenerationResponse`: example modified; new property `progress`; new property `status_detail`
   * Used by [`GET /videos/{jobId}`](api/api-reference/video-generation/poll-video-generation-status.md), [`POST /videos`](api/api-reference/video-generation/submit-a-video-generation-request.md)
+* `Parameter`: enum property\_added
+
+  **6 endpoints using this schema**
+
+  * [`GET /embeddings/models`](api/api-reference/embeddings/list-all-embeddings-models.md)
+  * [`GET /endpoints/zdr`](api/api-reference/endpoints/preview-the-impact-of-zdr-on-the-available-endpoints.md)
+  * [`GET /model/{author}/{slug}`](api/api-reference/models/get-a-model-by-its-slug.md)
+  * [`GET /models`](api/api-reference/models/list-all-models-and-their-properties.md)
+  * [`GET /models/user`](api/api-reference/models/list-models-filtered-by-user-provider-preferences-privacy-settings-and-guardrails.md)
+  * [`GET /models/{author}/{slug}/endpoints`](api/api-reference/endpoints/list-all-endpoints-for-a-model.md)
+* `PrivateEndpointDeclaredParameter`: enum property\_added
+  * Used by [`PATCH /private-endpoints/{id}`](api/api-reference/private-endpoints/update-a-private-endpoint.md), [`POST /private-endpoints`](api/api-reference/private-endpoints/create-a-private-endpoint.md)
+* `PrivateEndpointSettings`: enum property\_added
+  * Used by [`GET /private-endpoints/{id}`](api/api-reference/private-endpoints/get-a-private-endpoint.md), [`PATCH /private-endpoints/{id}`](api/api-reference/private-endpoints/update-a-private-endpoint.md)
+* `UpdatePrivateEndpointSettingsRequest`: enum property\_added
+  * Used by [`PATCH /private-endpoints/{id}`](api/api-reference/private-endpoints/update-a-private-endpoint.md), [`POST /private-endpoints`](api/api-reference/private-endpoints/create-a-private-endpoint.md)
 
 **November 18, 2026**
 

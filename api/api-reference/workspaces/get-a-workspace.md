@@ -338,6 +338,9 @@ components:
         - error
       type: object
     Workspace:
+      description: >-
+        Workspace metadata. Configuration fields are omitted without permission
+        to view workspace settings.
       example:
         created_at: '2025-08-24T10:30:00Z'
         created_by: user_abc123
@@ -419,13 +422,15 @@ components:
         include_byok_in_budgets:
           description: >-
             Whether BYOK (bring-your-own-key) spend counts toward this
-            workspace's budgets. Set it via the workspace budget endpoints.
+            workspace's budgets. Omitted without settings and budget visibility.
+            Set it via the workspace budget endpoints.
           example: false
           type: boolean
         io_logging_api_key_ids:
           description: >-
-            Optional array of API key IDs to filter I/O logging. Null means all
-            keys are logged.
+            API key IDs used to filter I/O logging. Null means all keys are
+            logged. Omitted without access to workspace settings and API key
+            identifiers.
           example: null
           items:
             type: integer
@@ -471,14 +476,6 @@ components:
         - name
         - slug
         - description
-        - default_text_model
-        - default_image_model
-        - default_provider_sort
-        - is_observability_io_logging_enabled
-        - is_observability_broadcast_enabled
-        - is_data_discount_logging_enabled
-        - io_logging_sampling_rate
-        - io_logging_api_key_ids
         - created_at
         - updated_at
         - created_by

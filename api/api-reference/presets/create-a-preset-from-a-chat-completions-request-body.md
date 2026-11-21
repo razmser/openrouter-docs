@@ -2855,9 +2855,9 @@ components:
     XSearchOptions:
       additionalProperties: false
       description: >-
-        Enable SpaceXAI X (Twitter) search alongside native web search, with
-        optional filters. Only applies to SpaceXAI endpoints with native search;
-        omit to search the web only. X search is billed separately by SpaceXAI,
+        Enable SpaceXSI X (Twitter) search alongside native web search, with
+        optional filters. Only applies to SpaceXSI endpoints with native search;
+        omit to search the web only. X search is billed separately by SpaceXSI,
         per post and per user profile fetched.
       example:
         allowed_x_handles:
@@ -3929,7 +3929,7 @@ components:
           description: >-
             Limit search results to these domains. Supported by Exa, Firecrawl,
             Parallel, Perplexity, and most native providers (Anthropic, OpenAI,
-            SpaceXAI). Cannot be used with excluded_domains.
+            SpaceXSI). Cannot be used with excluded_domains.
           items:
             type: string
           type: array
@@ -3938,7 +3938,7 @@ components:
         excluded_domains:
           description: >-
             Exclude search results from these domains. Supported by Exa,
-            Firecrawl, Parallel, Perplexity, Anthropic, OpenAI, and SpaceXAI.
+            Firecrawl, Parallel, Perplexity, Anthropic, OpenAI, and SpaceXSI.
             Cannot be used with allowed_domains.
           items:
             type: string
@@ -4977,7 +4977,7 @@ components:
           description: >-
             Limit search results to these domains. Supported by Exa, Firecrawl,
             Parallel, Perplexity, and most native providers (Anthropic, OpenAI,
-            SpaceXAI). Cannot be used with excluded_domains.
+            SpaceXSI). Cannot be used with excluded_domains.
           items:
             type: string
           type: array
@@ -4986,7 +4986,7 @@ components:
         excluded_domains:
           description: >-
             Exclude search results from these domains. Supported by Exa,
-            Firecrawl, Parallel, Perplexity, Anthropic, OpenAI, and SpaceXAI.
+            Firecrawl, Parallel, Perplexity, Anthropic, OpenAI, and SpaceXSI.
             Cannot be used with allowed_domains.
           items:
             type: string

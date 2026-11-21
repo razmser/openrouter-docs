@@ -2628,7 +2628,7 @@ When `zdr` is set to `true`, the request will only be routed to ZDR endpoints. S
 >
 > **Per-Model-Group and Account-Wide ZDR**
 >
-> ZDR can also be enforced per model group (Anthropic, OpenAI, Google, SpaceXAI, and all other models) in your [privacy settings](https://openrouter.ai/settings/privacy) or via [guardrails](../features/guardrails.md). The per-request `zdr` parameter operates as an "OR" with your account-wide and guardrail ZDR settings — if any of them is enabled, ZDR enforcement is applied. The request-level parameter can only ensure ZDR is enabled, not override account-wide or guardrail enforcement. See [Zero Data Retention](../features/zdr.md#per-model-group-zdr-enforcement) for details.
+> ZDR can also be enforced per model group (Anthropic, OpenAI, Google, SpaceXSI, and all other models) in your [privacy settings](https://openrouter.ai/settings/privacy) or via [guardrails](../features/guardrails.md). The per-request `zdr` parameter operates as an "OR" with your account-wide and guardrail ZDR settings — if any of them is enabled, ZDR enforcement is applied. The request-level parameter can only ensure ZDR is enabled, not override account-wide or guardrail enforcement. See [Zero Data Retention](../features/zdr.md#per-model-group-zdr-enforcement) for details.
 
 ### Example: Enforcing ZDR for a specific request
 

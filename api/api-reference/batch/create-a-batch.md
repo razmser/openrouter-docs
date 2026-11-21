@@ -8166,9 +8166,9 @@ components:
     XSearchOptions:
       additionalProperties: false
       description: >-
-        Enable SpaceXAI X (Twitter) search alongside native web search, with
-        optional filters. Only applies to SpaceXAI endpoints with native search;
-        omit to search the web only. X search is billed separately by SpaceXAI,
+        Enable SpaceXSI X (Twitter) search alongside native web search, with
+        optional filters. Only applies to SpaceXSI endpoints with native search;
+        omit to search the web only. X search is billed separately by SpaceXSI,
         per post and per user profile fetched.
       example:
         allowed_x_handles:

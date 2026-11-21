@@ -4,7 +4,7 @@
 
 # Get available analytics metrics and dimensions
 
-> Returns the available metrics, dimensions, filter operators, and granularities for the analytics query endpoint. Workspace-scoped management keys are accepted. [Management key](../../../guides/overview/auth/management-api-keys.md) required.
+> Returns the available metrics, dimensions, filter operators, and granularities for the analytics query endpoint. Custom access requires an organization-scoped key with `analytics:view`. Workspace-scoped keys with base Read Only or Read Write access are also accepted. [Management key](../../../guides/overview/auth/management-api-keys.md) required.
 
 
 
@@ -143,8 +143,9 @@ paths:
       summary: Get available analytics metrics and dimensions
       description: >-
         Returns the available metrics, dimensions, filter operators, and
-        granularities for the analytics query endpoint. Workspace-scoped
-        management keys are accepted. [Management
+        granularities for the analytics query endpoint. Custom access requires
+        an organization-scoped key with `analytics:view`. Workspace-scoped keys
+        with base Read Only or Read Write access are also accepted. [Management
         key](/docs/guides/overview/auth/management-api-keys) required.
       operationId: getAnalyticsMeta
       responses:

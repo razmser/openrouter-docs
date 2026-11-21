@@ -4,7 +4,7 @@
 
 # Start a SCIM directory sync
 
-> Start a SCIM directory sync. Disabled: no API key can perform this write, including management keys. Use the organization settings in the dashboard, which require step-up verification. A valid management key for an organization with SCIM access receives 403; an invalid key still receives 401 and an organization without SCIM access receives 404.
+> Start a SCIM directory sync. [Management key](../../../guides/overview/auth/management-api-keys.md) required.
 
 
 
@@ -142,11 +142,8 @@ paths:
         - SCIM
       summary: Start a SCIM directory sync
       description: >-
-        Start a SCIM directory sync. Disabled: no API key can perform this
-        write, including management keys. Use the organization settings in the
-        dashboard, which require step-up verification. A valid management key
-        for an organization with SCIM access receives 403; an invalid key still
-        receives 401 and an organization without SCIM access receives 404.
+        Start a SCIM directory sync. [Management
+        key](/docs/guides/overview/auth/management-api-keys) required.
       operationId: createScimSyncJob
       responses:
         '202':
@@ -154,9 +151,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/CreateScimSyncJobResponse'
-          description: >-
-            SCIM directory sync job queued. Not returned: this operation is
-            disabled. The schema is kept for SDK compatibility.
+          description: SCIM directory sync job queued
           headers:
             Location:
               description: Poll URL for the created sync job.
@@ -180,12 +175,10 @@ paths:
               example:
                 error:
                   code: 403
-                  message: >-
-                    Management keys cannot change SCIM group mappings or start
-                    syncs. Use the organization settings in the dashboard.
+                  message: Only management keys can perform this operation
               schema:
                 $ref: '#/components/schemas/ForbiddenResponse'
-          description: Forbidden - SCIM writes are dashboard-only
+          description: Forbidden - Authentication successful but insufficient permissions
         '404':
           content:
             application/json:
@@ -206,7 +199,6 @@ paths:
               schema:
                 $ref: '#/components/schemas/InternalServerResponse'
           description: Internal Server Error - Unexpected server error
-      deprecated: true
 components:
   schemas:
     CreateScimSyncJobResponse:
