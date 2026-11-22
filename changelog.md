@@ -8,6 +8,76 @@
 
 Entries on this page are generated automatically from [OpenAPI specification](api_reference/overview.md) diffs when releases ship. Breaking changes are reviewed by a human before publication. See [API Versioning](api_reference/versioning.md) for what counts as a breaking change and how deprecations are announced. Endpoint paths are shown relative to the API base URL (`https://openrouter.ai/api/v1`).
 
+**November 21, 2026**
+
+## Modified endpoints
+
+* [`DELETE /scim/group-mappings/{id}`](api/api-reference/scim/delete-a-scim-group-mapping.md): deprecated property\_removed; description updated; response schema updated
+* [`PATCH /scim/group-mappings/{id}`](api/api-reference/scim/update-a-scim-group-mapping.md): deprecated property\_removed; description updated; response schema updated
+* [`POST /scim/sync-jobs`](api/api-reference/scim/start-a-scim-directory-sync.md): deprecated property\_removed; description updated; response schema updated
+* [`GET /byok`](api/api-reference/byok/list-byok-provider-credentials.md): parameter `provider` updated
+* [`POST /scim/group-mappings`](api/api-reference/scim/create-a-scim-group-mapping.md): deprecated property\_removed; description updated; response schema updated
+* [`DELETE /scim/group-mappings/{id}`](api/api-reference/scim/delete-a-scim-group-mapping.md): description updated
+* [`PATCH /scim/group-mappings/{id}`](api/api-reference/scim/update-a-scim-group-mapping.md): description updated
+
+## Modified schemas
+
+* `BYOKProviderSlug`: enum property\_added
+
+  **4 endpoints using this schema**
+
+  * [`GET /byok`](api/api-reference/byok/list-byok-provider-credentials.md)
+  * [`GET /byok/{id}`](api/api-reference/byok/get-a-byok-provider-credential.md)
+  * [`PATCH /byok/{id}`](api/api-reference/byok/update-a-byok-provider-credential.md)
+  * [`POST /byok`](api/api-reference/byok/create-a-byok-provider-credential.md)
+* `ImageGenerationRequest`: enum property\_added
+  * Used by [`POST /images`](api/api-reference/images/generate-an-image.md)
+* `MessagesStartEvent`: property `provider` updated
+  * Used by [`POST /messages`](api/api-reference/anthropic-messages/create-a-message.md)
+* `ProviderName`: enum property\_added
+
+  **18 endpoints using this schema**
+
+  * [`GET /endpoints/zdr`](api/api-reference/endpoints/preview-the-impact-of-zdr-on-the-available-endpoints.md)
+  * [`GET /models/{author}/{slug}/endpoints`](api/api-reference/endpoints/list-all-endpoints-for-a-model.md)
+  * [`POST /api/alpha/decisions`](api/api-reference/alphadecisions/submit-a-decisions-request.md)
+  * [`POST /api/alpha/extractions`](api/api-reference/alphaextractions/submit-an-extractions-request.md)
+  * [`POST /audio/speech`](api/api-reference/tts/create-speech.md)
+  * [`POST /audio/transcriptions`](api/api-reference/stt/create-transcription.md)
+  * [`POST /batches`](api/api-reference/batch/create-a-batch.md)
+  * [`POST /chat/completions`](api/api-reference/chat/create-a-chat-completion.md)
+  * [`POST /embeddings`](api/api-reference/embeddings/submit-an-embedding-request.md)
+  * [`POST /images`](api/api-reference/images/generate-an-image.md)
+  * [`POST /messages`](api/api-reference/anthropic-messages/create-a-message.md)
+  * [`POST /presets/{slug}/chat/completions`](api/api-reference/presets/create-a-preset-from-a-chat-completions-request-body.md)
+  * [`POST /presets/{slug}/messages`](api/api-reference/presets/create-a-preset-from-a-messages-request-body.md)
+  * [`POST /presets/{slug}/responses`](api/api-reference/presets/create-a-preset-from-a-responses-request-body.md)
+  * [`POST /rerank`](api/api-reference/rerank/submit-a-rerank-request.md)
+  * [`POST /responses`](api/api-reference/responses/create-a-response.md)
+  * [`POST /systemone`](api/api-reference/systemone/submit-a-system-one-request.md)
+  * [`POST /videos`](api/api-reference/video-generation/submit-a-video-generation-request.md)
+* `ProviderOptions`: new property `pareto-inference`
+
+  **15 endpoints using this schema**
+
+  * [`POST /api/alpha/decisions`](api/api-reference/alphadecisions/submit-a-decisions-request.md)
+  * [`POST /api/alpha/extractions`](api/api-reference/alphaextractions/submit-an-extractions-request.md)
+  * [`POST /audio/speech`](api/api-reference/tts/create-speech.md)
+  * [`POST /audio/transcriptions`](api/api-reference/stt/create-transcription.md)
+  * [`POST /chat/completions`](api/api-reference/chat/create-a-chat-completion.md)
+  * [`POST /embeddings`](api/api-reference/embeddings/submit-an-embedding-request.md)
+  * [`POST /images`](api/api-reference/images/generate-an-image.md)
+  * [`POST /messages`](api/api-reference/anthropic-messages/create-a-message.md)
+  * [`POST /presets/{slug}/chat/completions`](api/api-reference/presets/create-a-preset-from-a-chat-completions-request-body.md)
+  * [`POST /presets/{slug}/messages`](api/api-reference/presets/create-a-preset-from-a-messages-request-body.md)
+  * [`POST /presets/{slug}/responses`](api/api-reference/presets/create-a-preset-from-a-responses-request-body.md)
+  * [`POST /rerank`](api/api-reference/rerank/submit-a-rerank-request.md)
+  * [`POST /responses`](api/api-reference/responses/create-a-response.md)
+  * [`POST /systemone`](api/api-reference/systemone/submit-a-system-one-request.md)
+  * [`POST /videos`](api/api-reference/video-generation/submit-a-video-generation-request.md)
+* `ProviderResponse`: enum property\_added
+  * Used by [`GET /generation`](api/api-reference/generations/get-request-&-usage-metadata-for-a-generation.md)
+
 **November 20, 2026**
 
 ## Breaking changes

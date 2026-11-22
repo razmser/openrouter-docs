@@ -1558,6 +1558,7 @@ components:
         - Parallel
         - Parasail
         - ParetoAlpha
+        - Pareto Inference
         - Particle AI
         - Pearl Research
         - Poolside
@@ -1925,6 +1926,9 @@ components:
           additionalProperties: {}
           type: object
         pareto-alpha:
+          additionalProperties: {}
+          type: object
+        pareto-inference:
           additionalProperties: {}
           type: object
         particle-ai:

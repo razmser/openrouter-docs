@@ -442,6 +442,7 @@ components:
             - 1.5K
             - 2K
             - 4K
+            - 8K
           example: 2K
           type: string
         response_format:
@@ -1583,6 +1584,7 @@ components:
         - Parallel
         - Parasail
         - ParetoAlpha
+        - Pareto Inference
         - Particle AI
         - Pearl Research
         - Poolside
@@ -1950,6 +1952,9 @@ components:
           additionalProperties: {}
           type: object
         pareto-alpha:
+          additionalProperties: {}
+          type: object
+        pareto-inference:
           additionalProperties: {}
           type: object
         particle-ai:

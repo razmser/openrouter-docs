@@ -10,6 +10,8 @@
 
 OpenAI's [GPT-6 family](https://developers.openai.com/api/docs/guides/latest-model) ships in three tiers, each with a pro variant. All three can keep working after they call a tool, and all three accept a reasoning effort change partway through a conversation. On earlier OpenAI models every tool call paused the turn until your application returned the result, and effort was a request-level setting. Raising it for one hard turn and lowering it on the next changed the request prefix and invalidated the prompt cache for the whole conversation.
 
+This guide also applies to GPT-6.1 Sol and Terra ([`openai/gpt-6.1-sol`](https://openrouter.ai/openai/gpt-6.1-sol), [`openai/gpt-6.1-terra`](https://openrouter.ai/openai/gpt-6.1-terra)) and GPT-6.2 Astra and Sol ([`openai/gpt-6.2-astra`](https://openrouter.ai/openai/gpt-6.2-astra), [`openai/gpt-6.2-sol`](https://openrouter.ai/openai/gpt-6.2-sol)). OpenRouter sends a request that uses these features only to endpoints that support it and rejects it with a 400 otherwise.
+
 | Model | Tier |
 | - | - |
 | `openai/gpt-6-astra` | Highest capability |
@@ -31,7 +33,7 @@ The examples below use `openai/gpt-6-astra` for async tools and `openai/gpt-6-so
 
 > [!NOTE]
 >
-> OpenAI supports `configuration_update` on the standard GPT-6 models (`gpt-6-astra`, `gpt-6-sol`, `gpt-6-luna`) in single-agent mode only. In pro mode (`reasoning.mode: "pro"`, or a `-pro` slug such as `openai/gpt-6-sol-pro`) OpenAI rejects the item with `The 'configuration_update' item type is not supported with pro or tournament models.` Keep mid-conversation effort changes on the standard models. On OpenRouter, a request that carries an update is routed only to endpoints that accept it, and a request for a model that does not support it is rejected with a 400 rather than sent with the update silently dropped.
+> OpenAI supports `configuration_update` on the standard GPT-6 models (`gpt-6-astra`, `gpt-6-sol`, `gpt-6-luna`) and on GPT-6.1 Sol and Terra, in single-agent mode only. Support on the GPT-6.2 models has not been confirmed yet. In pro mode (`reasoning.mode: "pro"`, or a `-pro` slug such as `openai/gpt-6-sol-pro`) OpenAI rejects the item with `The 'configuration_update' item type is not supported with pro or tournament models.` Keep mid-conversation effort changes on the standard models. On OpenRouter, a request that carries an update is routed only to endpoints that accept it, and a request for a model that does not support it is rejected with a 400 rather than sent with the update silently dropped.
 
 ## Async Tool Calling
 

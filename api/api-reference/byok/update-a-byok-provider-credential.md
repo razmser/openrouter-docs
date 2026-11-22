@@ -922,6 +922,7 @@ components:
         - parallel
         - parasail
         - pareto-alpha
+        - pareto-inference
         - particle-ai
         - pearl-research
         - perceptron

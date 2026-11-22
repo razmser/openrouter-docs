@@ -4,7 +4,7 @@
 
 # Update a SCIM group mapping
 
-> Update a SCIM group mapping role. [Management key](../../../guides/overview/auth/management-api-keys.md) required.
+> Update a SCIM group mapping role. Assigning the `admin` role is dashboard-only and returns 403 for management keys. [Management key](../../../guides/overview/auth/management-api-keys.md) required.
 
 
 
@@ -142,7 +142,8 @@ paths:
         - SCIM
       summary: Update a SCIM group mapping
       description: >-
-        Update a SCIM group mapping role. [Management
+        Update a SCIM group mapping role. Assigning the `admin` role is
+        dashboard-only and returns 403 for management keys. [Management
         key](/docs/guides/overview/auth/management-api-keys) required.
       operationId: updateScimGroupMapping
       parameters:

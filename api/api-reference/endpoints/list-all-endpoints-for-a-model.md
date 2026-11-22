@@ -1168,6 +1168,7 @@ components:
         - Parallel
         - Parasail
         - ParetoAlpha
+        - Pareto Inference
         - Particle AI
         - Pearl Research
         - Poolside

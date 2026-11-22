@@ -329,7 +329,7 @@ If both fields are provided, `frame_images` takes precedence and the request is 
 
 ```json lines theme={null}
 {
-  "model": "alibaba/wan-2.7",
+  "model": "alibaba/wan-3.0",
   "prompt": "A character walking through a forest",
   "frame_images": [
     {
@@ -348,7 +348,7 @@ If both fields are provided, `frame_images` takes precedence and the request is 
 
 ```json lines theme={null}
 {
-  "model": "alibaba/wan-2.7",
+  "model": "alibaba/wan-3.0",
   "prompt": "A colossal solar flare beside a planet",
   "input_references": [
     {
