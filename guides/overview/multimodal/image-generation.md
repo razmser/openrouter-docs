@@ -4,7 +4,7 @@
 
 # Image Generation
 
-> How to generate images with OpenRouter's dedicated Image API
+> Generate and edit images with OpenRouter's unified Image Generation API across GPT Image, Gemini, Seedream, Flux, and more
 
 OpenRouter provides a dedicated Image API for generating images from text prompts (and optional reference images). The API covers model discovery, per-endpoint capabilities, and generation. You can browse available models and pricing on the [models page filtered by image output](https://openrouter.ai/models?output_modalities=image).
 
@@ -202,6 +202,16 @@ fmt.Println(string(body))
 
 Visit the [Models page](https://openrouter.ai/models?output_modalities=image) and filter by output modalities to find models with image generation capabilities.
 
+### Free Image Models
+
+`GET /api/v1/images/models` lists a model's free variant as its own entry, with an ID ending in `:free` (for example, `recraft/recraft-v4.1-flash-v2:free`), alongside the paid entry when both exist. To list only the free image models:
+
+```bash lines theme={null}
+curl -s "https://openrouter.ai/api/v1/images/models" | jq '[.data[] | select(.id | endswith(":free")) | .id]'
+```
+
+Pass a `:free` ID as `model` to `POST /api/v1/images`, or to `GET /api/v1/images/models/{author}/{slug}:free/endpoints` to see the free endpoints and their parameters. See [Free Variants](../../routing/model-variants/free.md) for routing behavior and [Rate limits](../../../api_reference/limits.md#rate-limits) for free-tier per-minute and daily quotas.
+
 ## API Usage
 
 Send a `POST` request to `/api/v1/images` with the model and prompt:
@@ -219,15 +229,20 @@ headers = {
 
 payload = {
     "model": "bytedance-seed/seedream-4.5",
-    "prompt": "a red panda astronaut floating in space, studio lighting"
+    "prompt": "a red panda astronaut floating in space, studio lighting",
+    "response_format": "url"
 }
 
 response = requests.post(url, headers=headers, json=payload)
 result = response.json()
 
 for image in result["data"]:
-    # image["b64_json"] contains the base64-encoded image
-    print(f"Generated image ({len(image['b64_json'])} chars)")
+    if image.get("url"):
+        # Signed download URL (expires after 24 hours)
+        print(f"Generated image: {image['url']}")
+    elif image.get("b64_json"):
+        # Inline base64 fallback (e.g. ZDR or storage unavailable)
+        print(f"Generated image (base64): {image['b64_json'][:50]}...")
 
 ```
 
@@ -241,14 +256,20 @@ const response = await fetch('https://openrouter.ai/api/v1/images', {
   body: JSON.stringify({
     model: 'bytedance-seed/seedream-4.5',
     prompt: 'a red panda astronaut floating in space, studio lighting',
+    response_format: 'url',
   }),
 });
 
 const result = await response.json();
 
 for (const image of result.data) {
-  // image.b64_json contains the base64-encoded image
-  console.log(`Generated image (${image.b64_json.length} chars)`);
+  if (image.url) {
+    // Signed download URL (expires after 24 hours)
+    console.log(`Generated image: ${image.url}`);
+  } else if (image.b64_json) {
+    // Inline base64 fallback (e.g. ZDR or storage unavailable)
+    console.log(`Generated image (base64): ${image.b64_json.slice(0, 50)}...`);
+  }
 }
 ```
 
@@ -258,7 +279,8 @@ curl -X POST "https://openrouter.ai/api/v1/images" \
   -H "Content-Type: application/json" \
   -d '{
     "model": "bytedance-seed/seedream-4.5",
-    "prompt": "a red panda astronaut floating in space, studio lighting"
+    "prompt": "a red panda astronaut floating in space, studio lighting",
+    "response_format": "url"
   }'
 ```
 
@@ -277,8 +299,9 @@ import (
 
 func main() {
 	payload, _ := json.Marshal(map[string]string{
-		"model":  "bytedance-seed/seedream-4.5",
-		"prompt": "a red panda astronaut floating in space, studio lighting",
+		"model":           "bytedance-seed/seedream-4.5",
+		"prompt":          "a red panda astronaut floating in space, studio lighting",
+		"response_format": "url",
 	})
 
 	req, err := http.NewRequest("POST", "https://openrouter.ai/api/v1/images", bytes.NewReader(payload))
@@ -301,6 +324,7 @@ func main() {
 
 	var result struct {
 		Data []struct {
+			URL     string `json:"url"`
 			B64JSON string `json:"b64_json"`
 		} `json:"data"`
 	}
@@ -309,22 +333,48 @@ func main() {
 	}
 
 	for _, image := range result.Data {
-		// image.B64JSON contains the base64-encoded image
-		fmt.Printf("Generated image (%d chars)\n", len(image.B64JSON))
+		if image.URL != "" {
+			// Signed download URL (expires after 24 hours)
+			fmt.Printf("Generated image: %s\n", image.URL)
+		} else if image.B64JSON != "" {
+			// Inline base64 fallback (e.g. ZDR or storage unavailable)
+			fmt.Printf("Generated image (base64): %.50s...\n", image.B64JSON)
+		}
 	}
 }
 
 ```
 
 ```text title="Output" theme={null}
-Generated image (1391708 chars)
+Generated image: https://storage.googleapis.com/openrouter-generated-media-us/v1/...
 ```
 
 ### Response Format
 
-Images are returned as base64-encoded bytes. The `usage` field reports token counts and cost when available.
+Set `response_format` to `url` to receive a signed download URL for each image instead of inline base64 bytes. URLs expire after 24 hours, with the expiry timestamp reported in `expires_at`. The `usage` field reports token counts and cost when available, and `media_type` is present whenever the format is identifiable (including `image/png`) and omitted only when it could not be determined:
 
-The `media_type` field is present whenever the format is identifiable (including `image/png`), and omitted only when it could not be determined:
+```json lines theme={null}
+{
+  "created": 1748372400,
+  "data": [
+    {
+      "url": "https://storage.googleapis.com/openrouter-generated-media-us/v1/...",
+      "media_type": "image/png"
+    }
+  ],
+  "expires_at": 1748458800,
+  "usage": {
+    "prompt_tokens": 0,
+    "completion_tokens": 4175,
+    "total_tokens": 4175,
+    "cost": 0.04
+  }
+}
+```
+
+### Inline Base64
+
+Omit `response_format` (or set it to `b64_json`) to receive base64-encoded image bytes inline instead of a signed URL. Streaming responses and zero-data-retention requests also return `b64_json`.
 
 ```json lines theme={null}
 {
@@ -355,37 +405,6 @@ For non-PNG outputs (e.g., JPEG, WebP, or SVG from Recraft vector models), `medi
       "media_type": "image/svg+xml"
     }
   ],
-  "usage": {
-    "prompt_tokens": 0,
-    "completion_tokens": 4175,
-    "total_tokens": 4175,
-    "cost": 0.04
-  }
-}
-```
-
-### Signed URLs Instead of Base64
-
-Set `response_format` to `url` to receive a download link for each image instead of base64. URLs expire after 24 hours.
-
-```json theme={null}
-{
-  "model": "google/gemini-2.5-flash-image",
-  "prompt": "a red panda astronaut floating in space, studio lighting",
-  "response_format": "url"
-}
-```
-
-```json lines theme={null}
-{
-  "created": 1748372400,
-  "data": [
-    {
-      "url": "https://example.com/generated-image.png",
-      "media_type": "image/png"
-    }
-  ],
-  "expires_at": 1748458800,
   "usage": {
     "prompt_tokens": 0,
     "completion_tokens": 4175,
@@ -843,6 +862,15 @@ If a client disconnects mid-generation, the upstream provider may still finish r
 
 For streaming requests, any partial preview images delivered before the stream ends do **not** create partial charges. Billing keys off completion of the final image, so a stream that terminates early (client disconnect or mid-stream error) is billed exactly as a failed generation: not at all.
 
+### Handling 402 and 403 Billing Errors
+
+Paid Image API requests are subject to your account credit balance, per-key credit limits, and the [in-flight spending budget](../../../api_reference/limits.md#in-flight-spending-budget), which holds an estimated cost while requests run and settle.
+
+* **`402 Payment Required`** with `error.metadata.limit_source`:
+  * `openrouter_in_flight_budget`: running and recently completed requests filled your in-flight spending budget. This is transient; wait for the `Retry-After` header and retry.
+  * `openrouter_credits`: your account balance cannot cover the request (image authorization checks a minimum available balance before generation, so resizing will not clear a low-balance failure), or the single request's estimated cost exceeds your whole in-flight budget. Add credits to resolve a low-balance failure, or reduce image count/resolution when a single request exceeds the in-flight ceiling.
+* **`403 Forbidden`** with `error.metadata.limit_source: "openrouter_key_limit"`: the API key's spending cap is exhausted, including when pending charges fill the cap. Raise the key limit or wait for its window to reset.
+
 ## Request Parameters
 
 | Parameter | Type | Required | Description |
@@ -861,10 +889,12 @@ For streaming requests, any partial preview images delivered before the stream e
 | `background` | string | No | `auto`, `transparent`, or `opaque` |
 | `output_compression` | integer | No | Compression level (0-100) for webp/jpeg |
 | `seed` | integer | No | Seed for deterministic generation (where supported) |
-| `response_format` | string | No | `b64_json` (default) returns inline bytes; `url` returns a [download URL](#signed-urls-instead-of-base64) that expires after 24 hours |
+| `response_format` | string | No | `url` returns a signed [download URL](#response-format) that expires after 24 hours (recommended); `b64_json` (default when omitted) returns inline base64 bytes |
 | `stream` | boolean | No | Stream partial images via SSE |
 | `input_references` | array | No | Reference images for image-to-image generation |
 | `user` | string | No | Stable identifier for your end-user; folded into a hashed upstream identity and never sent raw (see [User Tracking](../../../cookbook/administration/user-tracking.md)) |
+| `session_id` | string | No | Unique identifier (max 256 characters) for grouping related requests in Broadcast and private logging; never sent to the provider. Overrides the `x-session-id` header if both are set. |
+| `trace` | object | No | Observability and tracing metadata forwarded to configured Broadcast destinations. Named fields (`trace_id`, `trace_name`, `span_name`, `generation_name`, `parent_span_id`) are optional strings; custom keys may hold other JSON value types |
 | `provider.only` | string\[] | No | Allow only these provider slugs |
 | `provider.order` | string\[] | No | Try provider slugs in this order |
 | `provider.ignore` | string\[] | No | Exclude these provider slugs |
@@ -872,4 +902,4 @@ For streaming requests, any partial preview images delivered before the stream e
 | `provider.allow_fallbacks` | boolean | No | Allow another eligible provider when the primary fails |
 | `provider.options` | object | No | Provider-specific parameters keyed by provider slug |
 
-Use the [Image Models API](#via-the-image-models-api) to check which parameters each model and endpoint supports.
+Use the [Image Models API](#via-the-image-models-api) to check which model-specific parameters each model and endpoint supports. Request-level fields such as `user`, `session_id`, `trace`, and `provider` are accepted independently of a model's `supported_parameters` list.

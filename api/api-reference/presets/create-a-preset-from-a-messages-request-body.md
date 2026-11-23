@@ -1366,6 +1366,7 @@ components:
                   - $ref: '#/components/schemas/MessagesShellToolResultBlock'
                   - $ref: '#/components/schemas/MessagesBashToolResultBlock'
                   - $ref: '#/components/schemas/ORAnthropicToolSearchResultParam'
+                  - $ref: '#/components/schemas/MessagesToolSearchToolResultBlock'
               type: array
         output_config:
           $ref: '#/components/schemas/AnthropicMessageOutputConfig'
@@ -3465,6 +3466,34 @@ components:
         - tool_use_id
         - content
       type: object
+    MessagesToolSearchToolResultBlock:
+      description: >-
+        Tool search result from a prior assistant turn, returned beside the
+        `server_tool_use` it answers.
+      example:
+        content:
+          tool_references:
+            - tool_name: get_weather
+              type: tool_reference
+          type: tool_search_tool_search_result
+        tool_use_id: srvtoolu_01abc
+        type: tool_search_tool_result
+      properties:
+        cache_control:
+          $ref: '#/components/schemas/AnthropicCacheControlDirective'
+        content:
+          $ref: '#/components/schemas/MessagesToolSearchToolResultContent'
+        tool_use_id:
+          type: string
+        type:
+          enum:
+            - tool_search_tool_result
+          type: string
+      required:
+        - type
+        - tool_use_id
+        - content
+      type: object
     AnthropicMessageOutputConfig:
       additionalProperties: false
       example:
@@ -5226,6 +5255,21 @@ components:
             - type
             - name
           type: object
+    MessagesToolSearchToolResultContent:
+      description: 'What a tool search returned: the tools it found, or an error.'
+      discriminator:
+        mapping:
+          tool_search_tool_result_error: '#/components/schemas/MessagesToolSearchToolResultError'
+          tool_search_tool_search_result: '#/components/schemas/MessagesToolSearchToolSearchResult'
+        propertyName: type
+      example:
+        tool_references:
+          - tool_name: get_weather
+            type: tool_reference
+        type: tool_search_tool_search_result
+      oneOf:
+        - $ref: '#/components/schemas/MessagesToolSearchToolResultError'
+        - $ref: '#/components/schemas/MessagesToolSearchToolSearchResult'
     AnthropicOutputEffort:
       enum:
         - low
@@ -5580,6 +5624,47 @@ components:
         - image/webp
       example: image/jpeg
       type: string
+    MessagesToolSearchToolResultError:
+      description: A tool search that returned an error in place of tools.
+      example:
+        error_code: unavailable
+        error_message: null
+        type: tool_search_tool_result_error
+      properties:
+        error_code:
+          $ref: '#/components/schemas/MessagesToolSearchToolResultErrorCode'
+        error_message:
+          type:
+            - string
+            - 'null'
+        type:
+          enum:
+            - tool_search_tool_result_error
+          type: string
+      required:
+        - type
+        - error_code
+      type: object
+    MessagesToolSearchToolSearchResult:
+      description: The tools a tool search found, by name, in match order.
+      example:
+        tool_references:
+          - tool_name: get_weather
+            type: tool_reference
+        type: tool_search_tool_search_result
+      properties:
+        tool_references:
+          items:
+            $ref: '#/components/schemas/MessagesToolSearchToolReference'
+          type: array
+        type:
+          enum:
+            - tool_search_tool_search_result
+          type: string
+      required:
+        - type
+        - tool_references
+      type: object
     ArmorRule:
       properties:
         id:
@@ -5677,6 +5762,31 @@ components:
       required:
         - type
         - container_id
+      type: object
+    MessagesToolSearchToolResultErrorCode:
+      description: Why a tool search returned no result.
+      enum:
+        - invalid_tool_input
+        - unavailable
+        - too_many_requests
+        - execution_time_exceeded
+      example: unavailable
+      type: string
+    MessagesToolSearchToolReference:
+      description: The name of one tool a tool search found.
+      example:
+        tool_name: get_weather
+        type: tool_reference
+      properties:
+        tool_name:
+          type: string
+        type:
+          enum:
+            - tool_reference
+          type: string
+      required:
+        - type
+        - tool_name
       type: object
     ContainerFileIds:
       description: >-

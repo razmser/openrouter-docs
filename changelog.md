@@ -8,6 +8,23 @@
 
 Entries on this page are generated automatically from [OpenAPI specification](api_reference/overview.md) diffs when releases ship. Breaking changes are reviewed by a human before publication. See [API Versioning](api_reference/versioning.md) for what counts as a breaking change and how deprecations are announced. Endpoint paths are shown relative to the API base URL (`https://openrouter.ai/api/v1`).
 
+**November 23, 2026**
+
+## New schemas
+
+* `MessagesToolSearchToolReference`
+  * Used by [`POST /messages`](api/api-reference/anthropic-messages/create-a-message.md), [`POST /presets/{slug}/messages`](api/api-reference/presets/create-a-preset-from-a-messages-request-body.md)
+* `MessagesToolSearchToolResultBlock`
+  * Used by [`POST /messages`](api/api-reference/anthropic-messages/create-a-message.md), [`POST /presets/{slug}/messages`](api/api-reference/presets/create-a-preset-from-a-messages-request-body.md)
+* `MessagesToolSearchToolResultContent`
+  * Used by [`POST /messages`](api/api-reference/anthropic-messages/create-a-message.md), [`POST /presets/{slug}/messages`](api/api-reference/presets/create-a-preset-from-a-messages-request-body.md)
+* `MessagesToolSearchToolResultError`
+  * Used by [`POST /messages`](api/api-reference/anthropic-messages/create-a-message.md), [`POST /presets/{slug}/messages`](api/api-reference/presets/create-a-preset-from-a-messages-request-body.md)
+* `MessagesToolSearchToolResultErrorCode`
+  * Used by [`POST /messages`](api/api-reference/anthropic-messages/create-a-message.md), [`POST /presets/{slug}/messages`](api/api-reference/presets/create-a-preset-from-a-messages-request-body.md)
+* `MessagesToolSearchToolSearchResult`
+  * Used by [`POST /messages`](api/api-reference/anthropic-messages/create-a-message.md), [`POST /presets/{slug}/messages`](api/api-reference/presets/create-a-preset-from-a-messages-request-body.md)
+
 **November 21, 2026**
 
 ## Modified endpoints

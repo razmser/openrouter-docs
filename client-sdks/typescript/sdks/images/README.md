@@ -37,6 +37,7 @@ async function run() {
     imageGenerationRequest: {
       model: "bytedance-seed/seedream-4.5",
       prompt: "a red panda astronaut floating in space, studio lighting",
+      responseFormat: "url",
     },
   });
 
@@ -68,6 +69,7 @@ async function run() {
     imageGenerationRequest: {
       model: "bytedance-seed/seedream-4.5",
       prompt: "a red panda astronaut floating in space, studio lighting",
+      responseFormat: "url",
     },
   });
   if (res.ok) {

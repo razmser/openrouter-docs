@@ -149,6 +149,7 @@ paths:
             example:
               model: bytedance-seed/seedream-4.5
               prompt: a red panda astronaut floating in space, studio lighting
+              response_format: url
             schema:
               $ref: '#/components/schemas/ImageGenerationRequest'
         required: true
@@ -159,7 +160,10 @@ paths:
               example:
                 created: 1748372400
                 data:
-                  - b64_json: <base64-encoded-image>
+                  - media_type: image/png
+                    url: >-
+                      https://storage.googleapis.com/openrouter-generated-media-us/v1/...
+                expires_at: 1748458800
                 usage:
                   completion_tokens: 4175
                   cost: 0.04
@@ -296,6 +300,7 @@ components:
       example:
         model: bytedance-seed/seedream-4.5
         prompt: a red panda astronaut floating in space, studio lighting
+        response_format: url
       properties:
         aspect_ratio:
           description: >-
@@ -459,7 +464,7 @@ components:
           enum:
             - b64_json
             - url
-          example: b64_json
+          example: url
           type: string
         seed:
           description: >-
@@ -519,7 +524,10 @@ components:
       example:
         created: 1748372400
         data:
-          - b64_json: <base64-encoded-image>
+          - media_type: image/png
+            url: >-
+              https://storage.googleapis.com/openrouter-generated-media-us/v1/...
+        expires_at: 1748458800
         usage:
           completion_tokens: 4175
           cost: 0.04
