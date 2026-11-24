@@ -160,4 +160,4 @@ Point `model` at any OpenRouter slug (e.g. `~openai/gpt-sol-latest`, `~anthropic
 * [Codex CLI on GitHub](https://github.com/openai/codex)
 * [OpenRouter Codex Models](https://openrouter.ai/models?q=codex)
 * [OpenRouter Activity Dashboard](https://openrouter.ai/activity)
-* [OpenRouter API Documentation](https://openrouter.ai/docs/api)
+* [OpenRouter API Documentation](https://openrouter.ai/docs/api.md)

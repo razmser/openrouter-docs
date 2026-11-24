@@ -279,6 +279,16 @@ components:
         name: My New Guardrail
         reset_interval: monthly
       properties:
+        allow_provisional_providers:
+          description: >-
+            Whether requests may use provisional providers, whose security
+            practices have not been reviewed by OpenRouter. false excludes them.
+            true and null never override an account that excludes them. Inherits
+            the account setting when not provided.
+          example: false
+          type:
+            - boolean
+            - 'null'
         allow_safety_retention_google:
           description: >-
             Whether ZDR-only requests to google/* models may also use Safety
@@ -758,6 +768,16 @@ components:
         updated_at: '2025-08-24T15:45:00Z'
         workspace_id: 0df9e665-d932-5740-b2c7-b52af166bc11
       properties:
+        allow_provisional_providers:
+          description: >-
+            Whether requests may use provisional providers, whose security
+            practices have not been reviewed by OpenRouter. false excludes them.
+            true and null never override an account that excludes them. Inherits
+            the account setting when not provided.
+          example: false
+          type:
+            - boolean
+            - 'null'
         allow_safety_retention_google:
           description: >-
             Whether ZDR-only requests to google/* models may also use Safety

@@ -73,21 +73,25 @@ const message = [...response.output].reverse().find((item) => item.type === 'mes
 console.log(message?.content.find((part) => part.type === 'output_text')?.text);
 ```
 
-```python title="Python (OpenAI SDK)" lines theme={null}
-from openai import OpenAI
+```python title="Python SDK" lines theme={null}
+from openrouter import OpenRouter
 
-client = OpenAI(
-    base_url="https://openrouter.ai/api/v1",
+with OpenRouter(
     api_key="<OPENROUTER_API_KEY>",
-)
+) as client:
+    response = client.responses.send(
+        model="~openai/gpt-sol-latest",
+        input="What's the weather like today?",
+        user="user_12345",  # Your user identifier
+        stream=False,
+    )
 
-response = client.responses.create(
-    model="~openai/gpt-sol-latest",
-    input="What's the weather like today?",
-    user="user_12345",  # Your user identifier
-)
+    for item in response.output:
+        if getattr(item, "type", None) == "message":
+            for part in item.content:
+                if getattr(part, "type", None) == "output_text":
+                    print(part.text)
 
-print(response.output_text)
 ```
 
 ```typescript title="TypeScript (OpenAI SDK)" expandable lines theme={null}
@@ -109,6 +113,85 @@ async function chatWithUserTracking() {
 }
 
 chatWithUserTracking();
+```
+
+```go title="Go" lines theme={null}
+package main
+
+import (
+	"bytes"
+	"encoding/json"
+	"fmt"
+	"log"
+	"net/http"
+	"os"
+)
+
+func main() {
+	body, _ := json.Marshal(map[string]any{
+		"model":  "~openai/gpt-sol-latest",
+		"input":  "What's the weather like today?",
+		"user":   "user_12345", // Your user identifier
+		"stream": false,
+	})
+
+	req, _ := http.NewRequest("POST", "https://openrouter.ai/api/v1/responses", bytes.NewReader(body))
+	req.Header.Set("Authorization", "Bearer "+os.Getenv("OPENROUTER_API_KEY"))
+	req.Header.Set("Content-Type", "application/json")
+
+	resp, err := http.DefaultClient.Do(req)
+	if err != nil {
+		log.Fatal(err)
+	}
+	defer resp.Body.Close()
+	if resp.StatusCode != http.StatusOK {
+		log.Fatalf("request failed: %s", resp.Status)
+	}
+
+	var result struct {
+		Output []struct {
+			Type    string `json:"type"`
+			Content []struct {
+				Type string `json:"type"`
+				Text string `json:"text"`
+			} `json:"content"`
+		} `json:"output"`
+	}
+	if err := json.NewDecoder(resp.Body).Decode(&result); err != nil {
+		log.Fatal(err)
+	}
+
+	for i := len(result.Output) - 1; i >= 0; i-- {
+		if result.Output[i].Type != "message" {
+			continue
+		}
+		for _, part := range result.Output[i].Content {
+			if part.Type == "output_text" {
+				fmt.Println(part.Text)
+				return
+			}
+		}
+		return
+	}
+}
+
+```
+
+```bash title="cURL" lines theme={null}
+curl -s https://openrouter.ai/api/v1/responses \
+  -H "Authorization: Bearer $OPENROUTER_API_KEY" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "model": "~openai/gpt-sol-latest",
+    "input": "What'\''s the weather like today?",
+    "user": "user_12345",
+    "stream": false
+  }' | jq -r '[.output[] | select(.type == "message")] | last | .content[] | select(.type == "output_text") | .text'
+
+```
+
+```text title="Output" theme={null}
+What city or ZIP code should I use for today’s weather?
 ```
 
 ## Per-User Abuse Isolation
@@ -139,4 +222,19 @@ Use the same user identifier format throughout your application:
 ```python lines theme={null}
 # Consistent format
 user_id = f"app_{internal_user_id}"
+```
+
+```typescript title="TypeScript" lines theme={null}
+// Consistent format
+const userId = `app_${internalUserId}`;
+```
+
+```go title="Go" lines theme={null}
+// Consistent format
+userID := fmt.Sprintf("app_%v", internalUserID)
+```
+
+```bash title="cURL" lines theme={null}
+# Consistent format
+user_id="app_${internal_user_id}"
 ```

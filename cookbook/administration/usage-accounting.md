@@ -88,6 +88,52 @@ The usage response includes detailed cost information:
 * `cost`: The total amount charged to your account
 * `cost_details.upstream_inference_cost`: The actual cost charged by the upstream AI provider, split into `upstream_inference_input_cost` and `upstream_inference_output_cost` on the Responses API (`upstream_inference_prompt_cost` and `upstream_inference_completions_cost` on Chat Completions)
 
+## Deferred-Tools Usage
+
+When a request runs a managed multi-turn deferred-tools loop under the `universal` profile (see [Tool Search](../../guides/features/server-tools/tool-search.md#usage-and-billing)), OpenRouter may execute more than one upstream model call before returning a single response. Usage is split so client context tracking stays accurate while billing reflects every turn (multi-turn runs under the `portable` profile instead report cumulative native token counts and omit `deferred_tools_details`):
+
+* **Native token fields report the final upstream model turn (`universal` profile).** `input_tokens` / `prompt_tokens`, `output_tokens` / `completion_tokens`, `total_tokens`, and cache or reasoning token breakdowns (`input_tokens_details`, `output_tokens_details`, `prompt_tokens_details`, `completion_tokens_details`, and Anthropic's `cache_read_input_tokens`, `cache_creation_input_tokens`, `output_tokens_details.thinking_tokens`) reflect only the last upstream call. This lets agent harnesses such as Claude Code and Codex measure actual context-window fill without triggering premature compaction.
+* **`cost` and `cost_details` report the sum across all turns and billable router-run tools.** The response `cost` (and its `cost_details` breakdown, including `server_tool_cost` when used) totals every upstream model turn plus any billable router-run tools executed for that request.
+* **`deferred_tools_details` reports cumulative token totals across the run (`universal` profile).** Included on Chat Completions, Responses, and Anthropic Messages (streaming and non-streaming) for `universal` runs, and omitted on `portable` and standard requests. On Anthropic Messages streams, if a billable search turn completes and a later upstream turn fails, the stream can emit an `error` event without a final `message_delta.usage`; missing usage is not evidence that no work was billed. It uses the same field names across all three APIs:
+  * `turns`: Positive integer count of model turns with settled usage (failed upstream attempts that produced no settled usage are not counted).
+  * `prompt_tokens`: Prompt tokens summed across every settled model turn.
+  * `completion_tokens`: Completion tokens summed across every settled model turn.
+  * `total_tokens`: Sum of `prompt_tokens` and `completion_tokens` across every settled model turn.
+
+```json lines theme={null}
+{
+  "object": "response",
+  "usage": {
+    "input_tokens": 1300,
+    "input_tokens_details": {
+      "cached_tokens": 900,
+      "cache_write_tokens": 300
+    },
+    "output_tokens": 60,
+    "output_tokens_details": {
+      "reasoning_tokens": 0
+    },
+    "total_tokens": 1360,
+    "cost": 0.012,
+    "is_byok": false,
+    "deferred_tools_details": {
+      "turns": 2,
+      "prompt_tokens": 2300,
+      "completion_tokens": 100,
+      "total_tokens": 2400
+    }
+  }
+}
+```
+
+On the Anthropic Messages API, `input_tokens` follows Anthropic's convention of reporting uncached input tokens for the final turn (with cached reads in `cache_read_input_tokens` and writes in `cache_creation_input_tokens`), while `deferred_tools_details.prompt_tokens` sums total prompt tokens across every settled model turn.
+
+### Logs and Spend Thresholds
+
+Each upstream model turn in a deferred-tools run is recorded and billed as its own generation row in [Logs](../../guides/features/logs.md), linked to the parent request through `parent_generation_id` (child turns carry `spawned_by: "tool_search"`).
+
+Spend added after the first model turn (later model turns, billed failed attempts, and any billable router-run tool costs) is gated by a pre-turn threshold of `max($10, 6 × turn 1 cost)` checked before starting another turn. Because the check runs before a turn starts rather than acting as a hard billing cap, a turn started while still under the threshold completes and is billed in full even if it crosses the threshold; no further turn is started afterward. If a run stops early at the spend threshold or turn limit, every upstream model turn that completed before the stop remains billed.
+
 ## Benefits
 
 1. **Efficiency**: Get usage information without making separate API calls
@@ -145,44 +191,158 @@ console.log('Response:', message?.content.find((part) => part.type === 'output_t
 console.log('Usage Stats:', response.usage);
 ```
 
-```python title="Python (OpenAI SDK)" lines theme={null}
-from openai import OpenAI
+```python title="Python SDK (Chat Completions)" lines theme={null}
+from openrouter import OpenRouter
 
-client = OpenAI(
-    base_url="https://openrouter.ai/api/v1",
+with OpenRouter(
     api_key="<OPENROUTER_API_KEY>",
-)
+) as client:
+    response = client.chat.send(
+        model="~anthropic/claude-opus-latest",
+        messages=[
+            {"role": "user", "content": "What is the capital of France?"},
+        ],
+        stream=False,
+    )
 
-response = client.responses.create(
-    model="~anthropic/claude-opus-latest",
-    input="What is the capital of France?",
-)
+    print("Response:", response.choices[0].message.content)
+    # Usage is always included automatically
+    print("Usage Stats:", response.usage)
 
-print("Response:", response.output_text)
-# Usage is always included automatically
-print("Usage Stats:", response.usage)
 ```
 
-```typescript title="TypeScript (OpenAI SDK)" expandable lines theme={null}
-import OpenAI from 'openai';
+```typescript title="TypeScript SDK (Chat Completions)" expandable lines theme={null}
+import { OpenRouter } from '@openrouter/sdk';
 
-const openai = new OpenAI({
-  baseURL: 'https://openrouter.ai/api/v1',
+const openRouter = new OpenRouter({
   apiKey: '<OPENROUTER_API_KEY>',
 });
 
 async function getResponseWithUsage() {
-  const response = await openai.responses.create({
-    model: '~anthropic/claude-opus-latest',
-    input: 'What is the capital of France?',
+  const response = await openRouter.chat.send({
+    chatRequest: {
+      model: '~anthropic/claude-opus-latest',
+      messages: [
+        {
+          role: 'user' as const,
+          content: 'What is the capital of France?',
+        },
+      ],
+      stream: false,
+    },
   });
 
-  console.log('Response:', response.output_text);
+  console.log('Response:', response.choices[0].message.content);
   // Usage is always included automatically
   console.log('Usage Stats:', response.usage);
 }
 
-getResponseWithUsage();
+await getResponseWithUsage();
+
+```
+
+```go title="Go" lines theme={null}
+package main
+
+import (
+	"bytes"
+	"encoding/json"
+	"fmt"
+	"log"
+	"net/http"
+	"os"
+)
+
+func main() {
+	body, _ := json.Marshal(map[string]any{
+		"model": "~anthropic/claude-opus-latest",
+		"input": "What is the capital of France?",
+	})
+
+	req, _ := http.NewRequest("POST", "https://openrouter.ai/api/v1/responses", bytes.NewReader(body))
+	req.Header.Set("Authorization", "Bearer "+os.Getenv("OPENROUTER_API_KEY"))
+	req.Header.Set("Content-Type", "application/json")
+
+	resp, err := http.DefaultClient.Do(req)
+	if err != nil {
+		log.Fatal(err)
+	}
+	defer resp.Body.Close()
+	if resp.StatusCode != http.StatusOK {
+		log.Fatalf("request failed: %s", resp.Status)
+	}
+
+	var result struct {
+		Output []struct {
+			Type    string `json:"type"`
+			Content []struct {
+				Type string `json:"type"`
+				Text string `json:"text"`
+			} `json:"content"`
+		} `json:"output"`
+		Usage json.RawMessage `json:"usage"`
+	}
+	if err := json.NewDecoder(resp.Body).Decode(&result); err != nil {
+		log.Fatal(err)
+	}
+
+	var text string
+	for i := len(result.Output) - 1; i >= 0 && text == ""; i-- {
+		if result.Output[i].Type == "message" {
+			for _, part := range result.Output[i].Content {
+				if part.Type == "output_text" {
+					text = part.Text
+					break
+				}
+			}
+		}
+	}
+	fmt.Println("Response:", text)
+
+	// Usage is always included automatically
+	var usage bytes.Buffer
+	json.Indent(&usage, result.Usage, "", "  ")
+	fmt.Println("Usage Stats:", usage.String())
+}
+
+```
+
+```bash title="cURL" lines theme={null}
+response=$(curl -sS https://openrouter.ai/api/v1/responses \
+  -H "Authorization: Bearer $OPENROUTER_API_KEY" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "model": "~anthropic/claude-opus-latest",
+    "input": "What is the capital of France?"
+  }')
+
+echo "Response: $(echo "$response" | jq -r '[.output[] | select(.type == "message")] | last | .content[] | select(.type == "output_text") | .text')"
+# Usage is always included automatically
+echo "Usage Stats: $(echo "$response" | jq '.usage')"
+
+```
+
+```text title="Output" theme={null}
+Response: The capital of France is **Paris**.
+Usage Stats: {
+  inputTokens: 16,
+  inputTokensDetails: {
+    cacheWriteTokens: 0,
+    cachedTokens: 0,
+  },
+  outputTokens: 21,
+  outputTokensDetails: {
+    reasoningTokens: 7,
+  },
+  totalTokens: 37,
+  cost: 0.000484,
+  costDetails: {
+    upstreamInferenceCost: 0.000484,
+    upstreamInferenceInputCost: 0.000064,
+    upstreamInferenceOutputCost: 0.00042,
+  },
+  isByok: false,
+}
 ```
 
 ### Streaming with Usage Information
@@ -205,16 +365,21 @@ def stream_response(input):
     )
 
 # Usage is included in the terminal response.completed or response.incomplete event
+saw_usage = False
 for event in stream_response("Write a haiku about Paris."):
     if event.type == "response.output_text.delta":
         print(event.delta, end="")
     elif event.type in ("response.completed", "response.incomplete") and event.response.usage:
+        saw_usage = True
         usage = event.response.usage
         print(f"\nUsage Statistics:")
         print(f"Total Tokens: {usage.total_tokens}")
         print(f"Input Tokens: {usage.input_tokens}")
         print(f"Output Tokens: {usage.output_tokens}")
         print(f"Cost: {getattr(usage, 'cost', None)} credits")
+
+if not saw_usage:
+    raise SystemExit("stream ended before the terminal usage event")
 ```
 
 ```typescript TypeScript expandable lines theme={null}
@@ -235,6 +400,7 @@ async function streamResponse(input: string) {
 
 // Usage is included in the terminal response.completed or response.incomplete event
 (async () => {
+  let sawUsage = false;
   for await (const event of await streamResponse('Write a haiku about Paris.')) {
     if (event.type === 'response.output_text.delta') {
       process.stdout.write(event.delta);
@@ -242,6 +408,7 @@ async function streamResponse(input: string) {
       (event.type === 'response.completed' || event.type === 'response.incomplete') &&
       event.response.usage
     ) {
+      sawUsage = true;
       // OpenRouter adds `cost` to the usage object.
       const usage: typeof event.response.usage & { cost?: number } = event.response.usage;
       console.log('\nUsage Statistics:');
@@ -251,5 +418,125 @@ async function streamResponse(input: string) {
       console.log(`Cost: ${usage.cost} credits`);
     }
   }
+  if (!sawUsage) {
+    throw new Error('Stream ended before the terminal usage event');
+  }
 })();
+```
+
+```go title="Go" lines theme={null}
+package main
+
+import (
+	"bufio"
+	"bytes"
+	"encoding/json"
+	"fmt"
+	"log"
+	"net/http"
+	"os"
+	"strings"
+)
+
+func main() {
+	body, _ := json.Marshal(map[string]any{
+		"model":  "~anthropic/claude-opus-latest",
+		"input":  "Write a haiku about Paris.",
+		"stream": true,
+	})
+
+	req, _ := http.NewRequest("POST", "https://openrouter.ai/api/v1/responses", bytes.NewReader(body))
+	req.Header.Set("Authorization", "Bearer "+os.Getenv("OPENROUTER_API_KEY"))
+	req.Header.Set("Content-Type", "application/json")
+
+	resp, err := http.DefaultClient.Do(req)
+	if err != nil {
+		log.Fatal(err)
+	}
+	defer resp.Body.Close()
+	if resp.StatusCode != http.StatusOK {
+		log.Fatalf("request failed: %s", resp.Status)
+	}
+
+	// Usage is included in the terminal response.completed or response.incomplete event
+	sawUsage := false
+	scanner := bufio.NewScanner(resp.Body)
+	scanner.Buffer(make([]byte, 1024*1024), 16*1024*1024)
+	for scanner.Scan() {
+		data, ok := strings.CutPrefix(scanner.Text(), "data: ")
+		if !ok || data == "[DONE]" {
+			continue
+		}
+		var event struct {
+			Type     string `json:"type"`
+			Delta    string `json:"delta"`
+			Response struct {
+				Usage *struct {
+					TotalTokens  int     `json:"total_tokens"`
+					InputTokens  int     `json:"input_tokens"`
+					OutputTokens int     `json:"output_tokens"`
+					Cost         float64 `json:"cost"` // OpenRouter adds `cost` to the usage object.
+				} `json:"usage"`
+			} `json:"response"`
+		}
+		if json.Unmarshal([]byte(data), &event) != nil {
+			continue
+		}
+		switch {
+		case event.Type == "response.output_text.delta":
+			fmt.Print(event.Delta)
+		case (event.Type == "response.completed" || event.Type == "response.incomplete") && event.Response.Usage != nil:
+			sawUsage = true
+			usage := event.Response.Usage
+			fmt.Println("\nUsage Statistics:")
+			fmt.Printf("Total Tokens: %d\n", usage.TotalTokens)
+			fmt.Printf("Input Tokens: %d\n", usage.InputTokens)
+			fmt.Printf("Output Tokens: %d\n", usage.OutputTokens)
+			fmt.Printf("Cost: %v credits\n", usage.Cost)
+		}
+	}
+	if err := scanner.Err(); err != nil {
+		log.Fatal(err)
+	}
+	if !sawUsage {
+		log.Fatal("stream ended before the terminal usage event")
+	}
+}
+
+```
+
+```bash title="cURL" lines theme={null}
+#!/usr/bin/env bash
+# --fail and pipefail make an HTTP error (for example, a 401) exit nonzero
+# instead of being silently dropped by sed.
+set -o pipefail
+
+curl -sSN --fail https://openrouter.ai/api/v1/responses \
+  -H "Authorization: Bearer $OPENROUTER_API_KEY" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "model": "~anthropic/claude-opus-latest",
+    "input": "Write a haiku about Paris.",
+    "stream": true
+  }' | sed -un 's/^data: //p' | jq --unbuffered -Rrj '
+  fromjson? |
+  if .type == "response.output_text.delta" then .delta
+  # Usage is included in the terminal response.completed or response.incomplete event
+  # OpenRouter adds `cost` to the usage object.
+  elif (.type == "response.completed" or .type == "response.incomplete") and .response.usage then
+    .response.usage |
+    "\nUsage Statistics:\nTotal Tokens: \(.total_tokens)\nInput Tokens: \(.input_tokens)\nOutput Tokens: \(.output_tokens)\nCost: \(.cost) credits\n"
+  else empty end'
+
+```
+
+```text title="Output" theme={null}
+Rain on cobblestones,
+the Seine carries lamplight west,
+one café still glows.
+Usage Statistics:
+Total Tokens: 296
+Input Tokens: 19
+Output Tokens: 277
+Cost: 0.005616 credits
 ```

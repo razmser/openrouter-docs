@@ -47,6 +47,32 @@ The video models endpoint doesn't expose a dedicated structured reference-image 
 curl https://openrouter.ai/api/v1/videos/models
 ```
 
+```typescript title="TypeScript" lines theme={null}
+const response = await fetch('https://openrouter.ai/api/v1/videos/models');
+const models = await response.json();
+```
+
+```python title="Python" lines theme={null}
+import requests  # pip install requests
+
+models = requests.get("https://openrouter.ai/api/v1/videos/models").json()
+```
+
+```go title="Go" lines theme={null}
+resp, err := http.Get("https://openrouter.ai/api/v1/videos/models")
+if err != nil {
+	log.Fatal(err)
+}
+defer resp.Body.Close()
+
+body, err := io.ReadAll(resp.Body)
+if err != nil {
+	log.Fatal(err)
+}
+fmt.Println(string(body))
+
+```
+
 Example model output excerpt:
 
 ```json expandable lines theme={null}
@@ -185,7 +211,33 @@ const inputReferences = [
 ];
 ```
 
-Then set `input_references` in the request body to `inputReferences`.
+```bash title="cURL" lines theme={null}
+if [ -z "$REFERENCE_IMAGE_URL" ] || [ -z "$CHARACTER_SIDE_URL" ] || [ -z "$STYLE_REFERENCE_URL" ]; then
+  echo "Set REFERENCE_IMAGE_URL, CHARACTER_SIDE_URL, and STYLE_REFERENCE_URL first." >&2
+  exit 1
+fi
+
+INPUT_REFERENCES=$(jq -n \
+  --arg ref "$REFERENCE_IMAGE_URL" \
+  --arg side "$CHARACTER_SIDE_URL" \
+  --arg style "$STYLE_REFERENCE_URL" \
+  '[$ref, $side, $style] | map({type: "image_url", image_url: {url: .}})')
+
+# --argjson inserts the array as JSON. --arg would insert it as a quoted string.
+REQUEST_BODY=$(jq -n \
+  --argjson input_references "$INPUT_REFERENCES" \
+  '{
+    model: "bytedance/seedance-2.0-fast",
+    prompt: "Create a 4-second product video of the same backpack from the reference image. Keep the shape, color, and logo placement consistent. Place it on a wet city sidewalk at night with neon reflections. Use a slow orbiting camera move and realistic lighting.",
+    duration: 4,
+    resolution: "720p",
+    aspect_ratio: "16:9",
+    generate_audio: false,
+    input_references: $input_references
+  }')
+```
+
+Then set `input_references` in the request body to `inputReferences`. In the cURL tab, `REQUEST_BODY` already holds the step 2 request with the array in place: submit it to `POST /api/v1/videos` with `-d "$REQUEST_BODY"`.
 
 Request shape for the optional multi-reference path:
 

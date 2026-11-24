@@ -4,7 +4,7 @@
 
 # Delete a SCIM group mapping
 
-> Delete a SCIM group-to-workspace mapping. For an `admin` mapping, `keep_members=true` returns `403` and leaves the mapping in place — preserving members as workspace admins is dashboard-only. [Management key](../../../guides/overview/auth/management-api-keys.md) required.
+> Delete a SCIM group-to-workspace mapping. For an `admin` mapping, `keep_members=true` returns `403` and leaves the mapping in place — preserving members as workspace admins is dashboard-only. Deleting a mapping that has guardrail policies attached returns `403`; remove those policies in the dashboard first. [Management key](../../../guides/overview/auth/management-api-keys.md) required.
 
 
 
@@ -144,7 +144,9 @@ paths:
       description: >-
         Delete a SCIM group-to-workspace mapping. For an `admin` mapping,
         `keep_members=true` returns `403` and leaves the mapping in place —
-        preserving members as workspace admins is dashboard-only. [Management
+        preserving members as workspace admins is dashboard-only. Deleting a
+        mapping that has guardrail policies attached returns `403`; remove those
+        policies in the dashboard first. [Management
         key](/docs/guides/overview/auth/management-api-keys) required.
       operationId: deleteScimGroupMapping
       parameters:

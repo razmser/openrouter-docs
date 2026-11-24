@@ -20,6 +20,8 @@ Before you start, you need:
 
 A batch has one model, one endpoint, and a list of requests. Each request `body` is the same body you send to the sync endpoint.
 
+For text generation, the cost estimate uses the output limit for the request format: `max_completion_tokens` (or the older `max_tokens`) for Chat Completions, `max_output_tokens` for Responses, and `max_tokens` for Messages. If you omit an optional output limit, the estimate uses 1,024 completion tokens per request.
+
 | Field | Required | Description |
 | - | - | - |
 | `endpoint` | Yes | `/v1/chat/completions`, `/v1/responses`, `/v1/messages`, or `/v1/embeddings`. Every request uses this endpoint. |
@@ -804,6 +806,8 @@ When the BYOK-only switch is on for your account or workspace, batches run only 
 * Keys marked as fallback-only count, the same as sync requests.
 * If none of your keys covers the model, the submit fails with `404` instead of `202 Accepted`.
 * Keys for providers that can't run a batch on your own key (Fireworks, Mistral, Sail Research, and Claude Platform on AWS) don't count.
+
+A model covered by an exclusive key (`is_exclusive`) runs only on a covering exclusive key, the same as sync requests. Other providers, your other keys, and OpenRouter capacity are skipped, and the submit fails with `404` when no covering key can run the batch.
 
 > [accordion] Google Vertex
 >

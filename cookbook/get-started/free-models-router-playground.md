@@ -61,6 +61,86 @@ curl https://openrouter.ai/api/v1/responses \
   }'
 ```
 
+```typescript title="TypeScript" lines theme={null}
+const response = await fetch('https://openrouter.ai/api/v1/responses', {
+  method: 'POST',
+  headers: {
+    Authorization: `Bearer ${process.env.OPENROUTER_API_KEY}`,
+    'Content-Type': 'application/json',
+  },
+  body: JSON.stringify({
+    model: 'openrouter/free',
+    input: 'Hello!',
+  }),
+});
+
+console.log(await response.json());
+
+```
+
+```python title="Python" lines theme={null}
+import os
+import requests
+
+response = requests.post(
+    "https://openrouter.ai/api/v1/responses",
+    headers={
+        "Authorization": f"Bearer {os.environ['OPENROUTER_API_KEY']}",
+        "Content-Type": "application/json",
+    },
+    json={
+        "model": "openrouter/free",
+        "input": "Hello!",
+    },
+)
+
+print(response.json())
+
+```
+
+```text title="Output" theme={null}
+{
+  id: "gen-1793735267-m7jJEKSgytnOhwdrar9j",
+  object: "response",
+  created_at: 1793735267,
+  model: "xingchen-agi/xing4.0-29b-a4b:free",
+  status: "completed",
+  completed_at: 1793735277,
+  output: [
+    {
+      id: "rs_tmp_dhj34cpi0yr",
+      type: "reasoning",
+      status: "completed",
+      content: [Array ...],
+      summary: [],
+      format: "unknown",
+    }, {
+      id: "msg_tmp_ft2z48sn4hu",
+      type: "message",
+      role: "assistant",
+      status: "completed",
+      content: [Array ...],
+    }
+  ],
+  error: null,
+  incomplete_details: null,
+  access_programs: null,
+  tools: [],
+  tool_choice: "auto",
+  parallel_tool_calls: true,
+  max_output_tokens: null,
+  temperature: 1,
+  top_p: 1,
+  presence_penalty: 0,
+  frequency_penalty: 0,
+  top_logprobs: 0,
+  max_tool_calls: null,
+  metadata: {},
+  background: false,
+  previous_response_id: null,
+  service_tier: "auto",
+```
+
 For more details on the Free Models Router API, see the [API Quickstart](https://openrouter.ai/openrouter/free/api).
 
 ## Free Model Limitations

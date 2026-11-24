@@ -8,7 +8,47 @@
 
 Entries on this page are generated automatically from [OpenAPI specification](api_reference/overview.md) diffs when releases ship. Breaking changes are reviewed by a human before publication. See [API Versioning](api_reference/versioning.md) for what counts as a breaking change and how deprecations are announced. Endpoint paths are shown relative to the API base URL (`https://openrouter.ai/api/v1`).
 
+**November 24, 2026**
+
+## Modified endpoints
+
+* [`GET /byok`](api/api-reference/byok/list-byok-provider-credentials.md): response schema updated
+* [`POST /byok`](api/api-reference/byok/create-a-byok-provider-credential.md): response schema updated
+* [`GET /byok/{id}`](api/api-reference/byok/get-a-byok-provider-credential.md): response schema updated
+* [`PATCH /byok/{id}`](api/api-reference/byok/update-a-byok-provider-credential.md): response schema updated
+* [`POST /audio/speech`](api/api-reference/tts/create-speech.md): description updated
+
+## Modified schemas
+
+* `BYOKKey`: example modified; new property `is_exclusive` (always present)
+
+  **4 endpoints using this schema**
+
+  * [`GET /byok`](api/api-reference/byok/list-byok-provider-credentials.md)
+  * [`GET /byok/{id}`](api/api-reference/byok/get-a-byok-provider-credential.md)
+  * [`PATCH /byok/{id}`](api/api-reference/byok/update-a-byok-provider-credential.md)
+  * [`POST /byok`](api/api-reference/byok/create-a-byok-provider-credential.md)
+* `CreateBYOKKeyRequest`: new property `is_exclusive`
+  * Used by [`POST /byok`](api/api-reference/byok/create-a-byok-provider-credential.md)
+* `CreateBYOKKeyResponse`: example modified
+  * Used by [`POST /byok`](api/api-reference/byok/create-a-byok-provider-credential.md)
+* `GetBYOKKeyResponse`: example modified
+  * Used by [`GET /byok/{id}`](api/api-reference/byok/get-a-byok-provider-credential.md)
+* `ListBYOKKeysResponse`: example modified
+  * Used by [`GET /byok`](api/api-reference/byok/list-byok-provider-credentials.md)
+* `UpdateBYOKKeyRequest`: new property `is_exclusive`
+  * Used by [`PATCH /byok/{id}`](api/api-reference/byok/update-a-byok-provider-credential.md)
+* `UpdateBYOKKeyResponse`: example modified
+  * Used by [`PATCH /byok/{id}`](api/api-reference/byok/update-a-byok-provider-credential.md)
+* `SpeechRequest`: new property `output_delivery`
+  * Used by [`POST /audio/speech`](api/api-reference/tts/create-speech.md)
+
 **November 23, 2026**
+
+## Modified endpoints
+
+* [`POST /images`](api/api-reference/images/generate-an-image.md): request schema updated; response schema updated
+* [`DELETE /scim/group-mappings/{id}`](api/api-reference/scim/delete-a-scim-group-mapping.md): description updated
 
 ## New schemas
 
@@ -24,6 +64,44 @@ Entries on this page are generated automatically from [OpenAPI specification](ap
   * Used by [`POST /messages`](api/api-reference/anthropic-messages/create-a-message.md), [`POST /presets/{slug}/messages`](api/api-reference/presets/create-a-preset-from-a-messages-request-body.md)
 * `MessagesToolSearchToolSearchResult`
   * Used by [`POST /messages`](api/api-reference/anthropic-messages/create-a-message.md), [`POST /presets/{slug}/messages`](api/api-reference/presets/create-a-preset-from-a-messages-request-body.md)
+
+## Modified schemas
+
+* `ImageGenerationRequest`: example modified
+  * Used by [`POST /images`](api/api-reference/images/generate-an-image.md)
+* `ImageGenerationResponse`: example modified
+  * Used by [`POST /images`](api/api-reference/images/generate-an-image.md)
+* `CreateGuardrailRequest`: new property `allow_provisional_providers`
+  * Used by [`POST /guardrails`](api/api-reference/guardrails/create-a-guardrail.md)
+* `Guardrail`: new property `allow_provisional_providers`
+
+  **4 endpoints using this schema**
+
+  * [`GET /guardrails`](api/api-reference/guardrails/list-guardrails.md)
+  * [`GET /guardrails/{id}`](api/api-reference/guardrails/get-a-guardrail.md)
+  * [`PATCH /guardrails/{id}`](api/api-reference/guardrails/update-a-guardrail.md)
+  * [`POST /guardrails`](api/api-reference/guardrails/create-a-guardrail.md)
+* `GuardrailModelAvailabilityPolicyAuthoringConfig`: new property `allow_provisional_providers`
+
+  **4 endpoints using this schema**
+
+  * [`POST /guardrails/policies/account`](api/api-reference/guardrail-policies/create-a-workspace-wide-policy.md)
+  * [`POST /guardrails/policies/model-availability`](api/api-reference/guardrail-policies/create-a-model-availability-policy.md)
+  * [`PUT /guardrails/policies/account/{id}`](api/api-reference/guardrail-policies/update-a-workspace-wide-policy.md)
+  * [`PUT /guardrails/policies/model-availability/{id}`](api/api-reference/guardrail-policies/update-a-model-availability-policy.md)
+* `GuardrailModelAvailabilityPolicyConfig`: new property `allow_provisional_providers`
+
+  **7 endpoints using this schema**
+
+  * [`GET /guardrails/policies/account`](api/api-reference/guardrail-policies/list-workspace-wide-policies.md)
+  * [`GET /guardrails/policies/model-availability`](api/api-reference/guardrail-policies/list-model-availability-policies.md)
+  * [`GET /guardrails/policies/model-availability/{id}`](api/api-reference/guardrail-policies/get-a-model-availability-policy.md)
+  * [`POST /guardrails/policies/account`](api/api-reference/guardrail-policies/create-a-workspace-wide-policy.md)
+  * [`POST /guardrails/policies/model-availability`](api/api-reference/guardrail-policies/create-a-model-availability-policy.md)
+  * [`PUT /guardrails/policies/account/{id}`](api/api-reference/guardrail-policies/update-a-workspace-wide-policy.md)
+  * [`PUT /guardrails/policies/model-availability/{id}`](api/api-reference/guardrail-policies/update-a-model-availability-policy.md)
+* `UpdateGuardrailRequest`: new property `allow_provisional_providers`
+  * Used by [`PATCH /guardrails/{id}`](api/api-reference/guardrails/update-a-guardrail.md)
 
 **November 21, 2026**
 

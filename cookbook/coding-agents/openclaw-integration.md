@@ -333,4 +333,4 @@ Configure different models for different messaging channels:
 * [OpenClaw GitHub](https://github.com/openclaw/openclaw)
 * [OpenRouter Models](https://openrouter.ai/models)
 * [OpenRouter Activity Dashboard](https://openrouter.ai/activity)
-* [OpenRouter API Documentation](https://openrouter.ai/docs/api)
+* [OpenRouter API Documentation](https://openrouter.ai/docs/api.md)

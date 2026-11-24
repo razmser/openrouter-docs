@@ -213,4 +213,4 @@ Hermes requires a model with at least **64K context tokens**. Models with smalle
 * [Hermes Configuring Models](https://hermes-agent.nousresearch.com/docs/user-guide/configuring-models)
 * [OpenRouter Models](https://openrouter.ai/models)
 * [OpenRouter Activity Dashboard](https://openrouter.ai/activity)
-* [OpenRouter API Documentation](https://openrouter.ai/docs/api)
+* [OpenRouter API Documentation](https://openrouter.ai/docs/api.md)

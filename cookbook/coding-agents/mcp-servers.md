@@ -22,6 +22,8 @@ In this example, we'll use [Anthropic's MCP client SDK](https://github.com/model
 
 First, some setup. To run this you'll need to pip install the packages, and create a `.env` file with OPENAI\_API\_KEY set. This example also assumes the directory `/Applications` exists.
 
+The TypeScript and Go tabs are partial examples: they cover this setup and the tool conversion below. The runnable MCP client later on this page is Python only.
+
 ```python expandable lines theme={null}
 import asyncio
 from typing import Optional
@@ -47,6 +49,38 @@ SERVER_CONFIG = {
 }
 ```
 
+```typescript title="TypeScript (setup only)" lines theme={null}
+import { OpenRouter } from "@openrouter/sdk";
+
+const MODEL = "~anthropic/claude-sonnet-latest";
+
+const SERVER_CONFIG = {
+  command: "npx",
+  args: ["-y", "@modelcontextprotocol/server-filesystem", "/Applications/"],
+  env: null,
+};
+
+```
+
+```go title="Go (setup only)" lines theme={null}
+const MODEL = "~anthropic/claude-sonnet-latest"
+
+type ServerConfig struct {
+	Command string            `json:"command"`
+	Args    []string          `json:"args"`
+	Env     map[string]string `json:"env"`
+}
+
+var SERVER_CONFIG = ServerConfig{
+	Command: "npx",
+	Args: []string{"-y",
+		"@modelcontextprotocol/server-filesystem",
+		"/Applications/"},
+	Env: nil,
+}
+
+```
+
 Next, our helper function to convert MCP tool definitions to [Responses API](../../api_reference/responses/overview.md) function tool definitions:
 
 ```python lines theme={null}
@@ -64,6 +98,52 @@ def convert_tool_format(tool):
     }
     return converted_tool
 
+```
+
+```typescript title="TypeScript (conversion only)" lines theme={null}
+function convertToolFormat(tool: any) {
+  const convertedTool = {
+    type: "function",
+    name: tool.name,
+    description: tool.description,
+    parameters: {
+      type: "object",
+      properties: tool.inputSchema.properties ?? {},
+      required: tool.inputSchema.required ?? [],
+    },
+  };
+  return convertedTool;
+}
+```
+
+```go title="Go (conversion only)" lines theme={null}
+// Tool holds the fields of an MCP tool definition that the conversion reads.
+type Tool struct {
+	Name        string         `json:"name"`
+	Description string         `json:"description"`
+	InputSchema map[string]any `json:"inputSchema"`
+}
+
+func convertToolFormat(tool Tool) map[string]any {
+	properties, ok := tool.InputSchema["properties"]
+	if !ok {
+		properties = map[string]any{}
+	}
+	required, ok := tool.InputSchema["required"]
+	if !ok {
+		required = []any{}
+	}
+	return map[string]any{
+		"type":        "function",
+		"name":        tool.Name,
+		"description": tool.Description,
+		"parameters": map[string]any{
+			"type":       "object",
+			"properties": properties,
+			"required":   required,
+		},
+	}
+}
 ```
 
 And, the MCP client itself; a regrettable \~100 lines of code. Note that the SERVER\_CONFIG is hard-coded into the client, but of course could be parameterized for other MCP servers.

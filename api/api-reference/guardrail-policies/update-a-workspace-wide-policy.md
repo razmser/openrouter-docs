@@ -806,6 +806,10 @@ components:
         enforce_zdr_anthropic: true
         enforce_zdr_openai: true
       properties:
+        allow_provisional_providers:
+          type:
+            - boolean
+            - 'null'
         allow_safety_retention_google:
           type:
             - boolean
@@ -1357,6 +1361,10 @@ components:
         enforce_zdr_anthropic: true
         enforce_zdr_openai: true
       properties:
+        allow_provisional_providers:
+          type:
+            - boolean
+            - 'null'
         allow_safety_retention_google:
           type:
             - boolean

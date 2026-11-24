@@ -62,6 +62,33 @@ Fetch the model list and choose a model whose `supported_frame_images` includes 
 curl https://openrouter.ai/api/v1/videos/models
 ```
 
+```typescript title="TypeScript" lines theme={null}
+const response = await fetch('https://openrouter.ai/api/v1/videos/models');
+const models = await response.json();
+```
+
+```python title="Python" lines theme={null}
+import requests  # pip install requests
+
+response = requests.get("https://openrouter.ai/api/v1/videos/models")
+print(response.text)
+```
+
+```go title="Go" lines theme={null}
+resp, err := http.Get("https://openrouter.ai/api/v1/videos/models")
+if err != nil {
+	log.Fatal(err)
+}
+defer resp.Body.Close()
+
+body, err := io.ReadAll(resp.Body)
+if err != nil {
+	log.Fatal(err)
+}
+fmt.Println(string(body))
+
+```
+
 Example model output excerpt:
 
 ```json lines theme={null}

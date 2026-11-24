@@ -2,7 +2,7 @@
 
 Markdown mirror of [OpenRouter's documentation](https://openrouter.ai/docs/quickstart).
 
-Contains **560 pages**, discovered from the [page index](https://openrouter.ai/docs/llms.txt) and [supplementary index](https://openrouter.ai/docs/sitemap.xml).
+Contains **561 pages**, discovered from the [page index](https://openrouter.ai/docs/llms.txt) and [supplementary index](https://openrouter.ai/docs/sitemap.xml).
 
 Links to mirrored pages point to local files; external links and images remain online. Code examples and OpenAPI blocks are preserved.
 
@@ -490,6 +490,7 @@ Generated files are replaced by the next successful sync. Original content belon
 - [Response Healing](guides/features/plugins/response-healing.md)
 - [Web Search](guides/features/plugins/web-search.md)
 - [Presets](guides/features/presets.md)
+- [Rankings Methodology](guides/features/rankings-methodology.md)
 - [Response Caching](guides/features/response-caching.md)
 - [SCIM Group Mappings](guides/features/scim-mappings.md)
 - [Server Tools](guides/features/server-tools.md)
