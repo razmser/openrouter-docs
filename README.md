@@ -2,7 +2,7 @@
 
 Markdown mirror of [OpenRouter's documentation](https://openrouter.ai/docs/quickstart).
 
-Contains **561 pages**, discovered from the [page index](https://openrouter.ai/docs/llms.txt) and [supplementary index](https://openrouter.ai/docs/sitemap.xml).
+Contains **563 pages**, discovered from the [page index](https://openrouter.ai/docs/llms.txt) and [supplementary index](https://openrouter.ai/docs/sitemap.xml).
 
 Links to mirrored pages point to local files; external links and images remain online. Code examples and OpenAPI blocks are preserved.
 
@@ -46,6 +46,7 @@ Generated files are replaced by the next successful sync. Original content belon
 - [Create a batch](api/api-reference/batch/create-a-batch.md)
 - [Delete a batch](api/api-reference/batch/delete-a-batch.md)
 - [Get a batch](api/api-reference/batch/get-a-batch.md)
+- [Get batch results](api/api-reference/batch/get-batch-results.md)
 - [List batches](api/api-reference/batch/list-batches.md)
 - [List Benchmarks](api/api-reference/benchmarks/list-benchmarks.md)
 - [Create a BYOK provider credential](api/api-reference/byok/create-a-byok-provider-credential.md)
@@ -210,6 +211,7 @@ Generated files are replaced by the next successful sync. Original content belon
 - [API Reference](api_reference/overview.md)
 - [Parameters](api_reference/parameters.md)
 - [Basic Usage](api_reference/responses/basic-usage.md)
+- [Compaction](api_reference/responses/compaction.md)
 - [Error Handling](api_reference/responses/error-handling.md)
 - [Responses API](api_reference/responses/overview.md)
 - [Reasoning](api_reference/responses/reasoning.md)

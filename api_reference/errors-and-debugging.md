@@ -185,6 +185,10 @@ Hello! How can I assist you today?
 * **502**: Your chosen model is down or we received an invalid response from it
 * **503**: There is no available model provider that meets your routing requirements
 
+If `POST /api/v1/chat/completions` rejects your video-only model, submit a new request to `POST /api/v1/videos` without a `messages` array. To generate a video from text, send a top-level `prompt`. To upscale a video, send the source video in `input_references` as shown in the [video upscale request example](../guides/overview/multimodal/video-generation.md#submitting-a-video-upscale-request). Runway video upscale requires one `video_url` entry and rejects `prompt`. The [Video Generation guide](../guides/overview/multimodal/video-generation.md#submitting-a-video-generation-request) shows how to submit a job, poll for completion, and download the video.
+
+The asynchronous video API has its own statuses for job retrieval, such as `404` before a job completes and `410` after its content expires. See the [Video API error reference](videos.md#errors).
+
 ## Retry-After header
 
 On `429` and `503` responses, and on `402` responses whose `error.metadata.limit_source` is `openrouter_in_flight_budget` (see [In-flight spending budget](limits.md#in-flight-spending-budget)), OpenRouter may include a standard HTTP `Retry-After` response header indicating how many seconds to wait before retrying. A `402` without the header is not a wait-and-retry case; see [Handling 402 errors](limits.md#handling-402-errors).

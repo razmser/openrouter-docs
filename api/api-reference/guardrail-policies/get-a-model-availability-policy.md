@@ -566,6 +566,10 @@ components:
           type:
             - boolean
             - 'null'
+        allow_safety_retention_openai:
+          type:
+            - boolean
+            - 'null'
         allow_safety_retention_other:
           type:
             - boolean

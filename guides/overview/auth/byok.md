@@ -165,7 +165,7 @@ OpenRouter fails closed where it cannot rely on your account alone to keep the r
 * Cross-region inference profiles, such as Bedrock `global.` profiles, which can process a request in any region.
 * Video generation models.
 
-A [guardrail](../../features/guardrails.md) that restricts `allowed_data_regions` does not yet recognize the declaration. It judges every endpoint, including your key's, by OpenRouter's own classification, so under such a guardrail the key's endpoint for a shared endpoint outside the region is removed even though the region declaration would otherwise allow it. Until the guardrail learns about declarations, a region declaration only widens routing for requests whose guardrails do not restrict `allowed_data_regions`.
+A [guardrail](../../features/guardrails.md) that restricts `allowed_data_regions` recognizes the declaration under the same rules. Your key's endpoint passes the guardrail when the key declares a region the guardrail allows, the declaration can apply to that endpoint, and the provider supports a declared region (OpenAI, Azure, or Anthropic). For any other provider, the guardrail judges your key's endpoint by OpenRouter's classification only. OpenRouter's own endpoints are still judged by OpenRouter's classification, so a declaration never makes an OpenRouter-credit endpoint pass the guardrail.
 
 ### BYOK and Guardrail Budgets
 
@@ -289,22 +289,27 @@ curl https://openrouter.ai/api/v1/byok/11111111-2222-3333-4444-555555555555 \
 
 #### Managing Shared Capacity Fallback via the Management API
 
-The **Shared capacity fallback** setting maps to two boolean fields on the same endpoints:
+The **Shared capacity fallback** setting maps to three boolean fields on the same endpoints:
 
 | UI setting | API fields |
 | - | - |
-| Use shared capacity (default) | `is_required: false`, `is_byok_only: false` |
-| Never use shared capacity for models this key applies to | `is_required: true` |
-| Never use shared capacity for any model on this provider | `is_byok_only: true` |
+| Use shared capacity (default) | `is_required: false`, `is_byok_only: false`, `is_exclusive: false` |
+| Never use shared capacity for models this key applies to | `is_required: true`, `is_byok_only: false`, `is_exclusive: false` |
+| Never use shared capacity for any model on this provider | `is_required: false`, `is_byok_only: true`, `is_exclusive: false` |
+| Never use any other provider or key for this key's models | `is_required: true`, `is_byok_only: false`, `is_exclusive: true` |
 
-Both default to `false` on create, and omitting either on update leaves the stored value unchanged. `is_byok_only` cannot be combined with `is_fallback: true`, because a fallback key only runs after shared endpoints have been tried. Sending both returns a `400` error, whether in the same request or when the stored key already has the other flag set. `is_required` and `is_byok_only` may both be `true`; in that case `is_byok_only` takes precedence and the provider is fully blocked from shared capacity.
+All three default to `false` on create, and omitting any of them on update leaves the stored value unchanged. When switching modes with PATCH, send all three values from the table to clear any flags left over from the previous mode. `is_byok_only` cannot be combined with `is_fallback: true`, because a fallback key only runs after shared endpoints have been tried. Sending both returns a `400` error, whether in the same request or when the stored key already has the other flag set. `is_required` and `is_byok_only` may both be `true`; in that case `is_byok_only` takes precedence and the provider is fully blocked from shared capacity.
+
+`is_exclusive: true` carries two rules of its own. It cannot be combined with `is_fallback: true` either, because an exclusive key excludes the endpoints a fallback key depends on. It also needs a model scope, which the request fails without: either a non-empty `allowed_models` list, or a provider that authors the models it serves (`openai`, `anthropic`, `google`, `google-ai-studio`). A `400` error names the missing scope. With `allowed_models` set, an exclusive credential covers the listed models and any variants of a listed base model. Without an allowlist, a lab credential covers every closed-weight model from that lab wherever it is hosted.
 
 ```bash theme={null}
 curl -X PATCH https://openrouter.ai/api/v1/byok/11111111-2222-3333-4444-555555555555 \
   -H "Authorization: Bearer $OPENROUTER_MANAGEMENT_KEY" \
   -H "Content-Type: application/json" \
   -d '{
-    "is_byok_only": true
+    "is_required": false,
+    "is_byok_only": true,
+    "is_exclusive": false
   }'
 ```
 

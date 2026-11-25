@@ -304,890 +304,7 @@ components:
           type: object
         results:
           items:
-            properties:
-              custom_id:
-                type: string
-              error:
-                properties:
-                  error_type:
-                    $ref: '#/components/schemas/ApiErrorType'
-                  message:
-                    type: string
-                  param:
-                    type:
-                      - string
-                      - 'null'
-                  type:
-                    type: string
-                required:
-                  - type
-                  - message
-                  - param
-                type:
-                  - object
-                  - 'null'
-              id:
-                type: string
-              response:
-                properties:
-                  body:
-                    anyOf:
-                      - properties:
-                          alignment:
-                            $ref: '#/components/schemas/Alignment'
-                          choices:
-                            items:
-                              properties:
-                                finish_reason:
-                                  $ref: '#/components/schemas/FinishReason'
-                                index:
-                                  type: integer
-                                logprobs:
-                                  properties:
-                                    content:
-                                      items:
-                                        properties:
-                                          bytes:
-                                            items:
-                                              type: integer
-                                            type:
-                                              - array
-                                              - 'null'
-                                          logprob:
-                                            format: double
-                                            type: number
-                                          token:
-                                            type: string
-                                          top_logprobs:
-                                            items:
-                                              properties:
-                                                bytes:
-                                                  items:
-                                                    type: integer
-                                                  type:
-                                                    - array
-                                                    - 'null'
-                                                logprob:
-                                                  format: double
-                                                  type: number
-                                                token:
-                                                  type: string
-                                              required:
-                                                - token
-                                                - bytes
-                                                - logprob
-                                              type: object
-                                            type: array
-                                        required:
-                                          - token
-                                          - bytes
-                                          - logprob
-                                          - top_logprobs
-                                        type: object
-                                      type:
-                                        - array
-                                        - 'null'
-                                    refusal:
-                                      default: null
-                                      items:
-                                        properties:
-                                          bytes:
-                                            items:
-                                              type: integer
-                                            type:
-                                              - array
-                                              - 'null'
-                                          logprob:
-                                            format: double
-                                            type: number
-                                          token:
-                                            type: string
-                                          top_logprobs:
-                                            items:
-                                              properties:
-                                                bytes:
-                                                  items:
-                                                    type: integer
-                                                  type:
-                                                    - array
-                                                    - 'null'
-                                                logprob:
-                                                  format: double
-                                                  type: number
-                                                token:
-                                                  type: string
-                                              required:
-                                                - token
-                                                - bytes
-                                                - logprob
-                                              type: object
-                                            type: array
-                                        required:
-                                          - token
-                                          - bytes
-                                          - logprob
-                                          - top_logprobs
-                                        type: object
-                                      type:
-                                        - array
-                                        - 'null'
-                                  required:
-                                    - content
-                                  type:
-                                    - object
-                                    - 'null'
-                                message:
-                                  properties:
-                                    annotations:
-                                      items:
-                                        oneOf:
-                                          - properties:
-                                              file:
-                                                properties:
-                                                  content:
-                                                    items:
-                                                      oneOf:
-                                                        - properties:
-                                                            text:
-                                                              type: string
-                                                            type:
-                                                              enum:
-                                                                - text
-                                                              type: string
-                                                          required:
-                                                            - type
-                                                            - text
-                                                          type: object
-                                                        - properties:
-                                                            image_url:
-                                                              properties:
-                                                                url:
-                                                                  type: string
-                                                              required:
-                                                                - url
-                                                              type: object
-                                                            type:
-                                                              enum:
-                                                                - image_url
-                                                              type: string
-                                                          required:
-                                                            - type
-                                                            - image_url
-                                                          type: object
-                                                    type: array
-                                                  hash:
-                                                    type: string
-                                                  name:
-                                                    type: string
-                                                required:
-                                                  - hash
-                                                  - content
-                                                type: object
-                                              type:
-                                                enum:
-                                                  - file
-                                                type: string
-                                            required:
-                                              - type
-                                              - file
-                                            type: object
-                                          - properties:
-                                              type:
-                                                enum:
-                                                  - url_citation
-                                                type: string
-                                              url_citation:
-                                                properties:
-                                                  content:
-                                                    type: string
-                                                  end_index:
-                                                    type: integer
-                                                  start_index:
-                                                    type: integer
-                                                  title:
-                                                    type: string
-                                                  uncited:
-                                                    const: true
-                                                    type: boolean
-                                                  url:
-                                                    type: string
-                                                required:
-                                                  - url
-                                                  - start_index
-                                                  - end_index
-                                                  - title
-                                                type: object
-                                            required:
-                                              - type
-                                              - url_citation
-                                            type: object
-                                          - properties:
-                                              type:
-                                                enum:
-                                                  - web_search_citation
-                                                type: string
-                                              web_search_citation:
-                                                properties:
-                                                  cited_text:
-                                                    type: string
-                                                  encrypted_index:
-                                                    type: string
-                                                  title:
-                                                    type:
-                                                      - string
-                                                      - 'null'
-                                                  url:
-                                                    type: string
-                                                required:
-                                                  - url
-                                                  - title
-                                                type: object
-                                            required:
-                                              - type
-                                              - web_search_citation
-                                            type: object
-                                      type: array
-                                    content:
-                                      type:
-                                        - string
-                                        - 'null'
-                                    images:
-                                      items:
-                                        properties:
-                                          image_url:
-                                            properties:
-                                              url:
-                                                minLength: 1
-                                                type: string
-                                            required:
-                                              - url
-                                            type: object
-                                          type:
-                                            enum:
-                                              - image_url
-                                            type: string
-                                        required:
-                                          - type
-                                          - image_url
-                                        type: object
-                                      type:
-                                        - array
-                                        - 'null'
-                                    reasoning:
-                                      type:
-                                        - string
-                                        - 'null'
-                                    reasoning_details:
-                                      items:
-                                        anyOf:
-                                          - $ref: >-
-                                              #/components/schemas/ReasoningDetailSummary
-                                          - $ref: >-
-                                              #/components/schemas/ReasoningDetailEncrypted
-                                          - $ref: '#/components/schemas/ReasoningDetailText'
-                                          - $ref: >-
-                                              #/components/schemas/ReasoningDetailServerToolCall
-                                          - type: 'null'
-                                          - type: 'null'
-                                      type:
-                                        - array
-                                        - 'null'
-                                    refusal:
-                                      type:
-                                        - string
-                                        - 'null'
-                                    role:
-                                      enum:
-                                        - assistant
-                                      type: string
-                                    tool_calls:
-                                      items:
-                                        properties:
-                                          function:
-                                            properties:
-                                              arguments:
-                                                type: string
-                                              name:
-                                                type: string
-                                            required:
-                                              - name
-                                              - arguments
-                                            type: object
-                                          id:
-                                            type: string
-                                          index:
-                                            type: integer
-                                          type:
-                                            enum:
-                                              - function
-                                            type: string
-                                        required:
-                                          - index
-                                          - id
-                                          - type
-                                          - function
-                                        type: object
-                                      type: array
-                                  required:
-                                    - role
-                                    - content
-                                    - refusal
-                                  type: object
-                                native_finish_reason:
-                                  type:
-                                    - string
-                                    - 'null'
-                              required:
-                                - index
-                                - message
-                                - finish_reason
-                                - native_finish_reason
-                                - logprobs
-                              type: object
-                            type: array
-                          created:
-                            type: integer
-                          debug:
-                            additionalProperties: {}
-                            properties:
-                              echo_upstream_body:
-                                additionalProperties: {}
-                                type: object
-                              timings:
-                                properties:
-                                  epoch_ms:
-                                    type: integer
-                                  event:
-                                    enum:
-                                      - adapter_request
-                                      - upstream_headers_received
-                                      - first_token_received
-                                      - upstream_body_ended
-                                    type: string
-                                  start_ms:
-                                    type: integer
-                                required:
-                                  - start_ms
-                                  - event
-                                  - epoch_ms
-                                type: object
-                            type: object
-                          id:
-                            type: string
-                          model:
-                            type: string
-                          object:
-                            enum:
-                              - chat.completion
-                            type: string
-                          openrouter_metadata:
-                            $ref: '#/components/schemas/OpenRouterMetadata'
-                          provider:
-                            type:
-                              - string
-                              - 'null'
-                          safeguard_results:
-                            description: >-
-                              OpenRouter Armor's verdict for each client tool
-                              call of this response, present whenever Armor
-                              evaluated the response (even when nothing was
-                              flagged). Independent of the `openrouter_metadata`
-                              opt-in.
-                            items:
-                              $ref: '#/components/schemas/ArmorSafeguardResult'
-                            type: array
-                          service_tier:
-                            type:
-                              - string
-                              - 'null'
-                          system_fingerprint:
-                            type:
-                              - string
-                              - 'null'
-                          usage:
-                            properties:
-                              completion_tokens:
-                                description: The tokens generated
-                                type: integer
-                              completion_tokens_details:
-                                properties:
-                                  audio_tokens:
-                                    description: >-
-                                      Tokens generated by the model for audio
-                                      output.
-                                    type:
-                                      - integer
-                                      - 'null'
-                                  image_tokens:
-                                    description: >-
-                                      Tokens generated by the model for image
-                                      output.
-                                    type:
-                                      - integer
-                                      - 'null'
-                                  reasoning_tokens:
-                                    description: >-
-                                      Tokens generated by the model for
-                                      reasoning.
-                                    type:
-                                      - integer
-                                      - 'null'
-                                type:
-                                  - object
-                                  - 'null'
-                              prompt_tokens:
-                                description: >-
-                                  Including images, input audio, and tools if
-                                  any
-                                type: integer
-                              prompt_tokens_details:
-                                description: Breakdown of tokens used in the prompt.
-                                properties:
-                                  audio_tokens:
-                                    description: Tokens used for input audio.
-                                    type:
-                                      - integer
-                                      - 'null'
-                                  cache_write_tokens:
-                                    description: >-
-                                      Tokens written to cache. Only returned for
-                                      models with explicit caching and cache
-                                      write pricing.
-                                    type:
-                                      - integer
-                                      - 'null'
-                                  cached_tokens:
-                                    description: Tokens cached by the endpoint.
-                                    type:
-                                      - integer
-                                      - 'null'
-                                  file_tokens:
-                                    description: Tokens used for input files/documents.
-                                    type:
-                                      - integer
-                                      - 'null'
-                                  video_tokens:
-                                    description: Tokens used for input video.
-                                    type:
-                                      - integer
-                                      - 'null'
-                                type:
-                                  - object
-                                  - 'null'
-                              server_tool_use:
-                                description: >-
-                                  Usage for server-side tool execution (e.g.,
-                                  web search)
-                                properties:
-                                  tool_calls_executed:
-                                    description: >-
-                                      Number of OpenRouter server tool calls
-                                      that executed and produced a result.
-                                    type:
-                                      - integer
-                                      - 'null'
-                                  tool_calls_requested:
-                                    description: >-
-                                      Total number of OpenRouter
-                                      server-orchestrated tool calls the model
-                                      requested, across all tool types.
-                                      Provider-native tools (e.g. native web
-                                      search) are not counted here.
-                                    type:
-                                      - integer
-                                      - 'null'
-                                  web_search_requests:
-                                    description: >-
-                                      Number of web searches performed by
-                                      server-side tools. For server-orchestrated
-                                      tool calls a web search is also counted in
-                                      tool_calls_requested; provider-native web
-                                      search may report web_search_requests
-                                      only. Do not sum the two.
-                                    type:
-                                      - integer
-                                      - 'null'
-                                type:
-                                  - object
-                                  - 'null'
-                              server_tool_use_details:
-                                description: >-
-                                  Usage for server-side tool execution (e.g.,
-                                  web search)
-                                properties:
-                                  tool_calls_executed:
-                                    description: >-
-                                      Number of OpenRouter server tool calls
-                                      that executed and produced a result.
-                                    type:
-                                      - integer
-                                      - 'null'
-                                  tool_calls_requested:
-                                    description: >-
-                                      Total number of OpenRouter
-                                      server-orchestrated tool calls the model
-                                      requested, across all tool types.
-                                      Provider-native tools (e.g. native web
-                                      search) are not counted here.
-                                    type:
-                                      - integer
-                                      - 'null'
-                                  web_search_requests:
-                                    description: >-
-                                      Number of web searches performed by
-                                      server-side tools. For server-orchestrated
-                                      tool calls a web search is also counted in
-                                      tool_calls_requested; provider-native web
-                                      search may report web_search_requests
-                                      only. Do not sum the two.
-                                    type:
-                                      - integer
-                                      - 'null'
-                                type:
-                                  - object
-                                  - 'null'
-                              total_tokens:
-                                description: Sum of the above two fields
-                                type: integer
-                            required:
-                              - prompt_tokens
-                              - completion_tokens
-                              - total_tokens
-                            type: object
-                        required:
-                          - model
-                          - id
-                          - created
-                          - object
-                          - choices
-                        type: object
-                      - $ref: '#/components/schemas/OpenResponsesResult'
-                      - properties:
-                          container:
-                            $ref: '#/components/schemas/AnthropicContainer'
-                          content:
-                            items:
-                              $ref: '#/components/schemas/ORAnthropicContentBlock'
-                            type: array
-                          id:
-                            type: string
-                          input_transformations:
-                            items:
-                              $ref: >-
-                                #/components/schemas/AnthropicInputTransformation
-                            type:
-                              - array
-                              - 'null'
-                          model:
-                            type: string
-                          role:
-                            enum:
-                              - assistant
-                            type: string
-                          stop_details:
-                            $ref: '#/components/schemas/AnthropicRefusalStopDetails'
-                          stop_reason:
-                            $ref: '#/components/schemas/ORAnthropicStopReason'
-                          stop_sequence:
-                            type:
-                              - string
-                              - 'null'
-                          type:
-                            enum:
-                              - message
-                            type: string
-                          usage:
-                            allOf:
-                              - $ref: '#/components/schemas/AnthropicUsage'
-                              - properties:
-                                  iterations:
-                                    items:
-                                      $ref: >-
-                                        #/components/schemas/AnthropicUsageIteration
-                                    type: array
-                                  speed:
-                                    $ref: '#/components/schemas/AnthropicSpeed'
-                                type: object
-                            example:
-                              cache_creation: null
-                              cache_creation_input_tokens: null
-                              cache_read_input_tokens: null
-                              inference_geo: null
-                              input_tokens: 100
-                              output_tokens: 50
-                              output_tokens_details: null
-                              server_tool_use: null
-                              service_tier: standard
-                        required:
-                          - id
-                          - type
-                          - role
-                          - container
-                          - content
-                          - model
-                          - stop_reason
-                          - stop_details
-                          - stop_sequence
-                          - usage
-                        type: object
-                      - description: Embeddings response containing embedding vectors
-                        example:
-                          data:
-                            - embedding:
-                                - 0.0023064255
-                                - -0.009327292
-                                - 0.015797347
-                              index: 0
-                              object: embedding
-                          model: openai/text-embedding-3-small
-                          object: list
-                          usage:
-                            prompt_tokens: 8
-                            total_tokens: 8
-                        properties:
-                          data:
-                            description: List of embedding objects
-                            example:
-                              - embedding:
-                                  - 0.0023064255
-                                  - -0.009327292
-                                  - 0.015797347
-                                index: 0
-                                object: embedding
-                            items:
-                              description: A single embedding object
-                              example:
-                                embedding:
-                                  - 0.0023064255
-                                  - -0.009327292
-                                  - 0.015797347
-                                index: 0
-                                object: embedding
-                              properties:
-                                document_index:
-                                  description: >-
-                                    Index of the source document when `input`
-                                    was a list of documents (contextual
-                                    embeddings). Absent otherwise.
-                                  example: 0
-                                  type: integer
-                                embedding:
-                                  anyOf:
-                                    - items:
-                                        type: number
-                                      type: array
-                                    - type: string
-                                  description: >-
-                                    Embedding vector as an array of floats or a
-                                    base64 string
-                                  example:
-                                    - 0.0023064255
-                                    - -0.009327292
-                                    - 0.015797347
-                                index:
-                                  description: Index of the embedding in the input list
-                                  example: 0
-                                  type: integer
-                                object:
-                                  enum:
-                                    - embedding
-                                  type: string
-                              required:
-                                - object
-                                - embedding
-                              type: object
-                            type: array
-                          id:
-                            description: Unique identifier for the embeddings response
-                            example: embd-1234567890
-                            type: string
-                          model:
-                            description: The model used for embeddings
-                            example: openai/text-embedding-3-small
-                            type: string
-                          object:
-                            enum:
-                              - list
-                            type: string
-                          usage:
-                            description: Token usage statistics
-                            example:
-                              prompt_tokens: 8
-                              total_tokens: 8
-                            properties:
-                              cost:
-                                description: Cost of the request in credits
-                                example: 0.0001
-                                format: double
-                                type: number
-                              cost_details:
-                                $ref: '#/components/schemas/CostDetails'
-                              is_byok:
-                                description: >-
-                                  Whether a request was made using a Bring Your
-                                  Own Key configuration
-                                type: boolean
-                              prompt_tokens:
-                                description: Number of tokens in the input
-                                example: 8
-                                type: integer
-                              prompt_tokens_details:
-                                description: >-
-                                  Per-modality token breakdown. Only present
-                                  when the input contains 2+ modalities (e.g.
-                                  text + image) and the upstream provider
-                                  returns modality-level usage data. Only
-                                  non-zero modality counts are included.
-                                properties:
-                                  audio_tokens:
-                                    description: Number of audio tokens in the input
-                                    type: integer
-                                  file_tokens:
-                                    description: >-
-                                      Number of file/document tokens in the
-                                      input
-                                    type: integer
-                                  image_tokens:
-                                    description: Number of image tokens in the input
-                                    example: 258
-                                    type: integer
-                                  text_tokens:
-                                    description: Number of text tokens in the input
-                                    example: 8
-                                    type: integer
-                                  video_tokens:
-                                    description: Number of video tokens in the input
-                                    type: integer
-                                type: object
-                              total_tokens:
-                                description: Total number of tokens used
-                                example: 8
-                                type: integer
-                            required:
-                              - prompt_tokens
-                              - total_tokens
-                            type: object
-                        required:
-                          - object
-                          - data
-                          - model
-                        type: object
-                      - additionalProperties: false
-                        properties:
-                          audio:
-                            anyOf:
-                              - additionalProperties: false
-                                properties:
-                                  bits_per_sample:
-                                    enum:
-                                      - 16
-                                    type: number
-                                  channels:
-                                    exclusiveMinimum: true
-                                    minimum: 0
-                                    type: integer
-                                  data:
-                                    description: >-
-                                      Base64-encoded PCM16 audio in the format
-                                      the sibling fields give.
-                                    minLength: 1
-                                    type: string
-                                  format:
-                                    enum:
-                                      - pcm
-                                    type: string
-                                  sample_rate:
-                                    exclusiveMinimum: true
-                                    minimum: 0
-                                    type: integer
-                                required:
-                                  - format
-                                  - sample_rate
-                                  - channels
-                                  - bits_per_sample
-                                  - data
-                                type: object
-                              - additionalProperties: false
-                                properties:
-                                  bits_per_sample:
-                                    enum:
-                                      - 16
-                                    type: number
-                                  byte_length:
-                                    exclusiveMinimum: true
-                                    minimum: 0
-                                    type: integer
-                                  channels:
-                                    exclusiveMinimum: true
-                                    minimum: 0
-                                    type: integer
-                                  format:
-                                    enum:
-                                      - pcm
-                                    type: string
-                                  sample_rate:
-                                    exclusiveMinimum: true
-                                    minimum: 0
-                                    type: integer
-                                  sha256:
-                                    pattern: ^[0-9a-f]{64}$
-                                    type: string
-                                required:
-                                  - format
-                                  - sample_rate
-                                  - channels
-                                  - bits_per_sample
-                                  - byte_length
-                                  - sha256
-                                type: object
-                          model:
-                            type: string
-                          object:
-                            enum:
-                              - audio.speech
-                            type: string
-                          usage:
-                            additionalProperties: false
-                            properties:
-                              completion_tokens:
-                                minimum: 0
-                                type: integer
-                              prompt_tokens:
-                                minimum: 0
-                                type: integer
-                              total_tokens:
-                                minimum: 0
-                                type: integer
-                            required:
-                              - prompt_tokens
-                              - completion_tokens
-                              - total_tokens
-                            type: object
-                        required:
-                          - object
-                          - model
-                          - audio
-                          - usage
-                        type: object
-                  request_id:
-                    type:
-                      - string
-                      - 'null'
-                  status_code:
-                    type: integer
-                required:
-                  - status_code
-                  - request_id
-                  - body
-                type:
-                  - object
-                  - 'null'
-            required:
-              - id
-              - custom_id
-              - response
-              - error
-            type: object
+            $ref: '#/components/schemas/BatchResult'
           type:
             - array
             - 'null'
@@ -1613,6 +730,944 @@ components:
       required:
         - uri
       type: object
+    BatchResult:
+      properties:
+        custom_id:
+          type: string
+        error:
+          properties:
+            error_type:
+              $ref: '#/components/schemas/ApiErrorType'
+            message:
+              type: string
+            param:
+              type:
+                - string
+                - 'null'
+            type:
+              type: string
+          required:
+            - type
+            - message
+            - param
+          type:
+            - object
+            - 'null'
+        id:
+          type: string
+        response:
+          properties:
+            body:
+              anyOf:
+                - properties:
+                    alignment:
+                      $ref: '#/components/schemas/Alignment'
+                    choices:
+                      items:
+                        properties:
+                          finish_reason:
+                            $ref: '#/components/schemas/FinishReason'
+                          index:
+                            type: integer
+                          logprobs:
+                            properties:
+                              content:
+                                items:
+                                  properties:
+                                    bytes:
+                                      items:
+                                        type: integer
+                                      type:
+                                        - array
+                                        - 'null'
+                                    logprob:
+                                      format: double
+                                      type: number
+                                    token:
+                                      type: string
+                                    top_logprobs:
+                                      items:
+                                        properties:
+                                          bytes:
+                                            items:
+                                              type: integer
+                                            type:
+                                              - array
+                                              - 'null'
+                                          logprob:
+                                            format: double
+                                            type: number
+                                          token:
+                                            type: string
+                                        required:
+                                          - token
+                                          - bytes
+                                          - logprob
+                                        type: object
+                                      type: array
+                                  required:
+                                    - token
+                                    - bytes
+                                    - logprob
+                                    - top_logprobs
+                                  type: object
+                                type:
+                                  - array
+                                  - 'null'
+                              refusal:
+                                default: null
+                                items:
+                                  properties:
+                                    bytes:
+                                      items:
+                                        type: integer
+                                      type:
+                                        - array
+                                        - 'null'
+                                    logprob:
+                                      format: double
+                                      type: number
+                                    token:
+                                      type: string
+                                    top_logprobs:
+                                      items:
+                                        properties:
+                                          bytes:
+                                            items:
+                                              type: integer
+                                            type:
+                                              - array
+                                              - 'null'
+                                          logprob:
+                                            format: double
+                                            type: number
+                                          token:
+                                            type: string
+                                        required:
+                                          - token
+                                          - bytes
+                                          - logprob
+                                        type: object
+                                      type: array
+                                  required:
+                                    - token
+                                    - bytes
+                                    - logprob
+                                    - top_logprobs
+                                  type: object
+                                type:
+                                  - array
+                                  - 'null'
+                            required:
+                              - content
+                            type:
+                              - object
+                              - 'null'
+                          message:
+                            properties:
+                              annotations:
+                                items:
+                                  oneOf:
+                                    - properties:
+                                        file:
+                                          properties:
+                                            content:
+                                              items:
+                                                oneOf:
+                                                  - properties:
+                                                      text:
+                                                        type: string
+                                                      type:
+                                                        enum:
+                                                          - text
+                                                        type: string
+                                                    required:
+                                                      - type
+                                                      - text
+                                                    type: object
+                                                  - properties:
+                                                      image_url:
+                                                        properties:
+                                                          url:
+                                                            type: string
+                                                        required:
+                                                          - url
+                                                        type: object
+                                                      type:
+                                                        enum:
+                                                          - image_url
+                                                        type: string
+                                                    required:
+                                                      - type
+                                                      - image_url
+                                                    type: object
+                                              type: array
+                                            hash:
+                                              type: string
+                                            name:
+                                              type: string
+                                          required:
+                                            - hash
+                                            - content
+                                          type: object
+                                        type:
+                                          enum:
+                                            - file
+                                          type: string
+                                      required:
+                                        - type
+                                        - file
+                                      type: object
+                                    - properties:
+                                        type:
+                                          enum:
+                                            - url_citation
+                                          type: string
+                                        url_citation:
+                                          properties:
+                                            content:
+                                              type: string
+                                            end_index:
+                                              type: integer
+                                            start_index:
+                                              type: integer
+                                            title:
+                                              type: string
+                                            uncited:
+                                              const: true
+                                              type: boolean
+                                            url:
+                                              type: string
+                                          required:
+                                            - url
+                                            - start_index
+                                            - end_index
+                                            - title
+                                          type: object
+                                      required:
+                                        - type
+                                        - url_citation
+                                      type: object
+                                    - properties:
+                                        type:
+                                          enum:
+                                            - web_search_citation
+                                          type: string
+                                        web_search_citation:
+                                          properties:
+                                            cited_text:
+                                              type: string
+                                            encrypted_index:
+                                              type: string
+                                            title:
+                                              type:
+                                                - string
+                                                - 'null'
+                                            url:
+                                              type: string
+                                          required:
+                                            - url
+                                            - title
+                                          type: object
+                                      required:
+                                        - type
+                                        - web_search_citation
+                                      type: object
+                                type: array
+                              content:
+                                type:
+                                  - string
+                                  - 'null'
+                              images:
+                                items:
+                                  properties:
+                                    image_url:
+                                      properties:
+                                        url:
+                                          minLength: 1
+                                          type: string
+                                      required:
+                                        - url
+                                      type: object
+                                    type:
+                                      enum:
+                                        - image_url
+                                      type: string
+                                  required:
+                                    - type
+                                    - image_url
+                                  type: object
+                                type:
+                                  - array
+                                  - 'null'
+                              reasoning:
+                                type:
+                                  - string
+                                  - 'null'
+                              reasoning_details:
+                                items:
+                                  anyOf:
+                                    - $ref: >-
+                                        #/components/schemas/ReasoningDetailSummary
+                                    - $ref: >-
+                                        #/components/schemas/ReasoningDetailEncrypted
+                                    - $ref: '#/components/schemas/ReasoningDetailText'
+                                    - $ref: >-
+                                        #/components/schemas/ReasoningDetailServerToolCall
+                                    - type: 'null'
+                                    - type: 'null'
+                                type:
+                                  - array
+                                  - 'null'
+                              refusal:
+                                type:
+                                  - string
+                                  - 'null'
+                              role:
+                                enum:
+                                  - assistant
+                                type: string
+                              tool_calls:
+                                items:
+                                  properties:
+                                    function:
+                                      properties:
+                                        arguments:
+                                          type: string
+                                        name:
+                                          type: string
+                                      required:
+                                        - name
+                                        - arguments
+                                      type: object
+                                    id:
+                                      type: string
+                                    index:
+                                      type: integer
+                                    type:
+                                      enum:
+                                        - function
+                                      type: string
+                                  required:
+                                    - index
+                                    - id
+                                    - type
+                                    - function
+                                  type: object
+                                type: array
+                            required:
+                              - role
+                              - content
+                              - refusal
+                            type: object
+                          native_finish_reason:
+                            type:
+                              - string
+                              - 'null'
+                        required:
+                          - index
+                          - message
+                          - finish_reason
+                          - native_finish_reason
+                          - logprobs
+                        type: object
+                      type: array
+                    created:
+                      type: integer
+                    debug:
+                      additionalProperties: {}
+                      properties:
+                        echo_upstream_body:
+                          additionalProperties: {}
+                          type: object
+                        timings:
+                          properties:
+                            epoch_ms:
+                              type: integer
+                            event:
+                              enum:
+                                - adapter_request
+                                - upstream_headers_received
+                                - first_token_received
+                                - upstream_body_ended
+                              type: string
+                            start_ms:
+                              type: integer
+                          required:
+                            - start_ms
+                            - event
+                            - epoch_ms
+                          type: object
+                      type: object
+                    id:
+                      type: string
+                    model:
+                      type: string
+                    object:
+                      enum:
+                        - chat.completion
+                      type: string
+                    openrouter_metadata:
+                      $ref: '#/components/schemas/OpenRouterMetadata'
+                    provider:
+                      type:
+                        - string
+                        - 'null'
+                    safeguard_results:
+                      description: >-
+                        OpenRouter Armor's verdict for each client tool call of
+                        this response, present whenever Armor evaluated the
+                        response (even when nothing was flagged). Independent of
+                        the `openrouter_metadata` opt-in.
+                      items:
+                        $ref: '#/components/schemas/ArmorSafeguardResult'
+                      type: array
+                    service_tier:
+                      type:
+                        - string
+                        - 'null'
+                    system_fingerprint:
+                      type:
+                        - string
+                        - 'null'
+                    usage:
+                      properties:
+                        completion_tokens:
+                          description: The tokens generated
+                          type: integer
+                        completion_tokens_details:
+                          properties:
+                            audio_tokens:
+                              description: Tokens generated by the model for audio output.
+                              type:
+                                - integer
+                                - 'null'
+                            image_tokens:
+                              description: Tokens generated by the model for image output.
+                              type:
+                                - integer
+                                - 'null'
+                            reasoning_tokens:
+                              description: Tokens generated by the model for reasoning.
+                              type:
+                                - integer
+                                - 'null'
+                          type:
+                            - object
+                            - 'null'
+                        prompt_tokens:
+                          description: Including images, input audio, and tools if any
+                          type: integer
+                        prompt_tokens_details:
+                          description: Breakdown of tokens used in the prompt.
+                          properties:
+                            audio_tokens:
+                              description: Tokens used for input audio.
+                              type:
+                                - integer
+                                - 'null'
+                            cache_write_tokens:
+                              description: >-
+                                Tokens written to cache. Only returned for
+                                models with explicit caching and cache write
+                                pricing.
+                              type:
+                                - integer
+                                - 'null'
+                            cached_tokens:
+                              description: Tokens cached by the endpoint.
+                              type:
+                                - integer
+                                - 'null'
+                            file_tokens:
+                              description: Tokens used for input files/documents.
+                              type:
+                                - integer
+                                - 'null'
+                            video_tokens:
+                              description: Tokens used for input video.
+                              type:
+                                - integer
+                                - 'null'
+                          type:
+                            - object
+                            - 'null'
+                        server_tool_use:
+                          description: >-
+                            Usage for server-side tool execution (e.g., web
+                            search)
+                          properties:
+                            tool_calls_executed:
+                              description: >-
+                                Number of OpenRouter server tool calls that
+                                executed and produced a result.
+                              type:
+                                - integer
+                                - 'null'
+                            tool_calls_requested:
+                              description: >-
+                                Total number of OpenRouter server-orchestrated
+                                tool calls the model requested, across all tool
+                                types. Provider-native tools (e.g. native web
+                                search) are not counted here.
+                              type:
+                                - integer
+                                - 'null'
+                            web_search_requests:
+                              description: >-
+                                Number of web searches performed by server-side
+                                tools. For server-orchestrated tool calls a web
+                                search is also counted in tool_calls_requested;
+                                provider-native web search may report
+                                web_search_requests only. Do not sum the two.
+                              type:
+                                - integer
+                                - 'null'
+                          type:
+                            - object
+                            - 'null'
+                        server_tool_use_details:
+                          description: >-
+                            Usage for server-side tool execution (e.g., web
+                            search)
+                          properties:
+                            tool_calls_executed:
+                              description: >-
+                                Number of OpenRouter server tool calls that
+                                executed and produced a result.
+                              type:
+                                - integer
+                                - 'null'
+                            tool_calls_requested:
+                              description: >-
+                                Total number of OpenRouter server-orchestrated
+                                tool calls the model requested, across all tool
+                                types. Provider-native tools (e.g. native web
+                                search) are not counted here.
+                              type:
+                                - integer
+                                - 'null'
+                            web_search_requests:
+                              description: >-
+                                Number of web searches performed by server-side
+                                tools. For server-orchestrated tool calls a web
+                                search is also counted in tool_calls_requested;
+                                provider-native web search may report
+                                web_search_requests only. Do not sum the two.
+                              type:
+                                - integer
+                                - 'null'
+                          type:
+                            - object
+                            - 'null'
+                        total_tokens:
+                          description: Sum of the above two fields
+                          type: integer
+                      required:
+                        - prompt_tokens
+                        - completion_tokens
+                        - total_tokens
+                      type: object
+                  required:
+                    - model
+                    - id
+                    - created
+                    - object
+                    - choices
+                  type: object
+                - $ref: '#/components/schemas/OpenResponsesResult'
+                - properties:
+                    container:
+                      $ref: '#/components/schemas/AnthropicContainer'
+                    content:
+                      items:
+                        $ref: '#/components/schemas/ORAnthropicContentBlock'
+                      type: array
+                    id:
+                      type: string
+                    input_transformations:
+                      items:
+                        $ref: '#/components/schemas/AnthropicInputTransformation'
+                      type:
+                        - array
+                        - 'null'
+                    model:
+                      type: string
+                    role:
+                      enum:
+                        - assistant
+                      type: string
+                    stop_details:
+                      $ref: '#/components/schemas/AnthropicRefusalStopDetails'
+                    stop_reason:
+                      $ref: '#/components/schemas/ORAnthropicStopReason'
+                    stop_sequence:
+                      type:
+                        - string
+                        - 'null'
+                    type:
+                      enum:
+                        - message
+                      type: string
+                    usage:
+                      allOf:
+                        - $ref: '#/components/schemas/AnthropicUsage'
+                        - properties:
+                            iterations:
+                              items:
+                                $ref: '#/components/schemas/AnthropicUsageIteration'
+                              type: array
+                            speed:
+                              $ref: '#/components/schemas/AnthropicSpeed'
+                          type: object
+                      example:
+                        cache_creation: null
+                        cache_creation_input_tokens: null
+                        cache_read_input_tokens: null
+                        inference_geo: null
+                        input_tokens: 100
+                        output_tokens: 50
+                        output_tokens_details: null
+                        server_tool_use: null
+                        service_tier: standard
+                  required:
+                    - id
+                    - type
+                    - role
+                    - container
+                    - content
+                    - model
+                    - stop_reason
+                    - stop_details
+                    - stop_sequence
+                    - usage
+                  type: object
+                - description: Embeddings response containing embedding vectors
+                  example:
+                    data:
+                      - embedding:
+                          - 0.0023064255
+                          - -0.009327292
+                          - 0.015797347
+                        index: 0
+                        object: embedding
+                    model: openai/text-embedding-3-small
+                    object: list
+                    usage:
+                      prompt_tokens: 8
+                      total_tokens: 8
+                  properties:
+                    data:
+                      description: List of embedding objects
+                      example:
+                        - embedding:
+                            - 0.0023064255
+                            - -0.009327292
+                            - 0.015797347
+                          index: 0
+                          object: embedding
+                      items:
+                        description: A single embedding object
+                        example:
+                          embedding:
+                            - 0.0023064255
+                            - -0.009327292
+                            - 0.015797347
+                          index: 0
+                          object: embedding
+                        properties:
+                          document_index:
+                            description: >-
+                              Index of the source document when `input` was a
+                              list of documents (contextual embeddings). Absent
+                              otherwise.
+                            example: 0
+                            type: integer
+                          embedding:
+                            anyOf:
+                              - items:
+                                  type: number
+                                type: array
+                              - type: string
+                            description: >-
+                              Embedding vector as an array of floats or a base64
+                              string
+                            example:
+                              - 0.0023064255
+                              - -0.009327292
+                              - 0.015797347
+                          index:
+                            description: Index of the embedding in the input list
+                            example: 0
+                            type: integer
+                          object:
+                            enum:
+                              - embedding
+                            type: string
+                        required:
+                          - object
+                          - embedding
+                        type: object
+                      type: array
+                    id:
+                      description: Unique identifier for the embeddings response
+                      example: embd-1234567890
+                      type: string
+                    model:
+                      description: The model used for embeddings
+                      example: openai/text-embedding-3-small
+                      type: string
+                    object:
+                      enum:
+                        - list
+                      type: string
+                    usage:
+                      description: Token usage statistics
+                      example:
+                        prompt_tokens: 8
+                        total_tokens: 8
+                      properties:
+                        cost:
+                          description: Cost of the request in credits
+                          example: 0.0001
+                          format: double
+                          type: number
+                        cost_details:
+                          $ref: '#/components/schemas/CostDetails'
+                        is_byok:
+                          description: >-
+                            Whether a request was made using a Bring Your Own
+                            Key configuration
+                          type: boolean
+                        prompt_tokens:
+                          description: Number of tokens in the input
+                          example: 8
+                          type: integer
+                        prompt_tokens_details:
+                          description: >-
+                            Per-modality token breakdown. Only present when the
+                            input contains 2+ modalities (e.g. text + image) and
+                            the upstream provider returns modality-level usage
+                            data. Only non-zero modality counts are included.
+                          properties:
+                            audio_tokens:
+                              description: Number of audio tokens in the input
+                              type: integer
+                            file_tokens:
+                              description: Number of file/document tokens in the input
+                              type: integer
+                            image_tokens:
+                              description: Number of image tokens in the input
+                              example: 258
+                              type: integer
+                            text_tokens:
+                              description: Number of text tokens in the input
+                              example: 8
+                              type: integer
+                            video_tokens:
+                              description: Number of video tokens in the input
+                              type: integer
+                          type: object
+                        total_tokens:
+                          description: Total number of tokens used
+                          example: 8
+                          type: integer
+                      required:
+                        - prompt_tokens
+                        - total_tokens
+                      type: object
+                  required:
+                    - object
+                    - data
+                    - model
+                  type: object
+                - additionalProperties: false
+                  properties:
+                    audio:
+                      anyOf:
+                        - additionalProperties: false
+                          properties:
+                            bits_per_sample:
+                              enum:
+                                - 16
+                              type: number
+                            channels:
+                              exclusiveMinimum: true
+                              minimum: 0
+                              type: integer
+                            data:
+                              description: >-
+                                Base64-encoded PCM16 audio in the format the
+                                sibling fields give.
+                              minLength: 1
+                              type: string
+                            format:
+                              enum:
+                                - pcm
+                              type: string
+                            sample_rate:
+                              exclusiveMinimum: true
+                              minimum: 0
+                              type: integer
+                          required:
+                            - format
+                            - sample_rate
+                            - channels
+                            - bits_per_sample
+                            - data
+                          type: object
+                        - additionalProperties: false
+                          properties:
+                            bits_per_sample:
+                              enum:
+                                - 16
+                              type: number
+                            byte_length:
+                              exclusiveMinimum: true
+                              minimum: 0
+                              type: integer
+                            channels:
+                              exclusiveMinimum: true
+                              minimum: 0
+                              type: integer
+                            format:
+                              enum:
+                                - pcm
+                              type: string
+                            sample_rate:
+                              exclusiveMinimum: true
+                              minimum: 0
+                              type: integer
+                            sha256:
+                              pattern: ^[0-9a-f]{64}$
+                              type: string
+                          required:
+                            - format
+                            - sample_rate
+                            - channels
+                            - bits_per_sample
+                            - byte_length
+                            - sha256
+                          type: object
+                    model:
+                      type: string
+                    object:
+                      enum:
+                        - audio.speech
+                      type: string
+                    usage:
+                      additionalProperties: false
+                      properties:
+                        completion_tokens:
+                          minimum: 0
+                          type: integer
+                        prompt_tokens:
+                          minimum: 0
+                          type: integer
+                        total_tokens:
+                          minimum: 0
+                          type: integer
+                      required:
+                        - prompt_tokens
+                        - completion_tokens
+                        - total_tokens
+                      type: object
+                  required:
+                    - object
+                    - model
+                    - audio
+                    - usage
+                  type: object
+            request_id:
+              type:
+                - string
+                - 'null'
+            status_code:
+              type: integer
+          required:
+            - status_code
+            - request_id
+            - body
+          type:
+            - object
+            - 'null'
+      required:
+        - id
+        - custom_id
+        - response
+        - error
+      type: object
+    AnthropicCacheCreation:
+      example:
+        ephemeral_1h_input_tokens: 0
+        ephemeral_5m_input_tokens: 100
+      properties:
+        ephemeral_1h_input_tokens:
+          type: integer
+        ephemeral_5m_input_tokens:
+          type: integer
+      required:
+        - ephemeral_5m_input_tokens
+        - ephemeral_1h_input_tokens
+      type:
+        - object
+        - 'null'
+    CostDetails:
+      description: Breakdown of upstream inference costs
+      example:
+        upstream_inference_completions_cost: 0.0004
+        upstream_inference_cost: null
+        upstream_inference_prompt_cost: 0.0008
+      properties:
+        server_tool_cost:
+          description: >-
+            Metered server-tool execution cost (for example, shell sandbox time)
+            billed for this request, in USD. Matches the billed checkpoint and
+            settlement amounts exactly. 0 when a metered server tool ran but
+            settled at zero dollars; absent when no metered server tool ran.
+          format: double
+          type:
+            - number
+            - 'null'
+        upstream_inference_completions_cost:
+          format: double
+          type: number
+        upstream_inference_cost:
+          format: double
+          type:
+            - number
+            - 'null'
+        upstream_inference_prompt_cost:
+          format: double
+          type: number
+      required:
+        - upstream_inference_prompt_cost
+        - upstream_inference_completions_cost
+      type:
+        - object
+        - 'null'
+    AnthropicUsageIteration:
+      anyOf:
+        - $ref: '#/components/schemas/AnthropicCompactionUsageIteration'
+        - $ref: '#/components/schemas/AnthropicMessageUsageIteration'
+        - $ref: '#/components/schemas/AnthropicAdvisorMessageUsageIteration'
+        - $ref: '#/components/schemas/AnthropicUnknownUsageIteration'
+      example:
+        cache_creation: null
+        cache_creation_input_tokens: 0
+        cache_read_input_tokens: 0
+        input_tokens: 100
+        output_tokens: 50
+        type: message
+    AnthropicSpeed:
+      enum:
+        - fast
+        - standard
+        - null
+      example: standard
+      type:
+        - string
+        - 'null'
     ApiErrorType:
       description: Canonical OpenRouter error type, stable across all API formats
       enum:
@@ -2217,12 +2272,37 @@ components:
         - server_tool_use
         - service_tier
       type: object
-    AnthropicUsageIteration:
-      anyOf:
-        - $ref: '#/components/schemas/AnthropicCompactionUsageIteration'
-        - $ref: '#/components/schemas/AnthropicMessageUsageIteration'
-        - $ref: '#/components/schemas/AnthropicAdvisorMessageUsageIteration'
-        - $ref: '#/components/schemas/AnthropicUnknownUsageIteration'
+    AnthropicCompactionUsageIteration:
+      allOf:
+        - $ref: '#/components/schemas/AnthropicBaseUsageIteration'
+        - properties:
+            type:
+              enum:
+                - compaction
+              type: string
+          required:
+            - type
+          type: object
+      example:
+        cache_creation: null
+        cache_creation_input_tokens: 0
+        cache_read_input_tokens: 0
+        input_tokens: 50
+        output_tokens: 25
+        type: compaction
+    AnthropicMessageUsageIteration:
+      allOf:
+        - $ref: '#/components/schemas/AnthropicBaseUsageIteration'
+        - properties:
+            model:
+              type: string
+            type:
+              enum:
+                - message
+              type: string
+          required:
+            - type
+          type: object
       example:
         cache_creation: null
         cache_creation_input_tokens: 0
@@ -2230,64 +2310,44 @@ components:
         input_tokens: 100
         output_tokens: 50
         type: message
-    AnthropicSpeed:
-      enum:
-        - fast
-        - standard
-        - null
-      example: standard
-      type:
-        - string
-        - 'null'
-    CostDetails:
-      description: Breakdown of upstream inference costs
+    AnthropicAdvisorMessageUsageIteration:
+      allOf:
+        - $ref: '#/components/schemas/AnthropicBaseUsageIteration'
+        - properties:
+            model:
+              type: string
+            type:
+              enum:
+                - advisor_message
+              type: string
+          required:
+            - type
+            - model
+          type: object
       example:
-        upstream_inference_completions_cost: 0.0004
-        upstream_inference_cost: null
-        upstream_inference_prompt_cost: 0.0008
-      properties:
-        server_tool_cost:
-          description: >-
-            Metered server-tool execution cost (for example, shell sandbox time)
-            billed for this request, in USD. Matches the billed checkpoint and
-            settlement amounts exactly. 0 when a metered server tool ran but
-            settled at zero dollars; absent when no metered server tool ran.
-          format: double
-          type:
-            - number
-            - 'null'
-        upstream_inference_completions_cost:
-          format: double
-          type: number
-        upstream_inference_cost:
-          format: double
-          type:
-            - number
-            - 'null'
-        upstream_inference_prompt_cost:
-          format: double
-          type: number
-      required:
-        - upstream_inference_prompt_cost
-        - upstream_inference_completions_cost
-      type:
-        - object
-        - 'null'
-    AnthropicCacheCreation:
+        cache_creation: null
+        cache_creation_input_tokens: 0
+        cache_read_input_tokens: 0
+        input_tokens: 823
+        model: claude-opus-4-6
+        output_tokens: 1612
+        type: advisor_message
+    AnthropicUnknownUsageIteration:
+      allOf:
+        - $ref: '#/components/schemas/AnthropicBaseUsageIteration'
+        - properties:
+            type:
+              type: string
+          required:
+            - type
+          type: object
       example:
-        ephemeral_1h_input_tokens: 0
-        ephemeral_5m_input_tokens: 100
-      properties:
-        ephemeral_1h_input_tokens:
-          type: integer
-        ephemeral_5m_input_tokens:
-          type: integer
-      required:
-        - ephemeral_5m_input_tokens
-        - ephemeral_1h_input_tokens
-      type:
-        - object
-        - 'null'
+        cache_creation: null
+        cache_creation_input_tokens: 0
+        cache_read_input_tokens: 0
+        input_tokens: 100
+        output_tokens: 50
+        type: unknown
     AlignmentCallRecord:
       discriminator:
         mapping:
@@ -3445,82 +3505,25 @@ components:
       type:
         - string
         - 'null'
-    AnthropicCompactionUsageIteration:
-      allOf:
-        - $ref: '#/components/schemas/AnthropicBaseUsageIteration'
-        - properties:
-            type:
-              enum:
-                - compaction
-              type: string
-          required:
-            - type
-          type: object
-      example:
-        cache_creation: null
-        cache_creation_input_tokens: 0
-        cache_read_input_tokens: 0
-        input_tokens: 50
-        output_tokens: 25
-        type: compaction
-    AnthropicMessageUsageIteration:
-      allOf:
-        - $ref: '#/components/schemas/AnthropicBaseUsageIteration'
-        - properties:
-            model:
-              type: string
-            type:
-              enum:
-                - message
-              type: string
-          required:
-            - type
-          type: object
+    AnthropicBaseUsageIteration:
       example:
         cache_creation: null
         cache_creation_input_tokens: 0
         cache_read_input_tokens: 0
         input_tokens: 100
         output_tokens: 50
-        type: message
-    AnthropicAdvisorMessageUsageIteration:
-      allOf:
-        - $ref: '#/components/schemas/AnthropicBaseUsageIteration'
-        - properties:
-            model:
-              type: string
-            type:
-              enum:
-                - advisor_message
-              type: string
-          required:
-            - type
-            - model
-          type: object
-      example:
-        cache_creation: null
-        cache_creation_input_tokens: 0
-        cache_read_input_tokens: 0
-        input_tokens: 823
-        model: claude-opus-4-6
-        output_tokens: 1612
-        type: advisor_message
-    AnthropicUnknownUsageIteration:
-      allOf:
-        - $ref: '#/components/schemas/AnthropicBaseUsageIteration'
-        - properties:
-            type:
-              type: string
-          required:
-            - type
-          type: object
-      example:
-        cache_creation: null
-        cache_creation_input_tokens: 0
-        cache_read_input_tokens: 0
-        input_tokens: 100
-        output_tokens: 50
-        type: unknown
+      properties:
+        cache_creation:
+          $ref: '#/components/schemas/AnthropicIterationCacheCreation'
+        cache_creation_input_tokens:
+          type: integer
+        cache_read_input_tokens:
+          type: integer
+        input_tokens:
+          type: integer
+        output_tokens:
+          type: integer
+      type: object
     AlignmentAllowedCallRecord:
       additionalProperties: false
       properties:
@@ -7083,25 +7086,19 @@ components:
         - type
         - error_code
       type: object
-    AnthropicBaseUsageIteration:
+    AnthropicIterationCacheCreation:
+      default: null
       example:
-        cache_creation: null
-        cache_creation_input_tokens: 0
-        cache_read_input_tokens: 0
-        input_tokens: 100
-        output_tokens: 50
+        ephemeral_1h_input_tokens: 0
+        ephemeral_5m_input_tokens: 0
       properties:
-        cache_creation:
-          $ref: '#/components/schemas/AnthropicIterationCacheCreation'
-        cache_creation_input_tokens:
+        ephemeral_1h_input_tokens:
           type: integer
-        cache_read_input_tokens:
+        ephemeral_5m_input_tokens:
           type: integer
-        input_tokens:
-          type: integer
-        output_tokens:
-          type: integer
-      type: object
+      type:
+        - object
+        - 'null'
     AlignmentRuleRecord:
       additionalProperties: false
       properties:
@@ -9025,19 +9022,6 @@ components:
         - type
         - error_code
       type: object
-    AnthropicIterationCacheCreation:
-      default: null
-      example:
-        ephemeral_1h_input_tokens: 0
-        ephemeral_5m_input_tokens: 0
-      properties:
-        ephemeral_1h_input_tokens:
-          type: integer
-        ephemeral_5m_input_tokens:
-          type: integer
-      type:
-        - object
-        - 'null'
     PromptCacheBreakpoint:
       description: >-
         Marks an explicit prompt-cache boundary on this content block

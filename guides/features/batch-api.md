@@ -6,7 +6,7 @@
 
 > Run thousands of requests at about half the sync price, with results within 24 hours
 
-The Batch API takes thousands of requests in one call, runs them in the background, and returns every result in one response. Use it for work where nobody waits for the answer, such as evals, classification, data labeling, summarizing a backlog, or embedding a corpus.
+The Batch API takes thousands of requests in one call, runs them in the background, and returns results inline or in cursor-paginated pages. Use it for work where nobody waits for the answer, such as evals, classification, data labeling, summarizing a backlog, or embedding a corpus.
 
 > [card] Use batch when
 >
@@ -26,15 +26,15 @@ The Batch API takes thousands of requests in one call, runs them in the backgrou
 | Size | Up to 200 MB per batch, with a cap on the number of requests. See [Limits](#limits). One model and one endpoint per batch. |
 | Turnaround | Within 24 hours on most providers. Google Vertex can take up to 96 hours. Most batches finish in minutes. |
 | Input | Requests go inline in the JSON body. There is no JSONL file to upload. |
-| Results | Returned inline by `GET /api/v1/batches/{id}`. Match each result to its request with `custom_id`. |
+| Results | Paginate normalized rows with `GET /api/v1/batches/{id}/results`, or read them inline on `GET /api/v1/batches/{id}`. Match each result to its request with `custom_id`. |
 | Notifications | Optional signed webhook when the batch finishes. |
-| Data | Deleted 30 days after you submit, or when you delete the batch. Batch endpoints do not train on your data. |
+| Data | Stored requests and finalized results artifacts are deleted 30 days after each artifact is written, or when you delete the batch. Batch endpoints do not train on your data. |
 
 ## How it works
 
 1. **Submit the batch.** `POST /api/v1/batches` with a `model`, an `endpoint`, and your `requests`. The response is `202` with `status: "validating"`.
-2. **Wait for it to finish.** Set `callback_url` to receive a webhook, or poll `GET /api/v1/batches/{id}`.
-3. **Read the results.** When `status` is `completed`, `results` holds one entry per request.
+2. **Wait for it to finish.** Set `callback_url` to receive a webhook, poll `GET /api/v1/batches/{id}`, or poll the first page of `GET /api/v1/batches/{id}/results` (retrying `409` until ready) to avoid downloading the full inline `results` array on large batches.
+3. **Read the results.** When ready, paginate normalized rows with `GET /api/v1/batches/{id}/results`, or read `results` inline on `GET /api/v1/batches/{id}` for smaller batches.
 
 ```shell title="Shell" lines theme={null}
 curl https://openrouter.ai/api/v1/batches \
@@ -160,7 +160,7 @@ Creating batch...
 >
 > A `202` means OpenRouter stored the batch, not that the batch is valid. OpenRouter checks each request after it accepts the batch. If a check fails, the batch moves to `failed` and `error.message` says why.
 
-The [Batch quickstart](../../batch-quickstart.md) walks through every step, with webhooks, polling, images and files, and deletion.
+The [Batch quickstart](../../batch-quickstart.md) walks through every step, including webhooks, polling, [paginating large batch results](../../batch-quickstart.md#paginating-large-batch-results), images and files, and deletion.
 
 ## Batch status
 
@@ -223,7 +223,7 @@ For a `413`, split the batch. For a `429`, wait for running batches to finish if
 
 > [accordion] How long are results kept?
 >
-> 30 days after you submit. After that, `GET` returns `410 Gone`. Save the results you need, or delete the batch sooner.
+> 30 days from when each artifact is written. After the results artifact expires, `GET /api/v1/batches/{id}` and `GET /api/v1/batches/{id}/results` return `410 Gone` (caller-owned Vertex input batches still return metadata and `output.uri` from `GET /api/v1/batches/{id}`). Save the results you need, or delete the batch sooner.
 
 > [accordion] Where can I see my batches?
 >

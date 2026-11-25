@@ -8,7 +8,26 @@
 
 Entries on this page are generated automatically from [OpenAPI specification](api_reference/overview.md) diffs when releases ship. Breaking changes are reviewed by a human before publication. See [API Versioning](api_reference/versioning.md) for what counts as a breaking change and how deprecations are announced. Endpoint paths are shown relative to the API base URL (`https://openrouter.ai/api/v1`).
 
+**November 25, 2026**
+
+## Modified endpoints
+
+* [`GET /videos/models`](api/api-reference/video-generation/list-all-video-generation-models.md): response schema updated
+
+## Modified schemas
+
+* `VideoGenerationRequest`: description updated; property `order` updated
+  * Used by [`POST /videos`](api/api-reference/video-generation/submit-a-video-generation-request.md)
+* `VideoModel`: example modified
+  * Used by [`GET /videos/models`](api/api-reference/video-generation/list-all-video-generation-models.md)
+* `VideoModelsListResponse`: example modified
+  * Used by [`GET /videos/models`](api/api-reference/video-generation/list-all-video-generation-models.md)
+
 **November 24, 2026**
+
+## New endpoints
+
+* [`GET /batches/{id}/results`](api/api-reference/batch/get-batch-results.md): Get batch results
 
 ## Modified endpoints
 
@@ -17,6 +36,15 @@ Entries on this page are generated automatically from [OpenAPI specification](ap
 * [`GET /byok/{id}`](api/api-reference/byok/get-a-byok-provider-credential.md): response schema updated
 * [`PATCH /byok/{id}`](api/api-reference/byok/update-a-byok-provider-credential.md): response schema updated
 * [`POST /audio/speech`](api/api-reference/tts/create-speech.md): description updated
+
+## New schemas
+
+* `ResponsesContextManagement`
+  * Used by [`POST /presets/{slug}/responses`](api/api-reference/presets/create-a-preset-from-a-responses-request-body.md), [`POST /responses`](api/api-reference/responses/create-a-response.md)
+* `BatchResult`
+  * Used by [`GET /batches/{id}`](api/api-reference/batch/get-a-batch.md), [`GET /batches/{id}/results`](api/api-reference/batch/get-batch-results.md), [`POST /batches`](api/api-reference/batch/create-a-batch.md)
+* `BatchResultsPageResponse`
+  * Used by [`GET /batches/{id}/results`](api/api-reference/batch/get-batch-results.md)
 
 ## Modified schemas
 
@@ -42,6 +70,39 @@ Entries on this page are generated automatically from [OpenAPI specification](ap
   * Used by [`PATCH /byok/{id}`](api/api-reference/byok/update-a-byok-provider-credential.md)
 * `SpeechRequest`: new property `output_delivery`
   * Used by [`POST /audio/speech`](api/api-reference/tts/create-speech.md)
+* `ResponsesRequest`: new property `context_management`
+  * Used by [`POST /presets/{slug}/responses`](api/api-reference/presets/create-a-preset-from-a-responses-request-body.md), [`POST /responses`](api/api-reference/responses/create-a-response.md)
+* `CreateGuardrailRequest`: new property `allow_safety_retention_openai`
+  * Used by [`POST /guardrails`](api/api-reference/guardrails/create-a-guardrail.md)
+* `Guardrail`: new property `allow_safety_retention_openai`
+
+  **4 endpoints using this schema**
+
+  * [`GET /guardrails`](api/api-reference/guardrails/list-guardrails.md)
+  * [`GET /guardrails/{id}`](api/api-reference/guardrails/get-a-guardrail.md)
+  * [`PATCH /guardrails/{id}`](api/api-reference/guardrails/update-a-guardrail.md)
+  * [`POST /guardrails`](api/api-reference/guardrails/create-a-guardrail.md)
+* `GuardrailModelAvailabilityPolicyAuthoringConfig`: new property `allow_safety_retention_openai`
+
+  **4 endpoints using this schema**
+
+  * [`POST /guardrails/policies/account`](api/api-reference/guardrail-policies/create-a-workspace-wide-policy.md)
+  * [`POST /guardrails/policies/model-availability`](api/api-reference/guardrail-policies/create-a-model-availability-policy.md)
+  * [`PUT /guardrails/policies/account/{id}`](api/api-reference/guardrail-policies/update-a-workspace-wide-policy.md)
+  * [`PUT /guardrails/policies/model-availability/{id}`](api/api-reference/guardrail-policies/update-a-model-availability-policy.md)
+* `GuardrailModelAvailabilityPolicyConfig`: new property `allow_safety_retention_openai`
+
+  **7 endpoints using this schema**
+
+  * [`GET /guardrails/policies/account`](api/api-reference/guardrail-policies/list-workspace-wide-policies.md)
+  * [`GET /guardrails/policies/model-availability`](api/api-reference/guardrail-policies/list-model-availability-policies.md)
+  * [`GET /guardrails/policies/model-availability/{id}`](api/api-reference/guardrail-policies/get-a-model-availability-policy.md)
+  * [`POST /guardrails/policies/account`](api/api-reference/guardrail-policies/create-a-workspace-wide-policy.md)
+  * [`POST /guardrails/policies/model-availability`](api/api-reference/guardrail-policies/create-a-model-availability-policy.md)
+  * [`PUT /guardrails/policies/account/{id}`](api/api-reference/guardrail-policies/update-a-workspace-wide-policy.md)
+  * [`PUT /guardrails/policies/model-availability/{id}`](api/api-reference/guardrail-policies/update-a-model-availability-policy.md)
+* `UpdateGuardrailRequest`: new property `allow_safety_retention_openai`
+  * Used by [`PATCH /guardrails/{id}`](api/api-reference/guardrails/update-a-guardrail.md)
 
 **November 23, 2026**
 

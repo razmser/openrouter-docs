@@ -214,6 +214,10 @@ Pass a `:free` ID as `model` to `POST /api/v1/images`, or to `GET /api/v1/images
 
 ## API Usage
 
+> [!NOTE]
+>
+> **Models served only by the Images API require `POST /api/v1/images`**, not `POST /api/v1/chat/completions`. If a request to `/api/v1/chat/completions` fails because an image-only model does not support chat completions, call `POST /api/v1/images` with `model` and `prompt` instead (including the source image in `input_references` when the chosen edit model requires it). All models listed by `GET /api/v1/images/models` support this endpoint.
+
 Send a `POST` request to `/api/v1/images` with the model and prompt:
 
 ```python title="Python (requests)" lines theme={null}

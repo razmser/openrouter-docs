@@ -590,17 +590,18 @@ Streaming requests can be cancelled by aborting the connection. For supported pr
 > * Avian, XAI, Cloudflare
 > * SFCompute, Nineteen, Liquid
 > * Friendli, Chutes, DeepSeek
+> * Modal, Featherless, AionLabs
+> * InferenceNet
 >
 > **Not Currently Supported**
 >
-> * AWS Bedrock, Groq, Modal
-> * Google, Google AI Studio, Minimax
-> * HuggingFace, Replicate, Perplexity
-> * Mistral, AI21, Featherless
-> * Lynn, Lambda, Reflection
-> * SambaNova, Inflection, ZeroOneAI
-> * AionLabs, Alibaba, Nebius
-> * Kluster, Targon, InferenceNet
+> * AWS Bedrock, Groq, Google
+> * Google AI Studio, Minimax, HuggingFace
+> * Replicate, Perplexity, Mistral
+> * AI21, Lynn, Lambda
+> * Reflection, SambaNova, Inflection
+> * ZeroOneAI, Alibaba, Nebius
+> * Kluster, Targon
 
 To implement stream cancellation:
 

@@ -445,6 +445,22 @@ components:
           type:
             - boolean
             - 'null'
+        allow_safety_retention_openai:
+          description: >-
+            Whether ZDR-only requests to openai/* models may also use Safety
+            Retention endpoints, which may retain prompts and responses from any
+            request, only to prevent abuse, and do not use them for training.
+            false allows only ZDR endpoints. Applies only while OpenAI ZDR is on
+            for the account or this guardrail; otherwise
+            allow_safety_retention_other applies. Follows
+            allow_safety_retention_other when null; on update, null clears a
+            saved choice and omitting the field leaves it unchanged. While the
+            account enforces ZDR for OpenAI or for other models, a guardrail can
+            only be more restrictive than that account setting.
+          example: true
+          type:
+            - boolean
+            - 'null'
         allow_safety_retention_other:
           description: >-
             Whether ZDR-only requests to models outside the named providers (for

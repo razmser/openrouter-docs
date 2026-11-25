@@ -71,19 +71,33 @@ The response returns a `data` array where each model includes:
   "data": [
     {
       "id": "google/veo-3.1",
-      "canonical_slug": "google/veo-3.1",
+      "canonical_slug": "google/veo-3.1-20260320",
+      "hugging_face_id": null,
       "name": "Google: Veo 3.1",
       "description": "...",
-      "created": 1719792000,
+      "created": 1774277148,
       "supported_durations": [4, 6, 8],
-      "supported_resolutions": ["720p", "1080p"],
-      "supported_aspect_ratios": ["16:9", "9:16", "1:1"],
-      "supported_sizes": ["1280x720", "1920x1080"],
+      "supported_resolutions": ["720p", "1080p", "4K"],
+      "supported_aspect_ratios": ["16:9", "9:16"],
+      "supported_sizes": ["1280x720", "1080x1920", "1920x1080", "720x1280", "3840x2160", "2160x3840"],
+      "supported_frame_images": ["first_frame", "last_frame"],
+      "upscale_factor": null,
+      "creativity": null,
+      "generate_audio": true,
+      "seed": true,
       "pricing_skus": {
-        "per-video-second": "0.50",
-        "per-video-second-1080p": "0.75"
+        "duration_seconds_with_audio": "0.40",
+        "duration_seconds_with_audio_4k": "0.60",
+        "duration_seconds_without_audio": "0.20",
+        "duration_seconds_without_audio_4k": "0.40"
       },
-      "allowed_passthrough_parameters": ["output_config"]
+      "allowed_passthrough_parameters": [
+        "personGeneration",
+        "aspectRatio",
+        "negativePrompt",
+        "conditioningScale",
+        "enhancePrompt"
+      ]
     }
   ]
 }
@@ -93,14 +107,25 @@ The response returns a `data` array where each model includes:
 | - | - |
 | `id` | Model slug to use in generation requests |
 | `canonical_slug` | Permanent model identifier |
+| `hugging_face_id` | Hugging Face repository ID, or `null` if none is listed |
+| `name` | Display name |
+| `description` | Model description |
+| `created` | Model creation timestamp in Unix seconds |
 | `supported_durations` | List of supported output durations in seconds |
 | `supported_resolutions` | List of supported output resolutions (e.g., `720p`, `1080p`) |
 | `supported_aspect_ratios` | List of supported aspect ratios (e.g., `16:9`, `9:16`) |
 | `supported_sizes` | List of supported pixel dimensions (e.g., `1280x720`) |
+| `supported_frame_images` | Frame positions advertised for `frame_images` (`first_frame`, `last_frame`), or `null` if none are advertised |
+| `generate_audio` | The serving endpoint's default for the `generate_audio` request parameter, or `null` if not declared. `false` means audio is off by default, not necessarily unsupported |
+| `seed` | Whether the endpoint declares support for a `seed` for reproducible output, or `null` if not declared (not an explicit no) |
+| `upscale_factor` | Advertised range for the `upscale_factor` request parameter as `min` and `max`, either of which can be `null` for no bound on that side; `null` if no factor range is advertised (some models upscale by target resolution instead) |
+| `creativity` | Supported `creativity` levels (upscaling models), or `null` |
 | `pricing_skus` | Pricing information per SKU |
 | `allowed_passthrough_parameters` | Provider-specific parameters that can be passed through via the `provider` option |
 
-Use this endpoint to check which resolutions, aspect ratios, and passthrough parameters are supported by each model before submitting a generation request.
+The catalog reports current capabilities and prices from one selected provider endpoint per model variant. If you explicitly route to a different provider, its capabilities and prices may differ. The example above shows the response format, not a fixed price or capability guarantee.
+
+Veo's `duration_seconds_*` rates are per second of output. If there is no matching 720p-specific SKU, 720p uses the rate from the matching unsuffixed SKU. At the example rate of \$0.40 per second, an 8-second 720p clip with audio costs \$3.20.
 
 > [!TIP]
 >
@@ -154,8 +179,8 @@ Unlike text or image generation, video generation is **asynchronous** because ge
 
 1. **Submit** a generation request to `POST /api/v1/videos`
 2. **Receive** a job ID and polling URL immediately
-3. **Poll** the polling URL (`GET /api/v1/videos/{jobId}`) until the status is `completed`
-4. **Download** the video from the content URL (`GET /api/v1/videos/{jobId}/content`)
+3. **Poll** the polling URL (`GET /api/v1/videos/{jobId}`) until the job reaches a terminal status: `completed`, `failed`, `cancelled` or `expired`
+4. **Download** the video from the content URL (`GET /api/v1/videos/{jobId}/content`) once the status is `completed`
 
 ## API Usage
 
@@ -179,6 +204,7 @@ payload = {
 
 # Step 1: Submit the generation request
 response = requests.post(url, headers=headers, json=payload)
+response.raise_for_status()
 result = response.json()
 
 job_id = result["id"]
@@ -190,6 +216,7 @@ print(f"Status: {result['status']}")
 while True:
     time.sleep(30)  # Wait 30 seconds between polls
     poll_response = requests.get(polling_url, headers=headers)
+    poll_response.raise_for_status()
     status = poll_response.json()
 
     print(f"Status: {status['status']}")
@@ -198,13 +225,13 @@ while True:
         # Step 3: Download the video
         content_url = status["unsigned_urls"][0]
         video_response = requests.get(content_url, headers=headers)
+        video_response.raise_for_status()
         with open("output.mp4", "wb") as f:
             f.write(video_response.content)
         print("Video saved to output.mp4")
         break
-    elif status["status"] == "failed":
-        print(f"Generation failed: {status.get('error', 'Unknown error')}")
-        break
+    elif status["status"] in ("failed", "cancelled", "expired"):
+        raise RuntimeError(f"Generation {status['status']}: {status.get('error', 'Unknown error')}")
 ```
 
 ```typescript title="TypeScript (fetch)" expandable lines theme={null}
@@ -222,6 +249,9 @@ const response = await fetch('https://openrouter.ai/api/v1/videos', {
     prompt: 'A golden retriever playing fetch on a sunny beach with waves crashing in the background',
   }),
 });
+if (!response.ok) {
+  throw new Error(`Submission failed: ${response.status} ${await response.text()}`);
+}
 
 const result = await response.json();
 const jobId = result.id;
@@ -233,6 +263,9 @@ console.log(`Status: ${result.status}`);
 while (true) {
   await new Promise((resolve) => setTimeout(resolve, 30000)); // Wait 30 seconds
   const pollResponse = await fetch(pollingUrl, { headers });
+  if (!pollResponse.ok) {
+    throw new Error(`Polling failed: ${pollResponse.status} ${await pollResponse.text()}`);
+  }
   const status = await pollResponse.json();
 
   console.log(`Status: ${status.status}`);
@@ -241,13 +274,15 @@ while (true) {
     // Step 3: Download the video
     const contentUrl = status.unsigned_urls[0];
     const videoResponse = await fetch(contentUrl, { headers });
+    if (!videoResponse.ok) {
+      throw new Error(`Download failed: ${videoResponse.status} ${await videoResponse.text()}`);
+    }
     const videoBuffer = await videoResponse.arrayBuffer();
     // Save or process the video buffer
     console.log(`Video ready: ${contentUrl}`);
     break;
-  } else if (status.status === 'failed') {
-    console.error(`Generation failed: ${status.error ?? 'Unknown error'}`);
-    break;
+  } else if (['failed', 'cancelled', 'expired'].includes(status.status)) {
+    throw new Error(`Generation ${status.status}: ${status.error ?? 'Unknown error'}`);
   }
 }
 ```
@@ -277,19 +312,35 @@ curl "https://openrouter.ai/api/v1/videos/<job_id>" \
 # using the same Authorization header
 ```
 
+### Submitting a Video Upscale Request
+
+Send this JSON body to `POST /api/v1/videos`, replacing the example URL with your source video URL. This example uses FLUX Video Upscale. If you have access to Runway video upscale, use its model ID with the same `input_references` shape and omit `prompt`.
+
+```json theme={null}
+{
+  "model": "black-forest-labs/flux-video-upscale",
+  "input_references": [
+    {
+      "type": "video_url",
+      "video_url": { "url": "https://example.com/source.mp4" }
+    }
+  ]
+}
+```
+
 ### Request Parameters
 
 | Parameter | Type | Required | Description |
 | - | - | - | - |
 | `model` | string | Yes | The model to use for video generation (e.g., `google/veo-3.1`) |
-| `prompt` | string | Yes | Text description of the video to generate |
+| `prompt` | string | Yes, except for video upscale models and models that can generate from image input alone | Text description of the video to generate. Runway video upscale rejects this field |
 | `duration` | integer | No | Duration of the generated video in seconds |
 | `resolution` | string | No | Resolution of the output video (e.g., `720p`, `1080p`) |
 | `aspect_ratio` | string | No | Aspect ratio of the output video (e.g., `16:9`, `9:16`, `3:2`) |
 | `size` | string | No | Exact pixel dimensions in `WIDTHxHEIGHT` format (e.g., `1280x720`). Interchangeable with `resolution` + `aspect_ratio` |
 | `frame_images` | array | No | Images for first/last frames (image-to-video) |
-| `input_references` | array | No | Reference images for style guidance (reference-to-video) |
-| `generate_audio` | boolean | No | Whether to generate audio alongside the video. Defaults to `true` for models that support audio output |
+| `input_references` | array | For video upscaling | Reference assets for generation, such as images for style guidance. For upscaling, provide the source video as a `video_url` entry |
+| `generate_audio` | boolean | No | Whether to generate audio alongside the video. When omitted, the serving endpoint's default applies (see `generate_audio` in the models endpoint), which can be `false` |
 | `seed` | integer | No | Seed for deterministic generation (not guaranteed by all providers) |
 | `callback_url` | string | No | URL to receive a webhook notification when the job completes. Overrides the workspace-level default callback URL if set. Must be HTTPS |
 | `previous_job_id` | string | No | ID of a completed video job to edit or extend. The new job runs on the same model and endpoint as the previous one. Only models that support continuation accept it. The API checks that the job belongs to your account, not to the request's `user`, so if you share one OpenRouter account across end users, verify that the signed-in user owns the job before forwarding a client-supplied ID |
@@ -298,7 +349,7 @@ curl "https://openrouter.ai/api/v1/videos/<job_id>" \
 | `user` | string | No | Stable identifier for your end-user, forwarded to Broadcast and private logging as the end-user ID; never sent to the provider |
 | `session_id` | string | No | Unique identifier (max 256 characters) for grouping related requests in Broadcast and private logging; never sent to the provider. Overrides the `x-session-id` header if both are set. |
 | `trace` | object | No | Observability and tracing metadata forwarded to configured Broadcast destinations. Named fields (`trace_id`, `trace_name`, `span_name`, `generation_name`, `parent_span_id`) are optional strings; custom keys may hold other JSON value types |
-| `provider` | object | No | Routing preferences (`order`, `only`, `ignore`), data policy preferences (`zdr`, `data_collection`), and provider-specific passthrough configuration under `options`. `data_collection` takes `allow` (default) or `deny`; `deny` excludes endpoints that train on your data, but not endpoints that retain prompts. No video endpoint currently offers Zero Data Retention, so `zdr: true` fails routing. |
+| `provider` | object | No | [Video provider routing](#provider-routing) preferences and provider-specific passthrough configuration under `options`. `data_collection` takes `allow` (default) or `deny`; `deny` excludes endpoints that train on your data, but not endpoints that retain prompts. No video endpoint currently offers Zero Data Retention, so `zdr: true` fails routing. |
 
 ### Supported Resolutions
 
@@ -367,6 +418,22 @@ If both fields are provided, `frame_images` takes precedence and the request is 
   "resolution": "1080p"
 }
 ```
+
+### Provider routing
+
+For `POST /api/v1/videos`, set `provider.order` to prefer providers in the listed order, `provider.only` to allow only the listed provider slugs, or `provider.ignore` to skip specific providers. For example, to submit a Hailuo 3 Max job only to MiniMax:
+
+```json theme={null}
+{
+  "model": "minimax/hailuo-3-max",
+  "prompt": "A slow camera pan across a lake at sunset",
+  "provider": { "only": ["minimax"] }
+}
+```
+
+Video generation does not support `provider.sort` for price, latency, or throughput. OpenRouter selects one eligible endpoint for the job and does not retry it on another provider if submission fails, so `provider.allow_fallbacks` does not apply. Use `only`, not `order`, if the job must use a specific provider.
+
+Don't use `"only": []` to prevent a submission. If your account's allowed-providers list includes an eligible provider, OpenRouter can still submit the job to that provider. If an empty provider selection should prevent a job, don't send the request.
 
 ### Provider-Specific Options
 
@@ -451,6 +518,12 @@ When polling the job status, the response includes additional fields as the job 
 | `in_progress` | The video is being generated |
 | `completed` | The video is ready to download |
 | `failed` | The generation failed (check the `error` field) |
+| `cancelled` | The job was cancelled before the video was ready (check the `error` field) |
+| `expired` | The job ran past its time limit without finishing (check the `error` field) |
+
+`completed`, `failed`, `cancelled` and `expired` are terminal: stop polling once the job reaches any of them.
+
+Request the video only after the job is `completed`. Calling the content endpoint earlier returns `404`. After `expires_at`, OpenRouter's stored copy is gone but the content endpoint may still serve the video from the provider; once the provider deletes it, the endpoint returns `410` or, for some providers, a `5xx`. For every error status, its cause, and what is billed, see the [Video API error reference](../../../api_reference/videos.md#errors) and [billing](../../../api_reference/videos.md#billing).
 
 ### Downloading the Video
 
@@ -772,7 +845,7 @@ Tampered body: false
 * **Detailed Prompts**: Provide specific, descriptive prompts for better video quality. Include details about motion, camera angles, lighting, and scene composition
 * **Appropriate Resolution**: Higher resolutions take longer to generate and cost more. Choose the resolution that fits your use case
 * **Polling Interval**: Use a reasonable polling interval (e.g., 30 seconds) to avoid excessive API calls. Video generation typically takes 30 seconds to several minutes depending on the model and parameters
-* **Error Handling**: Always check the job status for `failed` state and handle the `error` field appropriately
+* **Error Handling**: Treat `failed`, `cancelled` and `expired` as terminal states and handle the `error` field appropriately
 * **Reference Images**: When using reference images, ensure they are high quality and relevant to the desired video output
 
 ## Zero Data Retention
@@ -799,3 +872,5 @@ If you have ZDR enforcement enabled (either via [account settings](https://openr
 
 * Use the [Video Models API](#via-the-video-models-api) or the [Models page](../models.md) to find available video generation models
 * Verify the model slug is correct (e.g., `google/veo-3.1`)
+
+**Chat Completions rejects your video model?** Submit a new request to `POST /api/v1/videos` without a `messages` array. To generate a video from text, send a top-level `prompt` as shown in the [video generation request example](#submitting-a-video-generation-request). To upscale a video, send the source video in `input_references` as shown in the [video upscale request example](#submitting-a-video-upscale-request). Runway video upscale requires one `video_url` entry and rejects `prompt`.
