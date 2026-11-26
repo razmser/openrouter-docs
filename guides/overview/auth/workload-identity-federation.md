@@ -120,6 +120,53 @@ curl https://openrouter.ai/api/v1/responses \
   }'
 ```
 
+```typescript title="TypeScript" lines theme={null}
+const response = await fetch('https://openrouter.ai/api/v1/responses', {
+  method: 'POST',
+  headers: {
+    Authorization: `Bearer ${accessToken}`,
+    'Content-Type': 'application/json',
+  },
+  body: JSON.stringify({
+    model: 'openai/gpt-4o-mini',
+    input: 'Hello',
+  }),
+});
+
+console.log(await response.json());
+```
+
+```python title="Python" lines theme={null}
+response = requests.post(
+    "https://openrouter.ai/api/v1/responses",
+    headers={
+        "Authorization": f"Bearer {access_token}",
+        "Content-Type": "application/json",
+    },
+    json={
+        "model": "openai/gpt-4o-mini",
+        "input": "Hello",
+    },
+)
+print(response.json())
+
+```
+
+```go title="Go" lines theme={null}
+body := strings.NewReader(`{"model": "openai/gpt-4o-mini", "input": "Hello"}`)
+req, _ := http.NewRequest("POST", "https://openrouter.ai/api/v1/responses", body)
+req.Header.Set("Authorization", "Bearer "+accessToken)
+req.Header.Set("Content-Type", "application/json")
+resp, err := http.DefaultClient.Do(req)
+if err != nil {
+	log.Fatal(err)
+}
+defer resp.Body.Close()
+out, _ := io.ReadAll(resp.Body)
+fmt.Println(string(out))
+
+```
+
 The request body is `application/x-www-form-urlencoded` and must stay under 32 KB; `subject_token` itself is capped at 16 KB. `federation_policy_id` is required and names the policy to evaluate. `requested_token_type` (must be `urn:ietf:params:oauth:token-type:access_token`) and `scope` are accepted and optional. When sent, `scope` must be the scope the policy grants (`inference` for a workspace key, `management` for a management key); when omitted, the token gets the policy's scope; `audience` and `resource` are accepted and ignored.
 
 ### Manage your organization with an access token

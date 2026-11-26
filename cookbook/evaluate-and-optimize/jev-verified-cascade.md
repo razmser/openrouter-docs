@@ -269,8 +269,6 @@ The state object has three fields: `help_center_excerpts`, `customer_question`, 
 The Decisions API is at `https://openrouter.ai/api/alpha/decisions`, outside the `/api/v1` prefix the Responses client uses. Use a separate OpenRouter instance with `serverURL` set to `https://openrouter.ai`, since the default SDK base URL doesn't work for this path. `verifyAnswer` returns a verdict: the chosen label, a confidence number, and an object with a probability per label.
 
 ```typescript lines theme={null}
-const decisions = new OpenRouter({ apiKey: process.env.OPENROUTER_API_KEY, serverURL: 'https://openrouter.ai' });
-
 type Verdict = {
   choice: 'supported' | 'unsupported' | 'declined';
   confidence: number;
@@ -282,8 +280,13 @@ function isLabel(choice: string): choice is Verdict['choice'] {
 }
 
 async function verifyAnswer(question: string, excerpts: string[], answer: string): Promise<Verdict> {
-  const response = await decisions.alpha.decisions.create({
-    decisionsRequest: {
+  const res = await fetch('https://openrouter.ai/api/alpha/decisions', {
+    method: 'POST',
+    headers: {
+      Authorization: `Bearer ${process.env.OPENROUTER_API_KEY}`,
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({
       model: 'typesafe/jev-1.13',
       state: { help_center_excerpts: excerpts, customer_question: question, assistant_answer: answer },
       questions: {
@@ -297,14 +300,30 @@ async function verifyAnswer(question: string, excerpts: string[], answer: string
           },
         },
       },
-    },
+    }),
   });
-  const verdict = response.answers.support;
-  if (verdict.type !== 'choice' || !isLabel(verdict.choice)) {
+  if (!res.ok) {
+    throw new Error(`Decisions request failed: ${res.status} ${await res.text()}`);
+  }
+  const response = await res.json();
+  const verdict = response.answers?.support;
+  if (!verdict || verdict.type !== 'choice' || !isLabel(verdict.choice)) {
     throw new Error('Expected a choice answer with a known label');
   }
   return { choice: verdict.choice, confidence: verdict.confidence ?? 0, probabilities: verdict.probabilities ?? {} };
 }
+
+const excerpts = [
+  'Northwind orders ship within 2 business days of purchase.',
+  'Returns are accepted within 30 days of delivery for a full refund.',
+];
+const question = 'How long do I have to return an order?';
+// The draft from step 1; replace with the output of draftAnswer().
+const draft = 'You can return an order within 30 days of delivery for a full refund.';
+
+const verdict = await verifyAnswer(question, excerpts, draft);
+console.log(verdict);
+
 ```
 
 ```python title="Python" lines theme={null}
@@ -444,7 +463,7 @@ func main() {
 # verify_answer QUESTION EXCERPTS_JSON ANSWER prints the verdict as one line of JSON.
 verify_answer() {
   local question=$1 excerpts=$2 answer=$3 response
-  response=$(curl -s --max-time 60 https://openrouter.ai/api/alpha/decisions \
+  response=$(curl -fsS --max-time 60 https://openrouter.ai/api/alpha/decisions \
     -H "Authorization: Bearer $OPENROUTER_API_KEY" \
     -H "Content-Type: application/json" \
     -d "$(jq -n --argjson excerpts "$excerpts" --arg question "$question" --arg answer "$answer" '{
@@ -465,7 +484,9 @@ verify_answer() {
 
   echo "$response" | jq -ec '.answers.support
     | select(.type == "choice" and (.choice | IN("supported", "unsupported", "declined")))
-    | {choice, confidence: (.confidence // 0), probabilities: (.probabilities // {})}' \
+    | (if .confidence == null then 0 else .confidence end) as $confidence
+    | select($confidence | type == "number" and . >= 0 and . <= 1)
+    | {choice, confidence: $confidence, probabilities: (.probabilities // {})}' \
     || { echo "Expected a choice answer with a known label: $response" >&2; return 1; }
 }
 
@@ -578,9 +599,9 @@ answer_with_cascade() {
   for model in "$DRAFT_MODEL" "$ESCALATION_MODEL"; do
     answer=$(draft_answer "$model" "$question" "$excerpts") || return 1
     verdict=$(verify_answer "$question" "$excerpts" "$answer") || return 1
-    verdicts=$(jq -c --argjson v "$verdict" '. + [$v]' <<<"$verdicts")
+    verdicts=$(jq -c --argjson v "$verdict" '. + [$v]' <<<"$verdicts") || return 1
     route=$(jq -r --argjson min "$ACCEPT_CONFIDENCE" 'if .choice == "supported" and .confidence >= $min then "send"
-      elif .choice == "declined" then "handoff" else "" end' <<<"$verdict")
+      elif .choice == "declined" then "handoff" else "" end' <<<"$verdict") || return 1
     if [ -n "$route" ]; then
       jq -n --arg route "$route" --arg model "$model" --arg answer "$answer" --argjson verdicts "$verdicts" \
         '{route: $route, model: $model, answer: $answer, verdicts: $verdicts}'

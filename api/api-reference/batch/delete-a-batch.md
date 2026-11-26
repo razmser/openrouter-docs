@@ -231,7 +231,21 @@ paths:
                 $ref: '#/components/schemas/BatchErrorResponse'
           description: >-
             The batch service is unavailable, or an upstream provider operation
-            failed, including batch or file cleanup.
+            failed.
+        '503':
+          content:
+            application/json:
+              example:
+                error:
+                  code: 503
+                  message: >-
+                    Failed to delete the upstream batch or its files; retry the
+                    request.
+              schema:
+                $ref: '#/components/schemas/BatchErrorResponse'
+          description: >-
+            The provider did not confirm batch or file cleanup; retry the
+            request.
 components:
   schemas:
     BatchDeletedObject:

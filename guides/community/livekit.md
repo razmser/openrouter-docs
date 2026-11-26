@@ -27,21 +27,13 @@ The OpenRouter plugin requires an [OpenRouter API key](https://openrouter.ai/set
 Create an OpenRouter LLM using the `with_openrouter` method:
 
 ```python title="Python" lines theme={null}
+from livekit.agents import AgentSession
 from livekit.plugins import openai
 
 session = AgentSession(
     llm=openai.LLM.with_openrouter(model="anthropic/claude-sonnet-4.5"),
     # ... tts, stt, vad, turn_detection, etc.
 )
-```
-
-```go title="Go" lines theme={null}
-// LiveKit Agents has no Go SDK, so create the OpenRouter LLM client directly
-llm := openrouter.New(
-	openrouter.WithSecurity(os.Getenv("OPENROUTER_API_KEY")),
-)
-model := "anthropic/claude-sonnet-4.5"
-// ... pass llm and model to your agent along with tts, stt, vad, turn_detection, etc.
 ```
 
 ### Advanced Features
@@ -152,6 +144,23 @@ func main() {
 	fmt.Println("Model that answered:", res.Model)
 	fmt.Println(res.Choices[0].Message.Content)
 }
+
+```
+
+```bash title="cURL" lines theme={null}
+# The LiveKit plugin can't run here, so call OpenRouter directly with the same fallback configuration
+# "model" is the primary; the "models" fallbacks are tried in order if the primary model is unavailable
+res=$(curl -sS --fail-with-body https://openrouter.ai/api/v1/chat/completions \
+  -H "Authorization: Bearer $OPENROUTER_API_KEY" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "model": "openai/gpt-4o",
+    "models": ["anthropic/claude-sonnet-4.5", "openai/gpt-5-mini"],
+    "messages": [{"role": "user", "content": "Say hello in one short sentence."}]
+  }')
+
+echo "Model that answered: $(echo "$res" | jq -r '.model')"
+echo "$res" | jq -r '.choices[0].message.content'
 
 ```
 
@@ -393,6 +402,25 @@ func main() {
 
 	fmt.Println(res.Choices[0].Message.Content)
 }
+
+```
+
+```bash title="cURL" lines theme={null}
+# The LiveKit plugin can't run here, so call OpenRouter directly with the same web search plugin configuration
+curl -s https://openrouter.ai/api/v1/chat/completions \
+  -H "Authorization: Bearer $OPENROUTER_API_KEY" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "model": "google/gemini-3-flash-preview",
+    "plugins": [
+      {
+        "id": "web",
+        "max_results": 5,
+        "search_prompt": "Search for relevant information"
+      }
+    ],
+    "messages": [{"role": "user", "content": "What is the latest news about LiveKit? Answer in two sentences."}]
+  }' | jq -r '.choices[0].message.content'
 
 ```
 

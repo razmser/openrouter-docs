@@ -145,6 +145,14 @@ fi
 BASE_URL="https://openrouter.ai/api/v1"
 ```
 
+```bash title="cURL" lines theme={null}
+if [ -z "$OPENROUTER_API_KEY" ]; then
+  echo 'OPENROUTER_API_KEY environment variable is missing or empty' >&2
+  exit 1
+fi
+BASE_URL="https://openrouter.ai/api/v1"
+```
+
 ## Endpoint compatibility matrix
 
 OpenRouter supports the majority of OpenAI SDK surfaces and methods:

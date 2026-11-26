@@ -2,7 +2,7 @@
 
 Markdown mirror of [OpenRouter's documentation](https://openrouter.ai/docs/quickstart).
 
-Contains **563 pages**, discovered from the [page index](https://openrouter.ai/docs/llms.txt) and [supplementary index](https://openrouter.ai/docs/sitemap.xml).
+Contains **565 pages**, discovered from the [page index](https://openrouter.ai/docs/llms.txt) and [supplementary index](https://openrouter.ai/docs/sitemap.xml).
 
 Links to mirrored pages point to local files; external links and images remain online. Code examples and OpenAPI blocks are preserved.
 
@@ -371,12 +371,14 @@ Generated files are replaced by the next successful sync. Original content belon
 - [Delegate Routine Work to Cheaper Models](cookbook/building-agents/subagent-server-tool.md)
 - [Auto-Approve Coding Agent Permission Prompts with Jev](cookbook/coding-agents/auto-approve-permission-prompts-with-jev.md)
 - [Automatic Code Review](cookbook/coding-agents/automatic-code-review.md)
+- [Bring your own subscription](cookbook/coding-agents/bring-your-own-subscription.md)
 - [Claude Code](cookbook/coding-agents/claude-code-integration.md)
 - [Claude Desktop](cookbook/coding-agents/claude-desktop-integration.md)
 - [Codex CLI](cookbook/coding-agents/codex-cli.md)
 - [Codex Desktop App](cookbook/coding-agents/codex-desktop.md)
 - [Cursor](cookbook/coding-agents/cursor-integration.md)
 - [Deploy Coding Agents Across Your Company without handing out API keys](cookbook/coding-agents/deploy-coding-agents.md)
+- [Generate and Edit Images from Claude Code](cookbook/coding-agents/generate-images-in-claude-code.md)
 - [Hermes Agent](cookbook/coding-agents/hermes-integration.md)
 - [Junie CLI](cookbook/coding-agents/junie.md)
 - [Using MCP Servers with OpenRouter](cookbook/coding-agents/mcp-servers.md)

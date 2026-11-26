@@ -138,6 +138,7 @@ const response = await fetch('https://openrouter.ai/api/v1/containers/sess_abc12
   headers: { Authorization: `Bearer ${process.env.OPENROUTER_API_KEY}` },
 });
 const files = await response.json();
+console.log(files);
 ```
 
 ```python title="Python" lines theme={null}

@@ -394,7 +394,9 @@ When a subtask needs external data, pass server tools to the worker. The worker 
 ```js expandable lines theme={null}
 const requestBody = {
   model: "~anthropic/claude-opus-latest",
-  input: "Research competitors mentioned in our Q2 report and draft a competitive analysis.",
+  input:
+    "Our Q2 report names three competitors: Notion, Coda, and Airtable. " +
+    "Research each one and draft a competitive analysis.",
   tools: [
     {
       type: "openrouter:subagent",
@@ -494,6 +496,26 @@ REQUEST_BODY='{
 }'
 ```
 
+```bash title="cURL" lines theme={null}
+REQUEST_BODY='{
+  "model": "~anthropic/claude-opus-latest",
+  "input": "Our Q2 report names three competitors: Notion, Coda, and Airtable. Research each one and draft a competitive analysis.",
+  "tools": [
+    {
+      "type": "openrouter:subagent",
+      "parameters": {
+        "model": "~anthropic/claude-haiku-latest",
+        "instructions": "You are a research assistant. Use web search to find current data. Return structured findings with sources.",
+        "tools": [
+          {"type": "openrouter:web_search"},
+          {"type": "openrouter:web_fetch"}
+        ]
+      }
+    }
+  ]
+}'
+```
+
 The worker's tool use happens inside the subagent call. Only its final text is returned to the orchestrator. The orchestrator never sees the worker's intermediate tool calls or search results, just the finished outcome.
 
 Two constraints on nested tools:
@@ -549,6 +571,21 @@ tools := []map[string]any{
 		},
 	},
 }
+```
+
+```bash title="cURL" lines theme={null}
+TOOLS='[
+  {
+    "type": "openrouter:subagent",
+    "parameters": {
+      "model": "~anthropic/claude-haiku-latest",
+      "instructions": "Complete the task exactly as described. Be concise and structured.",
+      "max_completion_tokens": 1024,
+      "temperature": 0.2,
+      "reasoning": {"effort": "low"}
+    }
+  }
+]'
 ```
 
 ```bash title="cURL" lines theme={null}
@@ -974,6 +1011,24 @@ log_delegation() {
     usage_cost: .usage.cost,
     route: "delegated_analysis"
   } | with_entries(select(.value != null))' <<<"$response"
+}
+```
+
+```bash title="cURL" lines theme={null}
+log_delegation() {
+  # $1: response JSON, $2: orchestrator model, $3: worker model
+  jq --arg orch "$2" --arg worker "$3" '(.usage // {}) as $u | {
+    orchestrator_model: $orch,
+    worker_model: $worker,
+    did_enable_delegation: true,
+    status: .status,
+    incomplete_reason: .incomplete_details.reason,
+    usage_input_tokens: $u.input_tokens,
+    usage_output_tokens: $u.output_tokens,
+    usage_total_tokens: $u.total_tokens,
+    usage_cost: $u.cost,
+    route: "delegated_analysis"
+  } | with_entries(select(.value != null))' <<<"$1"
 }
 ```
 

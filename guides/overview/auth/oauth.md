@@ -188,6 +188,7 @@ const { key } = await response.json();
 Once you have the API key, you can create links to the user's OpenRouter activity and key settings pages by hashing the key with SHA-256. Use the lowercase hexadecimal digest in both URLs:
 
 ```typescript title="Create Key Links" lines theme={null}
+// Use `key` from the OAuth code exchange above.
 async function sha256Hex(value: string) {
   const data = new TextEncoder().encode(value);
   const hash = await crypto.subtle.digest('SHA-256', data);
@@ -199,6 +200,11 @@ async function sha256Hex(value: string) {
 const keyHash = await sha256Hex(key);
 const logsUrl = `https://openrouter.ai/logs?api_key_hash=${keyHash}`;
 const settingsUrl = `https://openrouter.ai/keys/${keyHash}`;
+
+console.log('Key hash (SHA-256, lowercase hex):', keyHash);
+console.log('Activity page link:', logsUrl);
+console.log('Key settings link: ', settingsUrl);
+
 ```
 
 ```bash title="cURL" lines theme={null}
@@ -214,6 +220,58 @@ echo "Key settings link:  $SETTINGS_URL"
 for url in "$LOGS_URL" "$SETTINGS_URL"; do
   curl -s -o /dev/null -w "HTTP %{http_code}  %{url_effective}\n" "$url"
 done
+
+```
+
+```python title="Python" lines theme={null}
+import hashlib
+import os
+
+# The API key returned by the OAuth code exchange (here read from the environment)
+key = os.environ["OPENROUTER_API_KEY"]
+
+
+def sha256_hex(value: str) -> str:
+    return hashlib.sha256(value.encode()).hexdigest()
+
+
+key_hash = sha256_hex(key)
+logs_url = f"https://openrouter.ai/logs?api_key_hash={key_hash}"
+settings_url = f"https://openrouter.ai/keys/{key_hash}"
+
+print("Key hash (SHA-256, lowercase hex):", key_hash)
+print("Activity page link:", logs_url)
+print("Key settings link: ", settings_url)
+
+```
+
+```go title="Go" lines theme={null}
+package main
+
+import (
+	"crypto/sha256"
+	"encoding/hex"
+	"fmt"
+	"os"
+)
+
+func sha256Hex(value string) string {
+	hash := sha256.Sum256([]byte(value))
+	return hex.EncodeToString(hash[:])
+}
+
+func main() {
+	// The API key returned by the OAuth code exchange (here read from the environment)
+	key := os.Getenv("OPENROUTER_API_KEY")
+
+	keyHash := sha256Hex(key)
+	logsURL := "https://openrouter.ai/logs?api_key_hash=" + keyHash
+	settingsURL := "https://openrouter.ai/keys/" + keyHash
+
+	fmt.Println("Key hash (SHA-256, lowercase hex):", keyHash)
+	fmt.Println("Activity page link:", logsURL)
+	fmt.Println("Key settings link: ", settingsURL)
+}
 
 ```
 

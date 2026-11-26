@@ -169,6 +169,25 @@ fi
 
 ```
 
+```bash title="cURL" lines theme={null}
+response=$(curl -s -w '\n%{http_code}' https://openrouter.ai/api/v1/chat/completions \
+  -H "Authorization: Bearer $OPENROUTER_API_KEY" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "model": "openai/gpt-4o-mini",
+    "messages": [{"role": "user", "content": "Hello"}]
+  }')
+echo "${response##*$'\n'}" # An error code unless the model started processing your request
+
+# Errors before processing return a non-200 status; errors during generation
+# can still appear in the body of a 200 response, at the top level or on the
+# choice next to partial content.
+echo "${response%$'\n'*}" | jq -r '
+  (.error // .choices[0].error) as $e
+  | if $e then "\($e.code)\n\($e.message)" else .choices[0].message.content end'
+
+```
+
 ```text title="Output" theme={null}
 200
 Hello! How can I assist you today?
@@ -1007,6 +1026,26 @@ done < <(curl -sN https://openrouter.ai/api/v1/chat/completions \
 echo
 ```
 
+```bash title="cURL" lines theme={null}
+curl -sN https://openrouter.ai/api/v1/chat/completions \
+  -H "Authorization: Bearer $OPENROUTER_API_KEY" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "model": "anthropic/claude-haiku-5.5",
+    "stream": true,
+    "messages": [
+      {"role": "system", "content": "You are a helpful assistant."},
+      {"role": "user", "content": "Hello!"}
+    ],
+    "debug": {"echo_upstream_body": true}
+  }' |
+  sed -n '/^data: \[DONE\]/q; s/^data: //p' |
+  jq -j '
+    (if .debug.echo_upstream_body then "\nDebug: ", .debug.echo_upstream_body, "\n" else empty end),
+    (.choices[0].delta.content // "")'
+echo
+```
+
 ```text title="Output" theme={null}
 
 Debug: {
@@ -1188,6 +1227,21 @@ done < <(curl -sN https://openrouter.ai/api/v1/responses \
     "input": "Hello!",
     "debug": { "echo_upstream_body": true }
   }')
+
+```
+
+```bash title="cURL" lines theme={null}
+curl -sN https://openrouter.ai/api/v1/responses \
+  -H "Authorization: Bearer $OPENROUTER_API_KEY" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "model": "anthropic/claude-haiku-5.5",
+    "stream": true,
+    "input": "Hello!",
+    "debug": {"echo_upstream_body": true}
+  }' |
+  sed -n '/^data: \[DONE\]/q; s/^data: //p' |
+  jq -j 'select(.type == "response.debug") | "\nDebug: ", .debug, "\n"'
 
 ```
 

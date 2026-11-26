@@ -553,6 +553,19 @@ func main() {
 
 ```
 
+```bash title="cURL" lines theme={null}
+curl -sS -N -X POST https://openrouter.ai/api/v1/responses \
+  -H "Authorization: Bearer $OPENROUTER_API_KEY" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "model": "openai/gpt-4o-mini",
+    "input": "Write a short story about AI",
+    "stream": true,
+    "max_output_tokens": 9000
+  }' | sed -n 's/^data: //p' | jq -R 'fromjson?'
+
+```
+
 ```text title="Output" theme={null}
 {
   type: "response.created",
@@ -764,6 +777,28 @@ if [ "$status" -ge 400 ]; then
   echo "API Error: $(echo "$body" | jq -r '.error.message // .')" >&2
 else
   echo "$body" | jq .
+fi
+```
+
+```bash title="cURL" lines theme={null}
+if ! response=$(curl -sS -w '\n%{http_code}' -X POST https://openrouter.ai/api/v1/responses \
+  -H "Authorization: Bearer $OPENROUTER_API_KEY" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "model": "openai/gpt-4o-mini",
+    "input": "Hello, world!"
+  }'); then
+  echo "Network Error" >&2
+  exit 1
+fi
+
+status=$(tail -n1 <<< "$response")
+body=$(sed '$d' <<< "$response")
+
+if [ "$status" -ge 400 ]; then
+  echo "API Error: $(jq -r '.error.message // .' <<< "$body")" >&2
+else
+  jq . <<< "$body"
 fi
 ```
 

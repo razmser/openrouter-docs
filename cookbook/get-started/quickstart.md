@@ -570,6 +570,29 @@ model='openai/gpt-chat-latest'            # OpenAI's latest chat model
 
 ```
 
+```python title="Python" lines theme={null}
+# Use OpenAI's latest chat model
+"model": "openai/gpt-chat-latest",
+
+# Use Anthropic Claude Sonnet latest
+# "model": "~anthropic/claude-sonnet-latest",
+
+# Use a free model
+# "model": "openrouter/free",
+```
+
+```bash title="cURL" lines theme={null}
+# Use OpenAI's latest chat model
+model="openai/gpt-chat-latest"
+
+# Use Anthropic Claude Sonnet latest
+# model="~anthropic/claude-sonnet-latest"
+
+# Use a free model
+# model="openrouter/free"
+
+```
+
 Browse all available models at [openrouter.ai/models](https://openrouter.ai/models) or query the [Models API](../../api/api-reference/models/list-all-models-and-their-properties.md) programmatically.
 
 ## Check your work

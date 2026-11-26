@@ -465,6 +465,7 @@ components:
           enum:
             - mp3
             - pcm
+            - wav
           example: pcm
           type: string
         session_id:

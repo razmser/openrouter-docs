@@ -853,46 +853,46 @@ curl -sSfN https://openrouter.ai/api/v1/responses \
 ```
 
 ```text title="Output" theme={null}
-In
+L
+ily
+ had
+ always
+ been
+ fascinated
+ by
  the
- heart
+ old
+ lighthouse
+ at
+ the
+ edge
  of
- a
- dense
-,
- ancient
- forest
-,
- where
- sunlight
- barely
- pierced
- through
- the
- dense
- canopy
-,
- a
- young
- girl
- named
- El
-ara
- lived
- in
- a
- quaint
-,
- ivy
--covered
- cottage
- with
  her
- grandmother
+ tiny
+ coastal
+ town
 .
- The
- villagers
- often
+ Per
+ched
+ on
+ jag
+ged
+ cliffs
+ overlooking
+ the
+ roaring
+ sea
+,
+ it
+ had
+ been
+ abandoned
+ for
+ years
+,
+ its
+ paint
+ peeling
 ```
 
 > [!WARNING]

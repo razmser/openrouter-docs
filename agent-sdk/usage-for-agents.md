@@ -154,6 +154,17 @@ func main() {
 
 ```
 
+```bash title="cURL" lines theme={null}
+curl -s https://openrouter.ai/api/v1/chat/completions \
+  -H "Authorization: Bearer $OPENROUTER_API_KEY" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "model": "~anthropic/claude-sonnet-latest",
+    "messages": [{"role": "user", "content": "Hello!"}]
+  }' | jq -r '.choices[0].message.content'
+
+```
+
 ```text title="Output" theme={null}
 Hello! How can I help you today?
 ```

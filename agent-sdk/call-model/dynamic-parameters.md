@@ -219,6 +219,52 @@ func sendChat(payload obj) (*chatMessage, error) {
 }
 ```
 
+```typescript title="TypeScript" lines theme={null}
+type ChatMessage = {
+  content: string | null;
+  tool_calls?: { id: string; function: { name: string; arguments: string } }[];
+  [key: string]: unknown;
+};
+
+async function sendChat(payload: Record<string, unknown>): Promise<ChatMessage> {
+  const res = await fetch('https://openrouter.ai/api/v1/chat/completions', {
+    method: 'POST',
+    headers: {
+      Authorization: `Bearer ${process.env.OPENROUTER_API_KEY}`,
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify(payload),
+  });
+  const raw = await res.text();
+  if (!res.ok) throw new Error(`${res.status} ${res.statusText}: ${raw}`);
+  const message = JSON.parse(raw).choices?.[0]?.message;
+  if (!message) throw new Error(`unexpected response: ${raw}`);
+  return message; // returned as-is, ready to append to messages
+}
+```
+
+```python title="Python" lines theme={null}
+import os
+import requests
+
+
+def send_chat(payload: dict) -> dict:
+    resp = requests.post(
+        "https://openrouter.ai/api/v1/chat/completions",
+        headers={"Authorization": f"Bearer {os.environ['OPENROUTER_API_KEY']}"},
+        json=payload,
+    )
+    if resp.status_code != 200:
+        raise RuntimeError(f"{resp.status_code}: {resp.text}")
+    choices = resp.json().get("choices")
+    if not choices:
+        raise RuntimeError(f"unexpected response: {resp.text}")
+    # The message as returned: ready to append to messages.
+    # Tool calls are in msg.get("tool_calls"), each with "id" and "function"["arguments"].
+    return choices[0]["message"]
+
+```
+
 ## Function Signature
 
 Parameter functions receive a `TurnContext` and return the parameter value:
@@ -889,13 +935,20 @@ Avoid side effects in parameter functions:
 
 ```typescript lines theme={null}
 // Good: Pure function
-model: (ctx) => ctx.numberOfTurns > 3 ? 'gpt-4' : 'gpt-4o-mini',
+const pureModel = (ctx: { numberOfTurns: number }) =>
+  ctx.numberOfTurns > 3 ? 'openai/gpt-4' : 'openai/gpt-4o-mini';
 
 // Avoid: Side effects
-model: (ctx) => {
+const impureModel = (ctx: { numberOfTurns: number }) => {
   logToDatabase(ctx); // Side effect
-  return 'gpt-4';
-},
+  return 'openai/gpt-4';
+};
+
+// Pass the pure resolver as the `model` option
+const result = callModel(openrouter, {
+  model: pureModel,
+  input: 'Hello!',
+});
 ```
 
 ```python title="Python" lines theme={null}

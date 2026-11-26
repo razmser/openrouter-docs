@@ -117,9 +117,15 @@ const response = await fetch('https://openrouter.ai/api/v1/responses', {
 });
 
 const data = await response.json();
-const message = [...data.output].reverse().find((item: { type: string }) => item.type === 'message');
-console.log(message?.content.find((part: { type: string }) => part.type === 'output_text')?.text);
+if (!response.ok) {
+  throw new Error(`Request failed (${response.status}): ${JSON.stringify(data)}`);
+}
+
+const message = [...(data.output ?? [])].reverse().find((item: { type: string }) => item.type === 'message');
+const text = message?.content?.find((part: { type: string }) => part.type === 'output_text')?.text;
+console.log(text ?? JSON.stringify(data, null, 2));
 console.log('Model used:', data.model);
+
 ```
 
 ```python title="Python" expandable lines theme={null}
@@ -212,6 +218,13 @@ curl -s https://openrouter.ai/api/v1/responses \
     "models": ["deepseek/deepseek-v3.2", "anthropic/claude-sonnet-4.5"],
     "input": "Summarize this paragraph in one sentence: The city council voted on Tuesday to expand the downtown bike lane network by twelve miles over the next two years. Supporters argued the plan would reduce traffic congestion and improve air quality, while some local business owners worried that removing parking spaces would hurt sales. The council also approved funding for a study to measure the economic impact once the first phase is complete."
   }' | jq -r '([.output[] | select(.type == "message")] | last | first(.content[] | select(.type == "output_text") | .text)), "Model used: \(.model)"'
+```
+
+```text title="Output" theme={null}
+Here are the key points from the instructions:
+
+The user requests a single-sentence summary of a provided paragraph. Since no paragraph was actually included in the request, a general summary cannot be provided. The assistant is prepared to provide a concise summary if the specific text is supplied.
+Model used: deepseek/deepseek-v3.2
 ```
 
 Each sample prints the one-sentence summary, then a `Model used:` line naming the candidate that served the request.

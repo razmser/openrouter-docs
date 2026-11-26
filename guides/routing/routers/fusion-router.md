@@ -314,6 +314,11 @@ resp, err := http.DefaultClient.Do(req)
 When you bring your own model and add `openrouter:fusion` as a server tool, configure it via the `tools` array instead:
 
 ```typescript title="TypeScript SDK" expandable lines theme={null}
+import { OpenRouter } from '@openrouter/sdk';
+import { callModel, serverTool } from '@openrouter/agent';
+
+const openRouter = new OpenRouter({ apiKey: process.env.OPENROUTER_API_KEY });
+
 const result = callModel(openRouter, {
   model: '~anthropic/claude-opus-latest',
   input: 'Compare ridge, lasso, and elastic-net regression. Where does each shine?',
@@ -333,6 +338,8 @@ const result = callModel(openRouter, {
 });
 
 const text = await result.getText();
+console.log(text);
+
 ```
 
 ```bash title="cURL" lines theme={null}
@@ -341,7 +348,7 @@ curl -sS https://openrouter.ai/api/v1/responses \
   -H "Content-Type: application/json" \
   -d '{
     "model": "~anthropic/claude-opus-latest",
-    "input": "Compare ridge, lasso, and elastic-net regression.",
+    "input": "Compare ridge, lasso, and elastic-net regression. Where does each shine?",
     "tools": [
       {
         "type": "openrouter:fusion",
@@ -351,7 +358,8 @@ curl -sS https://openrouter.ai/api/v1/responses \
         }
       }
     ]
-  }'
+  }' | jq -r '[.output[] | select(.type == "message")] | last | .content[] | select(.type == "output_text") | .text'
+
 ```
 
 ```python title="Python" lines theme={null}
@@ -391,28 +399,81 @@ asyncio.run(main())
 ```
 
 ```go title="Go" lines theme={null}
-body, _ := json.Marshal(map[string]any{
-	"model": "~anthropic/claude-opus-latest",
-	"input": "Compare ridge, lasso, and elastic-net regression. Where does each shine?",
-	"tools": []map[string]any{
-		{
-			"type": "openrouter:fusion",
-			"parameters": map[string]any{
-				"analysis_models": []string{
-					"~anthropic/claude-opus-latest",
-					"~openai/gpt-sol-latest",
-					"~google/gemini-pro-latest",
+package main
+
+import (
+	"bytes"
+	"encoding/json"
+	"fmt"
+	"log"
+	"net/http"
+	"os"
+)
+
+func main() {
+	body, _ := json.Marshal(map[string]any{
+		"model": "~anthropic/claude-opus-latest",
+		"input": "Compare ridge, lasso, and elastic-net regression. Where does each shine?",
+		"tools": []map[string]any{
+			{
+				"type": "openrouter:fusion",
+				"parameters": map[string]any{
+					"analysis_models": []string{
+						"~anthropic/claude-opus-latest",
+						"~openai/gpt-sol-latest",
+						"~google/gemini-pro-latest",
+					},
+					"model": "~openai/gpt-sol-latest",
 				},
-				"model": "~openai/gpt-sol-latest",
 			},
 		},
-	},
-})
-req, _ := http.NewRequest("POST", "https://openrouter.ai/api/v1/responses", bytes.NewReader(body))
-req.Header.Set("Authorization", "Bearer "+os.Getenv("OPENROUTER_API_KEY"))
-req.Header.Set("Content-Type", "application/json")
+	})
+	req, _ := http.NewRequest("POST", "https://openrouter.ai/api/v1/responses", bytes.NewReader(body))
+	req.Header.Set("Authorization", "Bearer "+os.Getenv("OPENROUTER_API_KEY"))
+	req.Header.Set("Content-Type", "application/json")
 
-resp, err := http.DefaultClient.Do(req)
+	resp, err := http.DefaultClient.Do(req)
+	if err != nil {
+		log.Fatal(err)
+	}
+	defer resp.Body.Close()
+
+	var response struct {
+		Status string `json:"status"`
+		Error  *struct {
+			Message string `json:"message"`
+		} `json:"error"`
+		Output []struct {
+			Type    string `json:"type"`
+			Content []struct {
+				Type string `json:"type"`
+				Text string `json:"text"`
+			} `json:"content"`
+		} `json:"output"`
+	}
+	if err := json.NewDecoder(resp.Body).Decode(&response); err != nil {
+		log.Fatal(err)
+	}
+	if response.Status != "completed" {
+		if response.Error != nil {
+			log.Fatal(response.Error.Message)
+		}
+		log.Fatalf("Response ended as %s (HTTP %d)", response.Status, resp.StatusCode)
+	}
+
+	for i := len(response.Output) - 1; i >= 0; i-- {
+		if response.Output[i].Type == "message" {
+			for _, part := range response.Output[i].Content {
+				if part.Type == "output_text" {
+					fmt.Println(part.Text)
+					return
+				}
+			}
+			return
+		}
+	}
+}
+
 ```
 
 ```text title="Output" theme={null}
@@ -529,6 +590,34 @@ req.Header.Set("Authorization", "Bearer "+os.Getenv("OPENROUTER_API_KEY"))
 req.Header.Set("Content-Type", "application/json")
 
 resp, err := http.DefaultClient.Do(req)
+```
+
+```python title="Python" lines theme={null}
+resp = requests.post(
+    "https://openrouter.ai/api/v1/responses",
+    headers={
+        "Authorization": f"Bearer {os.environ['OPENROUTER_API_KEY']}",
+        "Content-Type": "application/json",
+    },
+    json={
+        "model": "~anthropic/claude-opus-latest",
+        "input": "Compare ridge, lasso, and elastic-net regression.",
+        "tools": [
+            {
+                "type": "openrouter:fusion",
+                "parameters": {
+                    "analysis_models": [
+                        "~anthropic/claude-opus-latest",
+                        "~openai/gpt-sol-latest",
+                        "~google/gemini-pro-latest",
+                    ],
+                    "model": "~openai/gpt-sol-latest",
+                },
+            },
+        ],
+        "tool_choice": "required",
+    },
+)
 ```
 
 Because `openrouter/fusion` only injects one tool (`openrouter:fusion`), requiring *some* tool call effectively forces fusion. If your request also includes other tools, the model may pick one of those instead.

@@ -243,7 +243,19 @@ batch = response.json()
 ```
 
 ```go title="Go" lines theme={null}
-body := `{
+package main
+
+import (
+	"fmt"
+	"io"
+	"log"
+	"net/http"
+	"os"
+	"strings"
+)
+
+func main() {
+	body := `{
   "endpoint": "/v1/responses",
   "model": "anthropic/claude-haiku-5.5",
   "requests": [
@@ -264,23 +276,28 @@ body := `{
   ]
 }`
 
-req, _ := http.NewRequest("POST", "https://openrouter.ai/api/v1/batches", strings.NewReader(body))
-req.Header.Set("Authorization", "Bearer "+os.Getenv("OPENROUTER_API_KEY"))
-req.Header.Set("Content-Type", "application/json")
+	req, err := http.NewRequest("POST", "https://openrouter.ai/api/v1/batches", strings.NewReader(body))
+	if err != nil {
+		log.Fatal(err)
+	}
+	req.Header.Set("Authorization", "Bearer "+os.Getenv("OPENROUTER_API_KEY"))
+	req.Header.Set("Content-Type", "application/json")
 
-resp, err := http.DefaultClient.Do(req)
-if err != nil {
-	log.Fatal(err)
+	resp, err := http.DefaultClient.Do(req)
+	if err != nil {
+		log.Fatal(err)
+	}
+	defer resp.Body.Close()
+	out, err := io.ReadAll(resp.Body)
+	if err != nil {
+		log.Fatal(err) // a partial body is not a usable response
+	}
+	if resp.StatusCode >= 400 {
+		log.Fatalf("%s: %s", resp.Status, out)
+	}
+	fmt.Println(string(out))
 }
-defer resp.Body.Close()
-out, err := io.ReadAll(resp.Body)
-if err != nil {
-	log.Fatal(err) // a partial body is not a usable response
-}
-if resp.StatusCode >= 400 {
-	log.Fatalf("%s: %s", resp.Status, out)
-}
-fmt.Println(string(out))
+
 ```
 
 ```json title="202 Accepted" lines theme={null}
@@ -459,6 +476,11 @@ console.log(JSON.stringify(await res.json()));
 ```
 
 ```python title="Python" lines theme={null}
+import json
+import os
+
+import requests
+
 resp = requests.get(
     "https://openrouter.ai/api/v1/batches",
     headers={"Authorization": f"Bearer {os.environ['OPENROUTER_API_KEY']}"},
@@ -466,25 +488,47 @@ resp = requests.get(
 )
 resp.raise_for_status()
 batches = resp.json()
+print(json.dumps(batches, indent=2))
+
 ```
 
 ```go title="Go" lines theme={null}
-req, _ := http.NewRequest("GET", "https://openrouter.ai/api/v1/batches?status=validating&status=in_progress&limit=100", nil)
-req.Header.Set("Authorization", "Bearer "+os.Getenv("OPENROUTER_API_KEY"))
+package main
 
-resp, err := http.DefaultClient.Do(req)
-if err != nil {
-	log.Fatal(err)
+import (
+	"fmt"
+	"io"
+	"log"
+	"net/http"
+	"os"
+)
+
+func main() {
+	req, err := http.NewRequest("GET", "https://openrouter.ai/api/v1/batches?status=validating&status=in_progress&limit=100", nil)
+	if err != nil {
+		log.Fatal(err)
+	}
+	req.Header.Set("Authorization", "Bearer "+os.Getenv("OPENROUTER_API_KEY"))
+
+	resp, err := http.DefaultClient.Do(req)
+	if err != nil {
+		log.Fatal(err)
+	}
+	defer resp.Body.Close()
+	out, err := io.ReadAll(resp.Body)
+	if err != nil {
+		log.Fatal(err) // a partial body is not a usable response
+	}
+	if resp.StatusCode >= 400 {
+		log.Fatalf("%s: %s", resp.Status, out)
+	}
+	fmt.Println(string(out))
 }
-defer resp.Body.Close()
-out, err := io.ReadAll(resp.Body)
-if err != nil {
-	log.Fatal(err) // a partial body is not a usable response
-}
-if resp.StatusCode >= 400 {
-	log.Fatalf("%s: %s", resp.Status, out)
-}
-fmt.Println(string(out))
+
+```
+
+```json title="Output" theme={null}
+{"object":"list","data":[{"id":"batch-1795431079-JjWdxihZPp2QBJym7r32","object":"batch","endpoint":"/v1/responses","model":"anthropic/claude-haiku-5.5-20261007","completion_window":"24h","status":"in_progress","created_at":1795431079,"finalized_at":null,"provider":"Anthropic","expires_at":1795517479,"request_counts":{"total":2,"completed":0,"failed":0},"usage":null,"error":null,"results":null},{"id":"batch-1795431072-FA7ju68myuIZIMOvihHo","object":"batch","endpoint":"/v1/responses","model":"anthropic/claude-haiku-5.5-20261007","completion_window":"24h","status":"in_progress","created_at":1795431072,"finalized_at":null,"provider":"Anthropic","expires_at":1795517472,"request_counts":{"total":2,"completed":0,"failed":0},"usage":null,"error":null,"results":null},{"id":"batch-1795430959-yj27PpEuiyay1kxESTYr","object":"batch","endpoint":"/v1/responses","model":"anthropic/claude-haiku-5.5-20261007","completion_window":"24h","status":"in_progress","created_at":1795430959,"finalized_at":null,"provider":"Anthropic","expires_at":1795517359,"request_counts":{"total":2,"completed":0,"failed":0},"usage":null,"error":null,"results":null},{"id":"batch-1795430944-FHYopvq5NaIC14RuaXlr","object":"batch","endpoint":"/v1/responses","model":"anthropic/claude-haiku-5.5-20261007","completion_window":"24h","status":"in_progress","created_at":1795430944,"finalized_at":null,"provider":"Anthropic","expires_at":1795517344,"request_counts":{"total":2,"completed":0,"failed":0},"usage":null,"error":null,"results":null},{"id":"batch-1795430932-YxRvZ8Xwd87ZrBzZdBfn","object":"batch","endpoint":"/v1/responses","model":"anthropic/claude-haiku-5.5-20261007","completion_window":"24h","status":"in_progress","created_at":1795430932,"finalized_at":null,"provider":"Anthropic","expires_at":1795517332,"request_counts":{"total":2,"completed":0,"failed":0},"usage":null,"error":null,"results":null},{"id":"batch-1795430923-t4zllWJsPqxQAeY0wVcR","object":"batch","endpoint":"/v1/responses","model":"anthropic/claude-haiku-5.5-20261007","completion_window":"24h","status":"in_progress","created_at":1795430923,"finalized_at":null,"provider":"Anthropic","expires_at":1795517323,"request_counts":{"total":2,"completed":0,"failed":0},"usage":null,"error":null,"results":null},{"id":"batch-1795430830-A5gBadWsirOBIvVXx0uR","object":"batch","endpoint":"/v1/responses","model":"anthropic/claude-haiku-5.5-20261007","completion_window":"24h","status":"in_progress","created_at":1795430830,"finalized_at":null,"provider":"Anthropic","expires_at":1795517230,"request_counts":{"total":2,"completed":0,"failed":0},"usage":null,"error":null,"results":null}],"first_id":"batch-1795431079-JjWdxihZPp2QBJym7r32","last_id":"batch-1795430830-A5gBadWsirOBIvVXx0uR","has_more":false}
 ```
 
 | Parameter | Description |
@@ -896,18 +940,18 @@ Deleting a batch does not refund it. Billing, generation, and audit records stay
 
 ## Choose a provider
 
-A batch runs on one provider. By default, OpenRouter picks the cheapest provider that serves the model in batch mode, after your account's provider allowlist, model author settings, data policy, [guardrails](guides/features/guardrails.md), and BYOK keys apply. A model whose author your account blocks is rejected at submit with `404`, the same as the sync API. When your account has a nonempty list of allowed authors, a model whose author is not on that list is rejected the same way; an empty list allows every author. Guardrail model lists match a batch model by its base model, so allowing `openai/gpt-5-nano` also allows `openai/gpt-5-nano:batch`. Providers at the same price share traffic, and a BYOK key is preferred over cheaper platform providers. If the chosen provider has no capacity, OpenRouter moves the batch to the next cheapest allowed provider and bills that provider's price.
+A batch runs on one provider. By default, OpenRouter picks the cheapest batch provider that your account settings allow.
 
-OpenRouter can also spread batches across the providers priced close to the cheapest one, so that one provider does not take every batch. By default, a provider qualifies when its price is at most twice the cheapest allowed provider's price, compared on a typical batch mix of five prompt tokens to one completion token, and when each other price that both providers charge (such as per request, per image, or for cached tokens) is inside the same limit at its highest tier. Among those providers, a cheaper one usually gets more batches, and a provider that already holds many requests in batches in progress usually gets fewer. You pay the price of the provider that runs the batch, shown as `provider` on the batch. The limit applies to that typical mix, not to each batch, so a batch with far more completion tokens than the mix can cost more than twice the cheapest provider's price. This never applies to batches on your own provider key (BYOK), and a batch whose `provider.only` leaves one provider stays on it. A model with one provider in that price range starts on that provider, and the share counts the requests a provider holds, not how its batches ended.
-
-OpenRouter can instead keep every batch on the cheapest provider in that price range while that provider is healthy, and move new batches to the next cheapest one in the range only while it is not. A provider counts as unhealthy when the oldest batch it still holds was accepted several hours ago, or when a large share of the requests it recently finished failed. The failure check applies only after enough of the provider's requests have recently finished, whether they came from one batch or several. The move is gradual, each more expensive provider gets the same check, and when no provider in the range passes, the batch starts on the one that is least behind: the provider whose oldest batch still in progress is the newest, and the cheapest of those when several are equal. When that age is not known for a provider in the range, the batch starts on the cheapest one. A batch that a provider has already accepted is not moved. Spreading and this health-based routing are both off by default. OpenRouter turns on one of them in its routing configuration, and you can't select either on a request.
+* **Fallback:** If the chosen provider has no capacity, OpenRouter moves the batch to the next cheapest allowed provider. You pay the price of the provider that runs the batch.
+* **Pinning:** Set `provider` at the top level of the batch, next to `model`. A `provider` field inside a request `body` does not pin the batch.
+* **BYOK:** OpenRouter uses your enabled [BYOK](#byok) key before platform providers.
 
 | Option | Batch | What it does |
 | - | - | - |
 | `provider.only` | Supported | Use only these [provider slugs](guides/routing/provider-selection.md), for example `["google-vertex"]`. |
-| `provider.allow_fallbacks` | Supported | Set to `false` to keep the batch on the provider chosen at submit. If that provider has no capacity, or can't take the batch's inline files, the batch fails. |
-| `provider.order` | Rejected | Put only the provider you want in `only`. |
-| `provider.sort` | Rejected | Batch always routes by price, as described above. |
+| `provider.allow_fallbacks` | Supported | Set to `false` to keep the batch on the provider chosen at submit. If that provider has no capacity or cannot accept the batch's images or files, the batch fails. |
+| `provider.order` | Rejected | Put the provider you want in `only`. |
+| `provider.sort` | Rejected | Batch always routes by price. |
 | Other sync preferences | Rejected | Remove them. |
 
 ```json title="Pin to Google Vertex" lines theme={null}
@@ -926,9 +970,7 @@ OpenRouter can instead keep every batch on the cheapest provider in that price r
 }
 ```
 
-Set `provider` at the top level of the batch, next to `model`. It applies to every request. A `provider` field inside a request `body` does not pin the batch, so a chat batch with `provider` only in its bodies runs on the default provider.
-
-If none of the providers in `only` serves the model in batch mode, the submit returns `404`. Embeddings batches do not accept `provider`.
+If no provider in `only` serves the model in batch mode, OpenRouter returns `404`. Embeddings batches do not accept `provider`.
 
 ***
 

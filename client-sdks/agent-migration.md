@@ -78,7 +78,7 @@ from openrouter_agent import OpenRouter
 ```
 
 ```go title="Go" lines theme={null}
-import agent "github.com/OpenRouterTeam/go-agent"
+import openrouter "github.com/OpenRouterTeam/go-sdk"
 ```
 
 ### Core imports
@@ -231,7 +231,8 @@ from openrouter_agent import call_model, tool
 
 ```go title="Go" lines theme={null}
 import (
-	agent "github.com/OpenRouterTeam/go-agent"
+	// go-agent is not released yet; in Go, go-sdk covers both the REST API
+	// and tool calling (with an explicit tool-call loop).
 	openrouter "github.com/OpenRouterTeam/go-sdk"
 )
 ```

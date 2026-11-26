@@ -135,7 +135,50 @@ func main() {
 }
 ```
 
-Send a `session_id` (or the `x-session-id` header) so the router treats every turn of an agent session as one conversation. See [Auto Router session stickiness](auto-router.md#session-stickiness).
+````text title="Output" theme={null}
+Model used: google/gemini-4-hydrogen
+I cannot access your workspace or read/edit `api/users.ts` directly because no file-system or code-execution tools are available in this session.
+
+If you paste the contents of `api/users.ts` (and any relevant types or error-handling conventions used in your project), I can give you an exact edit tailored to your code.
+
+In the meantime, here is a general TypeScript pattern for adding retry with exponential backoff (and jitter) around a `fetchUser` function:
+
+```ts
+interface RetryOptions {
+  maxRetries?: number;
+  baseDelayMs?: number;
+  maxDelayMs?: number;
+  shouldRetry?: (error: unknown) => boolean;
+}
+
+const sleep = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
+
+function defaultShouldRetry(error: unknown): boolean {
+  // Retry on network errors or 5xx / 429 HTTP responses if your error carries a status
+  if (error instanceof Error && "status" in error) {
+    const status = (error as { status?: number }).status;
+    return status === 429 || (typeof status === "number" && status >= 500);
+  }
+  return true;
+}
+
+async function withRetry<T>(
+  fn: () => Promise<T>,
+  {
+    maxRetries = 3,
+    baseDelayMs = 200,
+    maxDelayMs = 5000,
+    shouldRetry = defaultShouldRetry,
+  }: RetryOptions = {}
+): Promise<T> {
+  let attempt = 0;
+
+  while (true) {
+    try {
+      return await fn();
+````
+
+Send a `session_id` (or the `x-session-id` header) so the router treats every turn of an agent session as one conversation. See [Auto Router session stickiness](https://openrouter.ai/guides/routing/routers/auto-router#session-stickiness).
 
 ## Restrict the models
 
@@ -155,7 +198,7 @@ Auto Code applies the `allowed_models` and `excluded_models` lists from the `aut
 }
 ```
 
-See [Allowed models](auto-router.md#allowed-models) for the pattern syntax. If your restrictions leave no eligible model, the request fails with `404` and names the fields to change.
+See [Allowed models](https://openrouter.ai/guides/routing/routers/auto-router#allowed-models) for the pattern syntax. If your restrictions leave no eligible model, the request fails with `404` and names the fields to change.
 
 ## Change the cost tier
 

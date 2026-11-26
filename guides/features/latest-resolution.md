@@ -108,6 +108,67 @@ curl -sS https://openrouter.ai/api/v1/responses \
   }'
 ```
 
+```go title="Go" lines theme={null}
+package main
+
+import (
+	"bytes"
+	"encoding/json"
+	"fmt"
+	"log"
+	"net/http"
+	"os"
+)
+
+func main() {
+	body, _ := json.Marshal(map[string]any{
+		"model": "~anthropic/claude-opus-latest",
+		"input": "Summarize this in one sentence: ...",
+	})
+	req, _ := http.NewRequest("POST", "https://openrouter.ai/api/v1/responses", bytes.NewReader(body))
+	req.Header.Set("Authorization", "Bearer "+os.Getenv("OPENROUTER_API_KEY"))
+	req.Header.Set("Content-Type", "application/json")
+
+	resp, err := http.DefaultClient.Do(req)
+	if err != nil {
+		log.Fatal(err)
+	}
+	defer resp.Body.Close()
+	if resp.StatusCode != http.StatusOK {
+		log.Fatalf("request failed: %s", resp.Status)
+	}
+
+	var response struct {
+		Model  string `json:"model"`
+		Output []struct {
+			Type    string `json:"type"`
+			Content []struct {
+				Type string `json:"type"`
+				Text string `json:"text"`
+			} `json:"content"`
+		} `json:"output"`
+	}
+	if err := json.NewDecoder(resp.Body).Decode(&response); err != nil {
+		log.Fatal(err)
+	}
+
+	for i := len(response.Output) - 1; i >= 0; i-- {
+		if item := response.Output[i]; item.Type == "message" {
+			for _, part := range item.Content {
+				if part.Type == "output_text" {
+					fmt.Println(part.Text)
+					break
+				}
+			}
+			break
+		}
+	}
+	// The `model` field reflects the concrete version that served the request.
+	fmt.Println("Resolved to:", response.Model)
+}
+
+```
+
 ```text title="Output" theme={null}
 It looks like the text didn't come through; your message only shows "...". Please paste the content you'd like summarized, and I'll condense it into one sentence.
 Resolved to: anthropic/claude-opus-5.5

@@ -303,7 +303,11 @@ components:
             - integer
             - 'null'
         error_message:
-          description: Stable error message when the job failed.
+          description: >-
+            Stable message code, or null. On a failed job, the failure reason.
+            On a succeeded job, set when optional work beyond the group
+            synchronization could not be completed; the groups were still
+            synchronized.
           type:
             - string
             - 'null'

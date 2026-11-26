@@ -246,7 +246,9 @@ with open("audio.wav", "rb") as f:
         file=f,
     )
 
-print(result.text)
+print(f'Transcript: "{result.text}"')
+print("Full response:", result.model_dump_json(indent=2))
+
 ```
 
 ```bash title="cURL (multipart)" lines theme={null}

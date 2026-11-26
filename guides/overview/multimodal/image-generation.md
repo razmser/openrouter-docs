@@ -210,6 +210,43 @@ Visit the [Models page](https://openrouter.ai/models?output_modalities=image) an
 curl -s "https://openrouter.ai/api/v1/images/models" | jq '[.data[] | select(.id | endswith(":free")) | .id]'
 ```
 
+```typescript title="TypeScript" lines theme={null}
+const freeModels = models.data
+  .filter((m: { id: string }) => m.id.endsWith(':free'))
+  .map((m: { id: string }) => m.id);
+```
+
+```python title="Python" lines theme={null}
+response = requests.get("https://openrouter.ai/api/v1/images/models")
+free_models = [m["id"] for m in response.json()["data"] if m["id"].endswith(":free")]
+```
+
+```go title="Go" lines theme={null}
+res, err := http.Get("https://openrouter.ai/api/v1/images/models")
+if err != nil {
+	log.Fatal(err)
+}
+defer res.Body.Close()
+
+var models struct {
+	Data []struct {
+		ID string `json:"id"`
+	} `json:"data"`
+}
+if err := json.NewDecoder(res.Body).Decode(&models); err != nil {
+	log.Fatal(err)
+}
+
+free := []string{}
+for _, m := range models.Data {
+	if strings.HasSuffix(m.ID, ":free") {
+		free = append(free, m.ID)
+	}
+}
+out, _ := json.MarshalIndent(free, "", "  ")
+fmt.Println(string(out))
+```
+
 Pass a `:free` ID as `model` to `POST /api/v1/images`, or to `GET /api/v1/images/models/{author}/{slug}:free/endpoints` to see the free endpoints and their parameters. See [Free Variants](../../routing/model-variants/free.md) for routing behavior and [Rate limits](../../../api_reference/limits.md#rate-limits) for free-tier per-minute and daily quotas.
 
 ## API Usage
@@ -474,7 +511,7 @@ Not all providers support `n > 1`. Check the model's `supported_parameters` for 
 
 ### Image-to-Image (Reference Images)
 
-Pass reference images to guide generation via `input_references`:
+Pass one or more reference images via `input_references` to edit an existing image or guide a new generation. Each entry uses the `{ "type": "image_url", "image_url": { "url": "..." } }` shape, where `url` is an HTTP(S) URL or a base64 `data:image/...;base64,...` URL (up to 16 entries globally, narrowed per model):
 
 ```json lines theme={null}
 {
@@ -491,7 +528,36 @@ Pass reference images to guide generation via `input_references`:
 }
 ```
 
-Reference images can be HTTP(S) URLs or base64 data URLs. The number of references accepted varies by provider.
+To list all models that accept `input_references` along with each model's allowed `min` and `max` reference count (`min: 1` indicates an edit model that requires at least one source image), filter `GET /api/v1/images/models` by `supported_parameters.input_references`:
+
+```bash lines theme={null}
+curl -s "https://openrouter.ai/api/v1/images/models" | jq '[.data[] | select(.supported_parameters.input_references != null) | {id, input_references: .supported_parameters.input_references}]'
+```
+
+> [!NOTE]
+>
+> **No `bbox` placement parameter on `input_references`:** Reference-image entries do not accept bounding-box (`bbox`) coordinates to control where an input image is placed. `ImageGenerationLayerBoundingBox` (`bounding_box`) is a response-only metadata field returned on decomposed output layers, not a request parameter. Describe placement in `prompt`, or pass a transparent PNG overlay via `markup` on models that support it.
+
+To place text rather than images, Recraft V3 (`recraft/recraft-v3`) accepts `text_layout` under `provider.options.recraft`. Each entry pairs a `text` string with a `bbox` of four `[x, y]` corner points, given as fractions (`0` to `1`) of the image width and height:
+
+```json lines theme={null}
+{
+  "model": "recraft/recraft-v3",
+  "prompt": "a red panda holding a sign",
+  "provider": {
+    "options": {
+      "recraft": {
+        "text_layout": [
+          {
+            "text": "HELLO",
+            "bbox": [[0.3, 0.45], [0.7, 0.45], [0.7, 0.55], [0.3, 0.55]]
+          }
+        ]
+      }
+    }
+  }
+}
+```
 
 ### Provider Routing
 

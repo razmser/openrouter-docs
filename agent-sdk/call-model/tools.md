@@ -11,8 +11,13 @@
 The `tool()` function creates type-safe tools with Zod schema validation:
 
 ```typescript expandable lines theme={null}
-import { OpenRouter, tool } from '@openrouter/agent';
+import { tool } from '@openrouter/agent';
 import { z } from 'zod';
+
+// Replace with your real weather lookup
+async function fetchWeather(location: string): Promise<{ temp: number; description: string }> {
+  return { temp: 68, description: `Partly cloudy in ${location}` };
+}
 
 const weatherTool = tool({
   name: 'get_weather',
@@ -1145,7 +1150,7 @@ weatherTool := Tool{
 Pass context keyed by tool name:
 
 ```typescript lines theme={null}
-const result = openrouter.callModel({
+const result = callModel(openrouter, {
   model: 'openai/gpt-5-nano',
   input: 'What is the weather in Tokyo?',
   tools: [weatherTool, dbTool] as const,
@@ -1156,6 +1161,8 @@ const result = openrouter.callModel({
     db_query: { connectionString: 'postgres://...' },
   },
 });
+
+console.log(await result.getText());
 ```
 
 ```python title="Python" lines theme={null}
@@ -1540,11 +1547,19 @@ When you provide tools with execute functions:
 The Python tab starts with the setup that the other Python samples on this page assume: the imports, plus a `client`. The Go tabs on this page are fragments, because there is no Go agent SDK. `Tool`, `TurnContext`, `CallModelRequest`, `Step`, and `callModel` in the Go tabs of this section stand for a tool loop that your application defines; they are not imported from a library. Later Go tabs call the chat completions endpoint (`/api/v1/chat/completions`) directly through `chat` and `complete`, which are also application-defined helpers: each one sends the messages and tool definitions and exits on an HTTP error or an empty `choices` list. `chat` returns the first choice's message and `complete` returns the whole response.
 
 ```typescript expandable lines theme={null}
-import { OpenRouter, tool } from '@openrouter/agent';
+import { OpenRouter, callModel, tool } from '@openrouter/agent';
 import { z } from 'zod';
+
+const openrouter = new OpenRouter({ apiKey: process.env.OPENROUTER_API_KEY });
+
+// Stand-in for your weather lookup
+async function fetchTemperature(location: string): Promise<number> {
+  return 18;
+}
 
 const weatherTool = tool({
   name: 'get_weather',
+  description: 'Get the current temperature for a location',
   inputSchema: z.object({ location: z.string() }),
   outputSchema: z.object({ temperature: z.number() }),
   execute: async ({ location }) => {
@@ -1552,25 +1567,32 @@ const weatherTool = tool({
   },
 });
 
-const result = openrouter.callModel({
+const result = callModel(openrouter, {
   model: 'openai/gpt-5-nano',
   input: 'What is the weather in Paris?',
-  tools: [weatherTool],
+  tools: [weatherTool] as const,
 });
 
 // getText() waits for all tool execution to complete
 const text = await result.getText();
+console.log(text);
 // "The weather in Paris is 18°C."
+
 ```
 
 ```python title="Python" lines theme={null}
 import asyncio
 import os
 
-from openrouter_agent import OpenRouter, call_model, tool
 from pydantic import BaseModel
+from openrouter_agent import OpenRouter, call_model, tool
 
 client = OpenRouter(api_key=os.environ["OPENROUTER_API_KEY"])
+
+
+# Stand-in for your weather lookup
+async def fetch_temperature(location: str) -> float:
+    return 18
 
 
 class WeatherInput(BaseModel):
@@ -1638,6 +1660,12 @@ result := callModel(CallModelRequest{
 // GetText() waits for all tool execution to complete
 text := result.GetText()
 // "The weather in Paris is 18°C."
+```
+
+```text title="Output" theme={null}
+Right now in Paris it’s 18°C (about 64°F).
+
+Would you like more details (conditions, humidity, wind) or a forecast for the rest of the day? I can also provide Fahrenheit if you prefer.
 ```
 
 ### Execution Sequence
@@ -1812,18 +1840,26 @@ for _, call := range toolCalls {
 Stream tool calls as they complete:
 
 ```typescript lines theme={null}
-const result = openrouter.callModel({
+const manualWeatherTool = tool({
+  name: 'get_weather',
+  description: 'Get the current temperature for a location',
+  inputSchema: z.object({ location: z.string() }),
+  execute: false,
+});
+
+const result = callModel(openrouter, {
   model: 'openai/gpt-5-nano',
-  input: 'Check weather in multiple cities',
-  tools: [weatherTool],
-  maxToolRounds: 0,
+  input: 'Check the weather in Tokyo, Paris, and London',
+  tools: [manualWeatherTool] as const,
+  stopWhen: stepCountIs(1), // Stop after the first tool round
+  allowFinalResponse: false, // No extra final-answer turn
 });
 
 for await (const toolCall of result.getToolCallsStream()) {
   console.log(`Received tool call: ${toolCall.name}`);
 
   // Process each tool call as it arrives
-  const weatherResult = await processWeatherRequest(toolCall.arguments);
+  const weatherResult = await fetchTemperature(toolCall.arguments.location);
   console.log('Result:', weatherResult);
 }
 ```
@@ -1846,7 +1882,7 @@ async def main():
         client,
         {
             "model": "openai/gpt-5-nano",
-            "input": "Check weather in multiple cities",
+            "input": "Check the weather in Tokyo, Paris, and London",
             "tools": [manual_weather_tool],
             "stop_when": step_count_is(1),  # Stop after the first tool round
             "allow_final_response": False,  # No extra final-answer turn
@@ -1871,6 +1907,24 @@ async def main():
 asyncio.run(main())
 ```
 
+```go title="Go" lines theme={null}
+result := callModel(CallModelRequest{
+	Model:              "openai/gpt-5-nano",
+	Input:              "Check the weather in Tokyo, Paris, and London",
+	Tools:              []Tool{weatherTool},
+	StopWhen:           stepCountIs(1), // Stop after the first tool round
+	AllowFinalResponse: false,          // No extra final-answer turn
+})
+
+for toolCall := range result.GetToolCallsStream() {
+	fmt.Printf("Received tool call: %s\n", toolCall.Name)
+
+	// Process each tool call as it arrives
+	weatherResult := processWeatherRequest(toolCall.Arguments)
+	fmt.Println("Result:", weatherResult)
+}
+```
+
 ### Tool Stream Events
 
 #### getToolStream()
@@ -1892,7 +1946,7 @@ const searchTool = tool({
   },
 });
 
-const result = openrouter.callModel({
+const result = callModel(openrouter, {
   model: 'openai/gpt-5-nano',
   input: 'Search for TypeScript tutorials',
   tools: [searchTool] as const,
@@ -2192,7 +2246,7 @@ The brand is purely informational: MCP tools still execute locally and serialize
 When the model calls multiple tools, they execute in parallel:
 
 ```typescript lines theme={null}
-const result = openrouter.callModel({
+const result = callModel(client, {
   model: 'openai/gpt-5-nano',
   input: 'Get weather in Paris, Tokyo, and New York simultaneously',
   tools: [weatherTool] as const,
@@ -2367,7 +2421,7 @@ for _, call := range reply.ToolCalls {
 Access execution metadata through getResponse():
 
 ```typescript lines theme={null}
-const result = openrouter.callModel({
+const result = callModel(client, {
   model: 'openai/gpt-5-nano',
   input: 'What is 2+2 and the weather in Paris?',
   tools: [calculatorTool, weatherTool] as const,
@@ -2636,13 +2690,18 @@ const robustTool = tool({
   }),
   execute: async (params) => {
     try {
-      const response = await fetch(params.url);
+      const url = new URL(params.url);
+      if (url.origin !== 'https://httpbin.org' || url.username || url.password) {
+        return { error: 'Destination not allowed' };
+      }
+      const response = await fetch(url, { redirect: 'error', signal: AbortSignal.timeout(10_000) });
       if (!response.ok) {
+        await response.body?.cancel();
         return { error: `HTTP ${response.status}: ${response.statusText}` };
       }
       return { data: await response.json() };
     } catch (error) {
-      return { error: `Failed to fetch: ${error.message}` };
+      return { error: error instanceof Error ? error.message : 'Failed to fetch' };
     }
   },
 });
@@ -2668,7 +2727,8 @@ ALLOWED_HOSTS = {"httpbin.org"}
 
 
 async def fetch_data(params, ctx):
-    if params.url.scheme != "https" or params.url.host not in ALLOWED_HOSTS:
+    if (params.url.scheme != "https" or params.url.host not in ALLOWED_HOSTS
+            or params.url.port not in (None, 443) or params.url.username or params.url.password):
         return FetchOutput(error=f"Host not allowed: {params.url.host}")
     try:
         # Redirects stay off: a redirect could lead to a host outside the allow-list
@@ -2687,6 +2747,54 @@ robust_tool = tool(
     output_schema=FetchOutput,
     execute=fetch_data,
 )
+```
+
+```go title="Go" lines theme={null}
+// Add net/url and time to the imports for this example.
+robustTool := map[string]any{
+	"type": "function",
+	"function": map[string]any{
+		"name": "fetch_data",
+		"parameters": map[string]any{
+			"type":       "object",
+			"properties": map[string]any{"url": map[string]any{"type": "string", "format": "uri"}},
+			"required":   []string{"url"},
+		},
+	},
+}
+
+client := &http.Client{
+	Timeout: 10 * time.Second,
+	CheckRedirect: func(_ *http.Request, _ []*http.Request) error {
+		return http.ErrUseLastResponse
+	},
+}
+
+fetchData := func(args string) string {
+	var params struct{ URL string `json:"url"` }
+	if err := json.Unmarshal([]byte(args), &params); err != nil {
+		return fmt.Sprintf(`{"error":%q}`, "Invalid arguments: "+err.Error())
+	}
+	destination, err := url.Parse(params.URL)
+	if err != nil || destination.Scheme != "https" || destination.Hostname() != "httpbin.org" ||
+		destination.User != nil || (destination.Port() != "" && destination.Port() != "443") {
+		return `{"error":"Destination not allowed"}`
+	}
+	resp, err := client.Get(destination.String())
+	if err != nil {
+		return fmt.Sprintf(`{"error":%q}`, "Failed to fetch: "+err.Error())
+	}
+	defer resp.Body.Close()
+	if resp.StatusCode < 200 || resp.StatusCode >= 300 {
+		return fmt.Sprintf(`{"error":%q}`, "HTTP "+resp.Status)
+	}
+	var data any
+	if err := json.NewDecoder(resp.Body).Decode(&data); err != nil {
+		return fmt.Sprintf(`{"error":%q}`, "Failed to fetch: "+err.Error())
+	}
+	out, _ := json.Marshal(map[string]any{"data": data})
+	return string(out)
+}
 ```
 
 ## Best Practices
@@ -2766,6 +2874,48 @@ const inputSchema = z.object({
     .default('all')
     .describe('Filter results by time period'),
 });
+```
+
+```python title="Python" lines theme={null}
+class SearchInput(BaseModel):
+    query: str = Field(description="Natural language search query")
+    max_results: int = Field(
+        default=10,
+        ge=1,
+        le=100,
+        description="Maximum number of results to return (1-100)",
+    )
+    date_range: Literal["day", "week", "month", "year", "all"] = Field(
+        default="all",
+        description="Filter results by time period",
+    )
+
+```
+
+```go title="Go" lines theme={null}
+inputSchema := map[string]any{
+	"type": "object",
+	"properties": map[string]any{
+		"query": map[string]any{
+			"type":        "string",
+			"description": "Natural language search query",
+		},
+		"maxResults": map[string]any{
+			"type":        "number",
+			"minimum":     1,
+			"maximum":     100,
+			"default":     10,
+			"description": "Maximum number of results to return (1-100)",
+		},
+		"dateRange": map[string]any{
+			"type":        "string",
+			"enum":        []string{"day", "week", "month", "year", "all"},
+			"default":     "all",
+			"description": "Filter results by time period",
+		},
+	},
+	"required": []string{"query"},
+}
 ```
 
 ### Idempotent Tools

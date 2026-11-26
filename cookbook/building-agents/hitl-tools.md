@@ -425,6 +425,10 @@ toolChoice: { type: 'function', name: 'approve_payment' },
 "tool_choice": map[string]any{"type": "function", "function": map[string]any{"name": "approve_payment"}},
 ```
 
+```bash title="cURL" lines theme={null}
+"tool_choice": {"type": "function", "function": {"name": "approve_payment"}},
+```
+
 In production, your agent instructions or user request can let the model decide when to call the tool.
 
 When the model invokes the tool and `onToolCalled` returns `null`, the result pauses with `status: 'awaiting_hitl'`. Check the state after the call completes, then surface the pending call to the human review surface in your app.

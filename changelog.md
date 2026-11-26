@@ -13,6 +13,16 @@ Entries on this page are generated automatically from [OpenAPI specification](ap
 ## Modified endpoints
 
 * [`GET /videos/models`](api/api-reference/video-generation/list-all-video-generation-models.md): response schema updated
+* [`GET /batches`](api/api-reference/batch/list-batches.md): description updated
+* [`POST /batches`](api/api-reference/batch/create-a-batch.md): description updated
+* [`DELETE /batches/{id}`](api/api-reference/batch/delete-a-batch.md): description updated
+* [`GET /batches/{id}`](api/api-reference/batch/get-a-batch.md): description updated
+* [`GET /batches/{id}/results`](api/api-reference/batch/get-batch-results.md): description updated
+* [`GET /keys`](api/api-reference/api-keys/list-api-keys.md): extension `x-speakeasy-max-method-params` modified; new parameter `creator_user_id`
+
+## New response codes
+
+* [`DELETE /batches/{id}`](api/api-reference/batch/delete-a-batch.md): now returns `503`
 
 ## Modified schemas
 
@@ -22,6 +32,10 @@ Entries on this page are generated automatically from [OpenAPI specification](ap
   * Used by [`GET /videos/models`](api/api-reference/video-generation/list-all-video-generation-models.md)
 * `VideoModelsListResponse`: example modified
   * Used by [`GET /videos/models`](api/api-reference/video-generation/list-all-video-generation-models.md)
+* `ScimSyncJob`: description updated
+  * Used by [`GET /scim/sync-jobs/{id}`](api/api-reference/scim/get-scim-directory-sync-status.md), [`POST /scim/sync-jobs`](api/api-reference/scim/start-a-scim-directory-sync.md)
+* `SpeechRequest`: enum property\_added
+  * Used by [`POST /audio/speech`](api/api-reference/tts/create-speech.md)
 
 **November 24, 2026**
 

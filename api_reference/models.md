@@ -321,9 +321,17 @@ async function getCheapestStableChatModel(): Promise<OpenRouterModel> {
 
   return stableModels[0];
 }
+
+const model = await getCheapestStableChatModel();
+console.log(JSON.stringify({ id: model.id, name: model.name, pricing: model.pricing }, null, 2));
 ```
 
 ```python title="Python" lines theme={null}
+import json
+
+import requests
+
+
 def get_cheapest_stable_chat_model() -> dict:
     res = requests.get(
         "https://openrouter.ai/api/v1/models",
@@ -353,6 +361,10 @@ def get_cheapest_stable_chat_model() -> dict:
         raise RuntimeError("No models matched the selection criteria")
 
     return stable_models[0]
+
+
+model = get_cheapest_stable_chat_model()
+print(json.dumps({"id": model["id"], "name": model["name"], "pricing": model["pricing"]}, indent=2))
 
 ```
 
@@ -412,6 +424,21 @@ get_cheapest_stable_chat_model() {
         and (.id | startswith("~") | not)
       )]
       | if length == 0 then error("No models matched the selection criteria") else .[0] end'
+}
+
+get_cheapest_stable_chat_model | jq '{id, name, pricing}'
+
+```
+
+```json title="Output" theme={null}
+{
+  "id": "inclusionai/ling-3.0-tiny",
+  "name": "inclusionAI: Ling 3.0 Tiny",
+  "pricing": {
+    "prompt": "0.000000015",
+    "completion": "0.000000045",
+    "input_cache_read": "0.000000003"
+  }
 }
 ```
 

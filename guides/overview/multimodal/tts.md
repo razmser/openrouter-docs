@@ -20,10 +20,58 @@ The dedicated speech models endpoint lists the public speech catalog with the pa
 curl "https://openrouter.ai/api/v1/audio/speech/models"
 ```
 
+```typescript title="TypeScript" lines theme={null}
+const response = await fetch('https://openrouter.ai/api/v1/audio/speech/models');
+const models = await response.json();
+```
+
+```python title="Python" lines theme={null}
+response = requests.get("https://openrouter.ai/api/v1/audio/speech/models")
+models = response.json()
+```
+
+```go title="Go" lines theme={null}
+resp, err := http.Get("https://openrouter.ai/api/v1/audio/speech/models")
+if err != nil {
+	log.Fatal(err)
+}
+defer resp.Body.Close()
+
+body, err := io.ReadAll(resp.Body)
+if err != nil {
+	log.Fatal(err)
+}
+fmt.Println(string(body))
+```
+
 To read a single model, request it by author and slug:
 
 ```bash lines theme={null}
 curl "https://openrouter.ai/api/v1/audio/speech/models/elevenlabs/eleven-v3"
+```
+
+```typescript title="TypeScript" lines theme={null}
+const response = await fetch('https://openrouter.ai/api/v1/audio/speech/models/elevenlabs/eleven-v3');
+const model = await response.json();
+```
+
+```python title="Python" lines theme={null}
+response = requests.get("https://openrouter.ai/api/v1/audio/speech/models/elevenlabs/eleven-v3")
+speech_model = response.json()
+```
+
+```go title="Go" lines theme={null}
+resp, err := http.Get("https://openrouter.ai/api/v1/audio/speech/models/elevenlabs/eleven-v3")
+if err != nil {
+	log.Fatal(err)
+}
+defer resp.Body.Close()
+
+body, err := io.ReadAll(resp.Body)
+if err != nil {
+	log.Fatal(err)
+}
+fmt.Println(string(body))
 ```
 
 Each model carries its inputs and its speech output parameters, merged across every endpoint that serves it, plus an `endpoints` array with each endpoint's own values. This example leaves out `voice`; the table below shows its shape:
@@ -192,7 +240,7 @@ print(f"Audio saved. Generation ID: {generation_id}")
 const response = await fetch('https://openrouter.ai/api/v1/audio/speech', {
   method: 'POST',
   headers: {
-    Authorization: `Bearer ${API_KEY_REF}`,
+    Authorization: `Bearer ${process.env.OPENROUTER_API_KEY}`,
     'Content-Type': 'application/json',
   },
   body: JSON.stringify({
@@ -220,12 +268,64 @@ curl https://openrouter.ai/api/v1/audio/speech \
   -H "Content-Type: application/json" \
   -H "Authorization: Bearer $OPENROUTER_API_KEY" \
   --output output.mp3 \
+  -w "HTTP %{http_code}: saved %{size_download} bytes to output.mp3\n" \
   -d '{
     "model": "mistralai/voxtral-mini-tts-2603",
     "input": "Hello! This is a text-to-speech test.",
     "voice": "en_paul_neutral",
     "response_format": "mp3"
   }'
+```
+
+```go title="Go" lines theme={null}
+package main
+
+import (
+	"bytes"
+	"encoding/json"
+	"fmt"
+	"io"
+	"log"
+	"net/http"
+	"os"
+)
+
+func main() {
+	payload, _ := json.Marshal(map[string]string{
+		"model":           "mistralai/voxtral-mini-tts-2603",
+		"input":           "Hello! This is a text-to-speech test.",
+		"voice":           "en_paul_neutral",
+		"response_format": "mp3",
+	})
+
+	req, _ := http.NewRequest("POST", "https://openrouter.ai/api/v1/audio/speech", bytes.NewReader(payload))
+	req.Header.Set("Authorization", "Bearer "+os.Getenv("OPENROUTER_API_KEY"))
+	req.Header.Set("Content-Type", "application/json")
+
+	resp, err := http.DefaultClient.Do(req)
+	if err != nil {
+		log.Fatal(err)
+	}
+	defer resp.Body.Close()
+
+	body, err := io.ReadAll(resp.Body)
+	if err != nil {
+		log.Fatal(err)
+	}
+	if resp.StatusCode != http.StatusOK {
+		log.Fatalf("TTS error %d: %s", resp.StatusCode, body)
+	}
+
+	audio := body
+	generationID := resp.Header.Get("X-Generation-Id")
+	fmt.Printf("Generation ID: %s\n", generationID)
+	_ = audio // Save audio to a file or play it directly
+}
+
+```
+
+```text title="Output" theme={null}
+Generation ID: gen-tts-1795432965-I0l4lmqIVyoTcf5pkYi0
 ```
 
 ### Request Parameters
@@ -236,7 +336,7 @@ curl https://openrouter.ai/api/v1/audio/speech \
 | `input` | string or array | Yes | The text to synthesize into speech, or a list of turns for multi-speaker input. See [Multi-Speaker Input](#multi-speaker-input) below. Some models treat a string input as a prompt that can also describe non-speech audio; see [Non-Speech Prompts](#non-speech-prompts) below |
 | `voice` | string | Provider-dependent | Voice identifier. Available voices vary by model, so check each model's page on the [Models page](../models.md) for supported voices. Omit this parameter only when the selected provider documents a default voice; otherwise an explicit voice is required. |
 | `instructions` | string | No | Delivery instructions such as tone, pacing, or emotion, for example `Speak in a warm and friendly tone.` Supported by OpenAI `gpt-4o-mini-tts`, Gemini TTS, and Fish Audio models. Ignored by other providers |
-| `response_format` | string | No | Audio output format: `mp3` or `pcm`. Defaults to `pcm`. HeyGen Voice and Gemini TTS only return `pcm` and return a 400 for `mp3`. MiniMax returns `pcm` only after the whole clip is synthesized, while its `mp3` streams; MiniMax `pcm` clips longer than about 2.5 minutes return a 502, so use `mp3` or shorter inputs for long clips |
+| `response_format` | string | No | Audio output format: `mp3`, `pcm`, or `wav`. Defaults to `pcm`. `wav` is supported only by Gemini TTS (24 kHz mono, up to 32 MiB of audio); other models return a 400 for it. HeyGen Voice and Gemini TTS don't support `mp3` and return a 400 for it. MiniMax returns `pcm` only after the whole clip is synthesized, while its `mp3` streams; MiniMax `pcm` clips longer than about 2.5 minutes return a 502, so use `mp3` or shorter inputs for long clips |
 | `output_delivery` | string | No | Audio delivery mode: `stream` (default) returns a raw audio byte stream; `url` stores the generated audio and returns a JSON response with a signed download `url` (expires after 24 hours), `expires_at`, and `media_type`. Falls back to raw audio streaming when zero-data-retention applies |
 | `speed` | number | No | Playback speed multiplier. Honored by models that support it (e.g., OpenAI TTS). Other providers either ignore it or return a 400 for a non-default value when the model has no speed control. Defaults to `1.0` |
 | `input_references` | array | No | Reference content for stateless voice cloning or voice design: one to three `input_audio` parts (each optionally paired with a `text` transcript), optionally plus one `image_url` scene image on providers that support it, or exactly one `image_url` part on its own. See [Voice Cloning](#voice-cloning) below |
@@ -482,7 +582,7 @@ By default (`output_delivery` omitted or set to `stream`), the TTS endpoint retu
 
 | Header | Description |
 | - | - |
-| `Content-Type` | `audio/mpeg` or `audio/pcm` for streamed audio responses, or `application/json` when a signed download URL is returned |
+| `Content-Type` | `audio/mpeg`, `audio/pcm`, or `audio/wav` for streamed audio responses, or `application/json` when a signed download URL is returned |
 | `X-Generation-Id` | The unique generation ID for the request, useful for tracking and debugging |
 
 ### Output Formats
@@ -491,10 +591,11 @@ By default (`output_delivery` omitted or set to `stream`), the TTS endpoint retu
 | - | - | - |
 | `mp3` | `audio/mpeg` | Compressed audio, smaller file size. Good for storage and playback |
 | `pcm` | `audio/pcm` | Uncompressed raw audio. Lower latency, suitable for real-time streaming pipelines |
+| `wav` | `audio/wav` | Uncompressed audio with a WAV header, playable as a file. Gemini TTS only |
 
 ### Signed URL Output
 
-Set `output_delivery` to `url` to store the generated audio and receive a JSON response with a signed download URL instead of raw audio bytes. `response_format` still selects the audio codec (`mp3` or `pcm`).
+Set `output_delivery` to `url` to store the generated audio and receive a JSON response with a signed download URL instead of raw audio bytes. `response_format` still selects the audio codec (`mp3`, `pcm`, or `wav`).
 
 URLs expire after 24 hours, with the expiry timestamp reported in `expires_at`. Treat the URL as a bearer link: anyone holding it can download the audio until it expires, and the stored copy is deleted within the following day. When zero-data-retention applies (account settings, guardrails, `provider.zdr: true`, or a ZDR endpoint), OpenRouter does not store the audio and falls back to streaming raw audio bytes, so check the response `Content-Type` header if your requests may use ZDR.
 
@@ -622,6 +723,25 @@ const response = await client.audio.speech.create({
 const buffer = Buffer.from(await response.arrayBuffer());
 await fs.promises.writeFile('output.mp3', buffer);
 console.log('Audio saved to output.mp3');
+```
+
+```bash title="cURL" lines theme={null}
+curl https://openrouter.ai/api/v1/audio/speech \
+  --fail \
+  -H "Content-Type: application/json" \
+  -H "Authorization: Bearer $OPENROUTER_API_KEY" \
+  --output output.mp3 \
+  -w "HTTP %{http_code}: saved %{size_download} bytes to output.mp3\n" \
+  -d '{
+    "model": "mistralai/voxtral-mini-tts-2603",
+    "input": "The quick brown fox jumps over the lazy dog.",
+    "voice": "en_paul_neutral",
+    "response_format": "mp3"
+  }'
+```
+
+```text title="Output" theme={null}
+HTTP 200: saved 22866 bytes to output.mp3
 ```
 
 ## Best Practices

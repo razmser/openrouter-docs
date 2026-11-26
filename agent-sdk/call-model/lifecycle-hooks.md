@@ -833,6 +833,23 @@ hooks.on("PermissionRequest", HookEntry(handler=on_permission_request, matcher="
 
 ```
 
+```go title="Go" lines theme={null}
+hooks.OnPermissionRequest(PermissionRequestHook{
+	Matcher: "read_file",
+	Handler: func(toolInput map[string]any, ctx HookContext) PermissionRequestResult {
+		path, _ := toolInput["path"].(string)
+		if isAllowedPath(path) {
+			return PermissionRequestResult{Decision: "allow"}
+		}
+
+		return PermissionRequestResult{
+			Decision: "deny",
+			Reason:   "The requested path is outside the workspace",
+		}
+	},
+})
+```
+
 ### PreToolUse
 
 `PreToolUse` fires before client tool execution, including normal tool rounds and resumed approval flows:
@@ -1254,6 +1271,13 @@ await hooks.drain();
 ```go title="Go" lines theme={null}
 hooks.AbortInflight("Application shutting down")
 hooks.Drain()
+
+```
+
+```python title="Python" lines theme={null}
+async def shutdown(hooks):
+    hooks.abort_inflight()
+    await hooks.drain()
 
 ```
 

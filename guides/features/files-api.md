@@ -111,6 +111,7 @@ const response = await fetch('https://openrouter.ai/api/v1/files?limit=100', {
   },
 });
 const files = await response.json();
+console.log(JSON.stringify(files, null, 2));
 ```
 
 ```python title="Python" lines theme={null}
@@ -124,6 +125,8 @@ response = requests.get(
     headers={"Authorization": f"Bearer {os.environ['OPENROUTER_API_KEY']}"},
 )
 files = response.json()
+print(files)
+
 ```
 
 ```go title="Go" lines theme={null}
@@ -136,6 +139,28 @@ if err != nil {
 }
 defer resp.Body.Close()
 body, _ := io.ReadAll(resp.Body)
+```
+
+Example response for `limit=1` with another page available (IDs and cursor are illustrative):
+
+```json title="Output" theme={null}
+{
+  "_shape": "openrouter",
+  "data": [
+    {
+      "_shape": "openrouter",
+      "id": "or_file_example",
+      "type": "file",
+      "filename": "meeting-notes.txt",
+      "mime_type": "text/plain",
+      "size_bytes": 65,
+      "created_at": "2026-08-04T17:06:42.000Z",
+      "downloadable": false
+    }
+  ],
+  "has_more": true,
+  "cursor": "example-next-page-cursor"
+}
 ```
 
 * `limit` sets the page size, from 1 to 1000. The default is 100.

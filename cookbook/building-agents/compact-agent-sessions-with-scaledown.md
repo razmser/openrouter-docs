@@ -414,6 +414,21 @@ render_history() {
 }
 ```
 
+```bash title="cURL" lines theme={null}
+# Reads an OpenAI-format messages array (JSON) on stdin, prints it as plain text.
+render_history() {
+  jq -r 'map(
+    if .role == "assistant" then
+      ["[assistant]\n\(.content // "")"]
+        + [(.tool_calls // [])[] | "[tool_call \(.function.name)] \(.function.arguments)"]
+        | join("\n")
+    elif .role == "tool" then "[tool_result \(.tool_call_id)]\n\(.content)"
+    else "[\(.role)]\n\(.content)"
+    end
+  ) | join("\n\n")'
+}
+```
+
 ## 3. Summarize in chunks
 
 One call can't hold everything in a long history, so it drops facts. Split the old turns into chunks of about 16k characters (4k to 5k tokens), summarize each chunk, and join the results. Each chunk gets its own summary, and the calls run in parallel.
@@ -552,10 +567,11 @@ chunk_messages() {
 
 # Summarize each chunk in parallel with `summarize` from step 1, then join the summaries in order.
 # Fails without printing a partial summary if any chunk fails.
-summarize_history() {
+summarize_history() (
   local chunks dir total=0 pids=() failed=0
   chunks=$(chunk_messages) || return 1
-  dir=$(mktemp -d)
+  dir=$(mktemp -d) || return 1
+  trap 'rm -rf "$dir"' EXIT
   while IFS= read -r chunk; do
     total=$((total + 1))
     (set -o pipefail; echo "$chunk" | render_history | summarize > "$dir/$total") &
@@ -563,18 +579,15 @@ summarize_history() {
   done <<< "$chunks"
   for pid in "${pids[@]}"; do wait "$pid" || failed=1; done
   if [ "$failed" -ne 0 ]; then
-    rm -rf "$dir"
     echo "summarize_history: a chunk failed" >&2
     return 1
   fi
   for n in $(seq 1 "$total"); do
     if [ "$total" -gt 1 ]; then echo "Part $n of $total:"; fi
-    cat "$dir/$n"
+    cat "$dir/$n" || return 1
     echo
   done
-  # The chunk summaries hold session history, so do not leave them on disk
-  rm -rf "$dir"
-}
+)
 ```
 
 ## 4. Compact when the history gets big

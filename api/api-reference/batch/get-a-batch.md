@@ -236,7 +236,7 @@ paths:
                 $ref: '#/components/schemas/BatchErrorResponse'
           description: >-
             The batch service is unavailable, or an upstream provider operation
-            failed, including batch or file cleanup.
+            failed.
 components:
   schemas:
     BatchObject:

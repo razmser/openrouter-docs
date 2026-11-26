@@ -699,7 +699,11 @@ Some people understand that meaning as something given by God; others see it as 
 
 ## Using third-party SDKs
 
-For information about using third-party SDKs and frameworks with OpenRouter, please [see our frameworks documentation.](guides/community/frameworks-and-integrations-overview.md)
+For information about using third-party SDKs, frameworks, and coding agents with OpenRouter, [see our frameworks and integrations overview](guides/community/frameworks-and-integrations-overview.md).
+
+> [!NOTE]
+>
+> **Anthropic SDK & Claude Code:** Anthropic-compatible clients automatically append `/v1/messages`, so set the base URL to `https://openrouter.ai/api` (without `/v1`). See the [Claude Code integration guide](cookbook/coding-agents/claude-code-integration.md) for full setup instructions.
 
 ***
 
